@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>GD Electric Motor | Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+  :root{--bg:#080b18;--panel:#111526;--line:#34304b;--purple:#5420e8;--green:#25d6a0;--text:#f7f5ff;--muted:#a6a5b7;--danger:#ff5959}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:18px;max-width:1000px;margin:auto}
+  h1{font-size:1.5rem;margin:0}h1 span{color:var(--green)}
+  h2{font-size:1.1rem;margin:28px 0 10px}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:16px}
+  input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:#0b0e1b;color:#fff;font:inherit;margin-bottom:10px}
+  button{font:inherit;cursor:pointer;border:0;border-radius:99px;padding:11px 18px;font-weight:800;background:var(--purple);color:#fff}
+  button.sec{background:#191d2c;border:1px solid var(--line)}
+  button.del{background:transparent;color:var(--danger);padding:4px 8px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;text-align:center}
+  .stat b{display:block;font-size:1.8rem;color:var(--green)}
+  .stat small{color:var(--muted)}
+  .wrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid #25263a;vertical-align:top}
+  th{color:var(--muted);font-weight:700;white-space:nowrap}
+  td.msg{min-width:200px;word-break:break-word}
+  .muted{color:var(--muted)}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>GD <span>Electric Motor</span> · Admin</h1>
+  <div><button class="sec" id="refreshBtn" hidden onclick="loadDashboard()">↻ Refresh</button> <button class="sec" id="logoutBtn" hidden onclick="logout()">Sohoka</button></div>
+</div>
+
+<div id="loginCard" class="card" hidden>
+  <form onsubmit="login(event)">
+    <input id="email" type="email" placeholder="Email" autocomplete="email" required>
+    <input id="password" type="password" placeholder="Password" autocomplete="current-password" required>
+    <button type="submit">Injira</button>
+    <p id="loginMsg" class="muted"></p>
+  </form>
+</div>
+
+<div id="denied" class="card" hidden>Iyi konti nta burenganzira bwa admin ifite. Sohoka winjire na konti ya admin.</div>
+
+<div id="dash" hidden>
+  <div class="stats">
+    <div class="stat"><b id="sUsers">0</b><small>Abiyandikishije</small></div>
+    <div class="stat"><b id="sLikes">0</b><small>Likes</small></div>
+    <div class="stat"><b id="sComments">0</b><small>Ibitekerezo</small></div>
+  </div>
+
+  <h2>🔥 Ibicuruzwa bikundwa cyane</h2>
+  <div class="wrap"><table><thead><tr><th>Igicuruzwa</th><th>Likes</th><th>Ibitekerezo</th></tr></thead><tbody id="tTop"></tbody></table></div>
+
+  <h2>👥 Abiyandikishije</h2>
+  <div class="wrap"><table><thead><tr><th>Izina</th><th>Email</th><th>Itariki</th></tr></thead><tbody id="tUsers"></tbody></table></div>
+
+  <h2>♥ Likes ziheruka</h2>
+  <div class="wrap"><table><thead><tr><th>Uwa-like</th><th>Igicuruzwa</th><th>Itariki</th></tr></thead><tbody id="tLikes"></tbody></table></div>
+
+  <h2>💬 Ibitekerezo biheruka</h2>
+  <div class="wrap"><table><thead><tr><th>Uwanditse</th><th>Igicuruzwa</th><th>Igitekerezo</th><th>Itariki</th><th></th></tr></thead><tbody id="tComments"></tbody></table></div>
+</div>
+
+<script>
+  // Use the SAME values as in index.html
+  const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL";
+  const SUPABASE_ANON_KEY = "PASTE_YOUR_ANON_KEY";
+  const PRODUCTS = {1:"Electric Motor",2:"Fan Motor",3:"Water Pump",4:"Motor Spare Parts",5:"Industrial Motor",6:"Cooling Fan"};
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const pname = id => PRODUCTS[id] || ("#" + id);
+  const fmt = d => new Date(d).toLocaleString();
+
+  async function start(){
+    const {data} = await sb.auth.getSession();
+    if(!data.session){ show("login"); return; }
+    await checkAdmin(data.session.user);
+  }
+  function show(which){
+    $("loginCard").hidden = which!=="login";
+    $("denied").hidden = which!=="denied";
+    $("dash").hidden = which!=="dash";
+    $("logoutBtn").hidden = which==="login";
+    $("refreshBtn").hidden = which!=="dash";
+  }
+  async function login(e){
+    e.preventDefault();
+    $("loginMsg").textContent = "…";
+    const {data,error} = await sb.auth.signInWithPassword({email:$("email").value.trim(), password:$("password").value});
+    if(error){ $("loginMsg").textContent = "Email cyangwa password si byo."; return; }
+    await checkAdmin(data.user);
+  }
+  async function logout(){ await sb.auth.signOut(); show("login"); }
+  async function checkAdmin(user){
+    const {data} = await sb.from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
+    if(!data){ show("denied"); return; }
+    show("dash"); loadDashboard();
+  }
+  async function loadDashboard(){
+    const [u,l,c] = await Promise.all([
+      sb.from("profiles").select("*").order("created_at",{ascending:false}).limit(1000),
+      sb.from("likes").select("*").order("created_at",{ascending:false}).limit(2000),
+      sb.from("comments").select("*").order("created_at",{ascending:false}).limit(1000)
+    ]);
+    const users=u.data||[], likes=l.data||[], comments=c.data||[];
+    const byId = Object.fromEntries(users.map(x=>[x.id,x]));
+    const who = id => { const p=byId[id]; return p ? esc(p.full_name||p.email||"—") + (p.full_name&&p.email?` <span class="muted">(${esc(p.email)})</span>`:"") : "—"; };
+
+    $("sUsers").textContent = users.length;
+    $("sLikes").textContent = likes.length;
+    $("sComments").textContent = comments.length;
+
+    const stats = {};
+    likes.forEach(x=>{ (stats[x.product_id] ||= {l:0,c:0}).l++; });
+    comments.forEach(x=>{ (stats[x.product_id] ||= {l:0,c:0}).c++; });
+    const top = Object.entries(stats).sort((a,b)=>b[1].l-a[1].l);
+    $("tTop").innerHTML = top.length ? top.map(([id,s])=>`<tr><td>${esc(pname(id))}</td><td>${s.l}</td><td>${s.c}</td></tr>`).join("") : `<tr><td colspan="3" class="muted">Nta makuru aracyaboneka.</td></tr>`;
+
+    $("tUsers").innerHTML = users.length ? users.map(x=>`<tr><td>${esc(x.full_name||"—")}</td><td>${esc(x.email||"—")}</td><td>${fmt(x.created_at)}</td></tr>`).join("") : `<tr><td colspan="3" class="muted">Nta wiyandikishije.</td></tr>`;
+
+    $("tLikes").innerHTML = likes.length ? likes.slice(0,100).map(x=>`<tr><td>${who(x.user_id)}</td><td>${esc(pname(x.product_id))}</td><td>${fmt(x.created_at)}</td></tr>`).join("") : `<tr><td colspan="3" class="muted">Nta likes ziraboneka.</td></tr>`;
+
+    $("tComments").innerHTML = comments.length ? comments.slice(0,100).map(x=>`<tr><td>${who(x.user_id)}</td><td>${esc(pname(x.product_id))}</td><td class="msg">${esc(x.body)}</td><td>${fmt(x.created_at)}</td><td><button class="del" onclick="delComment(${Number(x.id)})">Siba</button></td></tr>`).join("") : `<tr><td colspan="5" class="muted">Nta bitekerezo biraboneka.</td></tr>`;
+  }
+  async function delComment(id){
+    if(!confirm("Gusiba iki gitekerezo?")) return;
+    await sb.from("comments").delete().eq("id", id);
+    loadDashboard();
+  }
+  start();
+</script>
+</body>
+</html>
