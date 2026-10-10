@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b18">
+  <title>GD Electric Motor | Motors, Pumps & Spare Parts</title>
+  <meta name="description" content="Discover electric motors, fan motors, water pumps and spare parts from GD Electric Motor. Contact us on WhatsApp for prices and orders.">
+  <style>
+    :root {
+      --bg: #080b18; --panel: #111526; --panel-2: #191d2c; --line: #34304b;
+      --purple: #5420e8; --purple-light: #bd8cff; --green: #25d6a0;
+      --text: #f7f5ff; --muted: #a6a5b7; --danger: #ff5959;
+      --radius: 22px; --shadow: 0 12px 35px rgba(0,0,0,.22);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 120px; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    .topbar { position: sticky; top: 0; z-index: 20; background: rgba(8,11,24,.96); backdrop-filter: blur(14px); border-bottom: 1px solid #25263a; }
+    .header-row { max-width: 1120px; margin: auto; padding: 14px 20px 10px; display:flex; align-items:center; gap:14px; }
+    .brand { font-size: clamp(1.35rem,4vw,2rem); font-weight: 900; letter-spacing: -.8px; white-space: nowrap; }
+    .brand span { color: var(--green); }
+    .lang-switch { display:flex; border:1px solid var(--line); border-radius: 99px; overflow:hidden; margin-left:auto; }
+    .lang-switch button { background:transparent; border:0; color:var(--muted); padding:8px 12px; font-weight:800; }
+    .lang-switch button.active { background:var(--purple); color:white; }
+    .icon-btn { width:42px; height:42px; border-radius:50%; border:1px solid transparent; background:transparent; color:var(--text); font-size:1.35rem; position:relative; }
+    .icon-btn:hover { background:var(--panel-2); border-color:var(--line); }
+    .count { position:absolute; top:0; right:0; background:var(--green); color:#071018; border-radius:50%; min-width:18px; height:18px; padding:0 4px; font-size:11px; font-weight:900; display:grid; place-items:center; }
+    .search-wrap { max-width:1120px; margin:auto; padding:0 20px 14px; }
+    .search { display:flex; align-items:center; gap:12px; border:1.5px solid #61517e; border-radius:99px; padding:11px 17px; background:#11111c; }
+    .search span { font-size:1.3rem; color:var(--purple-light); }
+    .search input { border:0; outline:0; background:transparent; color:var(--text); width:100%; min-width:0; font-size:1rem; }
+    main { max-width:1120px; margin:auto; padding:22px 20px 105px; }
+    .hero { min-height:250px; border:1px solid #302644; border-radius:28px; overflow:hidden; display:grid; grid-template-columns:1.1fr .9fr; background:radial-gradient(circle at 80% 20%,#242049 0,#111321 48%,#080910 100%); box-shadow:var(--shadow); }
+    .hero-copy { padding:clamp(24px,5vw,48px); align-self:center; }
+    .eyebrow { color:var(--purple-light); font-weight:900; letter-spacing:2px; text-transform:uppercase; font-size:.78rem; }
+    h1 { font-size:clamp(2rem,5vw,3.4rem); line-height:1.04; margin:12px 0; letter-spacing:-1.5px; }
+    h1 span { color:var(--green); }
+    .hero p { color:var(--muted); max-width:470px; line-height:1.65; }
+    .hero-art { display:grid; place-items:center; padding:20px; font-size:clamp(7rem,19vw,12rem); background:linear-gradient(145deg,rgba(77,31,220,.08),rgba(37,214,160,.05)); }
+    .primary, .secondary { border:0; border-radius:99px; padding:13px 20px; font-weight:850; display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+    .primary { background:var(--purple); color:white; box-shadow:0 8px 20px rgba(84,32,232,.24); }
+    .primary:hover { filter:brightness(1.12); }
+    .secondary { border:1px solid var(--line); color:var(--text); background:var(--panel-2); }
+    .section { margin-top:34px; }
+    .section-heading { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px; }
+    .section-heading h2 { margin:0; font-size:clamp(1.2rem,3vw,1.6rem); }
+    .section-heading h2:before { content:""; display:inline-block; width:5px; height:25px; border-radius:8px; background:var(--purple-light); margin-right:12px; vertical-align:-5px; }
+    .text-link { color:var(--purple-light); font-weight:800; background:transparent; border:0; }
+    .categories { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+    .category { background:transparent; border:1px solid transparent; border-radius:18px; padding:12px 8px; color:var(--text); text-align:center; }
+    .category:hover,.category.selected { background:var(--panel); border-color:var(--line); }
+    .category-art { width:clamp(74px,15vw,112px); aspect-ratio:1; margin:0 auto 10px; border-radius:50%; border:3px solid #61517e; display:grid; place-items:center; background:radial-gradient(circle at 30% 20%,#37305d,#171b2a 70%); font-size:clamp(2rem,6vw,3.2rem); }
+    .category strong { font-size:.92rem; display:block; }
+    .deal-panel { padding:22px; border-radius:26px; background:linear-gradient(135deg,#110b25,#080812 70%); border:1px solid #29213d; }
+    .deal-panel .section-heading { margin-bottom:18px; }
+    .deal-sub { color:var(--muted); font-size:.9rem; }
+    .products { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+    .product { background:var(--panel); border:1px solid #292b40; border-radius:20px; overflow:hidden; display:flex; flex-direction:column; min-width:0; }
+    .product-visual { min-height:155px; display:grid; place-items:center; font-size:5rem; background:linear-gradient(145deg,#e4e4e7,#c7c8d0); color:#161b2b; position:relative; }
+    .product-visual .emoji { filter:drop-shadow(0 8px 5px #0002); }
+    .discount { position:absolute; top:12px; left:12px; background:#a90012; color:white; font-size:.75rem; font-weight:900; border-radius:99px; padding:5px 10px; }
+    .save-btn { position:absolute; top:10px; right:10px; width:36px; height:36px; border:0; border-radius:50%; background:#fff; color:#171725; font-size:1.2rem; }
+    .save-btn.saved { background:#ffe0e9; color:#d0004f; }
+    .product-info { padding:15px; display:flex; flex-direction:column; flex:1; }
+    .product-info h3 { margin:0 0 6px; font-size:1.02rem; }
+    .product-info p { color:var(--muted); margin:0 0 12px; font-size:.88rem; line-height:1.45; }
+    .price-row { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; margin-top:auto; }
+    .price { font-size:1.08rem; font-weight:900; color:var(--green); }
+    .old-price { color:#88889a; text-decoration:line-through; font-size:.82rem; }
+    .product-actions { display:flex; gap:8px; margin-top:13px; }
+    .product-actions button { flex:1; padding:10px 8px; font-size:.83rem; }
+    .empty { color:var(--muted); text-align:center; padding:35px 12px; grid-column:1/-1; }
+    .view { display:none; }
+    .view.active { display:block; }
+    .page-title { margin:5px 0 20px; font-size:1.8rem; }
+    .info-card { background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:20px; margin-bottom:14px; }
+    .info-card p { color:var(--muted); line-height:1.6; }
+    .form-row { display:grid; gap:10px; margin:12px 0; }
+    .form-row input { width:100%; padding:13px 14px; border-radius:12px; border:1px solid var(--line); background:#0b0e1b; color:white; }
+    .cart-row { display:flex; align-items:center; gap:12px; padding:13px 0; border-bottom:1px solid var(--line); }
+    .cart-emoji { width:54px; height:54px; border-radius:14px; background:#d7d7de; color:#161b2b; display:grid; place-items:center; font-size:1.8rem; flex-shrink:0; }
+    .cart-details { flex:1; min-width:0; }
+    .cart-details strong { display:block; }
+    .cart-details small { color:var(--muted); }
+    .qty { display:flex; align-items:center; gap:8px; }
+    .qty button { width:28px; height:28px; border:1px solid var(--line); background:var(--panel-2); color:white; border-radius:8px; }
+    .bottom-nav { position:fixed; z-index:30; bottom:0; left:0; right:0; background:rgba(5,6,13,.97); border-top:1px solid #2b2a3b; padding:8px max(10px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)); display:grid; grid-template-columns:repeat(5,1fr); backdrop-filter:blur(14px); }
+    .nav-item { color:#9999aa; background:transparent; border:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:3px 0; font-size:.73rem; font-weight:700; }
+    .nav-item .nav-icon { font-size:1.45rem; line-height:1.2; }
+    .nav-item.active { color:var(--purple-light); }
+    .whatsapp-float { position:fixed; z-index:25; right:18px; bottom:92px; width:54px; height:54px; border-radius:50%; background:#087d38; color:white; display:grid; place-items:center; font-size:1.7rem; box-shadow:0 8px 25px #0007; }
+    footer { color:#77788b; text-align:center; padding:25px 10px 5px; font-size:.8rem; }
+    @media (min-width:800px) { .bottom-nav { max-width:520px; left:50%; transform:translateX(-50%); border:1px solid #2b2a3b; border-radius:18px 18px 0 0; } .whatsapp-float { bottom:24px; } }
+    @media (max-width:650px) {
+      .header-row { padding:12px 14px 8px; gap:7px; } .brand { font-size:1.35rem; }
+      .lang-switch button { padding:8px 9px; font-size:.85rem; }
+      .search-wrap { padding:0 14px 12px; } main { padding:16px 14px 105px; }
+      .hero { grid-template-columns:1fr; min-height:unset; } .hero-copy { padding:25px 22px 10px; } .hero-art { padding:0 10px 16px; font-size:6.5rem; }
+      .categories { grid-template-columns:repeat(4,minmax(0,1fr)); gap:3px; }
+      .category { padding:8px 2px; } .category strong { font-size:.72rem; line-height:1.25; }
+      .category-art { width:clamp(58px,18vw,85px); border-width:2px; font-size:2rem; }
+      .products { grid-template-columns:repeat(2,minmax(0,1fr)); gap:11px; }
+      .product-visual { min-height:130px; font-size:4rem; }
+      .product-info { padding:11px; } .product-info h3 { font-size:.92rem; }
+      .product-info p { font-size:.78rem; } .product-actions { flex-direction:column; gap:6px; }
+      .deal-panel { padding:14px; } .section-heading { align-items:flex-start; }
+      .deal-sub { display:none; } .whatsapp-float { right:14px; bottom:88px; }
+    }
+    @media (max-width:360px) { .brand { font-size:1.15rem; } .icon-btn { width:34px; } .lang-switch button { padding:7px; } .products { grid-template-columns:1fr 1fr; } }
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div class="header-row">
+    <a href="#" class="brand" aria-label="GD Electric Motor home" onclick="showView('home');return false;">GD <span>Electric Motor</span></a>
+    <div class="lang-switch" aria-label="Language">
+      <button id="langEN" class="active" onclick="setLanguage('en')">EN</button>
+      <button id="langRW" onclick="setLanguage('rw')">RW</button>
+    </div>
+    <button class="icon-btn" onclick="showView('saved')" aria-label="Saved products">♡<span id="savedCount" class="count" hidden>0</span></button>
+    <button class="primary" onclick="showView('cart')" style="padding:10px 13px">🛒 <span data-en="Cart" data-rw="Agaseke">Cart</span><span id="cartCount" class="count" hidden>0</span></button>
+  </div>
+  <div class="search-wrap">
+    <label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Search products and categories..." data-placeholder-en="Search products and categories..." data-placeholder-rw="Shakisha ibicuruzwa n'ibyiciro..." oninput="handleSearch(this.value)"></label>
+  </div>
+</header>
+
+<main>
+  <section id="view-home" class="view active">
+    <div class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow" data-en="Reliable motors • Helpful service" data-rw="Moteri zizewe • Serivisi nziza">Reliable motors • Helpful service</div>
+        <h1 data-en="Power your work with GD <span>Electric Motor</span>" data-rw="Koresha imbaraga za <span>GD Electric Motor</span>">Power your work with GD <span>Electric Motor</span></h1>
+        <p data-en="Find electric motors, fan motors, water pumps and spare parts. Contact us for current prices and availability." data-rw="Shaka moteri z'amashanyarazi, iza fan, pompe z'amazi n'ibikoresho byazo. Twandikire umenye ibiciro n'ibihari.">Find electric motors, fan motors, water pumps and spare parts. Contact us for current prices and availability.</p>
+        <button class="primary" onclick="showView('categories')" data-en="Explore products →" data-rw="Reba ibicuruzwa →">Explore products →</button>
+      </div>
+      <div class="hero-art" aria-hidden="true">⚙️</div>
+    </div>
+
+    <section class="section">
+      <div class="section-heading"><h2 data-en="Shop by category" data-rw="Gura ukurikije ibyiciro">Shop by category</h2><button class="text-link" onclick="showView('categories')" data-en="All categories →" data-rw="Ibyiciro byose →">All categories →</button></div>
+      <div class="categories" id="homeCategories"></div>
+    </section>
+
+    <section class="section deal-panel">
+      <div class="section-heading"><div><h2 data-en="🔥 Popular products" data-rw="🔥 Ibicuruzwa bikunzwe">🔥 Popular products</h2><div class="deal-sub" data-en="Browse our product selection" data-rw="Reba ibicuruzwa dufite">Browse our product selection</div></div><button class="text-link" onclick="showView('categories')" data-en="See all →" data-rw="Reba byose →">See all →</button></div>
+      <div class="products" id="homeProducts"></div>
+    </section>
+    <footer>© <span id="year"></span> GD Electric Motor. <span data-en="All rights reserved." data-rw="Uburenganzira bwose burabitswe.">All rights reserved.</span></footer>
+  </section>
+
+  <section id="view-categories" class="view">
+    <h1 class="page-title" data-en="Categories" data-rw="Ibyiciro">Categories</h1>
+    <div class="categories" id="allCategories"></div>
+    <section class="section">
+      <div class="section-heading"><h2 id="categoryProductsTitle" data-en="All products" data-rw="Ibicuruzwa byose">All products</h2><button class="text-link" onclick="clearCategory()" data-en="Clear filter" data-rw="Kuraho akayunguruzo">Clear filter</button></div>
+      <div class="products" id="categoryProducts"></div>
+    </section>
+  </section>
+
+  <section id="view-saved" class="view">
+    <h1 class="page-title" data-en="Saved products ♡" data-rw="Ibicuruzwa wabikije ♡">Saved products ♡</h1>
+    <div class="products" id="savedProducts"></div>
+  </section>
+
+  <section id="view-cart" class="view">
+    <h1 class="page-title" data-en="Your cart 🛒" data-rw="Agaseke kawe 🛒">Your cart 🛒</h1>
+    <div class="info-card" id="cartContents"></div>
+  </section>
+
+  <section id="view-account" class="view">
+    <h1 class="page-title" data-en="Account" data-rw="Konti">Account</h1>
+    <div class="info-card">
+      <h2 data-en="Welcome to GD Electric Motor" data-rw="Murakaza neza kuri GD Electric Motor">Welcome to GD Electric Motor</h2>
+      <p data-en="This starter website does not require an account to browse or send an order. Enter your details below to prepare a WhatsApp enquiry." data-rw="Kuri iyi website ntusabwa konti kugira ngo urebe ibicuruzwa cyangwa utumize. Andika amakuru yawe kugira ngo utegure ubutumwa bwo kuri WhatsApp.">This starter website does not require an account to browse or send an order. Enter your details below to prepare a WhatsApp enquiry.</p>
+      <form id="customerForm" onsubmit="saveCustomer(event)">
+        <div class="form-row"><input id="customerName" placeholder="Your name" data-placeholder-en="Your name" data-placeholder-rw="Amazina yawe" autocomplete="name" required></div>
+        <div class="form-row"><input id="customerPhone" placeholder="Your phone number" data-placeholder-en="Your phone number" data-placeholder-rw="Nimero ya telefoni" inputmode="tel" autocomplete="tel"></div>
+        <button class="primary" type="submit" data-en="Save details" data-rw="Bika amakuru">Save details</button>
+        <span id="customerStatus" class="deal-sub"></span>
+      </form>
+    </div>
+    <div class="info-card"><h3 data-en="Need help?" data-rw="Ukeneye ubufasha?">Need help?</h3><p data-en="Use the WhatsApp button to ask about prices, delivery and product availability." data-rw="Kanda kuri WhatsApp ubaze ibiciro, kugeza ibicuruzwa n'ibihari.">Use the WhatsApp button to ask about prices, delivery and product availability.</p><button class="primary" onclick="contactWhatsApp()" data-en="Contact us on WhatsApp" data-rw="Twandikire kuri WhatsApp">Contact us on WhatsApp</button></div>
+  </section>
+</main>
+
+<a href="#" class="whatsapp-float" aria-label="Contact on WhatsApp" onclick="contactWhatsApp();return false;">☏</a>
+
+<nav class="bottom-nav" aria-label="Main navigation">
+  <button class="nav-item active" data-view="home" onclick="showView('home')"><span class="nav-icon">⌂</span><span data-en="Home" data-rw="Ahabanza">Home</span></button>
+  <button class="nav-item" data-view="categories" onclick="showView('categories')"><span class="nav-icon">▦</span><span data-en="Categories" data-rw="Ibyiciro">Categories</span></button>
+  <button class="nav-item" data-view="account" onclick="showView('account')"><span class="nav-icon">♙</span><span data-en="Account" data-rw="Konti">Account</span></button>
+  <button class="nav-item" data-view="saved" onclick="showView('saved')"><span class="nav-icon">♡</span><span data-en="Saved" data-rw="Byabitswe">Saved</span></button>
+  <button class="nav-item" data-view="cart" onclick="showView('cart')"><span class="nav-icon">🛒</span><span data-en="Cart" data-rw="Agaseke">Cart</span></button>
+</nav>
+
+<script>
+  // IMPORTANT: Replace this with your WhatsApp number, including country code and digits only.
+  // Example Rwanda: 2507XXXXXXXX (do not include + or spaces).
+  const WHATSAPP_NUMBER = "250796022617";
+
+  const categories = [
+    {id:"electric", en:"Electric Motors", rw:"Moteri z'amashanyarazi", icon:"⚙️"},
+    {id:"fan", en:"Fan Motors", rw:"Moteri za fan", icon:"🌀"},
+    {id:"pumps", en:"Water Pumps", rw:"Pompe z'amazi", icon:"💧"},
+    {id:"parts", en:"Spare Parts", rw:"Ibikoresho byazo", icon:"🔩"}
+  ];
+  // Edit these sample products and prices to match your real stock.
+  const products = [
+    {id:1,category:"electric",en:"Electric Motor",rw:"Moteri y'amashanyarazi",descEn:"Reliable motor for different applications.",descRw:"Moteri ikoreshwa mu mirimo itandukanye.",price:85000,oldPrice:95000,icon:"⚙️"},
+    {id:2,category:"fan",en:"Fan Motor",rw:"Moteri ya fan",descEn:"Fan motors and related services.",descRw:"Moteri za fan na serivisi zijyanye na zo.",price:28000,oldPrice:null,icon:"🌀"},
+    {id:3,category:"pumps",en:"Water Pump",rw:"Pompe y'amazi",descEn:"Pump for water transfer applications.",descRw:"Pompe ikoreshwa mu kwimura amazi.",price:65000,oldPrice:75000,icon:"💧"},
+    {id:4,category:"parts",en:"Motor Spare Parts",rw:"Ibikoresho bya moteri",descEn:"Ask us about available replacement parts.",descRw:"Twandikire umenye ibikoresho bihari.",price:12000,oldPrice:null,icon:"🔩"},
+    {id:5,category:"electric",en:"Industrial Motor",rw:"Moteri yo mu nganda",descEn:"For workshops and industrial equipment.",descRw:"Ikoreshwa mu ma-workshop no mu nganda.",price:145000,oldPrice:null,icon:"🏭"},
+    {id:6,category:"fan",en:"Cooling Fan",rw:"Fan ikonjesha",descEn:"Cooling and ventilation equipment.",descRw:"Ibikoresho byo gukonjesha no guhumeka.",price:35000,oldPrice:40000,icon:"🌬️"}
+  ];
+  let language = "en", activeCategory = null, searchTerm = "";
+  let cart = JSON.parse(localStorage.getItem("gdCart") || "{}");
+  let saved = JSON.parse(localStorage.getItem("gdSaved") || "[]");
+  let customer = JSON.parse(localStorage.getItem("gdCustomer") || "{}");
+
+  const money = n => new Intl.NumberFormat("en-US").format(n) + " RWF";
+  const t = (en,rw) => language === "rw" ? rw : en;
+  const productName = p => t(p.en,p.rw);
+  const categoryName = c => t(c.en,c.rw);
+
+  function showView(name) {
+    document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+    const target=document.getElementById("view-"+name);
+    if(target) target.classList.add("active");
+    document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
+    if(name==="saved") renderSaved();
+    if(name==="cart") renderCart();
+    if(name==="categories") renderCategories();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  function setLanguage(lang) {
+    language=lang; document.documentElement.lang=lang==="rw"?"rw":"en";
+    document.getElementById("langEN").classList.toggle("active",lang==="en");
+    document.getElementById("langRW").classList.toggle("active",lang==="rw");
+    document.querySelectorAll("[data-en][data-rw]").forEach(el=>{
+      if(el.matches("input")) return;
+      el.innerHTML=el.dataset[lang];
+    });
+    document.querySelectorAll("[data-placeholder-en]").forEach(el=>el.placeholder=el.dataset["placeholder"+(lang==="rw"?"Rw":"En")]);
+    renderHome(); renderCategories(); renderSaved(); renderCart();
+  }
+  function handleSearch(value) {
+    searchTerm=value.trim().toLowerCase();
+    const current=document.querySelector(".view.active")?.id.replace("view-","");
+    if(searchTerm && current!=="categories") showView("categories");
+    renderCategories();
+  }
+  function categoryCard(c) {
+    return `<button class="category ${activeCategory===c.id?'selected':''}" onclick="selectCategory('${c.id}')">
+      <span class="category-art">${c.icon}</span><strong>${categoryName(c)}</strong></button>`;
+  }
+  function productCard(p) {
+    const isSaved=saved.includes(p.id);
+    const discount=p.oldPrice?Math.round((1-p.price/p.oldPrice)*100):null;
+    return `<article class="product">
+      <div class="product-visual"><span class="emoji">${p.icon}</span>${discount?`<span class="discount">-${discount}%</span>`:""}
+        <button class="save-btn ${isSaved?'saved':''}" aria-label="Save product" onclick="toggleSaved(${p.id})">${isSaved?'♥':'♡'}</button>
+      </div>
+      <div class="product-info"><h3>${productName(p)}</h3><p>${t(p.descEn,p.descRw)}</p>
+        <div class="price-row"><span class="price">${money(p.price)}</span>${p.oldPrice?`<span class="old-price">${money(p.oldPrice)}</span>`:""}</div>
+        <div class="product-actions"><button class="primary" onclick="addToCart(${p.id})">${t("＋ Add to cart","＋ Shyira mu gaseke")}</button><button class="secondary" onclick="askProduct(${p.id})">${t("Ask","Baza")}</button></div>
+      </div></article>`;
+  }
+  function renderHome() {
+    document.getElementById("homeCategories").innerHTML=categories.map(categoryCard).join("");
+    document.getElementById("homeProducts").innerHTML=products.slice(0,4).map(productCard).join("");
+    updateCounts();
+  }
+  function renderCategories() {
+    document.getElementById("allCategories").innerHTML=categories.map(categoryCard).join("");
+    let list=products.filter(p=>{
+      const catOK=!activeCategory||p.category===activeCategory;
+      const text=[p.en,p.rw,p.descEn,p.descRw,categories.find(c=>c.id===p.category)?.en||""].join(" ").toLowerCase();
+      return catOK && (!searchTerm||text.includes(searchTerm));
+    });
+    const cat=categories.find(c=>c.id===activeCategory);
+    document.getElementById("categoryProductsTitle").textContent=cat?categoryName(cat):t("All products","Ibicuruzwa byose");
+    document.getElementById("categoryProducts").innerHTML=list.length?list.map(productCard).join():`<div class="empty">${t("No products found. Try another search.","Nta bicuruzwa bibonetse. Gerageza gushakisha ukundi.")}</div>`;
+    updateCounts();
+  }
+  function selectCategory(id) { activeCategory=id; showView("categories"); renderCategories(); }
+  function clearCategory() { activeCategory=null; searchTerm=""; document.getElementById("searchInput").value=""; renderCategories(); }
+  function toggleSaved(id) {
+    saved=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];
+    localStorage.setItem("gdSaved",JSON.stringify(saved)); renderHome(); renderCategories(); renderSaved(); updateCounts();
+  }
+  function renderSaved() {
+    const list=products.filter(p=>saved.includes(p.id));
+    document.getElementById("savedProducts").innerHTML=list.length?list.map(productCard).join():`<div class="empty">${t("You have not saved any products yet.","Nta bicuruzwa urabika.")}</div>`;
+    updateCounts();
+  }
+  function addToCart(id) {
+    cart[id]=(cart[id]||0)+1; localStorage.setItem("gdCart",JSON.stringify(cart)); updateCounts();
+    const btn=event?.currentTarget;
+    if(btn){const old=btn.textContent;btn.textContent=t("Added ✓","Byashyizwemo ✓");setTimeout(()=>btn.textContent=old,1000);}
+  }
+  function changeQty(id,delta) {
+    cart[id]=(cart[id]||0)+delta;if(cart[id]<=0)delete cart[id];
+    localStorage.setItem("gdCart",JSON.stringify(cart));renderCart();updateCounts();
+  }
+  function renderCart() {
+    const entries=Object.entries(cart).filter(([id,qty])=>qty>0);
+    const el=document.getElementById("cartContents");
+    if(!entries.length){el.innerHTML=`<p>${t("Your cart is empty.","Agaseke kawe karimo ubusa.")}</p><button class="primary" onclick="showView('categories')">${t("Browse products","Reba ibicuruzwa")}</button>`;return;}
+    let total=0;
+    const rows=entries.map(([id,qty])=>{const p=products.find(x=>x.id===Number(id));if(!p)return "";total+=p.price*qty;
+      return `<div class="cart-row"><div class="cart-emoji">${p.icon}</div><div class="cart-details"><strong>${productName(p)}</strong><small>${money(p.price)} × ${qty}</small></div><div class="qty"><button onclick="changeQty(${p.id},-1)">−</button><span>${qty}</span><button onclick="changeQty(${p.id},1)">+</button></div></div>`;
+    }).join("");
+    el.innerHTML=`${rows}<div style="display:flex;justify-content:space-between;gap:12px;margin:20px 0;font-size:1.1rem;font-weight:900"><span>${t("Estimated total","Igiteranyo cy'agateganyo")}</span><span style="color:var(--green)">${money(total)}</span></div><p>${t("Prices and stock should be confirmed with us before payment.","Ibiciro n'ibihari byemezwe natwe mbere yo kwishyura.")}</p><button class="primary" onclick="checkoutWhatsApp()">${t("Order on WhatsApp →","Tumiza kuri WhatsApp →")}</button> <button class="secondary" onclick="clearCart()">${t("Clear cart","Siba ibiri mu gaseke")}</button>`;
+  }
+  function clearCart(){cart={};localStorage.setItem("gdCart",JSON.stringify(cart));renderCart();updateCounts();}
+  function updateCounts(){
+    const qty=Object.values(cart).reduce((a,b)=>a+b,0);
+    const savedCount=document.getElementById("savedCount"),cartCount=document.getElementById("cartCount");
+    savedCount.textContent=saved.length;savedCount.hidden=!saved.length;
+    cartCount.textContent=qty;cartCount.hidden=!qty;
+  }
+  function openWhatsApp(message) {
+    if(WHATSAPP_NUMBER.includes("X")) {
+      alert(t("Please add your real WhatsApp number in the website code first (WHATSAPP_NUMBER).","Banza ushyire nimero yawe nyayo ya WhatsApp muri code (WHATSAPP_NUMBER)."));
+      return;
+    }
+    window.open("https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(message),"_blank","noopener");
+  }
+  function contactWhatsApp(){openWhatsApp(t("Hello GD Electric Motor, I would like to ask about your products and prices.","Muraho GD Electric Motor, ndifuza kubaza ibicuruzwa mufite n'ibiciro byabyo."));}
+  function askProduct(id){const p=products.find(x=>x.id===id);openWhatsApp(t("Hello GD Electric Motor. Please tell me the current price and availability of: ","Muraho GD Electric Motor. Mumbwire igiciro n'uko iki gicuruzwa gihagaze: ")+productName(p));}
+  function checkoutWhatsApp(){
+    const lines=Object.entries(cart).map(([id,qty])=>{const p=products.find(x=>x.id===Number(id));return p?`${productName(p)} × ${qty} — ${money(p.price*qty)}`:"";}).filter(Boolean);
+    const total=Object.entries(cart).reduce((sum,[id,qty])=>sum+(products.find(p=>p.id===Number(id))?.price||0)*qty,0);
+    openWhatsApp(t("Hello GD Electric Motor, I would like to order:\n","Muraho GD Electric Motor, ndifuza gutumiza:\n")+lines.join("\n")+"\n"+t("Estimated total: ","Igiteranyo cy'agateganyo: ")+money(total)+(customer.name?"\nName: "+customer.name:"")+(customer.phone?"\nPhone: "+customer.phone:""));
+  }
+  function saveCustomer(e){
+    e.preventDefault();customer={name:document.getElementById("customerName").value.trim(),phone:document.getElementById("customerPhone").value.trim()};
+    localStorage.setItem("gdCustomer",JSON.stringify(customer));
+    document.getElementById("customerStatus").textContent=t(" Details saved on this device."," Amakuru yabitswe kuri telefoni yawe.");
+  }
+  function init(){
+    document.getElementById("year").textContent=new Date().getFullYear();
+    if(customer.name)document.getElementById("customerName").value=customer.name;
+    if(customer.phone)document.getElementById("customerPhone").value=customer.phone;
+    renderHome();renderCategories();renderSaved();renderCart();
+  }
+  init();
+</script>
+</body>
+</html>
