@@ -342,8 +342,8 @@
       </div>
 
       <div class="info-card admin-section" id="adminProductListSection">
-        <div class="admin-products-heading"><h2>Ibicuruzwa biri ku rubuga</h2><button class="primary" type="button" onclick="openAddProductForm()">＋ Ongeramo igicuruzwa</button></div>
-        <div id="adminList"></div>
+        <div class="admin-products-heading"><h2>Ibicuruzwa biri ku rubuga</h2><div class="btns"><button class="secondary" type="button" onclick="toggleAdminSection('adminListWrap')">👁️ Reba ibicuruzwa</button><button class="primary" type="button" onclick="openAddProductForm()">＋ Ongeramo igicuruzwa</button></div></div>
+        <div id="adminListWrap" hidden><div id="adminList"></div></div>
       </div>
     </div>
   </section>
@@ -498,14 +498,18 @@
     localStorage.setItem("gdCart",JSON.stringify(cart));renderCart();updateCounts();
   }
   function renderCart() {
-    const entries=Object.entries(cart).filter(([id,qty])=>qty>0);
     const el=document.getElementById("cartContents");
-    if(!entries.length){el.innerHTML=`<p>${t("Your cart is empty.","Agaseke kawe karimo ubusa.")}</p><button class="primary" onclick="showView('categories')">${t("Browse products","Reba ibicuruzwa")}</button>${renderCartOrderTracking()}`;return;}
+    // Remove stale cart entries whose products no longer exist, preventing a blank cart panel.
+    const entries=Object.entries(cart).filter(([id,qty])=>Number(qty)>0 && products.some(p=>p.id===Number(id)));
+    const validCart={}; entries.forEach(([id,qty])=>validCart[id]=Number(qty));
+    if (JSON.stringify(validCart)!==JSON.stringify(cart)) { cart=validCart; localStorage.setItem("gdCart",JSON.stringify(cart)); }
+    if(!entries.length){el.innerHTML=`<p>${t("Your cart is empty.","Agaseke kawe karimo ubusa.")}</p><button class="primary" onclick="showView('categories')">${t("Browse products","Reba ibicuruzwa")}</button>${renderCartOrderTracking()}`;updateCounts();return;}
     let total=0;
-    const rows=entries.map(([id,qty])=>{const p=products.find(x=>x.id===Number(id));if(!p)return "";total+=p.price*qty;
+    const rows=entries.map(([id,qty])=>{const p=products.find(x=>x.id===Number(id));total+=p.price*qty;
       return `<div class="cart-row"><div class="cart-emoji">${p.imageUrl?`<img src="${esc(p.imageUrl)}" alt="">`:iconOf(p)}</div><div class="cart-details"><strong>${esc(productName(p))}</strong><small>${money(p.price)} × ${qty}</small></div><div class="qty"><button onclick="changeQty(${p.id},-1)">−</button><span>${qty}</span><button onclick="changeQty(${p.id},1)">+</button></div></div>`;
     }).join("");
     el.innerHTML=`${rows}<div style="display:flex;justify-content:space-between;gap:12px;margin:20px 0;font-size:1.1rem;font-weight:900"><span>${t("Estimated total","Igiteranyo cy'agateganyo")}</span><span style="color:var(--green)">${money(total)}</span></div><p>${t("Prices and stock should be confirmed with us before payment.","Ibiciro n'ibihari byemezwe natwe mbere yo kwishyura.")}</p><div class="form-row"><input id="orderName" placeholder="${t("Your name","Amazina yawe")}" autocomplete="name" value="${esc(customer.name||(window.gdProfile&&window.gdProfile.name)||"")}" oninput="setCust('name',this.value)"></div><div class="form-row"><input id="orderPhone" placeholder="${t("Phone number","Nimero ya telefoni")}" inputmode="tel" autocomplete="tel" value="${esc(customer.phone||(window.gdProfile&&window.gdProfile.phone)||"")}" oninput="setCust('phone',this.value)"></div><button class="primary" id="submitOrderBtn" onclick="submitOrder()">${t("Submit order ✓","Ohereza order (Submit) ✓")}</button> <button class="secondary" onclick="clearCart()">${t("Clear cart","Siba ibiri mu gaseke")}</button>${renderCartOrderTracking()}`;
+    updateCounts();
   }
   function renderCartOrderTracking() {
     const rows = currentUser ? myOrders.filter(o => !o.hiddenForCustomer) : [];
