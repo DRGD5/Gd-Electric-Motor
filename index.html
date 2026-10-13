@@ -198,6 +198,24 @@
     .cs-body h2 { margin:0 0 8px; }
     .cs-body p { white-space:pre-wrap; margin:0 0 12px; opacity:.92; }
     .cs-add { width:100%; margin:18px 0 6px; padding:16px; border:2px dashed #2dd4bf; border-radius:20px; background:rgba(45,212,191,.08); color:#5eead4; font-weight:900; font-size:1.02rem; }
+    .shop-wrap { margin-top:22px; }
+    .shop-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:12px; }
+    .shop-card { background:#141830; border:1px solid #2b3160; border-radius:20px; padding:14px; text-align:center; color:inherit; cursor:pointer; }
+    .shop-card img, .shop-logo { width:72px; height:72px; border-radius:50%; object-fit:cover; background:#222a55; display:block; margin:0 auto 8px; }
+    .shop-logo-ph { width:72px; height:72px; border-radius:50%; background:#2b3160; display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 8px; }
+    .shop-card strong { display:block; word-break:break-word; }
+    .shop-card small { opacity:.7; }
+    .shop-cta { width:100%; margin-top:14px; padding:16px; border:2px dashed #2dd4bf; border-radius:20px; background:rgba(45,212,191,.08); color:#5eead4; font-weight:900; font-size:1.02rem; }
+    .shop-head { background:linear-gradient(160deg,#0b3d3a,#0f2a4a); border:2px solid #2dd4bf; border-radius:24px; padding:18px; text-align:center; color:#fff; }
+    .shop-head h1 { margin:6px 0; }
+    .shop-prod-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:14px; }
+    .shop-prod { background:#141830; border:1px solid #2b3160; border-radius:18px; overflow:hidden; display:flex; flex-direction:column; }
+    .shop-prod img { width:100%; height:130px; object-fit:cover; background:#222a55; }
+    .shop-prod .sp-body { padding:10px; display:flex; flex-direction:column; gap:6px; flex:1; }
+    .shop-prod .sp-price { color:#34d399; font-weight:900; }
+    .shop-prod p { margin:0; font-size:.88rem; opacity:.85; }
+    .shop-form-box { background:#141830; border:1px solid #2b3160; border-radius:20px; padding:16px; margin-top:14px; }
+    .shop-form-box .form-row { margin-bottom:10px; }
     .users-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
     .users-head h2 { margin:0; color:#5eead4; }
     .users-count { background:#2dd4bf; color:#032b28; font-weight:900; border-radius:99px; padding:4px 12px; font-size:.85rem; white-space:nowrap; }
@@ -274,6 +292,7 @@
       <div class="section-heading"><div><h2 data-en="🔥 Popular products" data-rw="🔥 Ibicuruzwa bikunzwe">🔥 Popular products</h2><div class="deal-sub" data-en="Browse our product selection" data-rw="Reba ibicuruzwa dufite">Browse our product selection</div></div><button class="text-link" onclick="showView('categories')" data-en="See all →" data-rw="Reba byose →">See all →</button></div>
       <div class="products" id="homeProducts"></div>
     </section>
+    <div id="shopsHome" class="shop-wrap"></div>
     <div id="customSections"></div>
     <footer>© <span id="year"></span> GD Electric Motor. <span data-en="All rights reserved." data-rw="Uburenganzira bwose burabitswe.">All rights reserved.</span> <a href="#" class="admin-link" onclick="showView('admin');return false;">Admin</a></footer>
   </section>
@@ -303,6 +322,27 @@
     <h1 class="page-title" data-en="Account" data-rw="Konti">Account</h1>
     <div id="accountContent"></div>
     <div class="info-card"><h3 data-en="Need help?" data-rw="Ukeneye ubufasha?">Need help?</h3><p data-en="Use the WhatsApp button to ask about prices, delivery and product availability." data-rw="Kanda kuri WhatsApp ubaze ibiciro, kugeza ibicuruzwa n'ibihari.">Use the WhatsApp button to ask about prices, delivery and product availability.</p><button class="primary" onclick="contactWhatsApp()" data-en="Contact us on WhatsApp" data-rw="Twandikire kuri WhatsApp">Contact us on WhatsApp</button></div>
+  </section>
+
+  <section id="view-shop" class="view">
+    <button class="text-link" onclick="showView('home')">← Subira ahabanza</button>
+    <div id="shopPage"></div>
+  </section>
+
+  <section id="view-shopform" class="view">
+    <button class="text-link" onclick="showView('home')">← Subira ahabanza</button>
+    <h1 class="page-title" id="shopFormTitle">Fungura shop yawe</h1>
+    <div class="shop-form-box">
+      <p>Uzuzamo amakuru ya shop yawe. Izina ushyiramo ni ryo rizagaragara, riratandukanye n'iry'uru rubuga.</p>
+      <form onsubmit="saveShop(event)">
+        <div class="form-row"><input id="shopName" placeholder="Izina rya shop yawe" maxlength="60" required></div>
+        <div class="form-row"><input id="shopPhone" type="tel" placeholder="Telefoni / WhatsApp (urugero 0788xxxxxx)" required></div>
+        <div class="form-row"><textarea id="shopDesc" placeholder="Ibisobanuro bigufi kuri shop yawe (ibyo ucuruza, aho uherereye...)" maxlength="400"></textarea></div>
+        <div class="form-row"><label>Logo cyangwa ifoto (si ngombwa)</label><input id="shopLogo" type="file" accept="image/*"></div>
+        <button class="primary" type="submit" id="shopSaveBtn">Bika shop</button>
+        <div id="shopFormMsg" class="status-msg"></div>
+      </form>
+    </div>
   </section>
 
   <section id="view-admin" class="view">
@@ -338,6 +378,7 @@
       <div class="admin-shortcuts" aria-label="Admin menu">
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminServicesSection')"><span>🛠️ Serivisi dukora</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span>🧩 Ibice bya website</span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminShopsSection')"><span>🏪 Amaduka y'abakiriya</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span>📦 Ibyatumijwe (Orders)</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminRequestsSection')"><span>🛒 Ubusabe bwa serivisi</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span>➕ Ongeramo igicuruzwa</span><span class="shortcut-arrow">›</span></button>
@@ -368,6 +409,11 @@
           <div id="secMsg" class="status-msg"></div>
         </form>
         <div id="adminSections"></div>
+      </div>
+
+      <div class="info-card admin-section" id="adminShopsSection" hidden>
+        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminShopsSection')"><h2>🏪 Amaduka y'abakiriya</h2><span class="shortcut-arrow">⌃</span></button>
+        <div id="adminShops"></div>
       </div>
 
       <div class="info-card admin-section" id="adminOrdersSection" hidden>
@@ -698,16 +744,16 @@
   const ROLE_PERMS = { manager: ["products","services","orders","requests","sections"], staff: ["orders","requests"], sales: ["orders","products"], technician: ["requests"] };
   let perms = new Set(), listenerKey = "", listenerUnsubs = [], unsubProfile = null;
   window.gdCan = p => perms.has(p);
-  const computePerms = (user, prof) => isAdminUser(user) ? new Set(["products","services","orders","requests","users","sections"]) : new Set(ROLE_PERMS[(prof && prof.role) || ""] || []);
+  const computePerms = (user, prof) => isAdminUser(user) ? new Set(["products","services","orders","requests","users","sections","shops"]) : new Set(ROLE_PERMS[(prof && prof.role) || ""] || []);
 
   function stopListeners() { listenerUnsubs.forEach(f => { try { f(); } catch (e) {} }); listenerUnsubs = []; listenerKey = ""; }
 
   function applyAdminUI() {
     const staff = perms.size > 0;
-    renderCustomSections();
+    renderCustomSections(); renderShopsHome(); renderAdminShops();
     $("adminDenied").hidden = !(currentUser && !staff);
     $("adminPanel").hidden = !staff;
-    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection"] };
+    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection"], shops: ["adminShopsSection"] };
     Object.keys(map).forEach(perm => {
       const ok = perms.has(perm);
       map[perm].forEach(id => {
@@ -1000,11 +1046,10 @@
   }
   function renderCustomSections() {
     const el = $("customSections"); if (!el) return;
-    const canEdit = perms.has("sections");
     el.innerHTML = customSections.map(v => { const link = secLink(v.btnLink); return `<section class="cs-card">${v.imageUrl ? `<img src="${esc(v.imageUrl)}" alt="${esc(v.title)}" loading="lazy">` : ""}
       <div class="cs-body"><h2>${esc(v.title)}</h2>${v.body ? `<p>${esc(v.body)}</p>` : ""}
       ${link && v.btnLabel ? `<a class="primary" style="display:inline-block;text-decoration:none;text-align:center" href="${esc(link)}" target="_blank" rel="noopener">${esc(v.btnLabel)}</a>` : ""}</div></section>`; }).join("")
-      + (canEdit ? `<button class="cs-add" type="button" onclick="gdOpenSectionForm()">➕ Ongeramo igice gishya cya website</button>` : "");
+      ;
   }
   window.gdOpenSectionForm = () => {
     showView("admin");
@@ -1029,6 +1074,98 @@
   window.adminDeleteSection = async id => {
     if (!confirm("Gusiba iki gice?")) return;
     try { await deleteDoc(doc(db, "sections", id)); } catch (err) { alert("Gusiba byanze: " + (err.code || err.message)); }
+  };
+
+  // ----- customer shops -----
+  let shops = [], shopProducts = [], currentShopId = null;
+  onSnapshot(collection(db, "shops"), snap => {
+    shops = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+    renderShopsHome(); renderAdminShops(); if ($("view-shop").classList.contains("active")) renderShopPage();
+  }, err => console.error("Shops:", err));
+  onSnapshot(collection(db, "shopProducts"), snap => {
+    shopProducts = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    renderShopsHome(); if ($("view-shop").classList.contains("active")) renderShopPage();
+  }, err => console.error("Shop products:", err));
+  const waNumber = raw => { const d = String(raw || "").replace(/[^0-9]/g, ""); if (d.length === 10 && d[0] === "0") return "250" + d.slice(1); if (d.length === 9) return "250" + d; return d; };
+  const myShop = () => currentUser ? shops.find(x => x.id === currentUser.uid) : null;
+  function renderShopsHome() {
+    const el = $("shopsHome"); if (!el) return;
+    const mine = myShop();
+    el.innerHTML = `<h2>🏪 ${t("Customer shops", "Amaduka y'abakiriya")}</h2>
+      ${shops.length ? `<div class="shop-grid">${shops.map(x => `<div class="shop-card" onclick="openShop('${esc(x.id)}')">${x.logoUrl ? `<img src="${esc(x.logoUrl)}" alt="${esc(x.name)}" loading="lazy">` : `<div class="shop-logo-ph">🏪</div>`}<strong>${esc(x.name)}</strong><small>${shopProducts.filter(pp => pp.shopId === x.id).length} ${t("products", "ibicuruzwa")}</small></div>`).join("")}</div>` : `<p style="opacity:.75">${t("No shops yet. Be the first!", "Nta duka riraboneka. Ba uwa mbere!")}</p>`}
+      <button class="shop-cta" type="button" onclick="${mine ? `openShop('${esc(mine.id)}')` : "openShopForm()"}">${mine ? "🏪 " + t("My shop", "Shop yanjye") : "➕ " + t("Open your own shop", "Fungura shop yawe")}</button>`;
+  }
+  window.openShop = id => { currentShopId = id; renderShopPage(); showView("shop"); };
+  window.openShopForm = () => {
+    if (!currentUser) { alert(t("Please sign in or create an account first to open your shop.", "Banza winjire cyangwa ufungure konti kugira ngo ufungure shop yawe.")); showView("account"); return; }
+    const mine = myShop();
+    $("shopFormTitle").textContent = mine ? "Hindura shop yawe" : "Fungura shop yawe";
+    $("shopName").value = mine ? mine.name || "" : ""; $("shopPhone").value = mine ? mine.phone || "" : (profile && profile.phone) || "";
+    $("shopDesc").value = mine ? mine.desc || "" : ""; $("shopLogo").value = ""; msg("shopFormMsg", "");
+    showView("shopform");
+  };
+  window.saveShop = async e => {
+    e.preventDefault(); if (!currentUser) return;
+    const btn = $("shopSaveBtn"); btn.disabled = true; msg("shopFormMsg", "Birabikwa...");
+    try {
+      const mine = myShop(); let logoUrl = mine ? mine.logoUrl || "" : ""; const file = $("shopLogo").files[0];
+      if (file) logoUrl = await uploadToCloudinary(file);
+      await setDoc(doc(db, "shops", currentUser.uid), { ownerId: currentUser.uid, name: $("shopName").value.trim(), phone: $("shopPhone").value.trim(), desc: $("shopDesc").value.trim(), logoUrl, createdAt: mine ? mine.createdAt || Date.now() : Date.now() });
+      openShop(currentUser.uid);
+    } catch (err) { console.error(err); msg("shopFormMsg", "Ntibyakunze: " + (err.code || err.message), "err"); }
+    btn.disabled = false;
+  };
+  function renderShopPage() {
+    const el = $("shopPage"); if (!el) return;
+    const x = shops.find(v => v.id === currentShopId);
+    if (!x) { el.innerHTML = '<p style="margin-top:16px">Iri duka ntiriboneka.</p>'; return; }
+    const mineOwner = currentUser && currentUser.uid === x.ownerId;
+    const list = shopProducts.filter(pp => pp.shopId === x.id);
+    const wa = "https://wa.me/" + waNumber(x.phone);
+    el.innerHTML = `<div class="shop-head">${x.logoUrl ? `<img class="shop-logo" src="${esc(x.logoUrl)}" alt="">` : `<div class="shop-logo-ph">🏪</div>`}
+        <h1>${esc(x.name)}</h1>${x.desc ? `<p style="white-space:pre-wrap">${esc(x.desc)}</p>` : ""}
+        <p>📞 ${esc(x.phone || "")}</p>
+        <a class="primary" style="display:inline-block;text-decoration:none" href="${wa}" target="_blank" rel="noopener">💬 WhatsApp</a>
+        ${mineOwner ? `<div style="margin-top:10px"><button class="secondary" onclick="openShopForm()">✏️ Hindura shop</button></div>` : ""}</div>
+      ${mineOwner ? `<div class="shop-form-box"><h3 style="margin-top:0">➕ Ongeramo igicuruzwa</h3>
+        <form onsubmit="saveShopProduct(event)">
+          <div class="form-row"><input id="spName" placeholder="Izina ry'igicuruzwa" required></div>
+          <div class="form-row"><input id="spPrice" type="number" min="0" inputmode="numeric" placeholder="Igiciro (RWF)" required></div>
+          <div class="form-row"><textarea id="spDesc" placeholder="Ibisobanuro (si ngombwa)"></textarea></div>
+          <div class="form-row"><label>Ifoto</label><input id="spImage" type="file" accept="image/*"></div>
+          <button class="primary" type="submit" id="spBtn">Bika igicuruzwa</button>
+          <div id="spMsg" class="status-msg"></div>
+        </form></div>` : ""}
+      <div class="shop-prod-grid">${list.length ? list.map(pp => `<div class="shop-prod">${pp.imageUrl ? `<img src="${esc(pp.imageUrl)}" alt="${esc(pp.name)}" loading="lazy">` : ""}
+        <div class="sp-body"><strong>${esc(pp.name)}</strong><span class="sp-price">${money(pp.price || 0)}</span>${pp.desc ? `<p>${esc(pp.desc)}</p>` : ""}
+        <a class="secondary" style="text-align:center;text-decoration:none" href="${wa}?text=${encodeURIComponent("Muraho, ndifuza: " + pp.name + " (" + money(pp.price || 0) + ")")}" target="_blank" rel="noopener">${t("Ask on WhatsApp", "Baza kuri WhatsApp")}</a>
+        ${mineOwner || isAdminUser(currentUser) ? `<button class="secondary danger-btn" onclick="deleteShopProduct('${esc(pp.id)}')">Siba</button>` : ""}</div></div>`).join("") : `<p style="opacity:.75;grid-column:1/-1">${t("No products yet.", "Nta bicuruzwa biraboneka.")}</p>`}</div>`;
+  }
+  window.saveShopProduct = async e => {
+    e.preventDefault(); const x = myShop(); if (!x) return;
+    const btn = $("spBtn"); btn.disabled = true; msg("spMsg", "Birabikwa...");
+    try {
+      let imageUrl = ""; const file = $("spImage").files[0];
+      if (file) imageUrl = await uploadToCloudinary(file);
+      await addDoc(collection(db, "shopProducts"), { shopId: x.id, ownerId: currentUser.uid, name: $("spName").value.trim(), price: Number($("spPrice").value) || 0, desc: $("spDesc").value.trim(), imageUrl, createdAt: Date.now() });
+      e.target.reset(); msg("spMsg", "Igicuruzwa cyabitswe.", "ok");
+    } catch (err) { console.error(err); msg("spMsg", "Ntibyakunze: " + (err.code || err.message), "err"); }
+    btn.disabled = false;
+  };
+  window.deleteShopProduct = async id => {
+    if (!confirm("Gusiba iki gicuruzwa?")) return;
+    try { await deleteDoc(doc(db, "shopProducts", id)); } catch (err) { alert("Gusiba byanze: " + (err.code || err.message)); }
+  };
+  function renderAdminShops() {
+    const el = $("adminShops"); if (!el) return;
+    el.innerHTML = shops.length ? shops.map(x => `<div class="admin-row"><div class="cart-details"><strong>${esc(x.name)}</strong><small>${esc(x.phone || "")} · ${shopProducts.filter(pp => pp.shopId === x.id).length} ibicuruzwa</small></div><div class="btns"><button class="secondary" onclick="openShop('${esc(x.id)}')">Reba</button><button class="secondary danger-btn" onclick="adminDeleteShop('${esc(x.id)}')">Siba</button></div></div>`).join("") : '<p style="opacity:.75">Nta maduka aracyaboneka.</p>';
+  }
+  window.adminDeleteShop = async id => {
+    if (!isAdminUser(currentUser) || !confirm("Gusiba iri duka n'ibicuruzwa byaryo byose?")) return;
+    try {
+      for (const pp of shopProducts.filter(v => v.shopId === id)) await deleteDoc(doc(db, "shopProducts", pp.id));
+      await deleteDoc(doc(db, "shops", id));
+    } catch (err) { alert("Gusiba byanze: " + (err.code || err.message)); }
   };
 
   window.hideCustomerOrder = async id => {
