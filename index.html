@@ -190,6 +190,24 @@
     .price { font-size:1rem; }
 
     /* Admin dashboard shortcuts: responsive, full-width tap targets */
+    .users-panel { background:linear-gradient(160deg,#0b3d3a,#0f2a4a); border:2px solid #2dd4bf; border-radius:26px; padding:18px; margin:0 0 18px; box-shadow:0 10px 30px rgba(45,212,191,.18); color:#fff; }
+    .users-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .users-head h2 { margin:0; color:#5eead4; }
+    .users-count { background:#2dd4bf; color:#032b28; font-weight:900; border-radius:99px; padding:4px 12px; font-size:.85rem; white-space:nowrap; }
+    .users-sub { color:#cbd5e1; margin:8px 0 12px; }
+    .users-search { width:100%; padding:12px 14px; border-radius:14px; border:1px solid #2dd4bf; background:#06222a; color:#fff; margin-bottom:12px; }
+    .users-search::placeholder { color:#7fb5b0; }
+    .user-card { background:#ffffff; color:#0f172a; border-radius:18px; padding:14px; margin-top:12px; border-left:6px solid #94a3b8; }
+    .user-card strong { font-size:1.05rem; color:#0f172a; }
+    .user-card small { display:block; color:#475569; word-break:break-all; margin-top:2px; }
+    .user-card select, .user-card input { width:100%; padding:11px 12px; border-radius:12px; border:1.5px solid #cbd5e1; background:#f1f5f9; color:#0f172a; font-weight:700; margin-top:8px; }
+    .user-card button { width:100%; margin-top:8px; padding:12px; border:0; border-radius:12px; background:#0d9488; color:#fff; font-weight:900; }
+    .role-badge { display:inline-block; border-radius:99px; padding:3px 11px; font-size:.75rem; font-weight:900; margin-left:6px; color:#fff; vertical-align:middle; }
+    .role-customer { border-left-color:#64748b; } .role-customer .role-badge { background:#64748b; }
+    .role-staff { border-left-color:#2563eb; } .role-staff .role-badge { background:#2563eb; }
+    .role-technician { border-left-color:#ea580c; } .role-technician .role-badge { background:#ea580c; }
+    .role-sales { border-left-color:#16a34a; } .role-sales .role-badge { background:#16a34a; }
+    .role-manager { border-left-color:#9333ea; } .role-manager .role-badge { background:#9333ea; }
     .admin-shortcuts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:0 0 16px; }
     .admin-shortcut { display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; min-height:86px; padding:18px; border:0; border-radius:22px; color:#fff; text-align:left; font-weight:900; font-size:1rem; line-height:1.3; background:linear-gradient(135deg,#5420e8,#3910c8); box-shadow:0 8px 22px rgba(84,32,232,.18); }
     .admin-shortcut .shortcut-arrow { font-size:1.4rem; flex-shrink:0; }
@@ -301,11 +319,17 @@
         <button class="secondary" onclick="adminLogout()">Sohoka</button>
       </div>
 
+      <div class="users-panel" id="adminUsersSection">
+        <div class="users-head"><h2>👥 Abakiriya (Accounts)</h2><span class="users-count" id="adminUsersCount">0</span></div>
+        <p class="users-sub">Abantu bose bafunguye konti. Umuhe inshingano hanyuma ukande "Bika".</p>
+        <input id="userSearch" class="users-search" placeholder="🔎 Shakisha izina, email cyangwa telefoni..." oninput="renderAdminUsers()">
+        <div id="adminUsers"></div>
+      </div>
+
       <div class="admin-shortcuts" aria-label="Admin menu">
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminServicesSection')"><span>🛠️ Serivisi dukora</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span>📦 Ibyatumijwe (Orders)</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminRequestsSection')"><span>🛒 Ubusabe bwa serivisi</span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminUsersSection')"><span>👥 Abakiriya (Accounts)</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span>➕ Ongeramo igicuruzwa</span><span class="shortcut-arrow">›</span></button>
       </div>
 
@@ -331,14 +355,6 @@
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminRequestsSection')"><h2>🛒 Ubusabe bwa serivisi (Service Requests)</h2><span class="shortcut-arrow">⌃</span></button>
         <p>Reba ubusabe bw'abakiriya kandi uhindure uko serivisi yabo ihagaze.</p>
         <div id="adminServiceRequests"></div>
-      </div>
-
-      <div class="info-card admin-section" id="adminUsersSection" hidden>
-        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminUsersSection')"><h2>👥 Abakiriya (Accounts)</h2><span class="shortcut-arrow">⌃</span></button>
-        <p>Reba abantu bose bafunguye konti, kandi umuhe inshingano (role).</p>
-        <div class="form-row"><input id="userSearch" placeholder="Shakisha izina, email cyangwa telefoni..." oninput="renderAdminUsers()"></div>
-        <div id="adminUsersCount" style="color:var(--muted);margin-bottom:6px"></div>
-        <div id="adminUsers"></div>
       </div>
 
       <div class="info-card admin-section" id="adminAddProductSection" hidden>
@@ -824,20 +840,17 @@
     const el = $("adminUsers"); if (!el) return;
     const qv = (($("userSearch") || {}).value || "").trim().toLowerCase();
     const list = allUsers.filter(u => !qv || [u.name, u.email, u.phone].some(x => (x || "").toLowerCase().includes(qv)));
-    const c = $("adminUsersCount"); if (c) c.textContent = "Abakiriya bose: " + allUsers.length + (qv ? " · Bagaragaye: " + list.length : "");
-    el.innerHTML = list.length ? list.map(u => `
-      <div class="admin-row" style="align-items:flex-start;flex-wrap:wrap">
-        <div class="cart-details" style="min-width:0;flex:1 1 100%">
-          <strong>${esc(u.name || "(nta zina)")}</strong>
-          <small style="word-break:break-all">${esc(u.email || "")}${u.phone ? " · " + esc(u.phone) : ""}</small>
-          <small>${u.createdAt ? "Yafunguye: " + new Date(u.createdAt).toLocaleDateString() : ""}</small>
-        </div>
-        <div style="flex:1 1 100%;display:grid;gap:8px;margin-top:8px">
-          <select id="role_${esc(u.uid)}">${ROLE_OPTIONS.map(r => `<option value="${r[0]}" ${(u.role || "customer") === r[0] ? "selected" : ""}>${r[1]}</option>`).join("")}</select>
-          <input id="duty_${esc(u.uid)}" placeholder="Inshingano (urugero: gukurikirana orders)" value="${esc(u.duties || "")}" style="padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:#0b0e1b;color:white">
-          <button class="secondary" onclick="adminSaveUserRole('${esc(u.uid)}')">💾 Bika inshingano</button>
-        </div>
-      </div>`).join("") : '<p style="color:var(--muted)">Nta konti zibonetse.</p>';
+    const c = $("adminUsersCount"); if (c) c.textContent = qv ? list.length + " / " + allUsers.length : String(allUsers.length);
+    const label = r => (ROLE_OPTIONS.find(x => x[0] === r) || ROLE_OPTIONS[0])[1];
+    el.innerHTML = list.length ? list.map(u => { const r = u.role || "customer"; return `
+      <div class="user-card role-${esc(r)}">
+        <strong>${esc(u.name || "(nta zina)")}</strong><span class="role-badge">${esc(label(r))}</span>
+        <small>${esc(u.email || "")}${u.phone ? " · " + esc(u.phone) : ""}</small>
+        <small>${u.createdAt ? "Yafunguye: " + new Date(u.createdAt).toLocaleDateString() : ""}</small>
+        <select id="role_${esc(u.uid)}">${ROLE_OPTIONS.map(o => `<option value="${o[0]}" ${r === o[0] ? "selected" : ""}>${o[1]}</option>`).join("")}</select>
+        <input id="duty_${esc(u.uid)}" placeholder="Inshingano (urugero: gukurikirana orders)" value="${esc(u.duties || "")}">
+        <button onclick="adminSaveUserRole('${esc(u.uid)}')">💾 Bika</button>
+      </div>`; }).join("") : '<p style="color:#cbd5e1">Nta konti zibonetse.</p>';
   }
   window.renderAdminUsers = renderAdminUsers;
   window.adminSaveUserRole = async uid => {
