@@ -325,21 +325,21 @@
   </section>
 
   <section id="view-shop" class="view">
-    <button class="text-link" onclick="showView('home')">← Subira ahabanza</button>
+    <button class="text-link" onclick="showView('home')" data-en="← Back to home" data-rw="← Subira ahabanza">← Back to home</button>
     <div id="shopPage"></div>
   </section>
 
   <section id="view-shopform" class="view">
-    <button class="text-link" onclick="showView('home')">← Subira ahabanza</button>
-    <h1 class="page-title" id="shopFormTitle">Fungura shop yawe</h1>
+    <button class="text-link" onclick="showView('home')" data-en="← Back to home" data-rw="← Subira ahabanza">← Back to home</button>
+    <h1 class="page-title" id="shopFormTitle">Open your shop</h1>
     <div class="shop-form-box">
-      <p>Uzuzamo amakuru ya shop yawe. Izina ushyiramo ni ryo rizagaragara, riratandukanye n'iry'uru rubuga.</p>
+      <p data-en="Fill in your shop details. The name you enter is the one shown to visitors; it can be different from this website's name." data-rw="Uzuzamo amakuru ya shop yawe. Izina ushyiramo ni ryo rizagaragara, riratandukanye n'iry'uru rubuga.">Fill in your shop details. The name you enter is the one shown to visitors; it can be different from this website's name.</p>
       <form onsubmit="saveShop(event)">
-        <div class="form-row"><input id="shopName" placeholder="Izina rya shop yawe" maxlength="60" required></div>
-        <div class="form-row"><input id="shopPhone" type="tel" placeholder="Telefoni / WhatsApp (urugero 0788xxxxxx)" required></div>
-        <div class="form-row"><textarea id="shopDesc" placeholder="Ibisobanuro bigufi kuri shop yawe (ibyo ucuruza, aho uherereye...)" maxlength="400"></textarea></div>
-        <div class="form-row"><label>Logo cyangwa ifoto (si ngombwa)</label><input id="shopLogo" type="file" accept="image/*"></div>
-        <button class="primary" type="submit" id="shopSaveBtn">Bika shop</button>
+        <div class="form-row"><input id="shopName" data-placeholder-en="Your shop name" data-placeholder-rw="Izina rya shop yawe" placeholder="Your shop name" maxlength="60" required></div>
+        <div class="form-row"><input id="shopPhone" type="tel" data-placeholder-en="Phone / WhatsApp (e.g. 0788xxxxxx)" data-placeholder-rw="Telefoni / WhatsApp (urugero 0788xxxxxx)" placeholder="Phone / WhatsApp (e.g. 0788xxxxxx)" required></div>
+        <div class="form-row"><textarea id="shopDesc" data-placeholder-en="Short description of your shop (what you sell, where you are...)" data-placeholder-rw="Ibisobanuro bigufi kuri shop yawe (ibyo ucuruza, aho uherereye...)" placeholder="Short description of your shop (what you sell, where you are...)" maxlength="400"></textarea></div>
+        <div class="form-row"><label data-en="Logo or photo (optional)" data-rw="Logo cyangwa ifoto (si ngombwa)">Logo or photo (optional)</label><input id="shopLogo" type="file" accept="image/*"></div>
+        <button class="primary" type="submit" id="shopSaveBtn" data-en="Save shop" data-rw="Bika shop">Save shop</button>
         <div id="shopFormMsg" class="status-msg"></div>
       </form>
     </div>
@@ -527,6 +527,7 @@
     renderHome(); renderCategories(); renderSaved(); renderCart();
     if(window.renderAccount) window.renderAccount();
     if(window.renderServices) window.renderServices();
+    if(window.gdRefreshShops) window.gdRefreshShops();
     renderOrderDone();
   }
   function handleSearch(value) {
@@ -1095,30 +1096,35 @@
       ${shops.length ? `<div class="shop-grid">${shops.map(x => `<div class="shop-card" onclick="openShop('${esc(x.id)}')">${x.logoUrl ? `<img src="${esc(x.logoUrl)}" alt="${esc(x.name)}" loading="lazy">` : `<div class="shop-logo-ph">🏪</div>`}<strong>${esc(x.name)}</strong><small>${shopProducts.filter(pp => pp.shopId === x.id).length} ${t("products", "ibicuruzwa")}</small></div>`).join("")}</div>` : `<p style="opacity:.75">${t("No shops yet. Be the first!", "Nta duka riraboneka. Ba uwa mbere!")}</p>`}
       <button class="shop-cta" type="button" onclick="${mine ? `openShop('${esc(mine.id)}')` : "openShopForm()"}">${mine ? "🏪 " + t("My shop", "Shop yanjye") : "➕ " + t("Open your own shop", "Fungura shop yawe")}</button>`;
   }
+  window.gdRefreshShops = () => {
+    renderShopsHome(); if (typeof renderCustomSections === "function") renderCustomSections();
+    if ($("view-shop").classList.contains("active")) renderShopPage();
+    if ($("view-shopform").classList.contains("active")) { const mine = myShop(); $("shopFormTitle").textContent = mine ? t("Edit your shop", "Hindura shop yawe") : t("Open your shop", "Fungura shop yawe"); }
+  };
   window.openShop = id => { currentShopId = id; renderShopPage(); showView("shop"); };
   window.openShopForm = () => {
     if (!currentUser) { alert(t("Please sign in or create an account first to open your shop.", "Banza winjire cyangwa ufungure konti kugira ngo ufungure shop yawe.")); showView("account"); return; }
     const mine = myShop();
-    $("shopFormTitle").textContent = mine ? "Hindura shop yawe" : "Fungura shop yawe";
+    $("shopFormTitle").textContent = mine ? t("Edit your shop", "Hindura shop yawe") : t("Open your shop", "Fungura shop yawe");
     $("shopName").value = mine ? mine.name || "" : ""; $("shopPhone").value = mine ? mine.phone || "" : (profile && profile.phone) || "";
     $("shopDesc").value = mine ? mine.desc || "" : ""; $("shopLogo").value = ""; msg("shopFormMsg", "");
     showView("shopform");
   };
   window.saveShop = async e => {
     e.preventDefault(); if (!currentUser) return;
-    const btn = $("shopSaveBtn"); btn.disabled = true; msg("shopFormMsg", "Birabikwa...");
+    const btn = $("shopSaveBtn"); btn.disabled = true; msg("shopFormMsg", t("Saving...", "Birabikwa..."));
     try {
       const mine = myShop(); let logoUrl = mine ? mine.logoUrl || "" : ""; const file = $("shopLogo").files[0];
       if (file) logoUrl = await uploadToCloudinary(file);
       await setDoc(doc(db, "shops", currentUser.uid), { ownerId: currentUser.uid, name: $("shopName").value.trim(), phone: $("shopPhone").value.trim(), desc: $("shopDesc").value.trim(), logoUrl, createdAt: mine ? mine.createdAt || Date.now() : Date.now() });
       openShop(currentUser.uid);
-    } catch (err) { console.error(err); msg("shopFormMsg", "Ntibyakunze: " + (err.code || err.message), "err"); }
+    } catch (err) { console.error(err); msg("shopFormMsg", t("Failed: ", "Ntibyakunze: ") + (err.code || err.message), "err"); }
     btn.disabled = false;
   };
   function renderShopPage() {
     const el = $("shopPage"); if (!el) return;
     const x = shops.find(v => v.id === currentShopId);
-    if (!x) { el.innerHTML = '<p style="margin-top:16px">Iri duka ntiriboneka.</p>'; return; }
+    if (!x) { el.innerHTML = `<p style="margin-top:16px">${t("This shop was not found.", "Iri duka ntiriboneka.")}</p>`; return; }
     const mineOwner = currentUser && currentUser.uid === x.ownerId;
     const list = shopProducts.filter(pp => pp.shopId === x.id);
     const wa = "https://wa.me/" + waNumber(x.phone);
@@ -1126,34 +1132,34 @@
         <h1>${esc(x.name)}</h1>${x.desc ? `<p style="white-space:pre-wrap">${esc(x.desc)}</p>` : ""}
         <p>📞 ${esc(x.phone || "")}</p>
         <a class="primary" style="display:inline-block;text-decoration:none" href="${wa}" target="_blank" rel="noopener">💬 WhatsApp</a>
-        ${mineOwner ? `<div style="margin-top:10px"><button class="secondary" onclick="openShopForm()">✏️ Hindura shop</button></div>` : ""}</div>
-      ${mineOwner ? `<div class="shop-form-box"><h3 style="margin-top:0">➕ Ongeramo igicuruzwa</h3>
+        ${mineOwner ? `<div style="margin-top:10px"><button class="secondary" onclick="openShopForm()">✏️ ${t("Edit shop", "Hindura shop")}</button></div>` : ""}</div>
+      ${mineOwner ? `<div class="shop-form-box"><h3 style="margin-top:0">➕ ${t("Add a product", "Ongeramo igicuruzwa")}</h3>
         <form onsubmit="saveShopProduct(event)">
-          <div class="form-row"><input id="spName" placeholder="Izina ry'igicuruzwa" required></div>
-          <div class="form-row"><input id="spPrice" type="number" min="0" inputmode="numeric" placeholder="Igiciro (RWF)" required></div>
-          <div class="form-row"><textarea id="spDesc" placeholder="Ibisobanuro (si ngombwa)"></textarea></div>
-          <div class="form-row"><label>Ifoto</label><input id="spImage" type="file" accept="image/*"></div>
-          <button class="primary" type="submit" id="spBtn">Bika igicuruzwa</button>
+          <div class="form-row"><input id="spName" placeholder="${t("Product name", "Izina ry'igicuruzwa")}" required></div>
+          <div class="form-row"><input id="spPrice" type="number" min="0" inputmode="numeric" placeholder="${t("Price (RWF)", "Igiciro (RWF)")}" required></div>
+          <div class="form-row"><textarea id="spDesc" placeholder="${t("Description (optional)", "Ibisobanuro (si ngombwa)")}"></textarea></div>
+          <div class="form-row"><label>${t("Photo", "Ifoto")}</label><input id="spImage" type="file" accept="image/*"></div>
+          <button class="primary" type="submit" id="spBtn">${t("Save product", "Bika igicuruzwa")}</button>
           <div id="spMsg" class="status-msg"></div>
         </form></div>` : ""}
       <div class="shop-prod-grid">${list.length ? list.map(pp => `<div class="shop-prod">${pp.imageUrl ? `<img src="${esc(pp.imageUrl)}" alt="${esc(pp.name)}" loading="lazy">` : ""}
         <div class="sp-body"><strong>${esc(pp.name)}</strong><span class="sp-price">${money(pp.price || 0)}</span>${pp.desc ? `<p>${esc(pp.desc)}</p>` : ""}
-        <a class="secondary" style="text-align:center;text-decoration:none" href="${wa}?text=${encodeURIComponent("Muraho, ndifuza: " + pp.name + " (" + money(pp.price || 0) + ")")}" target="_blank" rel="noopener">${t("Ask on WhatsApp", "Baza kuri WhatsApp")}</a>
-        ${mineOwner || isAdminUser(currentUser) ? `<button class="secondary danger-btn" onclick="deleteShopProduct('${esc(pp.id)}')">Siba</button>` : ""}</div></div>`).join("") : `<p style="opacity:.75;grid-column:1/-1">${t("No products yet.", "Nta bicuruzwa biraboneka.")}</p>`}</div>`;
+        <a class="secondary" style="text-align:center;text-decoration:none" href="${wa}?text=${encodeURIComponent(t("Hello, I am interested in: ", "Muraho, ndifuza: ") + pp.name + " (" + money(pp.price || 0) + ")")}" target="_blank" rel="noopener">${t("Ask on WhatsApp", "Baza kuri WhatsApp")}</a>
+        ${mineOwner || isAdminUser(currentUser) ? `<button class="secondary danger-btn" onclick="deleteShopProduct('${esc(pp.id)}')">${t("Delete", "Siba")}</button>` : ""}</div></div>`).join("") : `<p style="opacity:.75;grid-column:1/-1">${t("No products yet.", "Nta bicuruzwa biraboneka.")}</p>`}</div>`;
   }
   window.saveShopProduct = async e => {
     e.preventDefault(); const x = myShop(); if (!x) return;
-    const btn = $("spBtn"); btn.disabled = true; msg("spMsg", "Birabikwa...");
+    const btn = $("spBtn"); btn.disabled = true; msg("spMsg", t("Saving...", "Birabikwa..."));
     try {
       let imageUrl = ""; const file = $("spImage").files[0];
       if (file) imageUrl = await uploadToCloudinary(file);
       await addDoc(collection(db, "shopProducts"), { shopId: x.id, ownerId: currentUser.uid, name: $("spName").value.trim(), price: Number($("spPrice").value) || 0, desc: $("spDesc").value.trim(), imageUrl, createdAt: Date.now() });
-      e.target.reset(); msg("spMsg", "Igicuruzwa cyabitswe.", "ok");
-    } catch (err) { console.error(err); msg("spMsg", "Ntibyakunze: " + (err.code || err.message), "err"); }
+      e.target.reset(); msg("spMsg", t("Product saved.", "Igicuruzwa cyabitswe."), "ok");
+    } catch (err) { console.error(err); msg("spMsg", t("Failed: ", "Ntibyakunze: ") + (err.code || err.message), "err"); }
     btn.disabled = false;
   };
   window.deleteShopProduct = async id => {
-    if (!confirm("Gusiba iki gicuruzwa?")) return;
+    if (!confirm(t("Delete this product?", "Gusiba iki gicuruzwa?"))) return;
     try { await deleteDoc(doc(db, "shopProducts", id)); } catch (err) { alert("Gusiba byanze: " + (err.code || err.message)); }
   };
   function renderAdminShops() {
