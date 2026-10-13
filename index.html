@@ -378,7 +378,7 @@
       <div class="admin-shortcuts" aria-label="Admin menu">
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminServicesSection')"><span>🛠️ Serivisi dukora</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span>🧩 Ibice bya website</span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminShopsSection')"><span>🏪 Amaduka y'abakiriya</span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminShopsSection')"><span>🏪 Amaduka y'abakiriya <span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span>📦 Ibyatumijwe (Orders)</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminRequestsSection')"><span>🛒 Ubusabe bwa serivisi</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span>➕ Ongeramo igicuruzwa</span><span class="shortcut-arrow">›</span></button>
@@ -791,6 +791,7 @@
     currentUser = user; window.gdUser = user;
     if (unsubProfile) { unsubProfile(); unsubProfile = null; }
     stopListeners();
+    if (window.gdShopAuth) window.gdShopAuth(user);
     myOrders = []; allOrders = []; myServiceRequests = []; allServiceRequests = []; allUsers = []; profile = null; window.gdProfile = null; window.gdMyOrders = [];
     perms = new Set();
     $("adminLogin").hidden = !!user;
@@ -1079,10 +1080,25 @@
 
   // ----- customer shops -----
   let shops = [], shopProducts = [], currentShopId = null;
-  onSnapshot(collection(db, "shops"), snap => {
-    shops = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+  let shopsApproved = [], shopsMine = null, shopsAll = [], shopUnsubs = [];
+  const shopStatus = x => (x && x.status) || "pending";
+  function mergeShops() {
+    const m = new Map();
+    shopsApproved.forEach(x => m.set(x.id, x)); if (shopsMine) m.set(shopsMine.id, shopsMine); shopsAll.forEach(x => m.set(x.id, x));
+    shops = [...m.values()].sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
     renderShopsHome(); renderAdminShops(); if ($("view-shop").classList.contains("active")) renderShopPage();
-  }, err => console.error("Shops:", err));
+  }
+  const shopObj = d => ({ id: d.id, ...d.data() });
+  onSnapshot(query(collection(db, "shops"), where("status", "==", "approved")), snap => { shopsApproved = snap.docs.map(shopObj); mergeShops(); }, err => console.error("Shops:", err));
+  window.gdShopAuth = user => {
+    shopUnsubs.forEach(f => { try { f(); } catch (e) {} }); shopUnsubs = [];
+    shopsMine = null; shopsAll = [];
+    if (user) {
+      shopUnsubs.push(onSnapshot(doc(db, "shops", user.uid), snap => { shopsMine = snap.exists() ? shopObj(snap) : null; mergeShops(); }, err => console.error("My shop:", err)));
+      if (isAdminUser(user)) shopUnsubs.push(onSnapshot(collection(db, "shops"), snap => { shopsAll = snap.docs.map(shopObj); mergeShops(); }, err => console.error("All shops:", err)));
+    }
+    mergeShops();
+  };
   onSnapshot(collection(db, "shopProducts"), snap => {
     shopProducts = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     renderShopsHome(); if ($("view-shop").classList.contains("active")) renderShopPage();
@@ -1093,8 +1109,8 @@
     const el = $("shopsHome"); if (!el) return;
     const mine = myShop();
     el.innerHTML = `<h2>🏪 ${t("Customer shops", "Amaduka y'abakiriya")}</h2>
-      ${shops.length ? `<div class="shop-grid">${shops.map(x => `<div class="shop-card" onclick="openShop('${esc(x.id)}')">${x.logoUrl ? `<img src="${esc(x.logoUrl)}" alt="${esc(x.name)}" loading="lazy">` : `<div class="shop-logo-ph">🏪</div>`}<strong>${esc(x.name)}</strong><small>${shopProducts.filter(pp => pp.shopId === x.id).length} ${t("products", "ibicuruzwa")}</small></div>`).join("")}</div>` : `<p style="opacity:.75">${t("No shops yet. Be the first!", "Nta duka riraboneka. Ba uwa mbere!")}</p>`}
-      <button class="shop-cta" type="button" onclick="${mine ? `openShop('${esc(mine.id)}')` : "openShopForm()"}">${mine ? "🏪 " + t("My shop", "Shop yanjye") : "➕ " + t("Open your own shop", "Fungura shop yawe")}</button>`;
+      ${shops.filter(x => shopStatus(x) === "approved").length ? `<div class="shop-grid">${shops.filter(x => shopStatus(x) === "approved").map(x => `<div class="shop-card" onclick="openShop('${esc(x.id)}')">${x.logoUrl ? `<img src="${esc(x.logoUrl)}" alt="${esc(x.name)}" loading="lazy">` : `<div class="shop-logo-ph">🏪</div>`}<strong>${esc(x.name)}</strong><small>${shopProducts.filter(pp => pp.shopId === x.id).length} ${t("products", "ibicuruzwa")}</small></div>`).join("")}</div>` : `<p style="opacity:.75">${t("No shops yet. Be the first!", "Nta duka riraboneka. Ba uwa mbere!")}</p>`}
+      <button class="shop-cta" type="button" onclick="${mine ? `openShop('${esc(mine.id)}')` : "openShopForm()"}">${mine ? "🏪 " + t("My shop", "Shop yanjye") + (shopStatus(mine) === "approved" ? "" : shopStatus(mine) === "suspended" ? " ⛔" : " ⏳") : "➕ " + t("Open your own shop", "Fungura shop yawe")}</button>`;
   }
   window.gdRefreshShops = () => {
     renderShopsHome(); if (typeof renderCustomSections === "function") renderCustomSections();
@@ -1116,7 +1132,8 @@
     try {
       const mine = myShop(); let logoUrl = mine ? mine.logoUrl || "" : ""; const file = $("shopLogo").files[0];
       if (file) logoUrl = await uploadToCloudinary(file);
-      await setDoc(doc(db, "shops", currentUser.uid), { ownerId: currentUser.uid, name: $("shopName").value.trim(), phone: $("shopPhone").value.trim(), desc: $("shopDesc").value.trim(), logoUrl, createdAt: mine ? mine.createdAt || Date.now() : Date.now() });
+      await setDoc(doc(db, "shops", currentUser.uid), { status: mine ? shopStatus(mine) : "pending", ownerId: currentUser.uid, name: $("shopName").value.trim(), phone: $("shopPhone").value.trim(), desc: $("shopDesc").value.trim(), logoUrl, createdAt: mine ? mine.createdAt || Date.now() : Date.now() });
+      if (!mine) alert(t("Your shop was submitted. It will appear publicly after the admin approves it.", "Shop yawe yoherejwe. Izagaragara ku bantu bose nyuma yuko admin ayemeje."));
       openShop(currentUser.uid);
     } catch (err) { console.error(err); msg("shopFormMsg", t("Failed: ", "Ntibyakunze: ") + (err.code || err.message), "err"); }
     btn.disabled = false;
@@ -1126,9 +1143,13 @@
     const x = shops.find(v => v.id === currentShopId);
     if (!x) { el.innerHTML = `<p style="margin-top:16px">${t("This shop was not found.", "Iri duka ntiriboneka.")}</p>`; return; }
     const mineOwner = currentUser && currentUser.uid === x.ownerId;
+    const st = shopStatus(x);
+    if (st !== "approved" && !mineOwner && !isAdminUser(currentUser)) { el.innerHTML = `<p style="margin-top:16px">${t("This shop is not available.", "Iri duka ntiribonekeka ubu.")}</p>`; return; }
+    const banner = st === "pending" ? `<div class="shop-form-box" style="border-color:#f59e0b;margin-top:12px">⏳ ${t("This shop is waiting for admin approval. It is not visible to the public yet.", "Iri duka riategereje kwemezwa na admin. Ntiriragaragara ku bantu bose.")}</div>`
+      : st === "suspended" ? `<div class="shop-form-box" style="border-color:#ef4444;margin-top:12px">⛔ ${t("This shop has been suspended by the admin.", "Iri duka ryahagaritswe na admin.")}</div>` : "";
     const list = shopProducts.filter(pp => pp.shopId === x.id);
     const wa = "https://wa.me/" + waNumber(x.phone);
-    el.innerHTML = `<div class="shop-head">${x.logoUrl ? `<img class="shop-logo" src="${esc(x.logoUrl)}" alt="">` : `<div class="shop-logo-ph">🏪</div>`}
+    el.innerHTML = `${banner}<div class="shop-head" style="margin-top:12px">${x.logoUrl ? `<img class="shop-logo" src="${esc(x.logoUrl)}" alt="">` : `<div class="shop-logo-ph">🏪</div>`}
         <h1>${esc(x.name)}</h1>${x.desc ? `<p style="white-space:pre-wrap">${esc(x.desc)}</p>` : ""}
         <p>📞 ${esc(x.phone || "")}</p>
         <a class="primary" style="display:inline-block;text-decoration:none" href="${wa}" target="_blank" rel="noopener">💬 WhatsApp</a>
@@ -1163,9 +1184,23 @@
     try { await deleteDoc(doc(db, "shopProducts", id)); } catch (err) { alert("Gusiba byanze: " + (err.code || err.message)); }
   };
   function renderAdminShops() {
-    const el = $("adminShops"); if (!el) return;
-    el.innerHTML = shops.length ? shops.map(x => `<div class="admin-row"><div class="cart-details"><strong>${esc(x.name)}</strong><small>${esc(x.phone || "")} · ${shopProducts.filter(pp => pp.shopId === x.id).length} ibicuruzwa</small></div><div class="btns"><button class="secondary" onclick="openShop('${esc(x.id)}')">Reba</button><button class="secondary danger-btn" onclick="adminDeleteShop('${esc(x.id)}')">Siba</button></div></div>`).join("") : '<p style="opacity:.75">Nta maduka aracyaboneka.</p>';
+    const el = $("adminShops"); const pend = shops.filter(x => shopStatus(x) === "pending").length;
+    const bd = $("shopPendingBadge"); if (bd) { bd.textContent = pend; bd.hidden = !pend; }
+    if (!el) return;
+    const badge = st => st === "approved" ? '<span class="role-badge" style="background:#16a34a">Yemejwe</span>' : st === "suspended" ? '<span class="role-badge" style="background:#dc2626">Yahagaritswe</span>' : '<span class="role-badge" style="background:#f59e0b;color:#1f1300">Itegereje</span>';
+    const order = { pending: 0, suspended: 1, approved: 2 };
+    el.innerHTML = shops.length ? [...shops].sort((a, b) => order[shopStatus(a)] - order[shopStatus(b)]).map(x => { const st = shopStatus(x); return `<div class="admin-row" style="flex-wrap:wrap"><div class="cart-details" style="flex:1 1 100%"><strong>${esc(x.name)}</strong> ${badge(st)}<small>${esc(x.phone || "")} · ${shopProducts.filter(pp => pp.shopId === x.id).length} ibicuruzwa</small>${x.desc ? `<small>${esc(x.desc)}</small>` : ""}</div>
+      <div class="btns" style="flex:1 1 100%;display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+        <button class="secondary" onclick="openShop('${esc(x.id)}')">Reba</button>
+        ${st !== "approved" ? `<button class="primary" onclick="adminSetShopStatus('${esc(x.id)}','approved')">✅ ${st === "suspended" ? "Subiza" : "Emeza"}</button>` : ""}
+        ${st !== "suspended" ? `<button class="secondary danger-btn" onclick="adminSetShopStatus('${esc(x.id)}','suspended')">⛔ Hagarika</button>` : ""}
+        <button class="secondary danger-btn" onclick="adminDeleteShop('${esc(x.id)}')">Siba</button></div></div>`; }).join("") : '<p style="opacity:.75">Nta maduka aracyaboneka.</p>';
   }
+  window.adminSetShopStatus = async (id, status) => {
+    if (!isAdminUser(currentUser)) return;
+    if (status === "suspended" && !confirm("Guhagarika iri duka? Ntirizongera kugaragara ku bantu.")) return;
+    try { await updateDoc(doc(db, "shops", id), { status }); } catch (err) { alert("Byanze: " + (err.code || err.message)); }
+  };
   window.adminDeleteShop = async id => {
     if (!isAdminUser(currentUser) || !confirm("Gusiba iri duka n'ibicuruzwa byaryo byose?")) return;
     try {
