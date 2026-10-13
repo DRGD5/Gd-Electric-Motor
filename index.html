@@ -670,47 +670,71 @@
   }, err => console.error("Firestore:", err));
 
   // ----- admin auth -----
+  // ----- roles & permissions -----
+  // Owner (ADMIN_EMAIL) can do everything. Other roles get only what is listed here.
+  const ROLE_PERMS = { manager: ["products","services","orders","requests"], staff: ["orders","requests"], sales: ["orders","products"], technician: ["requests"] };
+  let perms = new Set(), listenerKey = "", listenerUnsubs = [], unsubProfile = null;
+  window.gdCan = p => perms.has(p);
+  const computePerms = (user, prof) => isAdminUser(user) ? new Set(["products","services","orders","requests","users"]) : new Set(ROLE_PERMS[(prof && prof.role) || ""] || []);
+
+  function stopListeners() { listenerUnsubs.forEach(f => { try { f(); } catch (e) {} }); listenerUnsubs = []; listenerKey = ""; }
+
+  function applyAdminUI() {
+    const staff = perms.size > 0;
+    $("adminDenied").hidden = !(currentUser && !staff);
+    $("adminPanel").hidden = !staff;
+    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"] };
+    Object.keys(map).forEach(perm => {
+      const ok = perms.has(perm);
+      map[perm].forEach(id => {
+        const sec = $(id); if (!sec) return;
+        if (!ok) sec.hidden = true; else if (id === "adminProductListSection") sec.hidden = false;
+        document.querySelectorAll(`.admin-shortcut[onclick*="${id}"], .users-open-btn[onclick*="${id}"]`).forEach(btn => { btn.hidden = !ok; });
+      });
+    });
+  }
+
+  function startListeners() {
+    const user = currentUser; if (!user) return;
+    perms = computePerms(user, profile);
+    applyAdminUI();
+    const key = user.uid + "|" + [...perms].sort().join(",");
+    if (key === listenerKey) return;
+    stopListeners(); listenerKey = key;
+    myOrders = []; allOrders = []; myServiceRequests = []; allServiceRequests = []; window.gdMyOrders = [];
+    const owner = isAdminUser(user);
+    const sortNew = snap => snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    const mine = name => query(collection(db, name), where("userId", "==", user.uid));
+    if (perms.has("orders")) listenerUnsubs.push(onSnapshot(collection(db, "orders"), snap => { allOrders = sortNew(snap); renderAdminOrders(); }, err => console.error("Orders:", err)));
+    if (!owner) listenerUnsubs.push(onSnapshot(mine("orders"), snap => { myOrders = sortNew(snap); window.gdMyOrders = myOrders; renderAccount(); renderCart(); }, err => console.error("My orders:", err)));
+    if (perms.has("requests")) listenerUnsubs.push(onSnapshot(collection(db, "serviceRequests"), snap => { allServiceRequests = sortNew(snap); renderAdminServiceRequests(); }, err => console.error("Service requests:", err)));
+    if (!owner) listenerUnsubs.push(onSnapshot(mine("serviceRequests"), snap => { myServiceRequests = sortNew(snap); renderAccount(); }, err => console.error("My service requests:", err)));
+    if (perms.has("users")) listenerUnsubs.push(onSnapshot(collection(db, "users"), snap => {
+      allUsers = snap.docs.map(d => ({ uid: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      renderAdminUsers();
+    }, err => { console.error("Users:", err); const el = $("adminUsers"); if (el) el.innerHTML = '<p style="color:var(--danger)">Ntibishoboka kubona abakiriya. Reba amategeko ya Firestore (rules) kuri collection "users".</p>'; }));
+    renderAdminList(); renderAccount(); renderAdminOrders(); renderAdminServiceRequests(); renderCart();
+  }
+
   onAuthStateChanged(auth, async user => {
     currentUser = user; window.gdUser = user;
-    if (unsubOrders) { unsubOrders(); unsubOrders = null; }
-    if (unsubUsers) { unsubUsers(); unsubUsers = null; } allUsers = [];
-    if (unsubServiceRequests) { unsubServiceRequests(); unsubServiceRequests = null; }
-    myOrders = []; allOrders = []; myServiceRequests = []; allServiceRequests = []; profile = null; window.gdProfile = null; window.gdMyOrders = [];
-    const admin = isAdminUser(user);
+    if (unsubProfile) { unsubProfile(); unsubProfile = null; }
+    stopListeners();
+    myOrders = []; allOrders = []; myServiceRequests = []; allServiceRequests = []; allUsers = []; profile = null; window.gdProfile = null; window.gdMyOrders = [];
+    perms = new Set();
     $("adminLogin").hidden = !!user;
-    $("adminDenied").hidden = !(user && !admin);
-    $("adminPanel").hidden = !admin;
-    if (user) {
-      $("adminWho").textContent = user.email;
-      $("adminDeniedWho").textContent = user.email;
-      if (pendingProfile) { profile = pendingProfile; pendingProfile = null; }
-      else {
-        try { const s = await getDoc(doc(db, "users", user.uid)); profile = s.exists() ? s.data() : { name: user.displayName || "", phone: "" }; }
-        catch (e) { profile = { name: user.displayName || "", phone: "" }; }
-      }
-      window.gdProfile = profile;
-      const q = admin ? collection(db, "orders") : query(collection(db, "orders"), where("userId", "==", user.uid));
-      unsubOrders = onSnapshot(q, snap => {
-        const list = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-        if (admin) allOrders = list; else myOrders = list;
-        window.gdMyOrders = myOrders;
-        renderAccount(); renderAdminOrders(); renderCart();
-      }, err => console.error("Orders:", err));
-      if (admin) {
-        unsubUsers = onSnapshot(collection(db, "users"), snap => {
-          allUsers = snap.docs.map(d => ({ uid: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-          renderAdminUsers();
-        }, err => { console.error("Users:", err); const el = $("adminUsers"); if (el) el.innerHTML = '<p style="color:var(--danger)">Ntibishoboka kubona abakiriya. Reba amategeko ya Firestore (rules) kuri collection "users".</p>'; });
-      }
-      const sq = admin ? collection(db, "serviceRequests") : query(collection(db, "serviceRequests"), where("userId", "==", user.uid));
-      unsubServiceRequests = onSnapshot(sq, snap => {
-        const list = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-        if (admin) allServiceRequests = list; else myServiceRequests = list;
-        renderAccount(); renderAdminServiceRequests();
-      }, err => console.error("Service requests:", err));
-      renderAdminList();
-    }
-    renderAccount(); renderAdminOrders();
+    if (!user) { applyAdminUI(); renderAccount(); renderAdminOrders(); return; }
+    $("adminWho").textContent = user.email;
+    $("adminDeniedWho").textContent = user.email;
+    if (pendingProfile) { profile = pendingProfile; pendingProfile = null; }
+    else profile = { name: user.displayName || "", phone: "" };
+    window.gdProfile = profile;
+    // Live profile: when the owner changes this person's role, access updates immediately.
+    unsubProfile = onSnapshot(doc(db, "users", user.uid), snap => {
+      if (snap.exists()) { profile = snap.data(); window.gdProfile = profile; }
+      startListeners(); renderAccount();
+    }, err => { console.error("Profile:", err); startListeners(); });
+    startListeners();
   });
 
   function msg(id, text, type) { const el = $(id); el.textContent = text || ""; el.className = "status-msg " + (type || ""); }
@@ -777,7 +801,7 @@
         <h2>${esc(p.name || currentUser.email)}</h2>
         <p>${esc(currentUser.email)}${p.phone ? "<br>" + esc(p.phone) : ""}</p>
         <button class="secondary" onclick="accLogout()">${t("Sign out", "Sohoka")}</button>
-        ${admin ? `<button class="primary" onclick="showView('admin')">Admin</button>` : ""}
+        ${perms.size ? `<button class="primary" onclick="showView('admin')">${admin ? "Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi")}</button>` : ""}
       </div>
       ${admin ? "" : `<div class="info-card"><h2>${t("My orders / Track order", "Ibyo watumije / Kurikirana commande")}</h2>${ordersHtml}</div><div class="info-card"><h2>${t("My service requests", "Ubusabe bwanjye bwa serivisi")}</h2>${requestsHtml}</div>`}`;
   }
