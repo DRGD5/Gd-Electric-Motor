@@ -191,6 +191,7 @@
 
     /* Admin dashboard shortcuts: responsive, full-width tap targets */
     .users-panel { background:linear-gradient(160deg,#0b3d3a,#0f2a4a); border:2px solid #2dd4bf; border-radius:26px; padding:18px; margin:0 0 18px; box-shadow:0 10px 30px rgba(45,212,191,.18); color:#fff; }
+    .users-open-btn { width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 14px; padding:16px 18px; border:2px solid #2dd4bf; border-radius:20px; background:linear-gradient(160deg,#0b3d3a,#0f2a4a); color:#5eead4; font-weight:900; font-size:1.05rem; box-shadow:0 8px 22px rgba(45,212,191,.2); }
     .users-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
     .users-head h2 { margin:0; color:#5eead4; }
     .users-count { background:#2dd4bf; color:#032b28; font-weight:900; border-radius:99px; padding:4px 12px; font-size:.85rem; white-space:nowrap; }
@@ -319,7 +320,8 @@
         <button class="secondary" onclick="adminLogout()">Sohoka</button>
       </div>
 
-      <div class="users-panel" id="adminUsersSection">
+      <button class="users-open-btn" type="button" onclick="toggleAdminSection('adminUsersSection')"><span>👥 Abakiriya (Accounts)</span><span class="users-count" id="adminUsersBtnCount">0</span></button>
+      <div class="users-panel" id="adminUsersSection" hidden>
         <div class="users-head"><h2>👥 Abakiriya (Accounts)</h2><span class="users-count" id="adminUsersCount">0</span></div>
         <p class="users-sub">Abantu bose bafunguye konti. Umuhe inshingano hanyuma ukande "Bika".</p>
         <input id="userSearch" class="users-search" placeholder="🔎 Shakisha izina, email cyangwa telefoni..." oninput="renderAdminUsers()">
@@ -841,6 +843,7 @@
     const qv = (($("userSearch") || {}).value || "").trim().toLowerCase();
     const list = allUsers.filter(u => !qv || [u.name, u.email, u.phone].some(x => (x || "").toLowerCase().includes(qv)));
     const c = $("adminUsersCount"); if (c) c.textContent = qv ? list.length + " / " + allUsers.length : String(allUsers.length);
+    const bc = $("adminUsersBtnCount"); if (bc) bc.textContent = String(allUsers.length);
     const label = r => (ROLE_OPTIONS.find(x => x[0] === r) || ROLE_OPTIONS[0])[1];
     el.innerHTML = list.length ? list.map(u => { const r = u.role || "customer"; return `
       <div class="user-card role-${esc(r)}">
