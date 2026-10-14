@@ -339,6 +339,44 @@
   .bottom-nav svg, .bottom-nav .icon { width: 17px !important; height: 17px !important; }
 }
 
+
+/* Only adjust the main product-card buttons; leave other layout unchanged */
+@media (max-width: 650px) {
+  .product-actions { display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; gap: 6px !important; margin-top: 9px !important; }
+  .product-actions button { min-width: 0 !important; padding: 8px 6px !important; font-size: 12px !important; line-height: 1.2 !important; border-radius: 12px !important; }
+  .shop-controls { display: grid !important; grid-template-columns: minmax(0, .9fr) minmax(0, 1fr) !important; align-items: stretch !important; gap: 7px !important; margin-top: 9px !important; }
+  .shop-qty { min-width: 0 !important; border-radius: 12px !important; min-height: 40px !important; }
+  .shop-qty button { min-width: 28px !important; padding: 6px !important; font-size: 16px !important; }
+  .shop-qty span { min-width: 22px !important; font-size: 13px !important; }
+  .shop-add { min-width: 0 !important; padding: 8px 6px !important; font-size: 12px !important; border-radius: 12px !important; }
+  .product-info .whatsapp-btn, .product-info button.secondary { padding: 8px 10px !important; font-size: 12px !important; line-height: 1.25 !important; border-radius: 14px !important; }
+}
+
+/* Compact bottom navigation buttons on mobile */
+@media (max-width: 650px) {
+  .bottom-nav {
+    padding: 3px 4px calc(3px + env(safe-area-inset-bottom)) !important;
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    min-height: 0 !important;
+  }
+  .bottom-nav .nav-item {
+    min-width: 0 !important;
+    padding: 3px 0 !important;
+    gap: 2px !important;
+    font-size: 9px !important;
+    line-height: 1.1 !important;
+    font-weight: 700 !important;
+    border-radius: 9px !important;
+  }
+  .bottom-nav .nav-item .nav-icon {
+    font-size: 1.2rem !important;
+    line-height: 1 !important;
+  }
+  .bottom-nav .nav-item.active {
+    box-shadow: none !important;
+  }
+}
+
 </style>
 </head>
 <body>
