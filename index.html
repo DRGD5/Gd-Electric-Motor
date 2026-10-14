@@ -314,6 +314,31 @@
   .whatsapp-float { transform: scale(.88); transform-origin: bottom right; }
 }
 
+
+/* Stronger compact layout for narrow mobile screens */
+@media (max-width: 650px) {
+  body { font-size: 12px !important; }
+  .hero { margin: 8px 10px 14px !important; border-radius: 18px !important; }
+  .hero-copy { padding: 14px 12px 6px !important; }
+  .hero h1 { font-size: clamp(1.1rem, 4.8vw, 1.4rem) !important; line-height: 1.16 !important; margin: 5px 0 9px !important; }
+  .hero-copy > :first-child { font-size: 10px !important; letter-spacing: 1.2px !important; }
+  .hero p { font-size: 12px !important; line-height: 1.4 !important; margin: 0 0 10px !important; }
+  .hero-copy .primary, .hero .primary { padding: 9px 13px !important; font-size: 12px !important; }
+  .hero-art { padding: 0 7px 7px !important; }
+  .hero-art img { height: 155px !important; max-height: 155px !important; border-radius: 13px !important; }
+  .search, .search-wrap { margin: 6px 10px !important; }
+  .search input, .search input[type="search"] { min-height: 34px !important; font-size: 12px !important; padding: 8px 12px !important; }
+  .ticker { padding: 5px 0 !important; font-size: 11px !important; }
+  .brand img, .logo img { max-height: 36px !important; }
+  .svc-card img { max-height: 135px !important; }
+  .svc-body { padding: 9px !important; }
+  .svc-body h3 { font-size: 13px !important; }
+  .svc-body p { font-size: 11px !important; }
+  .bottom-nav { padding: 4px 4px calc(4px + env(safe-area-inset-bottom)) !important; }
+  .bottom-nav a, .bottom-nav button { font-size: 9px !important; }
+  .bottom-nav svg, .bottom-nav .icon { width: 17px !important; height: 17px !important; }
+}
+
 </style>
 </head>
 <body>
