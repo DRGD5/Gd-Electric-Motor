@@ -391,7 +391,7 @@
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminShopsSection')"><span>🏪 Amaduka y'abakiriya <span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span>📦 Ibyatumijwe (Orders) <span class="users-count count-new" id="ordersNewBadge" hidden>0</span> <span class="users-count count-total" id="ordersTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminRequestsSection')"><span>🛒 Ubusabe bwa serivisi <span class="users-count count-new" id="reqNewBadge" hidden>0</span> <span class="users-count count-total" id="reqTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span>➕ Ongeramo igicuruzwa <span class="users-count count-total" id="prodTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span>➕ Ongeramo igicuruzwa</span><span class="shortcut-arrow">›</span></button>
       </div>
 
       <div class="info-card admin-section" id="adminServicesSection" hidden>
@@ -930,7 +930,7 @@
   function updateAdminBadges() {
     setBadge("ordersNewBadge", allOrders.filter(o => o.status === "new").length); setBadge("ordersTotalBadge", allOrders.length);
     setBadge("reqNewBadge", allServiceRequests.filter(r => r.status === "new").length); setBadge("reqTotalBadge", allServiceRequests.length);
-    setBadge("svcTotalBadge", (window.gdServicesCount || 0)); setBadge("prodTotalBadge", (window.gdProductsCount || 0));
+    setBadge("svcTotalBadge", (window.gdServicesCount || 0));
   }
   window.updateAdminBadges = updateAdminBadges;
   function renderAdminOrders() {
