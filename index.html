@@ -283,6 +283,37 @@
       .whatsapp-float { right: 18px; bottom: 92px; width: 54px; height: 54px; }
     }
 
+
+/* Compact mobile sizing refinement */
+@media (max-width: 650px) {
+  body { font-size: 14px; }
+  main, .main, .container, .page-wrap { padding-left: 12px !important; padding-right: 12px !important; }
+  header, .site-header, .topbar { gap: 8px !important; }
+  .brand img, .logo img { max-height: 46px !important; width: auto !important; }
+  .search, .search-wrap { margin: 8px 12px !important; }
+  .search input, .search input[type="search"] { min-height: 42px !important; font-size: 14px !important; }
+  .ticker { padding: 8px 0 !important; font-size: 13px !important; }
+  .hero { margin: 12px 12px 18px !important; border-radius: 22px !important; }
+  .hero-copy { padding: 18px 16px 8px !important; }
+  .hero h1 { font-size: clamp(1.45rem, 6vw, 1.8rem) !important; line-height: 1.2 !important; margin: 6px 0 12px !important; }
+  .hero p { font-size: .9rem !important; line-height: 1.5 !important; margin-bottom: 14px !important; }
+  .hero-copy .primary { padding: 12px 18px !important; font-size: 14px !important; }
+  .hero-art { padding: 0 10px 10px !important; }
+  .hero-art img { height: 215px !important; max-height: 215px !important; aspect-ratio: auto !important; border-radius: 16px !important; object-fit: cover !important; }
+  section { margin-top: 18px !important; margin-bottom: 18px !important; }
+  h2 { font-size: 1.15rem !important; }
+  .svc-grid { gap: 12px !important; }
+  .svc-card { border-radius: 16px !important; }
+  .svc-card img { max-height: 175px !important; object-fit: cover !important; }
+  .svc-body { padding: 12px !important; }
+  .svc-body h3 { font-size: 1rem !important; }
+  .svc-body p { font-size: .85rem !important; line-height: 1.45 !important; }
+  .bottom-nav { padding: 6px 6px calc(6px + env(safe-area-inset-bottom)) !important; }
+  .bottom-nav a, .bottom-nav button { padding: 4px 1px !important; font-size: 10px !important; }
+  .bottom-nav svg, .bottom-nav .icon { width: 20px !important; height: 20px !important; }
+  .whatsapp-float { transform: scale(.88); transform-origin: bottom right; }
+}
+
 </style>
 </head>
 <body>
