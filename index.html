@@ -702,6 +702,96 @@
   }
   const money = n => new Intl.NumberFormat("en-US").format(n) + " RWF";
   const t = (en,rw) => language === "rw" ? rw : en;
+
+  // Site-wide bilingual text for labels that were previously hard-coded in Kinyarwanda.
+  const RW_EN = {
+    "Ahabanza":"Home", "Ibicuruzwa":"Products", "Konti":"Account", "Byabitswe":"Saved", "Agaseke":"Cart", "Admin":"Admin",
+    "Ibicuruzwa wabikije":"Saved products", "Ibicuruzwa wabikije ♡":"Saved products ♡", "Nta burenganzira":"Access denied",
+    "Abantu bose bafunguye konti. Umuhe inshingano hanyuma ukande \"Bika\".":"All registered accounts. Assign a role, then click \"Save\".",
+    "Shakisha izina, email cyangwa telefoni...":"Search name, email, or phone...", "Serivisi dukora":"Our services", "Ubusabe bwa serivisi":"Service requests",
+    "Ongeramo igicuruzwa":"Add product", "Izina rya serivisi (urugero: Rewinding)":"Service name (e.g. Rewinding)", "Ibisobanuro bigufi":"Short description",
+    "Bika serivisi":"Save service", "Bika impinduka":"Save changes", "Reka guhindura":"Cancel edit", "Bika igice":"Save section",
+    "Reka guhindura igice":"Cancel section edit", "Kora igice gishya kigaragara ku rupapuro rwa mbere (Ahabanza), munsi y'ibicuruzwa.":"Create a new section shown on the Home page, below the products.",
+    "Umutwe w'igice (urugero: Ibyo dukora)":"Section title (e.g. What we do)", "Izina rya button (si ngombwa, urugero: Reba byinshi)":"Button label (optional, e.g. See more)",
+    "Hitamo umukiriya kugira ngo usome ubutumwa kandi umusubize.":"Select a customer to read and reply to their messages.",
+    "Hindura aho commande igeze. Guhagarika commande ntibisiba amateka yayo.":"Update the order status. Cancelling an order does not delete its history.",
+    "Reba ubusabe bw'abakiriya kandi uhindure uko serivisi yabo ihagaze.":"View customer service requests and update their status.",
+    "Izina (Kinyarwanda)":"Name (Kinyarwanda)", "Ibisobanuro (Kinyarwanda)":"Description (Kinyarwanda)", "Icyiciro":"Category",
+    "Igiciro (RWF)":"Price (RWF)", "Igiciro cya kera (RWF), si ngombwa":"Previous price (RWF), optional", "Ifoto":"Image",
+    "Urugero: Pompe y'amazi":"Example: Water Pump", "Ibicuruzwa biri ku rubuga":"Products on the website", "Reba ibicuruzwa":"View products",
+    "Amaduka y'abakiriya":"Customer shops", "Chat n'abakiriya":"Customer chat", "Ibyatumijwe (Orders)":"Orders", "Subiza":"Reply", "Hindura":"Edit", "Siba":"Delete", "Bika":"Save", "Subiza iyi serivisi":"Restore this service",
+    "Nta konti zibonetse.":"No accounts found.", "Nta busabe bwa serivisi burahagera.":"No service requests yet.", "Nta biganiro birahari. Ubutumwa bw'abakiriya buzagaragara hano.":"No conversations yet. Customer messages will appear here.",
+    "Ubutumwa bwawe buzagaragara hano.":"Your messages will appear here.", "Umukiriya":"Customer", "Nta butumwa burandikwa":"No messages yet", "Chat na GD Electric Motors":"Chat with GD Electric Motors",
+    "Ntibishobotse gusoma ubutumwa. Reba amategeko ya Firebase (Firestore Rules).":"Could not load messages. Check Firebase Firestore Rules.",
+    "Chat ntiyafungutse. Reba internet cyangwa Firestore Rules.":"Chat could not open. Check your internet connection or Firestore Rules.",
+    "Banza winjire muri konti kugira ngo wandikire GD Electric Motors.":"Please sign in to message GD Electric Motors.",
+    "Ubutumwa ntibwoherejwe:":"Message not sent:", "Ohereza":"Send", "Andika ubutumwa...":"Type a message...", "Andika ubutumwa":"Write a message",
+    "Nta gicuruzwa urongeramo.":"You have not added any products.", "Ibicuruzwa by'ibanze":"Default products", "Bikomeza kugaragara hamwe n'ibyo wongeraho, keretse ubisibye.":"These remain visible alongside your added products unless you remove them.",
+    "Hindura igicuruzwa":"Edit product", "Hindura igicuruzwa cy'ibanze":"Edit default product", "Bika igicuruzwa":"Save product", "Reka guhindura":"Cancel editing",
+    "Ongeramo igicuruzwa cy'ibanze":"Add default product", "Nta bicuruzwa bibonetse.":"No products found.", "Nta bicuruzwa urabika.":"You have not saved any products yet.",
+    "Nta bicuruzwa biraboneka.":"No products available yet.", "Nta maduka aracyaboneka.":"No shops available yet.", "ibicuruzwa":"products", "Ibyiciro":"Categories",
+    "Baza kuri WhatsApp":"Ask on WhatsApp", "Saba iyi serivisi":"Request this service", "Saba serivisi":"Request service", "Siba iyi serivisi?":"Delete this service?",
+    "Gusiba iyi serivisi?":"Delete this service?", "Andika izina rya serivisi.":"Enter a service name.", "Andika umutwe w'igice.":"Enter a section title.",
+    "Impinduka zabitswe.":"Changes saved.", "Serivisi yabitswe.":"Service saved.", "Igice cyabitswe. Reba ku rupapuro rwa mbere.":"Section saved. Check the Home page.",
+    "Ntibyakunze:":"Failed:", "Gusiba byanze:":"Delete failed:", "Guhindura igiciro byanze:":"Could not update the price:", "Andika igiciro cyemewe.":"Enter a valid price.",
+    "Andika igiciro gishya cyose (RWF):":"Enter the new total price (RWF):", "Igiciro cyahinduwe neza. Print Receipt izagaragara igihe commande izaba ishojwe.":"Price updated. Print Receipt will be available when the order is completed.",
+    "Banza ushyire commande kuri 'Byarangiye / Byatanze' mbere yo gukora receipt.":"Mark the order as 'Completed / Delivered' before creating a receipt.",
+    "Browser yabujije gufungura receipt. Emerera pop-ups hanyuma wongere ugerageze.":"Your browser blocked the receipt. Allow pop-ups and try again.",
+    "Impamvu yo guhagarika serivisi (si ngombwa):":"Reason for cancelling the service (optional):", "Kohereza ifoto byanze":"Image upload failed",
+    "Andika izina ry'igicuruzwa.":"Enter a product name.", "Andika igiciro.":"Enter a price.", "Habaye ikibazo.":"Something went wrong.",
+    "Nta burenganzira. Reba amategeko (rules) ya Firestore.":"Access denied. Check the Firestore rules.", "Gusiba iki gice?":"Delete this section?",
+    "Guhisha iyi serivisi y'ibanze? Ushobora kuyisubiza nyuma.":"Hide this default service? You can restore it later.",
+    "Gusiba iki gicuruzwa?":"Delete this product?", "Gusiba iri duka?":"Delete this shop?", "Guhagarika iri duka? Ntirizongera kugaragara ku bantu.":"Suspend this shop? It will no longer be visible to the public.",
+    "Gusiba iri duka n'ibicuruzwa byaryo byose?":"Delete this shop and all its products?", "Nta burenganzira. Reba amategeko ya Firestore.":"Access denied. Check Firestore rules.",
+    "Ntibyashobotse kuyikura mu mateka. Reba uburenganzira bwa Firestore.":"Could not hide this order. Check Firestore permissions.",
+    "Banza winjire cyangwa ufungure konti kugira ngo uzajye ukurikirana ubusabe bwa serivisi yawe.":"Please sign in or create an account to track your service request.",
+    "Ubusabe bwa serivisi bwoherejwe. Jya muri Konti urebe aho bugeze.":"Service request sent. Open Account to track its status.",
+    "Ntibyashobotse kohereza ubusabe. Reba internet cyangwa amategeko ya Firebase.":"Could not send the request. Check your internet connection or Firebase rules.",
+    "Izina rya serivisi":"Service name", "Ibicuruzwa by'ibanze":"Default products", "Icy'ibanze":"Default", "Iy'ibanze":"Default",
+    "yahishwe":"hidden", "ibicuruzwa bihari":"products available", "Bika shop":"Save shop", "Hindura shop":"Edit shop", "Fungura shop yawe":"Open your shop",
+    "Hindura shop yawe":"Edit your shop", "Ongeramo igicuruzwa":"Add product", "Bika igicuruzwa":"Save product", "Igiciro":"Price", "Ibicuruzwa by'ibanze":"Default products",
+    "Twandikire":"Contact us", "Reba byose":"See all", "Shakisha":"Search", "Shakisha ibicuruzwa n\'ibyiciro...":"Search products and categories...", "Andika ubutumwa...":"Type a message...", "Nta bicuruzwa urongeramo.":"You have not added any products.",
+    "Kuraho akayunguruzo":"Clear filter", "Byakiriwe":"Received", "Irimo gutegurwa":"Being prepared", "Byarangiye":"Completed", "Byatanze":"Delivered", "Birimo gukorwa":"In progress", "Yahagaritswe":"Cancelled",
+    "Hitamo ururimi":"Choose language", "Injira nka admin":"Sign in as admin", "Injira":"Sign in", "Sohoka":"Sign out",
+    "Iyi paji ni iya admin gusa.":"This page is for administrators only.", "Email":"Email", "Password":"Password",
+    "Izina ryawe":"Your name", "Telefoni":"Phone", "Bika amakuru":"Save details", "Amakuru yabitswe kuri telefoni yawe.":"Details saved on this device.",
+    "Ifoto (si ngombwa)":"Photo (optional)", "Kohereza":"Send", "Shyiramo izina":"Enter a name", "Izina":"Name", "Ubutumwa":"Message", "Umutwe":"Title", "Ibisobanuro":"Description",
+    "Ifoto y'igicuruzwa":"Product image", "Ibyiciro byose":"All categories", "Kurikirana komande yanjye":"Track my order",
+    "Reba aho komande zawe zigeze hano.":"See the latest status of your orders here.", "Agaseke kawe karimo ubusa.":"Your cart is empty.",
+    "Igiteranyo cy'agateganyo":"Estimated total", "Ibiciro n'ibihari byemezwe natwe mbere yo kwishyura.":"Prices and stock should be confirmed with us before payment.",
+    "Nta bicuruzwa bibonetse. Gerageza gushakisha ukundi.":"No products found. Try another search.", "Ukeneye ubufasha?":"Need help?",
+    "Gura ukurikije ibyiciro":"Shop by category", "Banza winjire":"Please sign in first", "Amakuru yawe":"Your details", "Konti yawe":"Your account",
+    "Ongeramo iduka":"Add a shop", "Fungura iduka":"Open a shop", "Ibisobanuro by'iduka":"Shop description", "Icyiciro cy'igicuruzwa":"Product category", "Igiciro cya kera":"Previous price"
+  };
+  const EN_RW = Object.fromEntries(Object.entries(RW_EN).map(([rw,en]) => [en,rw]));
+  function translatePage() {
+    const dict = language === "en" ? RW_EN : EN_RW;
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+    for (const node of nodes) {
+      const original = node.nodeValue;
+      const trimmed = original.trim();
+      if (trimmed && Object.prototype.hasOwnProperty.call(dict, trimmed)) {
+        const leading = original.match(/^\s*/)?.[0] || "";
+        const trailing = original.match(/\s*$/)?.[0] || "";
+        const translated = dict[trimmed];
+        if (translated !== trimmed) node.nodeValue = leading + translated + trailing;
+      }
+    }
+    document.querySelectorAll("input[placeholder],textarea[placeholder],button[aria-label],input[aria-label],img[alt]").forEach(el => {
+      for (const attr of ["placeholder","aria-label","alt"]) {
+        if (!el.hasAttribute(attr)) continue;
+        const val = el.getAttribute(attr);
+        if (dict[val]) el.setAttribute(attr, dict[val]);
+      }
+    });
+  }
+  let languageObserverStarted = false;
+  function startLanguageObserver() {
+    if (languageObserverStarted) return;
+    languageObserverStarted = true;
+    new MutationObserver(() => translatePage()).observe(document.body, {subtree:true,childList:true,characterData:true});
+  }
   const productName = p => t(p.en,p.rw);
   const categoryName = c => t(c.en,c.rw);
 
@@ -717,19 +807,23 @@
     window.scrollTo({top:0,behavior:"smooth"});
   }
   function setLanguage(lang) {
-    language=lang; document.documentElement.lang=lang==="rw"?"rw":"en";
-    document.getElementById("langEN").classList.toggle("active",lang==="en");
-    document.getElementById("langRW").classList.toggle("active",lang==="rw");
-    document.querySelectorAll("[data-en][data-rw]").forEach(el=>{
-      if(el.matches("input")) return;
-      el.innerHTML=el.dataset[lang];
+    language = lang === "en" ? "en" : "rw";
+    localStorage.setItem("gdLanguage", language);
+    document.documentElement.lang = language;
+    document.getElementById("langEN").classList.toggle("active", language === "en");
+    document.getElementById("langRW").classList.toggle("active", language === "rw");
+    document.querySelectorAll("[data-en][data-rw]").forEach(el => {
+      if (el.matches("input,textarea")) return;
+      el.innerHTML = el.dataset[language];
     });
-    document.querySelectorAll("[data-placeholder-en]").forEach(el=>el.placeholder=el.dataset["placeholder"+(lang==="rw"?"Rw":"En")]);
+    document.querySelectorAll("[data-placeholder-en]").forEach(el => el.placeholder = el.dataset["placeholder" + (language === "rw" ? "Rw" : "En")]);
     renderHome(); renderCategories(); renderSaved(); renderCart();
-    if(window.renderAccount) window.renderAccount();
-    if(window.renderServices) window.renderServices();
-    if(window.gdRefreshShops) window.gdRefreshShops();
+    if (window.renderAccount) window.renderAccount();
+    if (window.renderServices) window.renderServices();
+    if (window.gdRefreshShops) window.gdRefreshShops();
     renderOrderDone();
+    translatePage();
+    startLanguageObserver();
   }
   function handleSearch(value) {
     searchTerm=value.trim().toLowerCase();
@@ -900,7 +994,7 @@
   }
   function init(){
     document.getElementById("year").textContent=new Date().getFullYear();
-    setLanguage("rw");
+    setLanguage(localStorage.getItem("gdLanguage") || "rw");
   }
   init();
 </script>
