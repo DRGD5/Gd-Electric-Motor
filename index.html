@@ -557,6 +557,7 @@
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminServicesSection')"><span>🛠️ Serivisi dukora <span class="users-count count-total" id="svcTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span>🧩 Ibice bya website</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminShopsSection')"><span>🏪 Amaduka y'abakiriya <span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminChatSection')"><span>💬 Chat n'abakiriya <span class="users-count count-total" id="chatTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span>📦 Ibyatumijwe (Orders) <span class="users-count count-new" id="ordersNewBadge" hidden>0</span> <span class="users-count count-total" id="ordersTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminRequestsSection')"><span>🛒 Ubusabe bwa serivisi <span class="users-count count-new" id="reqNewBadge" hidden>0</span> <span class="users-count count-total" id="reqTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span>➕ Ongeramo igicuruzwa</span><span class="shortcut-arrow">›</span></button>
@@ -564,11 +565,12 @@
 
       <div class="info-card admin-section" id="adminServicesSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminServicesSection')"><h2>🛠️ Serivisi dukora</h2><span class="shortcut-arrow">⌃</span></button>
-        <form onsubmit="adminSaveService(event)">
+        <form id="svcForm" onsubmit="adminSaveService(event)">
           <div class="form-row"><input id="svcName" placeholder="Izina rya serivisi (urugero: Rewinding)" required></div>
           <div class="form-row"><textarea id="svcDesc" placeholder="Ibisobanuro bigufi"></textarea></div>
           <div class="form-row"><label>Ifoto (si ngombwa)</label><input id="svcImage" type="file" accept="image/*"></div>
           <button class="primary" type="submit" id="svcBtn">Bika serivisi</button>
+          <button class="secondary" type="button" id="svcCancelBtn" onclick="adminCancelServiceEdit()" hidden>Reka guhindura</button>
           <div id="svcMsg" class="status-msg"></div>
         </form>
         <div id="adminServices"></div>
@@ -577,13 +579,14 @@
       <div class="info-card admin-section" id="adminSectionsSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminSectionsSection')"><h2>🧩 Ibice bya website</h2><span class="shortcut-arrow">⌃</span></button>
         <p>Kora igice gishya kigaragara ku rupapuro rwa mbere (Ahabanza), munsi y'ibicuruzwa.</p>
-        <form onsubmit="adminSaveSection(event)">
+        <form id="secForm" onsubmit="adminSaveSection(event)">
           <div class="form-row"><input id="secTitle" placeholder="Umutwe w'igice (urugero: Ibyo dukora)" required></div>
           <div class="form-row"><textarea id="secBody" placeholder="Ibisobanuro (si ngombwa)"></textarea></div>
           <div class="form-row"><label>Ifoto (si ngombwa)</label><input id="secImage" type="file" accept="image/*"></div>
           <div class="form-row"><input id="secBtnLabel" placeholder="Izina rya button (si ngombwa, urugero: Reba byinshi)"></div>
           <div class="form-row"><input id="secBtnLink" placeholder="Link ya button (https://... cyangwa nimero ya WhatsApp)"></div>
           <button class="primary" type="submit" id="secBtn">Bika igice</button>
+          <button class="secondary" type="button" id="secCancelBtn" onclick="adminCancelSectionEdit()" hidden>Reka guhindura</button>
           <div id="secMsg" class="status-msg"></div>
         </form>
         <div id="adminSections"></div>
@@ -592,6 +595,12 @@
       <div class="info-card admin-section" id="adminShopsSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminShopsSection')"><h2>🏪 Amaduka y'abakiriya</h2><span class="shortcut-arrow">⌃</span></button>
         <div id="adminShops"></div>
+      </div>
+
+      <div class="info-card admin-section" id="adminChatSection" hidden>
+        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminChatSection')"><h2>💬 Chat n'abakiriya</h2><span class="shortcut-arrow">⌃</span></button>
+        <p>Hitamo umukiriya kugira ngo usome ubutumwa kandi umusubize.</p>
+        <div id="adminChatThreads"></div>
       </div>
 
       <div class="info-card admin-section" id="adminOrdersSection" hidden>
@@ -630,6 +639,17 @@
     </div>
   </section>
 </main>
+
+<style>
+#gdChatPanel{position:fixed;right:14px;bottom:88px;width:min(360px,calc(100vw - 28px));height:min(480px,65vh);z-index:10050;background:#111426;color:#f4f4ff;border:1px solid #39334e;border-radius:18px;box-shadow:0 12px 40px #0006;display:flex;flex-direction:column;overflow:hidden}
+#gdChatPanel[hidden]{display:none}#gdChatHead{padding:13px;background:#5420df;display:flex;justify-content:space-between;align-items:center;font-weight:800}
+#gdChatMessages{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.gd-chat-msg{padding:9px 11px;border-radius:12px;background:#22253a;max-width:88%;overflow-wrap:anywhere;align-self:flex-start}.gd-chat-msg.mine{align-self:flex-end;background:#5420df}.gd-chat-msg small{display:block;opacity:.7;font-size:10px;margin-top:4px}
+#gdChatForm{display:flex;gap:6px;padding:9px;border-top:1px solid #33364b}#gdChatInput{flex:1;min-width:0;background:#090b17;color:white;border:1px solid #39334e;border-radius:10px;padding:10px}#gdChatForm button{background:#5420df;color:white;border:0;border-radius:10px;padding:10px;font-weight:bold}
+.gd-chat-thread{padding:10px;border-bottom:1px solid #33364b;display:flex;justify-content:space-between;gap:10px;align-items:center}.gd-chat-thread button{background:#5420df;color:white;border:0;border-radius:9px;padding:8px}
+</style>
+<button type="button" id="gdChatOpenBtn" aria-label="Chat with GD Electric Motors" onclick="gdOpenChat()" style="position:fixed;right:18px;bottom:155px;z-index:10040;border:0;border-radius:50%;width:58px;height:58px;background:#5420df;color:white;font-size:25px;box-shadow:0 8px 24px #5420df66">💬</button>
+<section id="gdChatPanel" hidden aria-label="Customer chat"><div id="gdChatHead"><span id="gdChatTitle">Chat na GD Electric Motors</span><button type="button" onclick="gdCloseChat()" style="background:transparent;color:white;border:0;font-size:22px">×</button></div><div id="gdChatMessages"><p>Muraho! Andika ubutumwa bwawe hano.</p></div><form id="gdChatForm" onsubmit="gdSendChat(event)"><input id="gdChatInput" maxlength="1500" placeholder="Andika ubutumwa..." required><button type="submit">Ohereza</button></form></section>
 
 <a href="#" class="whatsapp-float" aria-label="Twandikire kuri WhatsApp" onclick="contactWhatsApp();return false;">☏</a>
 
@@ -673,7 +693,14 @@
 
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const iconOf = p => p.icon || categories.find(c=>c.id===p.category)?.icon || "⚙️";
-  let hiddenSampleIds = [], dbList = [];
+  let hiddenSampleIds = [], dbList = [], sampleOverrides = {};
+  function applySampleOverrides() {
+    sampleProducts.forEach(p => { const patch = sampleOverrides[String(p.id)]; if (patch) Object.assign(p, patch); });
+  }
+  onSnapshot(doc(db, "settings", "sampleProductOverrides"), snap => {
+    sampleOverrides = snap.exists() ? (snap.data() || {}) : {};
+    applySampleOverrides(); setProducts(dbList); renderAdminList();
+  }, err => console.warn("Sample product overrides:", err));
   function setProducts(list) {
     dbList = list || [];
     // Added products first (newest), the original sample products stay unless the admin hides them.
@@ -907,7 +934,7 @@
   const $ = id => document.getElementById(id);
 
   let dbProducts = [];
-  let editingId = null, editingImage = "";
+  let editingId = null, editingImage = "", editingSampleId = null;
   let currentUser = null;
   const ADMIN_EMAIL = "gady22th@gmail.com"; // must match the admin email in Firebase Authentication and in the Firestore rules
   let profile = null, pendingProfile = null, myOrders = [], allOrders = [], myServiceRequests = [], allServiceRequests = [], accMode = "login", allUsers = [], unsubUsers = null, unsubOrders = null, unsubServiceRequests = null;
@@ -927,7 +954,7 @@
   const ROLE_PERMS = { manager: ["products","services","orders","requests","sections"], staff: ["orders","requests"], sales: ["orders","products"], technician: ["requests"] };
   let perms = new Set(), listenerKey = "", listenerUnsubs = [], unsubProfile = null;
   window.gdCan = p => perms.has(p);
-  const computePerms = (user, prof) => isAdminUser(user) ? new Set(["products","services","orders","requests","users","sections","shops"]) : new Set(ROLE_PERMS[(prof && prof.role) || ""] || []);
+  const computePerms = (user, prof) => isAdminUser(user) ? new Set(["products","services","orders","requests","users","sections","shops","chats"]) : new Set(ROLE_PERMS[(prof && prof.role) || ""] || []);
 
   function stopListeners() { listenerUnsubs.forEach(f => { try { f(); } catch (e) {} }); listenerUnsubs = []; listenerKey = ""; }
 
@@ -936,7 +963,7 @@
     renderCustomSections(); renderShopsHome(); renderAdminShops();
     $("adminDenied").hidden = !(currentUser && !staff);
     $("adminPanel").hidden = !staff;
-    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection"], shops: ["adminShopsSection"] };
+    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection"], shops: ["adminShopsSection"], chats: ["adminChatSection"] };
     Object.keys(map).forEach(perm => {
       const ok = perms.has(perm);
       map[perm].forEach(id => {
@@ -956,6 +983,10 @@
     stopListeners(); listenerKey = key;
     myOrders = []; allOrders = []; myServiceRequests = []; allServiceRequests = []; window.gdMyOrders = [];
     const owner = isAdminUser(user);
+    if (owner) listenerUnsubs.push(onSnapshot(collection(db, "chats"), snap => {
+      chatThreads = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+      renderAdminChatThreads();
+    }, err => { console.warn("Chat threads:", err); const box=$("adminChatThreads"); if(box) box.innerHTML="<p>Chat ntiboneka. Reba Firestore Rules kuri chats.</p>"; }));
     const sortNew = snap => snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     const mine = name => query(collection(db, name), where("userId", "==", user.uid));
     if (perms.has("orders")) listenerUnsubs.push(onSnapshot(collection(db, "orders"), snap => { allOrders = sortNew(snap); renderAdminOrders(); }, err => console.error("Orders:", err)));
@@ -1104,6 +1135,50 @@
     setBadge("svcTotalBadge", (window.gdServicesCount || 0));
   }
   window.updateAdminBadges = updateAdminBadges;
+  // ----- customer / admin live chat -----
+  let activeChatId = null, activeChatAdmin = false, unsubChatMessages = null, chatThreads = [];
+  function stopChatMessages() { if (unsubChatMessages) { unsubChatMessages(); unsubChatMessages = null; } }
+  function renderChatMessages(list) {
+    const box = $("gdChatMessages"); if (!box) return;
+    box.innerHTML = list.length ? list.map(m => `<div class="gd-chat-msg ${(activeChatAdmin ? m.senderRole === "admin" : m.senderId === (currentUser && currentUser.uid)) ? "mine" : ""}">${esc(m.text || "")}<small>${esc(m.senderName || (m.senderRole === "admin" ? "GD Electric Motors" : "Umukiriya"))} · ${m.createdAt ? new Date(m.createdAt).toLocaleString() : ""}</small></div>`).join("") : "<p>Ubutumwa bwawe buzagaragara hano.</p>";
+    box.scrollTop = box.scrollHeight;
+  }
+  function watchChatMessages(uid, adminMode) {
+    stopChatMessages(); activeChatId = uid; activeChatAdmin = adminMode;
+    $("gdChatTitle").textContent = adminMode ? "Chat: " + (chatThreads.find(c => c.id === uid)?.name || uid) : "Chat na GD Electric Motors";
+    unsubChatMessages = onSnapshot(collection(db, "chats", uid, "messages"), snap => {
+      const list = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+      renderChatMessages(list);
+    }, err => { console.error("Chat messages:", err); $("gdChatMessages").innerHTML = "<p>Ntibishobotse gusoma ubutumwa. Reba amategeko ya Firebase (Firestore Rules).</p>"; });
+  }
+  window.gdOpenChat = async () => {
+    if (!currentUser) { alert("Banza winjire muri konti kugira ngo wandikire GD Electric Motors."); showView("account"); return; }
+    $("gdChatPanel").hidden = false;
+    try {
+      await setDoc(doc(db, "chats", currentUser.uid), { userId: currentUser.uid, name: (profile && profile.name) || currentUser.displayName || "Umukiriya", email: currentUser.email || "", phone: (profile && profile.phone) || "", updatedAt: Date.now() }, { merge: true });
+      watchChatMessages(currentUser.uid, false);
+    } catch (err) { console.error(err); $("gdChatMessages").innerHTML = "<p>Chat ntiyafungutse. Reba internet cyangwa Firestore Rules.</p>"; }
+  };
+  window.gdCloseChat = () => { $("gdChatPanel").hidden = true; stopChatMessages(); };
+  window.gdAdminOpenChat = uid => { $("gdChatPanel").hidden = false; watchChatMessages(uid, true); };
+  window.gdSendChat = async e => {
+    e.preventDefault(); if (!currentUser || !activeChatId) return;
+    const input = $("gdChatInput"), textValue = input.value.trim(); if (!textValue) return;
+    const uid = activeChatId, adminMode = activeChatAdmin;
+    input.disabled = true;
+    try {
+      await addDoc(collection(db, "chats", uid, "messages"), { text: textValue, senderId: currentUser.uid, senderRole: adminMode ? "admin" : "customer", senderName: adminMode ? "GD Electric Motors" : ((profile && profile.name) || currentUser.displayName || "Umukiriya"), createdAt: Date.now() });
+      await setDoc(doc(db, "chats", uid), { userId: uid, lastMessage: textValue, updatedAt: Date.now(), lastSenderRole: adminMode ? "admin" : "customer" }, { merge: true });
+      input.value = "";
+    } catch (err) { alert("Ubutumwa ntibwoherejwe: " + (err.code || err.message) + ". Reba Firestore Rules."); }
+    input.disabled = false; input.focus();
+  };
+  function renderAdminChatThreads() {
+    const el = $("adminChatThreads"); if (!el) return;
+    const b = $("chatTotalBadge"); if (b) { b.textContent = String(chatThreads.length); b.hidden = !chatThreads.length; }
+    el.innerHTML = chatThreads.length ? chatThreads.map(c => `<div class="gd-chat-thread"><div><strong>${esc(c.name || "Umukiriya")}</strong><br><small>${esc(c.phone || c.email || c.id)}</small><br><small>${esc(c.lastMessage || "Nta butumwa burandikwa")}</small></div><button onclick="gdAdminOpenChat('${esc(c.id)}')">Subiza</button></div>`).join("") : "<p>Nta biganiro birahari. Ubutumwa bw'abakiriya buzagaragara hano.</p>";
+  }
+
   function renderAdminOrders() {
     updateAdminBadges();
     const el = $("adminOrders"); if (!el) return;
@@ -1115,6 +1190,7 @@
           <small>${esc(o.email || "Guest order")} · ${new Date(o.createdAt || 0).toLocaleString()}</small>
           <div style="margin-top:6px;color:var(--muted);font-size:.88rem">${(o.items || []).map(i => esc(i.name) + " × " + Number(i.qty)).join("<br>")}</div>
           <div style="margin-top:6px;font-weight:900"><span style="color:var(--green)">${money(o.total || 0)}</span> · ${esc(statusLabel(o.status))}</div>
+          <div class="btns" style="margin-top:8px"><button class="secondary" onclick="adminEditOrderPrice('${esc(o.id)}')">✏️ Hindura igiciro</button>${o.status === "done" ? `<button class="primary" onclick="gdPrintReceipt('${esc(o.id)}')">🧾 Print Receipt</button>` : ""}</div>
           ${o.cancelReason ? `<small>${t("Cancellation reason", "Impamvu yo guhagarika")}: ${esc(o.cancelReason)}</small>` : ""}
         </div>
         <div class="btns" style="flex-wrap:wrap">
@@ -1214,20 +1290,37 @@
       console.error(err); alert(t("Could not send the request. Check your internet connection or Firebase rules.", "Ntibyashobotse kohereza ubusabe. Reba internet cyangwa amategeko ya Firebase."));
     }
   };
+  let editingServiceId = null, editingServiceImage = "";
   function renderAdminServices() {
     const el = $("adminServices"); if (!el) return;
     const defHidden = hiddenServiceIds.includes("default");
     const defRow = `<div class="admin-row"><div class="cart-details"><strong>Gusubiza amashanyarazi muri moteri (Rewinding)</strong><small>Iy'ibanze ${defHidden ? "· yahishwe" : ""}</small></div><div class="btns"><button class="secondary ${defHidden ? "" : "danger-btn"}" onclick="adminToggleDefaultService()">${defHidden ? "Subiza" : "Siba"}</button></div></div>`;
-    el.innerHTML = defRow + services.map(v => `<div class="admin-row"><div class="cart-details"><strong>${esc(v.name)}</strong></div><div class="btns"><button class="secondary danger-btn" onclick="adminDeleteService('${esc(v.id)}')">Siba</button></div></div>`).join("");
+    el.innerHTML = defRow + services.map(v => `<div class="admin-row"><div class="cart-details"><strong>${esc(v.name)}</strong><small>${esc(v.desc || "")}</small></div><div class="btns"><button class="secondary" onclick="adminEditService('${esc(v.id)}')">Hindura</button><button class="secondary danger-btn" onclick="adminDeleteService('${esc(v.id)}')">Siba</button></div></div>`).join("");
   }
+  window.adminEditService = id => {
+    const v = services.find(x => x.id === id); if (!v) return;
+    editingServiceId = id; editingServiceImage = v.imageUrl || "";
+    $("svcName").value = v.name || ""; $("svcDesc").value = v.desc || ""; $("svcImage").value = "";
+    $("svcBtn").textContent = "Bika impinduka"; $("svcCancelBtn").hidden = false;
+    $("svcName").scrollIntoView({behavior:"smooth",block:"center"});
+  };
+  window.adminCancelServiceEdit = () => {
+    editingServiceId = null; editingServiceImage = "";
+    $("svcForm").reset(); $("svcBtn").textContent = "Bika serivisi"; $("svcCancelBtn").hidden = true;
+    msg("svcMsg", "");
+  };
   window.adminSaveService = async e => {
     e.preventDefault();
     const btn = $("svcBtn"); btn.disabled = true; msg("svcMsg", "Birabikwa...");
     try {
-      let imageUrl = ""; const file = $("svcImage").files[0];
+      let imageUrl = editingServiceImage; const file = $("svcImage").files[0];
       if (file) imageUrl = await uploadToCloudinary(file);
-      await addDoc(collection(db, "services"), { name: $("svcName").value.trim(), desc: $("svcDesc").value.trim(), imageUrl, createdAt: Date.now() });
-      e.target.reset(); msg("svcMsg", "Serivisi yabitswe.", "ok");
+      const data = { name: $("svcName").value.trim(), desc: $("svcDesc").value.trim(), imageUrl, updatedAt: Date.now() };
+      if (!data.name) throw new Error("Andika izina rya serivisi.");
+      const wasEditing = !!editingServiceId;
+      if (editingServiceId) await updateDoc(doc(db, "services", editingServiceId), data);
+      else await addDoc(collection(db, "services"), { ...data, createdAt: Date.now() });
+      window.adminCancelServiceEdit(); msg("svcMsg", wasEditing ? "Impinduka zabitswe." : "Serivisi yabitswe.", "ok");
     } catch (err) { console.error(err); msg("svcMsg", "Ntibyakunze: " + (err.code || err.message), "err"); }
     btn.disabled = false;
   };
@@ -1242,7 +1335,7 @@
     try { await deleteDoc(doc(db, "services", id)); } catch (err) { alert("Gusiba byanze: " + (err.code || err.message)); }
   };
   // ----- custom website sections -----
-  let customSections = [];
+  let customSections = [], editingSectionId = null, editingSectionImage = "";
   onSnapshot(collection(db, "sections"), snap => {
     customSections = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
     renderCustomSections(); renderAdminSections();
@@ -1266,17 +1359,35 @@
   };
   function renderAdminSections() {
     const el = $("adminSections"); if (!el) return;
-    el.innerHTML = customSections.map(v => `<div class="admin-row"><div class="cart-details"><strong>${esc(v.title)}</strong></div><div class="btns"><button class="secondary danger-btn" onclick="adminDeleteSection('${esc(v.id)}')">Siba</button></div></div>`).join("");
+    el.innerHTML = customSections.map(v => `<div class="admin-row"><div class="cart-details"><strong>${esc(v.title)}</strong></div><div class="btns"><button class="secondary" onclick="adminEditSection('${esc(v.id)}')">Hindura</button><button class="secondary danger-btn" onclick="adminDeleteSection('${esc(v.id)}')">Siba</button></div></div>`).join("");
   }
+  window.adminEditSection = id => {
+    const v = customSections.find(x => x.id === id); if (!v) return;
+    editingSectionId = id; editingSectionImage = v.imageUrl || "";
+    $("secTitle").value = v.title || ""; $("secBody").value = v.body || "";
+    $("secBtnLabel").value = v.btnLabel || ""; $("secBtnLink").value = v.btnLink || "";
+    $("secImage").value = ""; $("secBtn").textContent = "Bika impinduka"; $("secCancelBtn").hidden = false;
+    const sec = $("adminSectionsSection"); if (sec && sec.hidden) toggleAdminSection("adminSectionsSection");
+    $("secTitle").scrollIntoView({behavior:"smooth",block:"center"});
+  };
+  window.adminCancelSectionEdit = () => {
+    editingSectionId = null; editingSectionImage = "";
+    $("secForm").reset(); $("secBtn").textContent = "Bika igice"; $("secCancelBtn").hidden = true;
+    msg("secMsg", "");
+  };
   window.adminSaveSection = async e => {
     e.preventDefault();
     if (!perms.has("sections")) return;
     const btn = $("secBtn"); btn.disabled = true; msg("secMsg", "Birabikwa...");
     try {
-      let imageUrl = ""; const file = $("secImage").files[0];
+      let imageUrl = editingSectionImage; const file = $("secImage").files[0];
       if (file) imageUrl = await uploadToCloudinary(file);
-      await addDoc(collection(db, "sections"), { title: $("secTitle").value.trim(), body: $("secBody").value.trim(), imageUrl, btnLabel: $("secBtnLabel").value.trim(), btnLink: $("secBtnLink").value.trim(), createdAt: Date.now() });
-      e.target.reset(); msg("secMsg", "Igice cyabitswe. Reba ku rupapuro rwa mbere.", "ok");
+      const data = { title: $("secTitle").value.trim(), body: $("secBody").value.trim(), imageUrl, btnLabel: $("secBtnLabel").value.trim(), btnLink: $("secBtnLink").value.trim(), updatedAt: Date.now() };
+      if (!data.title) throw new Error("Andika umutwe w'igice.");
+      const wasEditing = !!editingSectionId;
+      if (editingSectionId) await updateDoc(doc(db, "sections", editingSectionId), data);
+      else await addDoc(collection(db, "sections"), { ...data, createdAt: Date.now() });
+      window.adminCancelSectionEdit(); msg("secMsg", wasEditing ? "Impinduka zabitswe." : "Igice cyabitswe. Reba ku rupapuro rwa mbere.", "ok");
     } catch (err) { console.error(err); msg("secMsg", "Ntibyakunze: " + (err.code || err.message), "err"); }
     btn.disabled = false;
   };
@@ -1435,6 +1546,28 @@
     if (!confirm("Guhagarika iyi order? Amateka yayo azagumaho.")) return;
     window.adminOrderStatus(id, "cancelled");
   };
+  window.adminEditOrderPrice = async id => {
+    const o = allOrders.find(x => x.id === id); if (!o) return;
+    const raw = prompt("Andika igiciro gishya cyose (RWF):", String(Number(o.total || 0)));
+    if (raw === null) return;
+    const total = Number(raw);
+    if (!Number.isFinite(total) || total < 0 || raw.trim() === "") { alert("Andika igiciro cyemewe."); return; }
+    try {
+      await updateDoc(doc(db, "orders", id), { total, priceEditedAt: Date.now(), priceEditedBy: (currentUser && currentUser.email) || "" });
+      alert("Igiciro cyahinduwe neza. Print Receipt izagaragara igihe commande izaba ishojwe.");
+    } catch (err) { alert("Guhindura igiciro byanze: " + (err.code || err.message)); }
+  };
+  window.gdPrintReceipt = id => {
+    const o = allOrders.find(x => x.id === id); if (!o) return alert("Commande ntiyabonetse.");
+    if (o.status !== "done") return alert("Banza ushyire commande kuri 'Byarangiye / Byatanze' mbere yo gukora receipt.");
+    const lines = (o.items || []).map(i => `<tr><td>${esc(i.name || "Igicuruzwa")}</td><td>${Number(i.qty || 1)}</td></tr>`).join("");
+    const textMsg = `GD ELECTRIC MOTORS - RECEIPT\nCustomer: ${o.name || ""}\nPhone: ${o.phone || ""}\nItems: ${(o.items || []).map(i => `${i.name} x${i.qty}`).join(", ")}\nTOTAL: ${money(o.total || 0)}\nStatus: Completed. Please make payment.`;
+    const phone = String(o.phone || "").replace(/[^0-9]/g, "").replace(/^0/, "250");
+    const w = window.open("", "_blank");
+    if (!w) return alert("Browser yabujije gufungura receipt. Emerera pop-ups hanyuma wongere ugerageze.");
+    w.document.write(`<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Receipt - GD Electric Motors</title><style>body{font:16px Arial,sans-serif;color:#111;max-width:720px;margin:25px auto;padding:18px}h1{text-align:center}small{color:#555}table{width:100%;border-collapse:collapse;margin:22px 0}th,td{padding:10px;border-bottom:1px solid #ccc;text-align:left}.total{font-size:22px;font-weight:bold;text-align:right}.actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}button,a{padding:12px 16px;border:0;border-radius:8px;background:#5420df;color:white;text-decoration:none;font-weight:bold}@media print{.actions{display:none}body{margin:0}}</style></head><body><h1>GD ELECTRIC MOTORS</h1><p style="text-align:center">PAYMENT RECEIPT</p><hr><p><b>Receipt / Order:</b> ${esc(o.id)}<br><b>Customer:</b> ${esc(o.name || "")}<br><b>Phone:</b> ${esc(o.phone || "")}<br><b>Date:</b> ${new Date(o.createdAt || Date.now()).toLocaleString()}</p><table><thead><tr><th>Item</th><th>Qty</th></tr></thead><tbody>${lines}</tbody></table><p class="total">TOTAL: ${money(o.total || 0)}</p><p><b>Status:</b> Completed / Byarangiye</p><p>Please make payment using the payment details provided by GD Electric Motors.</p><div class="actions"><button onclick="window.print()">🖨️ Print / Save PDF</button>${phone ? `<a target="_blank" rel="noopener" href="https://wa.me/${esc(phone)}?text=${encodeURIComponent(textMsg)}">Send receipt details on WhatsApp</a>` : ""}</div><small>Receipt generated by GD Electric Motors.</small></body></html>`);
+    w.document.close();
+  };
   window.adminServiceRequestStatus = async (id, status) => {
     let data = { status, updatedAt: Date.now() };
     if (status === "cancelled") {
@@ -1503,11 +1636,15 @@
       const file = $("fPhoto").files[0];
       if (file) { msg("adminMsg", "Ifoto iri koherezwa..."); imageUrl = await uploadToCloudinary(file); }
 
-      const id = editingId || Date.now();
-      await setDoc(doc(db, "products", String(id)), {
-        category: $("fCategory").value, en: nameEn, rw: nameRw, descEn, descRw,
-        price, oldPrice: old, imageUrl: imageUrl || ""
-      });
+      const productData = { category: $("fCategory").value, en: nameEn, rw: nameRw, descEn, descRw, price, oldPrice: old, imageUrl: imageUrl || "" };
+      if (editingSampleId !== null) {
+        await setDoc(doc(db, "settings", "sampleProductOverrides"), { [String(editingSampleId)]: productData }, { merge: true });
+        Object.assign(sampleProducts.find(x => x.id === editingSampleId) || {}, productData);
+        applySampleOverrides(); setProducts(dbList); renderAdminList();
+      } else {
+        const id = editingId || Date.now();
+        await setDoc(doc(db, "products", String(id)), productData);
+      }
       msg("adminMsg", "Byabitswe neza ✓", "ok");
       resetForm(true);
     } catch (err) {
@@ -1526,7 +1663,7 @@
   };
 
   function resetForm(keepMsg) {
-    editingId = null; editingImage = "";
+    editingId = null; editingImage = ""; editingSampleId = null;
     $("adminForm").reset(); fillCategories();
     $("fPreview").style.display = "none";
     $("adminFormTitle").textContent = "Ongeramo igicuruzwa";
@@ -1576,10 +1713,24 @@
       <div class="admin-row" style="${h ? "opacity:.6" : ""}">
         <div class="cart-emoji">${p.imageUrl ? `<img src="${esc(p.imageUrl)}" alt="">` : iconOf(p)}</div>
         <div class="cart-details"><strong>${esc(p.rw || p.en)}</strong><small>${money(p.price)} · Icy'ibanze ${h ? "· cyahishwe" : ""}</small></div>
-        <div class="btns"><button class="secondary ${h ? "" : "danger-btn"}" onclick="adminToggleSample(${p.id})">${h ? "Subiza" : "Siba"}</button></div>
+        <div class="btns"><button class="secondary" onclick="adminEditSample(${p.id})">Hindura</button><button class="secondary ${h ? "" : "danger-btn"}" onclick="adminToggleSample(${p.id})">${h ? "Subiza" : "Siba"}</button></div>
       </div>`; }).join("");
     el.innerHTML = (mine || '<p style="color:var(--muted)">Nta gicuruzwa urongeramo.</p>') + '<h3 style="margin:16px 0 4px">Ibicuruzwa by\'ibanze</h3><p style="color:var(--muted);margin:0 0 6px">Bikomeza kugaragara hamwe n\'ibyo wongeraho, keretse ubisibye.</p>' + base;
   }
+  window.adminEditSample = id => {
+    const p = sampleProducts.find(x => x.id === Number(id)); if (!p) return;
+    editingId = null; editingSampleId = Number(id); editingImage = p.imageUrl || "";
+    $("fNameRw").value = p.rw || ""; $("fNameEn").value = p.en || "";
+    $("fDescRw").value = p.descRw || ""; $("fDescEn").value = p.descEn || "";
+    $("fCategory").value = p.category; $("fPrice").value = p.price;
+    $("fOldPrice").value = p.oldPrice ?? ""; $("fPhoto").value = "";
+    adminPreview($("fPhoto"));
+    $("adminFormTitle").textContent = "Hindura igicuruzwa cy'ibanze";
+    $("adminSaveBtn").textContent = "Bika impinduka";
+    $("adminCancelBtn").hidden = false; msg("adminMsg", "");
+    const sec = $("adminAddProductSection"); if (sec) sec.hidden = false;
+    $("adminForm").scrollIntoView({ behavior: "smooth", block: "start" });
+  };
   window.adminToggleSample = async id => {
     const hide = !hiddenSampleIds.includes(id);
     if (hide && !confirm("Guhisha iki gicuruzwa cy'ibanze? Ushobora kucyisubiza nyuma.")) return;
