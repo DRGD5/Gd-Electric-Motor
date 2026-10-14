@@ -216,6 +216,9 @@
     .shop-prod p { margin:0; font-size:.88rem; opacity:.85; }
     .shop-form-box { background:#141830; border:1px solid #2b3160; border-radius:20px; padding:16px; margin-top:14px; }
     .shop-form-box .form-row { margin-bottom:10px; }
+    .users-count.count-new { background:#ef4444; color:#fff; }
+    .users-count.count-total { background:#e2e8f0; color:#1e293b; }
+    .admin-shortcut .users-count { display:inline-block; font-size:.85rem; padding:2px 10px; margin-left:4px; }
     .users-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
     .users-head h2 { margin:0; color:#5eead4; }
     .users-count { background:#2dd4bf; color:#032b28; font-weight:900; border-radius:99px; padding:4px 12px; font-size:.85rem; white-space:nowrap; }
@@ -383,12 +386,12 @@
       </div>
 
       <div class="admin-shortcuts" aria-label="Admin menu">
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminServicesSection')"><span>🛠️ Serivisi dukora</span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminServicesSection')"><span>🛠️ Serivisi dukora <span class="users-count count-total" id="svcTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span>🧩 Ibice bya website</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminShopsSection')"><span>🏪 Amaduka y'abakiriya <span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span>📦 Ibyatumijwe (Orders)</span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminRequestsSection')"><span>🛒 Ubusabe bwa serivisi</span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span>➕ Ongeramo igicuruzwa</span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span>📦 Ibyatumijwe (Orders) <span class="users-count count-new" id="ordersNewBadge" hidden>0</span> <span class="users-count count-total" id="ordersTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminRequestsSection')"><span>🛒 Ubusabe bwa serivisi <span class="users-count count-new" id="reqNewBadge" hidden>0</span> <span class="users-count count-total" id="reqTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span>➕ Ongeramo igicuruzwa <span class="users-count count-total" id="prodTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
       </div>
 
       <div class="info-card admin-section" id="adminServicesSection" hidden>
@@ -743,6 +746,7 @@
   onSnapshot(collection(db, "products"), snap => {
     dbProducts = snap.docs.map(d => ({ ...d.data(), id: Number(d.id) })).sort((a,b) => b.id - a.id);
     setProducts(dbProducts);
+    window.gdProductsCount = dbProducts.length; if (window.updateAdminBadges) window.updateAdminBadges();
     renderAdminList();
   }, err => console.error("Firestore:", err));
 
@@ -922,7 +926,15 @@
     return { name, phone };
   };
 
+  function setBadge(id, n) { const b = $(id); if (b) { b.textContent = n; b.hidden = !n; } }
+  function updateAdminBadges() {
+    setBadge("ordersNewBadge", allOrders.filter(o => o.status === "new").length); setBadge("ordersTotalBadge", allOrders.length);
+    setBadge("reqNewBadge", allServiceRequests.filter(r => r.status === "new").length); setBadge("reqTotalBadge", allServiceRequests.length);
+    setBadge("svcTotalBadge", (window.gdServicesCount || 0)); setBadge("prodTotalBadge", (window.gdProductsCount || 0));
+  }
+  window.updateAdminBadges = updateAdminBadges;
   function renderAdminOrders() {
+    updateAdminBadges();
     const el = $("adminOrders"); if (!el) return;
     const statuses = ["new", "processing", "ready", "done", "cancelled"];
     el.innerHTML = allOrders.length ? allOrders.map(o => `
@@ -967,6 +979,7 @@
   };
 
   function renderAdminServiceRequests() {
+    updateAdminBadges();
     const el = $("adminServiceRequests"); if (!el) return;
     const statuses = ["new", "processing", "ready", "done", "cancelled"];
     el.innerHTML = allServiceRequests.length ? allServiceRequests.map(r => `
@@ -987,6 +1000,7 @@
   let services = [];
   onSnapshot(collection(db, "services"), snap => {
     services = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+    window.gdServicesCount = services.length; if (window.updateAdminBadges) window.updateAdminBadges();
     renderServices(); renderAdminServices();
   }, err => console.error("Services:", err));
   function serviceList() {
