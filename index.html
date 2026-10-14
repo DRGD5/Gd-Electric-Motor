@@ -693,14 +693,7 @@
 
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const iconOf = p => p.icon || categories.find(c=>c.id===p.category)?.icon || "⚙️";
-  let hiddenSampleIds = [], dbList = [], sampleOverrides = {};
-  function applySampleOverrides() {
-    sampleProducts.forEach(p => { const patch = sampleOverrides[String(p.id)]; if (patch) Object.assign(p, patch); });
-  }
-  onSnapshot(doc(db, "settings", "sampleProductOverrides"), snap => {
-    sampleOverrides = snap.exists() ? (snap.data() || {}) : {};
-    applySampleOverrides(); setProducts(dbList); renderAdminList();
-  }, err => console.warn("Sample product overrides:", err));
+  let hiddenSampleIds = [], dbList = [];
   function setProducts(list) {
     dbList = list || [];
     // Added products first (newest), the original sample products stay unless the admin hides them.
@@ -932,6 +925,22 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
   const $ = id => document.getElementById(id);
+
+  // Sample product overrides must be handled inside this Firebase module.
+  // Keeping this listener here avoids stopping the classic homepage script at startup.
+  let sampleOverrides = {};
+  function applySampleOverrides() {
+    sampleProducts.forEach(p => {
+      const patch = sampleOverrides[String(p.id)];
+      if (patch) Object.assign(p, patch);
+    });
+  }
+  onSnapshot(doc(db, "settings", "sampleProductOverrides"), snap => {
+    sampleOverrides = snap.exists() ? (snap.data() || {}) : {};
+    applySampleOverrides();
+    setProducts(dbProducts);
+    renderAdminList();
+  }, err => console.warn("Sample product overrides:", err));
 
   let dbProducts = [];
   let editingId = null, editingImage = "", editingSampleId = null;
@@ -1640,7 +1649,7 @@
       if (editingSampleId !== null) {
         await setDoc(doc(db, "settings", "sampleProductOverrides"), { [String(editingSampleId)]: productData }, { merge: true });
         Object.assign(sampleProducts.find(x => x.id === editingSampleId) || {}, productData);
-        applySampleOverrides(); setProducts(dbList); renderAdminList();
+        applySampleOverrides(); setProducts(dbProducts); renderAdminList();
       } else {
         const id = editingId || Date.now();
         await setDoc(doc(db, "products", String(id)), productData);
