@@ -378,6 +378,51 @@
 }
 
 </style>
+<style>
+/* Services: horizontal swipe slider, similar to the reference shop page */
+#servicesSection { min-width: 0 !important; overflow: hidden !important; }
+#servicesSection .svc-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 14px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: scroll !important;
+  overflow-y: hidden !important;
+  touch-action: pan-x pan-y !important;
+  padding: 2px 2px 14px !important;
+  scroll-snap-type: x mandatory !important;
+  scroll-padding-left: 2px !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-x: contain !important;
+  scrollbar-width: thin;
+}
+#servicesSection .svc-card {
+  flex: 0 0 84% !important;
+  width: 84% !important;
+  max-width: 340px !important;
+  min-width: 84% !important;
+  margin: 0 !important;
+  scroll-snap-align: start !important;
+  border-radius: 18px !important;
+}
+#servicesSection .svc-card img {
+  display: block !important;
+  width: 100% !important;
+  height: clamp(155px, 48vw, 230px) !important;
+  max-height: none !important;
+  object-fit: cover !important;
+}
+#servicesSection .svc-body { padding: 14px !important; gap: 9px !important; }
+#servicesSection .svc-body h3 { font-size: 1.05rem !important; line-height: 1.35 !important; }
+#servicesSection .svc-body p { font-size: .9rem !important; line-height: 1.5 !important; }
+@media (min-width: 700px) {
+  #servicesSection .svc-card { flex-basis: 320px !important; width: 320px !important; }
+}
+</style>
 </head>
 <body>
 <header class="topbar">
@@ -1545,3 +1590,5 @@
 </script>
 </body>
 </html>
+
+
