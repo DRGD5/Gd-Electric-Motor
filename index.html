@@ -392,6 +392,15 @@
     .rc-total { margin:12px 0; font-size:1.2rem; text-align:right; }
     .rc-check { display:flex !important; align-items:center; gap:10px; }
     .rc-check input { width:22px; height:22px; }
+    .st-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:12px 0; }
+    .st-card { background:#0b0e1b; border:1px solid #2b3160; border-radius:16px; padding:12px; }
+    .st-card small { display:block; opacity:.75; }
+    .st-card b { font-size:1.6rem; display:block; margin:2px 0; color:#5eead4; }
+    .st-bars { display:flex; align-items:flex-end; gap:8px; height:150px; margin-top:8px; }
+    .st-bar { flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; height:100%; }
+    .st-bar i { display:block; width:100%; background:linear-gradient(180deg,#7b4dff,#5b2fe0); border-radius:8px 8px 0 0; min-height:3px; }
+    .st-bar span { font-size:.78rem; margin-top:4px; opacity:.8; }
+    .st-bar em { font-style:normal; font-size:.8rem; font-weight:800; margin-bottom:2px; }
 </style>
 <style>
 /* Services: horizontal swipe slider, similar to the reference shop page */
@@ -570,6 +579,7 @@
 
       <div class="admin-shortcuts" aria-label="Admin menu">
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminServicesSection')"><span>🛠️ Serivisi dukora <span class="users-count count-total" id="svcTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminStatsSection')"><span>📊 Abasuye website <span class="users-count count-new" id="statsTodayBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span>🧩 Ibice bya website</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminShopsSection')"><span>🏪 Amaduka y'abakiriya <span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminChatSection')"><span>💬 Chat n'abakiriya <span class="users-count count-total" id="chatTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
@@ -616,6 +626,11 @@
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminChatSection')"><h2>💬 Chat n'abakiriya</h2><span class="shortcut-arrow">⌃</span></button>
         <p>Hitamo umukiriya kugira ngo usome ubutumwa kandi umusubize.</p>
         <div id="adminChatThreads"></div>
+      </div>
+
+      <div class="info-card admin-section" id="adminStatsSection" hidden>
+        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminStatsSection')"><h2 data-en="📊 Website visitors" data-rw="📊 Abasuye website">📊 Abasuye website</h2><span class="shortcut-arrow">⌃</span></button>
+        <div id="adminStats"></div>
       </div>
 
       <div class="info-card admin-section" id="adminOrdersSection" hidden>
@@ -778,7 +793,7 @@
     "Igiteranyo cy'agateganyo":"Estimated total", "Ibiciro n'ibihari byemezwe natwe mbere yo kwishyura.":"Prices and stock should be confirmed with us before payment.",
     "Nta bicuruzwa bibonetse. Gerageza gushakisha ukundi.":"No products found. Try another search.", "Ukeneye ubufasha?":"Need help?",
     "Gura ukurikije ibyiciro":"Shop by category", "Banza winjire":"Please sign in first", "Amakuru yawe":"Your details", "Konti yawe":"Your account",
-    "Winjiye nka":"Signed in as", "Abakiriya (Accounts)":"Customers (Accounts)", "Ibice bya website":"Website sections",
+    "Abasuye website":"Website visitors", "Winjiye nka":"Signed in as", "Abakiriya (Accounts)":"Customers (Accounts)", "Ibice bya website":"Website sections",
     "Ubusabe bwa serivisi (Service Requests)":"Service Requests", "Muraho! Andika ubutumwa bwawe hano.":"Hello! Write your message here.",
     "Ibisobanuro (si ngombwa)":"Description (optional)", "Link ya button (https://... cyangwa nimero ya WhatsApp)":"Button link (https://... or WhatsApp number)",
     "Byiteguye gufatwa/kugezwa":"Ready for pickup/delivery", "Byarangiye / Byatanzwe":"Completed / Delivered", "Byahagaritswe":"Cancelled",
@@ -1031,7 +1046,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
-  import { getFirestore, collection, onSnapshot, doc, setDoc, getDoc, addDoc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+  import { getFirestore, collection, onSnapshot, doc, setDoc, getDoc, addDoc, updateDoc, deleteDoc, query, where, increment } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBxazRYoL06ufQcdAv5WNySmcqmXF7_z_E",
@@ -1081,12 +1096,49 @@
   }, err => console.error("Firestore:", err));
 
   // ----- admin auth -----
+  // ----- visitor statistics -----
+  const todayKey = () => new Date().toLocaleDateString("en-CA");
+  function countVisit() {
+    try {
+      if (localStorage.getItem("gdNoCount") || sessionStorage.getItem("gdSess")) return;
+      sessionStorage.setItem("gdSess", "1");
+      const day = todayKey(), isNew = !localStorage.getItem("gdVid"), uniq = localStorage.getItem("gdLastDay") !== day ? 1 : 0;
+      if (isNew) localStorage.setItem("gdVid", Math.random().toString(36).slice(2));
+      localStorage.setItem("gdLastDay", day);
+      const inc = () => ({ visits: increment(1), unique: increment(uniq), newV: increment(isNew ? 1 : 0) });
+      setDoc(doc(db, "stats", "d-" + day), { date: day, ...inc() }, { merge: true }).catch(() => {});
+      setDoc(doc(db, "stats", "total"), { date: "total", ...inc() }, { merge: true }).catch(() => {});
+    } catch (e) {}
+  }
+  let statsDocs = {};
+  function renderAdminStats() {
+    const el = $("adminStats"); if (!el) return;
+    const g = k => statsDocs[k] || { visits: 0, unique: 0, newV: 0 };
+    const dayKey = n => { const d = new Date(); d.setDate(d.getDate() - n); return "d-" + d.toLocaleDateString("en-CA"); };
+    const sum = (n, f) => { let t = 0; for (let i = 0; i < n; i++) t += g(dayKey(i))[f] || 0; return t; };
+    const td = g(dayKey(0)), yd = g(dayKey(1)), tot = g("total");
+    const badge = $("statsTodayBadge"); if (badge) { badge.textContent = td.unique || 0; badge.hidden = !(td.unique > 0); }
+    const days = []; for (let i = 6; i >= 0; i--) { const k = dayKey(i); days.push({ k, label: k.slice(7), v: g(k).unique || 0 }); }
+    const max = Math.max(1, ...days.map(d => d.v));
+    el.innerHTML = `<p style="opacity:.8;margin:6px 0">${t("Unique visitors = different phones/computers per day. Visits = times the site was opened.", "Abasuye (unique) = telefoni zitandukanye ku munsi. Gusura = inshuro urubuga rwafunguwe.")}</p>
+      <div class="st-grid">
+        <div class="st-card"><small>${t("Today", "Uyu munsi")}</small><b>${td.unique || 0}</b><small>${td.visits || 0} ${t("visits", "gusura")}</small></div>
+        <div class="st-card"><small>${t("Yesterday", "Ejo")}</small><b>${yd.unique || 0}</b><small>${yd.visits || 0} ${t("visits", "gusura")}</small></div>
+        <div class="st-card"><small>${t("Last 7 days", "Iminsi 7")}</small><b>${sum(7, "unique")}</b><small>${sum(7, "visits")} ${t("visits", "gusura")}</small></div>
+        <div class="st-card"><small>${t("Last 30 days", "Iminsi 30")}</small><b>${sum(30, "unique")}</b><small>${sum(30, "visits")} ${t("visits", "gusura")}</small></div>
+        <div class="st-card"><small>${t("All time visits", "Gusura byose")}</small><b>${tot.visits || 0}</b><small>${t("since stats started", "kuva twatangira kubara")}</small></div>
+        <div class="st-card"><small>${t("New visitors (all time)", "Abashya (byose)")}</small><b>${tot.newV || 0}</b><small>${t("first-time devices", "ababwa ku nshuro ya mbere")}</small></div>
+      </div>
+      <strong>${t("Unique visitors, last 7 days", "Abasuye mu minsi 7 ishize")}</strong>
+      <div class="st-bars">${days.map(d => `<div class="st-bar"><em>${d.v}</em><i style="height:${Math.round(d.v / max * 100)}%"></i><span>${esc(d.label)}</span></div>`).join("")}</div>`;
+  }
+
   // ----- roles & permissions -----
   // Owner (ADMIN_EMAIL) can do everything. Other roles get only what is listed here.
-  const ROLE_PERMS = { manager: ["products","services","orders","requests","sections","chats"], staff: ["orders","requests","chats"], sales: ["orders","products","chats"], technician: ["requests","chats"] };
+  const ROLE_PERMS = { manager: ["products","services","orders","requests","sections","chats","stats"], staff: ["orders","requests","chats"], sales: ["orders","products","chats"], technician: ["requests","chats"] };
   let perms = new Set(), listenerKey = "", listenerUnsubs = [], unsubProfile = null;
   window.gdCan = p => perms.has(p);
-  const computePerms = (user, prof) => isAdminUser(user) ? new Set(["products","services","orders","requests","users","sections","shops","chats"]) : new Set(ROLE_PERMS[(prof && prof.role) || ""] || []);
+  const computePerms = (user, prof) => isAdminUser(user) ? new Set(["products","services","orders","requests","users","sections","shops","stats","chats"]) : new Set(ROLE_PERMS[(prof && prof.role) || ""] || []);
 
   function stopListeners() { listenerUnsubs.forEach(f => { try { f(); } catch (e) {} }); listenerUnsubs = []; listenerKey = ""; }
 
@@ -1095,7 +1147,7 @@
     renderCustomSections(); renderShopsHome(); renderAdminShops();
     $("adminDenied").hidden = !(currentUser && !staff);
     $("adminPanel").hidden = !staff;
-    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection"], shops: ["adminShopsSection"], chats: ["adminChatSection"] };
+    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection"], shops: ["adminShopsSection"], stats: ["adminStatsSection"], chats: ["adminChatSection"] };
     Object.keys(map).forEach(perm => {
       const ok = perms.has(perm);
       map[perm].forEach(id => {
@@ -1115,6 +1167,7 @@
     stopListeners(); listenerKey = key;
     myOrders = []; allOrders = []; myServiceRequests = []; allServiceRequests = []; window.gdMyOrders = [];
     const owner = isAdminUser(user);
+    if (perms.has("stats")) listenerUnsubs.push(onSnapshot(collection(db, "stats"), snap => { statsDocs = {}; snap.docs.forEach(d => { statsDocs[d.id] = d.data(); }); renderAdminStats(); }, err => console.error("Stats:", err)));
     if (perms.has("chats")) listenerUnsubs.push(onSnapshot(collection(db, "chats"), snap => {
       chatThreads = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
       renderAdminChatThreads();
@@ -1134,6 +1187,8 @@
 
   onAuthStateChanged(auth, async user => {
     currentUser = user; window.gdUser = user;
+    if (user && isAdminUser(user)) { try { localStorage.setItem("gdNoCount", "1"); } catch (e) {} }
+    if (!window.gdVisitCounted) { window.gdVisitCounted = true; countVisit(); }
     if (unsubProfile) { unsubProfile(); unsubProfile = null; }
     stopListeners();
     if (window.gdShopAuth) window.gdShopAuth(user);
