@@ -401,6 +401,10 @@
     .st-bar i { display:block; width:100%; background:linear-gradient(180deg,#7b4dff,#5b2fe0); border-radius:8px 8px 0 0; min-height:3px; }
     .st-bar span { font-size:.78rem; margin-top:4px; opacity:.8; }
     .st-bar em { font-style:normal; font-size:.8rem; font-weight:800; margin-bottom:2px; }
+    /* floating chat + phone buttons: stacked (no overlap) and only on the Home page */
+    #gdChatOpenBtn { bottom:205px !important; right:18px !important; }
+    body[data-view]:not([data-view="home"]) .whatsapp-float,
+    body[data-view]:not([data-view="home"]) #gdChatOpenBtn { display:none !important; }
 </style>
 <style>
 /* Services: horizontal swipe slider, similar to the reference shop page */
@@ -841,6 +845,7 @@
 
   function showView(name) {
     document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+    document.body.dataset.view = name;
     const target=document.getElementById("view-"+name);
     if(target) target.classList.add("active");
     document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
