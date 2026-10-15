@@ -377,6 +377,21 @@
   }
 }
 
+    .rc-modal { position:fixed; inset:0; z-index:10100; background:rgba(0,0,0,.65); overflow:auto; }
+    .rc-modal[hidden] { display:none; }
+    .rc-sheet { background:#12142a; color:#f4f4ff; max-width:560px; min-height:100%; margin:0 auto; padding:16px; box-sizing:border-box; }
+    .rc-head { display:flex; justify-content:space-between; align-items:center; }
+    .rc-head h2 { margin:0; }
+    .rc-head button { background:#2b3160; color:#fff; border:0; border-radius:50%; width:40px; height:40px; font-size:1.1rem; }
+    .rc-sheet label { display:block; margin:14px 0 6px; font-weight:800; font-size:.95rem; color:#cfd2ff; }
+    .rc-sheet input:not([type=checkbox]), .rc-sheet textarea { width:100%; box-sizing:border-box; padding:12px; border-radius:12px; border:1.5px solid #3b4180; background:#0b0e1b; color:#fff; font-size:1rem; }
+    .rc-sheet textarea { min-height:84px; }
+    .rc-rowhead, .rc-row { display:grid; grid-template-columns:1fr 62px 96px 36px; gap:6px; align-items:center; margin-bottom:6px; }
+    .rc-rowhead { font-size:.8rem; color:#9aa0d8; }
+    .rc-x { background:#7f1d1d; color:#fff; border:0; border-radius:10px; height:42px; }
+    .rc-total { margin:12px 0; font-size:1.2rem; text-align:right; }
+    .rc-check { display:flex !important; align-items:center; gap:10px; }
+    .rc-check input { width:22px; height:22px; }
 </style>
 <style>
 /* Services: horizontal swipe slider, similar to the reference shop page */
@@ -606,12 +621,14 @@
       <div class="info-card admin-section" id="adminOrdersSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminOrdersSection')"><h2>📦 Ibyatumijwe (Orders)</h2><span class="shortcut-arrow">⌃</span></button>
         <p>Hindura aho commande igeze. Guhagarika commande ntibisiba amateka yayo.</p>
+        <button class="secondary" type="button" onclick="gdReceiptNew()" style="margin-bottom:10px">🧾 Receipt nshya (nta order)</button>
         <div id="adminOrders"></div>
       </div>
 
       <div class="info-card admin-section" id="adminRequestsSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminRequestsSection')"><h2>🛒 Ubusabe bwa serivisi (Service Requests)</h2><span class="shortcut-arrow">⌃</span></button>
         <p>Reba ubusabe bw'abakiriya kandi uhindure uko serivisi yabo ihagaze.</p>
+        <button class="secondary" type="button" onclick="gdReceiptNew()" style="margin-bottom:10px">🧾 Receipt nshya (nta busabe)</button>
         <div id="adminServiceRequests"></div>
       </div>
 
@@ -1305,7 +1322,7 @@
           <small>${esc(o.email || "Guest order")} · ${new Date(o.createdAt || 0).toLocaleString()}</small>
           <div style="margin-top:6px;color:var(--muted);font-size:.88rem">${(o.items || []).map(i => esc(i.name) + " × " + Number(i.qty)).join("<br>")}</div>
           <div style="margin-top:6px;font-weight:900"><span style="color:var(--green)">${money(o.total || 0)}</span> · ${esc(statusLabel(o.status))}</div>
-          <div class="btns" style="margin-top:8px"><button class="secondary" onclick="adminEditOrderPrice('${esc(o.id)}')">✏️ Hindura igiciro</button>${o.status === "done" ? `<button class="primary" onclick="gdPrintReceipt('${esc(o.id)}')">🧾 Print Receipt</button>` : ""}</div>
+          <div class="btns" style="margin-top:8px"><button class="secondary" onclick="adminEditOrderPrice('${esc(o.id)}')">✏️ Hindura igiciro</button>${o.status !== "cancelled" ? `<button class="primary" onclick="gdPrintReceipt('${esc(o.id)}')">🧾 Receipt / Invoice</button>` : ""}</div>
           ${o.cancelReason ? `<small>${t("Cancellation reason", "Impamvu yo guhagarika")}: ${esc(o.cancelReason)}</small>` : ""}
         </div>
         <div class="btns" style="flex-wrap:wrap">
@@ -1350,6 +1367,7 @@
           <small>${esc(r.name || "")} · ${esc(r.phone || "")} · ${esc(r.email || "")} · ${new Date(r.createdAt || 0).toLocaleString()}</small>
           ${r.details ? `<p>${esc(r.details)}</p>` : ""}
           <div style="font-weight:900">${esc(statusLabel(r.status))}</div>
+          ${r.status !== "cancelled" ? `<div class="btns" style="margin-top:8px"><button class="primary" onclick="gdPrintServiceReceipt('${esc(r.id)}')">🧾 Receipt / Invoice</button></div>` : ""}
           ${r.cancelReason ? `<small>Impamvu: ${esc(r.cancelReason)}</small>` : ""}
         </div>
         <div class="btns" style="flex-wrap:wrap">${statuses.map(st => `<button class="secondary ${st === "cancelled" ? "danger-btn" : ""}" onclick="adminServiceRequestStatus('${esc(r.id)}','${st}')" ${r.status === st ? "disabled" : ""}>${esc(statusLabel(st))}</button>`).join("")}</div>
@@ -1672,17 +1690,73 @@
       alert("Igiciro cyahinduwe neza. Print Receipt izagaragara igihe commande izaba ishojwe.");
     } catch (err) { alert("Guhindura igiciro byanze: " + (err.code || err.message)); }
   };
+  // ----- receipts / invoices (orders, service work, or blank) -----
+  let payCfg = { text: "", momoCode: "" };
+  onSnapshot(doc(db, "settings", "payment"), snap => { payCfg = snap.exists() ? snap.data() : { text: "", momoCode: "" }; }, () => {});
+  const rcRowHtml = (r = {}) => `<div class="rc-row"><input class="rc-d" placeholder="Icyakozwe cyangwa igicuruzwa" value="${esc(r.d || "")}"><input class="rc-q" type="number" min="0" step="any" inputmode="decimal" value="${r.q ?? 1}" oninput="rcCalc()"><input class="rc-p" type="number" min="0" step="any" inputmode="numeric" placeholder="Igiciro" value="${r.p ?? ""}" oninput="rcCalc()"><button type="button" class="rc-x" onclick="this.parentNode.remove();rcCalc()">✕</button></div>`;
+  window.rcCalc = () => {
+    let t = 0; document.querySelectorAll("#rcRows .rc-row").forEach(r => { t += (Number(r.querySelector(".rc-q").value) || 0) * (Number(r.querySelector(".rc-p").value) || 0); });
+    $("rcTotal").textContent = money(t);
+  };
+  window.rcAddRow = () => { $("rcRows").insertAdjacentHTML("beforeend", rcRowHtml()); rcCalc(); };
+  window.rcClose = () => { const m = $("rcModal"); if (m) m.hidden = true; };
+  function rcOpen(init) {
+    let m = $("rcModal");
+    if (!m) { m = document.createElement("div"); m.id = "rcModal"; m.className = "rc-modal"; document.body.appendChild(m); }
+    m.innerHTML = `<div class="rc-sheet">
+      <div class="rc-head"><h2>🧾 Receipt / Invoice</h2><button type="button" onclick="rcClose()">✕</button></div>
+      <label>Izina ry'umukiriya</label><input id="rcName" value="${esc(init.name || "")}">
+      <label>Telefoni (WhatsApp)</label><input id="rcPhone" type="tel" value="${esc(init.phone || "")}">
+      <label>Ibyakozwe / ibyaguzwe</label>
+      <div class="rc-rowhead"><span>Icyakozwe</span><span>Qty</span><span>Igiciro</span><span></span></div>
+      <div id="rcRows">${(init.rows && init.rows.length ? init.rows : [{}]).map(rcRowHtml).join("")}</div>
+      <button type="button" class="secondary" onclick="rcAddRow()">+ Ongeramo umurongo</button>
+      <div class="rc-total">Igiteranyo: <b id="rcTotal">0 RWF</b></div>
+      <label>Ibisobanuro by'akazi kakozwe (si ngombwa)</label>
+      <textarea id="rcNote" placeholder="Urugero: Twasubije amashanyarazi muri moteri, dusimbuza bearing...">${esc(init.note || "")}</textarea>
+      <label class="rc-check"><input type="checkbox" id="rcPaid"> Yamaze kwishyura (PAID)</label>
+      <label>Uko kwishyura (bigaragara kuri receipt)</label>
+      <textarea id="rcPay" placeholder="Urugero: MoMo 0788 xxx xxx, izina: ... / Konti ya banki ...">${esc(payCfg.text || "")}</textarea>
+      <label>MoMo Pay code (si ngombwa, bituma haboneka button yo kwishyura)</label>
+      <input id="rcMomo" inputmode="numeric" value="${esc(payCfg.momoCode || "")}">
+      <label class="rc-check"><input type="checkbox" id="rcSave" checked> Bika ubu buryo bwo kwishyura nk'ubusanzwe</label>
+      <button type="button" class="primary" style="width:100%;margin-top:10px" onclick="rcGenerate()">Kora receipt</button>
+    </div>`;
+    m.hidden = false; m.dataset.id = init.id || ""; rcCalc();
+  }
+  window.rcGenerate = () => {
+    const rows = [...document.querySelectorAll("#rcRows .rc-row")].map(r => ({ d: r.querySelector(".rc-d").value.trim(), q: Number(r.querySelector(".rc-q").value) || 0, p: Number(r.querySelector(".rc-p").value) || 0 })).filter(r => r.d);
+    if (!rows.length) return alert("Andika nibura umurongo umwe (icyakozwe cyangwa igicuruzwa).");
+    const name = $("rcName").value.trim(), phoneRaw = $("rcPhone").value.trim(), note = $("rcNote").value.trim();
+    const paid = $("rcPaid").checked, payText = $("rcPay").value.trim(), momo = $("rcMomo").value.replace(/[^0-9]/g, "");
+    const total = rows.reduce((a, r) => a + r.q * r.p, 0);
+    const rid = $("rcModal").dataset.id || ("GD-" + Date.now().toString().slice(-8));
+    const phone = phoneRaw.replace(/[^0-9]/g, "").replace(/^0/, "250");
+    const lines = rows.map(r => `<tr><td>${esc(r.d)}</td><td class="n">${r.q}</td><td class="n">${r.p ? money(r.p) : "-"}</td><td class="n">${r.p ? money(r.q * r.p) : "-"}</td></tr>`).join("");
+    const textMsg = `GD ELECTRIC MOTORS - ${paid ? "RECEIPT" : "INVOICE"}\nNo: ${rid}\n` + rows.map(r => `${r.d} x${r.q}${r.p ? " = " + money(r.q * r.p) : ""}`).join("\n") + `\nTOTAL: ${money(total)}\n` + (paid ? "PAID. Murakoze!" : (payText ? "Kwishyura:\n" + payText : "Please make payment."));
+    const momoLink = (!paid && momo && total > 0) ? `tel:*182*8*1*${momo}*${Math.round(total)}%23` : "";
+    const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${paid ? "Receipt" : "Invoice"} - GD Electric Motors</title><style>html,body{width:100%}body{font:18px Arial,sans-serif;color:#111;max-width:760px;margin:0 auto;padding:22px 18px;box-sizing:border-box}h1{text-align:center;font-size:28px;margin:0 0 4px}p{line-height:1.5}.sub{text-align:center;letter-spacing:2px;font-weight:bold;margin:0 0 12px}table{width:100%;border-collapse:collapse;margin:18px 0}th,td{padding:10px 6px;border-bottom:1px solid #ccc;text-align:left;font-size:16px}.n{text-align:right;white-space:nowrap}.total{font-size:24px;font-weight:bold;text-align:right}.stamp{display:inline-block;border:3px solid #16a34a;color:#16a34a;font-weight:bold;padding:4px 14px;border-radius:8px;transform:rotate(-6deg)}.pay{border:2px dashed #5420df;border-radius:12px;padding:14px;margin:18px 0;background:#f6f2ff;white-space:pre-wrap}.note{background:#f4f4f4;border-radius:10px;padding:12px;white-space:pre-wrap}.actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}button,a.b{padding:15px 18px;border:0;border-radius:10px;background:#5420df;color:#fff;text-decoration:none;font-weight:bold;font-size:17px;text-align:center;flex:1 1 220px}a.g{background:#16a34a}small{color:#555}@media print{.actions{display:none}body{padding:0}}</style></head><body><h1>GD ELECTRIC MOTORS</h1><p class="sub">${paid ? "PAYMENT RECEIPT" : "INVOICE / AMAFARANGA YO KWISHYURA"}</p><hr><p><b>No:</b> ${esc(rid)}<br><b>Customer:</b> ${esc(name || "-")}<br><b>Phone:</b> ${esc(phoneRaw || "-")}<br><b>Date:</b> ${new Date().toLocaleString()}</p><table><thead><tr><th>Item / Akazi</th><th class="n">Qty</th><th class="n">Price</th><th class="n">Total</th></tr></thead><tbody>${lines}</tbody></table><p class="total">TOTAL: ${money(total)}</p>${paid ? '<p style="text-align:right"><span class="stamp">PAID ✓ / YISHYUWE</span></p>' : ""}${note ? `<p><b>Ibyakozwe / Notes:</b></p><div class="note">${esc(note)}</div>` : ""}${!paid && (payText || momoLink) ? `<div class="pay"><b>Uko wakwishyura / How to pay</b>${payText ? "\n" + esc(payText) : ""}${momoLink ? `\n\nMoMo Pay code: <b>${esc(momo)}</b>` : ""}</div>` : ""}<div class="actions"><button onclick="window.print()">🖨️ Print / Save PDF</button>${momoLink ? `<a class="b g" href="${momoLink}">📲 Kwishyura na MoMo</a>` : ""}${phone ? `<a class="b" target="_blank" rel="noopener" href="https://wa.me/${esc(phone)}?text=${encodeURIComponent(textMsg)}">Send on WhatsApp</a>` : ""}</div><small>Generated by GD Electric Motors.</small></body></html>`;
+    // Open synchronously (inside the tap) as a real blob page so the phone shows it full width.
+    const w = window.open(URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" })), "_blank");
+    if (!w) return alert("Browser yabujije gufungura receipt. Emerera pop-ups hanyuma wongere ugerageze.");
+    if ($("rcSave").checked && (payText !== (payCfg.text || "") || momo !== (payCfg.momoCode || ""))) {
+      setDoc(doc(db, "settings", "payment"), { text: payText, momoCode: momo, updatedAt: Date.now() }, { merge: true }).catch(err => console.warn("Payment settings:", err));
+    }
+    rcClose();
+  };
   window.gdPrintReceipt = id => {
     const o = allOrders.find(x => x.id === id); if (!o) return alert("Commande ntiyabonetse.");
-    if (o.status !== "done") return alert("Banza ushyire commande kuri 'Byarangiye / Byatanze' mbere yo gukora receipt.");
-    const lines = (o.items || []).map(i => `<tr><td>${esc(i.name || "Igicuruzwa")}</td><td>${Number(i.qty || 1)}</td></tr>`).join("");
-    const textMsg = `GD ELECTRIC MOTORS - RECEIPT\nCustomer: ${o.name || ""}\nPhone: ${o.phone || ""}\nItems: ${(o.items || []).map(i => `${i.name} x${i.qty}`).join(", ")}\nTOTAL: ${money(o.total || 0)}\nStatus: Completed. Please make payment.`;
-    const phone = String(o.phone || "").replace(/[^0-9]/g, "").replace(/^0/, "250");
-    const w = window.open("", "_blank");
-    if (!w) return alert("Browser yabujije gufungura receipt. Emerera pop-ups hanyuma wongere ugerageze.");
-    w.document.write(`<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Receipt - GD Electric Motors</title><style>body{font:16px Arial,sans-serif;color:#111;max-width:720px;margin:25px auto;padding:18px}h1{text-align:center}small{color:#555}table{width:100%;border-collapse:collapse;margin:22px 0}th,td{padding:10px;border-bottom:1px solid #ccc;text-align:left}.total{font-size:22px;font-weight:bold;text-align:right}.actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}button,a{padding:12px 16px;border:0;border-radius:8px;background:#5420df;color:white;text-decoration:none;font-weight:bold}@media print{.actions{display:none}body{margin:0}}</style></head><body><h1>GD ELECTRIC MOTORS</h1><p style="text-align:center">PAYMENT RECEIPT</p><hr><p><b>Receipt / Order:</b> ${esc(o.id)}<br><b>Customer:</b> ${esc(o.name || "")}<br><b>Phone:</b> ${esc(o.phone || "")}<br><b>Date:</b> ${new Date(o.createdAt || Date.now()).toLocaleString()}</p><table><thead><tr><th>Item</th><th>Qty</th></tr></thead><tbody>${lines}</tbody></table><p class="total">TOTAL: ${money(o.total || 0)}</p><p><b>Status:</b> Completed / Byarangiye</p><p>Please make payment using the payment details provided by GD Electric Motors.</p><div class="actions"><button onclick="window.print()">🖨️ Print / Save PDF</button>${phone ? `<a target="_blank" rel="noopener" href="https://wa.me/${esc(phone)}?text=${encodeURIComponent(textMsg)}">Send receipt details on WhatsApp</a>` : ""}</div><small>Receipt generated by GD Electric Motors.</small></body></html>`);
-    w.document.close();
+    const rows = (o.items || []).map(i => ({ d: i.name || "Igicuruzwa", q: Number(i.qty || 1), p: Number(i.price || 0) }));
+    const sum = rows.reduce((a, r) => a + r.q * r.p, 0), diff = Number(o.total || 0) - sum;
+    if (rows.length && Math.abs(diff) > 0.5) rows.push({ d: "Ihinduka ry'igiciro (adjustment)", q: 1, p: diff });
+    rcOpen({ id: o.id, name: o.name, phone: o.phone, rows, paid: false });
   };
+  window.gdPrintServiceReceipt = id => {
+    const r = allServiceRequests.find(x => x.id === id); if (!r) return alert("Ubusabe ntibwabonetse.");
+    rcOpen({ id: r.id, name: r.name, phone: r.phone, rows: [{ d: r.serviceName || "Serivisi", q: 1, p: "" }], note: r.details || "" });
+  };
+  window.gdReceiptNew = () => rcOpen({ rows: [{}] });
+
   window.adminServiceRequestStatus = async (id, status) => {
     let data = { status, updatedAt: Date.now() };
     if (status === "cancelled") {
