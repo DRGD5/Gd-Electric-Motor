@@ -1054,7 +1054,7 @@
   // ----- admin auth -----
   // ----- roles & permissions -----
   // Owner (ADMIN_EMAIL) can do everything. Other roles get only what is listed here.
-  const ROLE_PERMS = { manager: ["products","services","orders","requests","sections"], staff: ["orders","requests"], sales: ["orders","products"], technician: ["requests"] };
+  const ROLE_PERMS = { manager: ["products","services","orders","requests","sections","chats"], staff: ["orders","requests","chats"], sales: ["orders","products","chats"], technician: ["requests","chats"] };
   let perms = new Set(), listenerKey = "", listenerUnsubs = [], unsubProfile = null;
   window.gdCan = p => perms.has(p);
   const computePerms = (user, prof) => isAdminUser(user) ? new Set(["products","services","orders","requests","users","sections","shops","chats"]) : new Set(ROLE_PERMS[(prof && prof.role) || ""] || []);
@@ -1086,7 +1086,7 @@
     stopListeners(); listenerKey = key;
     myOrders = []; allOrders = []; myServiceRequests = []; allServiceRequests = []; window.gdMyOrders = [];
     const owner = isAdminUser(user);
-    if (owner) listenerUnsubs.push(onSnapshot(collection(db, "chats"), snap => {
+    if (perms.has("chats")) listenerUnsubs.push(onSnapshot(collection(db, "chats"), snap => {
       chatThreads = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
       renderAdminChatThreads();
     }, err => { console.warn("Chat threads:", err); const box=$("adminChatThreads"); if(box) box.innerHTML="<p>Chat ntiboneka. Reba Firestore Rules kuri chats.</p>"; }));
@@ -1243,7 +1243,7 @@
   function stopChatMessages() { if (unsubChatMessages) { unsubChatMessages(); unsubChatMessages = null; } }
   function renderChatMessages(list) {
     const box = $("gdChatMessages"); if (!box) return;
-    box.innerHTML = list.length ? list.map(m => `<div class="gd-chat-msg ${(activeChatAdmin ? m.senderRole === "admin" : m.senderId === (currentUser && currentUser.uid)) ? "mine" : ""}">${esc(m.text || "")}<small>${esc(m.senderName || (m.senderRole === "admin" ? "GD Electric Motors" : "Umukiriya"))} · ${m.createdAt ? new Date(m.createdAt).toLocaleString() : ""}</small></div>`).join("") : "<p>Ubutumwa bwawe buzagaragara hano.</p>";
+    box.innerHTML = list.length ? list.map(m => `<div class="gd-chat-msg ${(activeChatAdmin ? m.senderRole === "admin" : m.senderId === (currentUser && currentUser.uid)) ? "mine" : ""}">${esc(m.text || "")}<small>${esc(m.senderName || (m.senderRole === "admin" ? "GD Electric Motors" : "Umukiriya"))}${activeChatAdmin && m.staffName ? " (" + esc(m.staffName) + ")" : ""} · ${m.createdAt ? new Date(m.createdAt).toLocaleString() : ""}</small></div>`).join("") : "<p>Ubutumwa bwawe buzagaragara hano.</p>";
     box.scrollTop = box.scrollHeight;
   }
   function watchChatMessages(uid, adminMode) {
@@ -1270,7 +1270,7 @@
     const uid = activeChatId, adminMode = activeChatAdmin;
     input.disabled = true;
     try {
-      await addDoc(collection(db, "chats", uid, "messages"), { text: textValue, senderId: currentUser.uid, senderRole: adminMode ? "admin" : "customer", senderName: adminMode ? "GD Electric Motors" : ((profile && profile.name) || currentUser.displayName || "Umukiriya"), createdAt: Date.now() });
+      await addDoc(collection(db, "chats", uid, "messages"), { text: textValue, senderId: currentUser.uid, senderRole: adminMode ? "admin" : "customer", senderName: adminMode ? "GD Electric Motors" : ((profile && profile.name) || currentUser.displayName || "Umukiriya"), ...(adminMode ? { staffName: (profile && profile.name) || currentUser.displayName || currentUser.email || "" } : {}), createdAt: Date.now() });
       await setDoc(doc(db, "chats", uid), { userId: uid, lastMessage: textValue, updatedAt: Date.now(), lastSenderRole: adminMode ? "admin" : "customer" }, { merge: true });
       input.value = "";
     } catch (err) { alert("Ubutumwa ntibwoherejwe: " + (err.code || err.message) + ". Reba Firestore Rules."); }
