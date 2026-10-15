@@ -761,6 +761,13 @@
     "Igiteranyo cy'agateganyo":"Estimated total", "Ibiciro n'ibihari byemezwe natwe mbere yo kwishyura.":"Prices and stock should be confirmed with us before payment.",
     "Nta bicuruzwa bibonetse. Gerageza gushakisha ukundi.":"No products found. Try another search.", "Ukeneye ubufasha?":"Need help?",
     "Gura ukurikije ibyiciro":"Shop by category", "Banza winjire":"Please sign in first", "Amakuru yawe":"Your details", "Konti yawe":"Your account",
+    "Winjiye nka":"Signed in as", "Abakiriya (Accounts)":"Customers (Accounts)", "Ibice bya website":"Website sections",
+    "Ubusabe bwa serivisi (Service Requests)":"Service Requests", "Muraho! Andika ubutumwa bwawe hano.":"Hello! Write your message here.",
+    "Ibisobanuro (si ngombwa)":"Description (optional)", "Link ya button (https://... cyangwa nimero ya WhatsApp)":"Button link (https://... or WhatsApp number)",
+    "Byiteguye gufatwa/kugezwa":"Ready for pickup/delivery", "Byarangiye / Byatanzwe":"Completed / Delivered", "Byahagaritswe":"Cancelled",
+    "Emeza":"Approve", "Hagarika":"Suspend", "Reba":"View", "Itegereje":"Pending", "Yemejwe":"Approved", "Bika inshingano":"Save role",
+    "Inshingano (urugero: gukurikirana orders)":"Duties (e.g. follow up orders)", "Umukiriya (Customer)":"Customer", "Umukozi (Staff)":"Staff",
+    "Umutekinisiye":"Technician", "Ushinzwe kugurisha":"Sales", "Umuyobozi (Manager)":"Manager", "Abakiriya bose:":"All customers:",
     "Ongeramo iduka":"Add a shop", "Fungura iduka":"Open a shop", "Ibisobanuro by'iduka":"Shop description", "Icyiciro cy'igicuruzwa":"Product category", "Igiciro cya kera":"Previous price"
   };
   const EN_RW = Object.fromEntries(Object.entries(RW_EN).map(([rw,en]) => [en,rw]));
@@ -771,12 +778,17 @@
     for (const node of nodes) {
       const original = node.nodeValue;
       const trimmed = original.trim();
-      if (trimmed && Object.prototype.hasOwnProperty.call(dict, trimmed)) {
-        const leading = original.match(/^\s*/)?.[0] || "";
-        const trailing = original.match(/\s*$/)?.[0] || "";
-        const translated = dict[trimmed];
-        if (translated !== trimmed) node.nodeValue = leading + translated + trailing;
+      if (!trimmed) continue;
+      let key = trimmed, prefix = "";
+      if (!Object.prototype.hasOwnProperty.call(dict, key)) {
+        // Labels like "🛠️ Serivisi dukora": keep the emoji/symbol prefix and translate the words.
+        const pm = trimmed.match(/^([^\p{L}\p{N}(]+)\s*(.+)$/u);
+        if (pm && Object.prototype.hasOwnProperty.call(dict, pm[2])) { prefix = pm[1] + " "; key = pm[2]; } else continue;
       }
+      const leading = original.match(/^\s*/)?.[0] || "";
+      const trailing = original.match(/\s*$/)?.[0] || "";
+      const translated = prefix + dict[key];
+      if (translated !== trimmed) node.nodeValue = leading + translated + trailing;
     }
     document.querySelectorAll("input[placeholder],textarea[placeholder],button[aria-label],input[aria-label],img[alt]").forEach(el => {
       for (const attr of ["placeholder","aria-label","alt"]) {
