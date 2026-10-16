@@ -405,6 +405,33 @@
     #gdChatOpenBtn { bottom:205px !important; right:18px !important; }
     body[data-view]:not([data-view="home"]) .whatsapp-float,
     body[data-view]:not([data-view="home"]) #gdChatOpenBtn { display:none !important; }
+    /* ---- open-your-shop card (Account page) ---- */
+    .sp-hero { position:relative; overflow:hidden; margin:18px 0; padding:22px 18px; border-radius:26px; color:#fff; background:radial-gradient(120% 120% at 100% 0%,#7b4dff 0%,#3b1fb8 45%,#0f2a4a 100%); border:1px solid rgba(255,255,255,.18); box-shadow:0 14px 36px rgba(91,47,224,.4); }
+    .sp-hero::after { content:"🏪"; position:absolute; right:-6px; top:-14px; font-size:6.5rem; opacity:.12; }
+    .sp-tag { display:inline-block; background:#2dd4bf; color:#032b28; font-weight:900; font-size:.72rem; letter-spacing:1px; padding:4px 12px; border-radius:99px; }
+    .sp-hero h2 { margin:10px 0 6px; font-size:1.6rem; }
+    .sp-hero p { margin:0 0 12px; opacity:.92; line-height:1.45; }
+    .sp-list { list-style:none; padding:0; margin:0 0 14px; display:grid; gap:7px; font-weight:700; }
+    .sp-steps { display:flex; align-items:center; justify-content:space-between; gap:4px; background:rgba(0,0,0,.28); border-radius:16px; padding:10px; margin-bottom:16px; }
+    .sp-steps div { display:flex; flex-direction:column; align-items:center; text-align:center; font-size:.78rem; gap:4px; flex:1; }
+    .sp-steps b { width:28px; height:28px; border-radius:50%; background:#fff; color:#3b1fb8; display:grid; place-items:center; }
+    .sp-steps i { font-style:normal; opacity:.7; }
+    .sp-cta { width:100%; border:0; border-radius:16px; padding:16px; font-size:1.1rem; font-weight:900; color:#032b28; background:linear-gradient(135deg,#5eead4,#2dd4bf); box-shadow:0 8px 20px rgba(45,212,191,.45); }
+    .sp-ghost { border:2px solid rgba(255,255,255,.35); background:transparent; color:#fff; border-radius:16px; padding:14px 18px; font-weight:800; }
+    .sp-hint { display:block; margin-top:10px; opacity:.85; text-align:center; }
+    .sp-card { margin:18px 0; padding:16px; border-radius:22px; background:linear-gradient(160deg,#0b3d3a,#0f2a4a); border:2px solid #2dd4bf; color:#fff; }
+    .sp-mine { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+    .sp-mine img, .sp-mine .shop-logo-ph { width:64px; height:64px; border-radius:50%; object-fit:cover; margin:0; flex:none; }
+    .sp-mine h3 { margin:2px 0 6px; }
+    .sp-actions { display:flex; gap:10px; }
+    .sp-actions .sp-cta { flex:1; padding:14px; font-size:1rem; }
+    .sp-pill { display:inline-block; padding:3px 12px; border-radius:99px; font-size:.8rem; font-weight:900; }
+    .sp-pill.ok { background:#16a34a; } .sp-pill.wait { background:#f59e0b; color:#1f1300; } .sp-pill.bad { background:#dc2626; }
+    /* ---- floating chat/phone buttons: only a small "head" peeks out; tap once to slide out ---- */
+    .whatsapp-float, #gdChatOpenBtn { width:50px !important; height:50px !important; font-size:1.4rem !important; right:0 !important; transform:translateX(58%) !important; opacity:.8; transition:transform .25s ease, opacity .25s ease; }
+    #gdChatOpenBtn { bottom:196px !important; }
+    .whatsapp-float { bottom:136px !important; }
+    .whatsapp-float.fab-open, #gdChatOpenBtn.fab-open { transform:translateX(-14px) !important; opacity:1; }
 </style>
 <style>
 /* Services: horizontal swipe slider, similar to the reference shop page */
@@ -527,6 +554,7 @@
   <section id="view-account" class="view">
     <h1 class="page-title" data-en="Account" data-rw="Konti">Account</h1>
     <div id="accountContent"></div>
+    <div id="accountShopPromo"></div>
     <div class="info-card"><h3 data-en="Need help?" data-rw="Ukeneye ubufasha?">Need help?</h3><p data-en="Use the WhatsApp button to ask about prices, delivery and product availability." data-rw="Kanda kuri WhatsApp ubaze ibiciro, kugeza ibicuruzwa n'ibihari.">Use the WhatsApp button to ask about prices, delivery and product availability.</p><button class="primary" onclick="contactWhatsApp()" data-en="Contact us on WhatsApp" data-rw="Twandikire kuri WhatsApp">Contact us on WhatsApp</button></div>
   </section>
 
@@ -1617,11 +1645,36 @@
   const waNumber = raw => { const d = String(raw || "").replace(/[^0-9]/g, ""); if (d.length === 10 && d[0] === "0") return "250" + d.slice(1); if (d.length === 9) return "250" + d; return d; };
   const myShop = () => currentUser ? shops.find(x => x.id === currentUser.uid) : null;
   function renderShopsHome() {
-    const el = $("shopsHome"); if (!el) return;
+    const approved = shops.filter(x => shopStatus(x) === "approved");
+    const el = $("shopsHome");
+    if (el) el.innerHTML = approved.length ? `<h2>🏪 ${t("Customer shops", "Amaduka y'abakiriya")}</h2>
+      <div class="shop-grid">${approved.map(x => `<div class="shop-card" onclick="openShop('${esc(x.id)}')">${x.logoUrl ? `<img src="${esc(x.logoUrl)}" alt="${esc(x.name)}" loading="lazy">` : `<div class="shop-logo-ph">🏪</div>`}<strong>${esc(x.name)}</strong><small>${shopProducts.filter(pp => pp.shopId === x.id).length} ${t("products", "ibicuruzwa")}</small></div>`).join("")}</div>` : "";
+    renderShopPromo();
+  }
+  // Nice "open your own shop" card on the Account page (so people see it as soon as they go to sign in).
+  function renderShopPromo() {
+    const el = $("accountShopPromo"); if (!el) return;
     const mine = myShop();
-    el.innerHTML = `<h2>🏪 ${t("Customer shops", "Amaduka y'abakiriya")}</h2>
-      ${shops.filter(x => shopStatus(x) === "approved").length ? `<div class="shop-grid">${shops.filter(x => shopStatus(x) === "approved").map(x => `<div class="shop-card" onclick="openShop('${esc(x.id)}')">${x.logoUrl ? `<img src="${esc(x.logoUrl)}" alt="${esc(x.name)}" loading="lazy">` : `<div class="shop-logo-ph">🏪</div>`}<strong>${esc(x.name)}</strong><small>${shopProducts.filter(pp => pp.shopId === x.id).length} ${t("products", "ibicuruzwa")}</small></div>`).join("")}</div>` : `<p style="opacity:.75">${t("No shops yet. Be the first!", "Nta duka riraboneka. Ba uwa mbere!")}</p>`}
-      <button class="shop-cta" type="button" onclick="${mine ? `openShop('${esc(mine.id)}')` : "openShopForm()"}">${mine ? "🏪 " + t("My shop", "Shop yanjye") + (shopStatus(mine) === "approved" ? "" : shopStatus(mine) === "suspended" ? " ⛔" : " ⏳") : "➕ " + t("Open your own shop", "Fungura shop yawe")}</button>`;
+    if (mine) {
+      const st = shopStatus(mine);
+      const pill = st === "approved" ? `<span class="sp-pill ok">✅ ${t("Approved", "Yemejwe")}</span>` : st === "suspended" ? `<span class="sp-pill bad">⛔ ${t("Suspended", "Yahagaritswe")}</span>` : `<span class="sp-pill wait">⏳ ${t("Waiting for approval", "Itegereje kwemezwa")}</span>`;
+      el.innerHTML = `<div class="sp-card"><div class="sp-mine">${mine.logoUrl ? `<img src="${esc(mine.logoUrl)}" alt="">` : `<div class="shop-logo-ph">🏪</div>`}<div><small>${t("My shop", "Shop yanjye")}</small><h3>${esc(mine.name)}</h3>${pill}</div></div>
+        <div class="sp-actions"><button class="sp-cta" type="button" onclick="openShop('${esc(mine.id)}')">🏪 ${t("Open my shop", "Fungura shop yanjye")}</button><button class="sp-ghost" type="button" onclick="openShopForm()">✏️ ${t("Edit", "Hindura")}</button></div></div>`;
+      return;
+    }
+    el.innerHTML = `<div class="sp-hero">
+      <span class="sp-tag">${t("NEW • FREE", "NSHYA • KU BUNTU")}</span>
+      <h2>🏪 ${t("Open your own shop", "Fungura shop yawe")}</h2>
+      <p>${t("Sell your products online under your own shop name.", "Shyira ibicuruzwa byawe kuri internet, ukoresheje izina rya shop yawe bwite.")}</p>
+      <ul class="sp-list">
+        <li>✅ ${t("Your shop gets its own name and logo", "Shop yawe igira izina na logo yawe")}</li>
+        <li>✅ ${t("Add your products with photos and prices", "Ongeramo ibicuruzwa byawe n'amafoto n'ibiciro")}</li>
+        <li>✅ ${t("Customers contact you directly on WhatsApp", "Abakiriya bakwandikira kuri WhatsApp ako kanya")}</li>
+      </ul>
+      <div class="sp-steps"><div><b>1</b><span>${t("Sign in", "Injira")}</span></div><i>→</i><div><b>2</b><span>${t("Fill shop details", "Uzuza amakuru")}</span></div><i>→</i><div><b>3</b><span>${t("Admin approves", "Admin yemeza")}</span></div></div>
+      <button class="sp-cta" type="button" onclick="openShopForm()">➕ ${t("Open your shop now", "Fungura shop yawe ubu")}</button>
+      ${currentUser ? "" : `<small class="sp-hint">${t("You need an account first — sign in or create one above.", "Banza ufungure konti cyangwa winjire hejuru.")}</small>`}
+    </div>`;
   }
   window.gdRefreshShops = () => {
     renderShopsHome(); if (typeof renderCustomSections === "function") renderCustomSections();
@@ -1989,6 +2042,24 @@
     catch (err) { alert("Byanze: " + (err.code || err.message)); }
   };
   window.gdStatusLabel = statusLabel;
+</script>
+
+<script>
+(function () {
+  var timer = null;
+  function fabs() { return document.querySelectorAll("#gdChatOpenBtn, .whatsapp-float"); }
+  function closeAll() { fabs().forEach(function (b) { b.classList.remove("fab-open"); }); }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("#gdChatOpenBtn, .whatsapp-float");
+    if (!b) { closeAll(); return; }
+    if (!b.classList.contains("fab-open")) {
+      e.preventDefault(); e.stopImmediatePropagation();
+      fabs().forEach(function (x) { x.classList.add("fab-open"); });
+      clearTimeout(timer); timer = setTimeout(closeAll, 4500);
+    } else { clearTimeout(timer); timer = setTimeout(closeAll, 800); }
+  }, true);
+  window.addEventListener("scroll", function () { if (document.querySelector(".fab-open")) closeAll(); }, { passive: true });
+})();
 </script>
 </body>
 </html>
