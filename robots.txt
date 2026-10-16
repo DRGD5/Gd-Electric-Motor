@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /privacy.html
+Sitemap: https://drgd5.github.io/Gd-Electric-Motor/sitemap.xml
