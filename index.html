@@ -425,6 +425,7 @@
     .sp-mine h3 { margin:2px 0 6px; }
     .sp-actions { display:flex; gap:10px; }
     .sp-actions .sp-cta { flex:1; padding:14px; font-size:1rem; }
+    .sp-del { width:100%; margin-top:12px; padding:12px; border-radius:14px; border:1.5px solid #ef4444; background:rgba(239,68,68,.12); color:#fecaca; font-weight:800; }
     .sp-pill { display:inline-block; padding:3px 12px; border-radius:99px; font-size:.8rem; font-weight:900; }
     .sp-pill.ok { background:#16a34a; } .sp-pill.wait { background:#f59e0b; color:#1f1300; } .sp-pill.bad { background:#dc2626; }
     /* ---- floating chat/phone buttons: only a small "head" peeks out; tap once to slide out ---- */
@@ -1659,7 +1660,9 @@
       const st = shopStatus(mine);
       const pill = st === "approved" ? `<span class="sp-pill ok">✅ ${t("Approved", "Yemejwe")}</span>` : st === "suspended" ? `<span class="sp-pill bad">⛔ ${t("Suspended", "Yahagaritswe")}</span>` : `<span class="sp-pill wait">⏳ ${t("Waiting for approval", "Itegereje kwemezwa")}</span>`;
       el.innerHTML = `<div class="sp-card"><div class="sp-mine">${mine.logoUrl ? `<img src="${esc(mine.logoUrl)}" alt="">` : `<div class="shop-logo-ph">🏪</div>`}<div><small>${t("My shop", "Shop yanjye")}</small><h3>${esc(mine.name)}</h3>${pill}</div></div>
-        <div class="sp-actions"><button class="sp-cta" type="button" onclick="openShop('${esc(mine.id)}')">🏪 ${t("Open my shop", "Fungura shop yanjye")}</button><button class="sp-ghost" type="button" onclick="openShopForm()">✏️ ${t("Edit", "Hindura")}</button></div></div>`;
+        <div class="sp-actions"><button class="sp-cta" type="button" onclick="openShop('${esc(mine.id)}')">🏪 ${t("Open my shop", "Fungura shop yanjye")}</button><button class="sp-ghost" type="button" onclick="openShopForm()">✏️ ${t("Edit", "Hindura")}</button></div>
+        <button class="sp-del" type="button" onclick="deleteMyShop()">🗑️ ${t("Delete my shop (to open a new one)", "Siba shop yanjye (kugira ngo mfungure indi)")}</button>
+        ${st === "suspended" ? `<small class="sp-hint">${t("This shop was suspended. You can delete it and open a new one.", "Iyi shop yahagaritswe. Ushobora kuyisiba ugafungura indi nshya.")}</small>` : ""}</div>`;
       return;
     }
     el.innerHTML = `<div class="sp-hero">
@@ -1680,6 +1683,16 @@
     renderShopsHome(); if (typeof renderCustomSections === "function") renderCustomSections();
     if ($("view-shop").classList.contains("active")) renderShopPage();
     if ($("view-shopform").classList.contains("active")) { const mine = myShop(); $("shopFormTitle").textContent = mine ? t("Edit your shop", "Hindura shop yawe") : t("Open your shop", "Fungura shop yawe"); }
+  };
+  window.deleteMyShop = async () => {
+    if (!currentUser) return;
+    if (!confirm(t("Delete your shop and all its products? This cannot be undone. You can open a new shop afterwards.", "Gusiba shop yawe n'ibicuruzwa byayo byose? Ntibisubirwaho. Nyuma ushobora gufungura indi nshya."))) return;
+    try {
+      for (const pp of shopProducts.filter(v => v.shopId === currentUser.uid)) await deleteDoc(doc(db, "shopProducts", pp.id));
+      await deleteDoc(doc(db, "shops", currentUser.uid));
+      showView("account");
+      alert(t("Your shop was deleted. You can now open a new one.", "Shop yawe yasibwe. Ubu ushobora gufungura indi nshya."));
+    } catch (err) { alert(t("Failed: ", "Byanze: ") + (err.code || err.message)); }
   };
   window.openShop = id => { currentShopId = id; renderShopPage(); showView("shop"); };
   window.openShopForm = () => {
@@ -1717,7 +1730,7 @@
         <h1>${esc(x.name)}</h1>${x.desc ? `<p style="white-space:pre-wrap">${esc(x.desc)}</p>` : ""}
         <p>📞 ${esc(x.phone || "")}</p>
         <a class="primary" style="display:inline-block;text-decoration:none" href="${wa}" target="_blank" rel="noopener">💬 WhatsApp</a>
-        ${mineOwner ? `<div style="margin-top:10px"><button class="secondary" onclick="openShopForm()">✏️ ${t("Edit shop", "Hindura shop")}</button></div>` : ""}</div>
+        ${mineOwner ? `<div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="secondary" onclick="openShopForm()">✏️ ${t("Edit shop", "Hindura shop")}</button><button class="secondary danger-btn" onclick="deleteMyShop()">🗑️ ${t("Delete shop", "Siba shop")}</button></div>` : ""}</div>
       ${mineOwner ? `<div class="shop-form-box"><h3 style="margin-top:0">➕ ${t("Add a product", "Ongeramo igicuruzwa")}</h3>
         <form onsubmit="saveShopProduct(event)">
           <div class="form-row"><input id="spName" placeholder="${t("Product name", "Izina ry'igicuruzwa")}" required></div>
