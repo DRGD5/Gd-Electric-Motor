@@ -1898,44 +1898,55 @@
     const textMsg = `GD ELECTRIC MOTORS - ${paid ? "RECEIPT" : "INVOICE"}\nNo: ${rid}\n` + rows.map(r => `${r.d} x${r.q}${r.p ? " = " + money(r.q * r.p) : ""}`).join("\n") + `\nTOTAL: ${money(total)}\n` + (paid ? "PAID. Murakoze!" : (payText ? "Kwishyura:\n" + payText : "Please make payment."));
     const momoLink = (!paid && momo && total > 0) ? `tel:*182*8*1*${momo}*${Math.round(total)}%23` : "";
     const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${paid ? "Receipt" : "Invoice"} - GD Electric Motors</title><style>
-:root{--deep:#051F20;--dark:#0B2B26;--forest:#163832;--green:#235347;--sage:#8EB69B;--mist:#DAF1DE;--ink:#15332c;--muted:#60756b;--line:#dbe7de}
+:root{--navy:#173b4b;--blue:#167b9a;--lime:#a9c936;--ink:#263640;--muted:#647680;--line:#cbd4d8;--paper:#fff}
 *{box-sizing:border-box}
-html,body{width:100%;margin:0}
-body{font:15px/1.5 Arial,Helvetica,sans-serif;color:var(--ink);max-width:760px;margin:24px auto;padding:0 16px 24px;background:linear-gradient(180deg,#DAF1DE 0%,#8EB69B 32%,#235347 68%,#051F20 100%);background-attachment:fixed}
-.invoice{background:#fff;border:1px solid #dce8df;border-radius:22px;overflow:hidden;box-shadow:0 16px 44px #051f2033}
-.palette{height:10px;background:linear-gradient(90deg,var(--deep),var(--dark),var(--forest),var(--green),var(--sage),var(--mist))}
-.inner{padding:26px 28px}
-.brand{display:flex;align-items:center;gap:13px}
-.logo{width:54px;height:54px;flex:0 0 54px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,var(--deep),var(--green));color:var(--mist);font-size:23px;font-weight:900;border-radius:16px;letter-spacing:-1px}
-h1{font-size:25px;line-height:1.15;margin:0;color:var(--deep);letter-spacing:.3px}
-.tagline{font-size:10px;font-weight:700;letter-spacing:1.8px;color:var(--muted);margin-top:5px}
-.dochead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:22px 0 18px;padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.sub{font-size:19px;font-weight:900;line-height:1.3;margin:0;color:var(--dark)}
-.status{font-size:11px;font-weight:900;letter-spacing:1px;padding:8px 12px;border-radius:999px;white-space:nowrap}
-.status.paid{color:#fff;background:var(--green)}
-.status.unpaid{color:var(--deep);background:var(--mist);border:1px solid var(--sage)}
-.meta{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:18px 0 22px}
-.meta p{margin:0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#f8fcf9;overflow-wrap:anywhere}
-table{width:100%;border-collapse:collapse;margin:18px 0}
-th{background:var(--dark);color:#fff;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
-th,td{padding:12px 9px;border-bottom:1px solid var(--line);text-align:left;font-size:13px;overflow-wrap:anywhere}
-tbody tr:nth-child(even){background:#f4faf5}
-.n{text-align:right;white-space:normal;font-variant-numeric:tabular-nums}
-.totalbox{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 18px;margin:22px 0;background:linear-gradient(120deg,var(--mist),#f5fbf6);border:1px solid var(--sage);border-radius:14px}
-.total-label{font-size:11px;font-weight:900;letter-spacing:1px;color:var(--green)}
-.total{font-size:clamp(20px,4vw,27px);font-weight:900;color:var(--deep);text-align:right;overflow-wrap:anywhere}
-.stamp{display:inline-block;border:2px solid var(--green);color:var(--green);font-weight:900;letter-spacing:1px;padding:6px 13px;border-radius:8px}
-.pay{border:1px solid var(--sage);border-left:5px solid var(--green);border-radius:12px;padding:14px 16px;margin:18px 0;background:#f4faf5;white-space:pre-wrap;overflow-wrap:anywhere}
-.pay b{display:block;color:var(--dark);margin-bottom:4px}
-.note{background:#f5f9f6;border:1px solid var(--line);border-radius:10px;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+html,body{margin:0;width:100%}
+body{font:14px/1.45 Arial,Helvetica,sans-serif;color:var(--ink);max-width:850px;margin:22px auto;padding:0 15px 24px;background:#edf2f4}
+.invoice{background:var(--paper);border:1px solid #d8e0e3;box-shadow:0 10px 30px #173b4b20;overflow:hidden}
+.palette{height:9px;background:linear-gradient(90deg,#173b4b 0%,#167b9a 55%,#a9c936 100%)}
+.inner{padding:27px 30px}
+.topline{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:18px;border-bottom:3px solid var(--navy)}
+.brand{display:flex;gap:12px;align-items:center;min-width:0}
+.logo{width:54px;height:54px;flex:0 0 54px;display:flex;align-items:center;justify-content:center;background:var(--navy);color:#fff;font-weight:900;font-size:22px;border-radius:4px}
+h1{font-size:24px;line-height:1.15;margin:0;color:var(--navy);letter-spacing:.2px}
+.tagline{font-size:10px;letter-spacing:1.2px;font-weight:700;color:var(--muted);margin-top:5px}
+.doclabel{text-align:right;min-width:130px}
+.sub{font-size:18px;line-height:1.2;font-weight:900;margin:0;color:var(--navy)}
+.status{display:inline-block;margin-top:8px;padding:5px 10px;font-size:11px;font-weight:900;letter-spacing:.6px;border-radius:3px}
+.status.paid{background:#e5f1cf;color:#31550c;border:1px solid #a9c936}
+.status.unpaid{background:#fff4d8;color:#805700;border:1px solid #e5c56b}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:18px 0;border:1px solid var(--line)}
+.info{padding:10px 12px;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.info:nth-child(odd){border-right:1px solid var(--line)}
+.info:nth-last-child(-n+2){border-bottom:0}
+.label{font-size:10px;letter-spacing:.8px;text-transform:uppercase;font-weight:800;color:var(--muted);display:block;margin-bottom:3px}
+.value{font-size:14px;font-weight:700}
+.paymethod{background:#f4f7f8;border:1px solid var(--line);padding:12px 14px;margin:18px 0}
+.paymethod strong{color:var(--navy)}
+.pay-options{display:flex;gap:18px;flex-wrap:wrap;margin-top:6px;font-size:12px}
+table{width:100%;border-collapse:collapse;margin:18px 0 0}
+thead th{background:var(--navy);color:white;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:11px 8px;text-align:left}
+thead th:last-child,td.n{text-align:right}
+td{padding:12px 8px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top;overflow-wrap:anywhere}
+tbody tr:nth-child(even){background:#f7f9fa}
+.n{font-variant-numeric:tabular-nums}
+.totalbox{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:#edf3f5;border-bottom:3px solid var(--navy);margin-top:0}
+.total-label{font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:var(--navy)}
+.total{font-size:23px;font-weight:900;color:var(--navy);text-align:right;overflow-wrap:anywhere}
+.amountwords{padding:11px 13px;border:1px solid var(--line);border-top:0;font-size:12px;color:#43545d}
+.pay{border:1px solid #c6d7a3;border-left:5px solid var(--lime);padding:13px 15px;margin:18px 0;background:#f8fbf1;white-space:pre-wrap;overflow-wrap:anywhere}
+.pay b{display:block;color:var(--navy);margin-bottom:4px}
+.note{border:1px solid var(--line);padding:12px;margin:16px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.receipt-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-top:26px;padding-top:16px;border-top:1px solid var(--line)}
+.thanks{font-size:11px;color:var(--muted)}
+.sign{min-width:180px;text-align:center;border-top:1px dotted #7d8c93;padding-top:6px;font-size:11px;color:var(--muted)}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
-button,a.b{padding:13px 16px;border:0;border-radius:11px;background:var(--dark);color:#fff;text-decoration:none;font-weight:800;font-size:15px;text-align:center;flex:1 1 190px;cursor:pointer}
-a.g{background:var(--green)}
+button,a.b{padding:12px 16px;border:0;border-radius:4px;background:var(--navy);color:#fff;text-decoration:none;font-weight:800;font-size:14px;text-align:center;flex:1 1 180px;cursor:pointer}
+a.g{background:#16824a}
 small{color:var(--muted)}
-.footer{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:12px;margin-top:20px;color:var(--muted);font-size:11px}
-@media(max-width:520px){body{margin:0;padding:0;background:#DAF1DE}.invoice{border-radius:0;border:0;box-shadow:none}.inner{padding:20px 15px}.logo{width:47px;height:47px;flex-basis:47px;font-size:20px;border-radius:13px}h1{font-size:20px}.tagline{font-size:9px;letter-spacing:1px}.dochead{align-items:flex-start;flex-direction:column;gap:10px;margin:18px 0 15px}.sub{font-size:18px}.meta{gap:7px}.meta p{padding:9px;font-size:12px}th,td{padding:10px 5px;font-size:11px}.totalbox{align-items:flex-start;flex-direction:column;padding:14px}.total{text-align:left;font-size:23px}.actions button,.actions a.b{flex-basis:100%;font-size:14px}.footer{font-size:10px}}
-@media print{html,body{background:#fff!important;margin:0!important;padding:0!important;max-width:none!important}.invoice{border:0;border-radius:0;box-shadow:none}.inner{padding:16px 18px}.actions{display:none!important}.palette{-webkit-print-color-adjust:exact;print-color-adjust:exact}th,.status,.logo,.totalbox{ -webkit-print-color-adjust:exact;print-color-adjust:exact}table,.meta,.pay,.totalbox{break-inside:avoid}@page{size:auto;margin:10mm}}
-</style></head><body><div class="invoice"><div class="palette"></div><div class="inner"><div class="brand"><div class="logo">GD</div><div><h1>GD ELECTRIC MOTORS</h1><div class="tagline">MOTOR REPAIR & ELECTRICAL SERVICES</div></div></div><div class="dochead"><p class="sub">${paid ? "PAYMENT RECEIPT / INYEMEZABWISHYU" : "INVOICE / AMAFARANGA YO KWISHYURA"}</p><span class="status ${paid ? "paid" : "unpaid"}">${paid ? "PAID ✓ / YISHYUWE" : "UNPAID / NTIRISHYURWA"}</span></div><div class="meta"><p><b>No:</b><br>${esc(rid)}</p><p><b>Date / Itariki:</b><br>${new Date().toLocaleString()}</p><p><b>Customer / Umukiriya:</b><br>${esc(name || "-")}</p><p><b>Phone / Telefoni:</b><br>${esc(phoneRaw || "-")}</p></div><table><thead><tr><th>Item / Akazi</th><th class="n">Qty</th><th class="n">Price</th><th class="n">Total</th></tr></thead><tbody>${lines}</tbody></table><div class="totalbox"><div class="total-label">TOTAL / IGITERANYO</div><div class="total">${money(total)}</div></div>${paid ? '<p style="text-align:right"><span class="stamp">PAID ✓ / YISHYUWE</span></p>' : ""}${note ? `<p><b>Ibyakozwe / Notes:</b></p><div class="note">${esc(note)}</div>` : ""}${!paid && (payText || momoLink) ? `<div class="pay"><b>Uko wakwishyura / How to pay</b>${payText ? "\n" + esc(payText) : ""}</div>` : ""}<div class="actions"><button onclick="window.print()">🖨️ Print / Save PDF</button>${momoLink ? `<a class="b g" href="${momoLink}">📲 Kwishyura na MoMo</a>` : ""}${phone ? `<a class="b" target="_blank" rel="noopener" href="https://wa.me/${esc(phone)}?text=${encodeURIComponent(textMsg)}">Send on WhatsApp</a>` : ""}</div><div class="footer"><span>Thank you for choosing GD Electric Motors.</span><span>GD Electric Motors</span></div></div></body></html>`;
+@media(max-width:520px){body{margin:0;padding:0;background:#fff}.invoice{border:0;box-shadow:none}.inner{padding:19px 14px}.logo{width:43px;height:43px;flex-basis:43px;font-size:18px}h1{font-size:18px}.tagline{font-size:8px;letter-spacing:.7px}.topline{gap:9px}.sub{font-size:15px}.doclabel{min-width:105px}.info{padding:9px 8px}.value{font-size:12px}.pay-options{gap:8px}thead th,td{padding:9px 5px;font-size:10px}.totalbox{padding:12px 10px}.total{font-size:20px}.sign{min-width:130px}.actions button,.actions a.b{flex-basis:100%}}
+@media print{html,body{margin:0!important;padding:0!important;max-width:none!important;background:#fff!important}.invoice{border:0;box-shadow:none}.inner{padding:14px 18px}.actions{display:none!important}.palette,thead th,.logo,.status,.totalbox{-webkit-print-color-adjust:exact;print-color-adjust:exact}.info-grid,.paymethod,table,.totalbox,.pay{break-inside:avoid}@page{size:auto;margin:9mm}}
+</style></head><body><div class="invoice"><div class="palette"></div><div class="inner"><div class="topline"><div class="brand"><div class="logo">GD</div><div><h1>GD ELECTRIC MOTORS</h1><div class="tagline">MOTOR REPAIR & ELECTRICAL SERVICES</div></div></div><div class="doclabel"><p class="sub">${paid ? "CASH RECEIPT" : "INVOICE"}</p><span class="status ${paid ? "paid" : "unpaid"}">${paid ? "PAID ✓ / YISHYUWE" : "UNPAID / NTIRISHYURWA"}</span></div></div><div class="info-grid"><div class="info"><span class="label">Receipt / Invoice No.</span><span class="value">${esc(rid)}</span></div><div class="info"><span class="label">Date / Itariki</span><span class="value">${new Date().toLocaleString()}</span></div><div class="info"><span class="label">Received from / Umukiriya</span><span class="value">${esc(name || "-")}</span></div><div class="info"><span class="label">Phone / Telefoni</span><span class="value">${esc(phoneRaw || "-")}</span></div></div><div class="paymethod"><strong>Payment Method / Uburyo bwo kwishyura</strong><div class="pay-options"><span>${paid ? "☑" : "☐"} Cash / Amafaranga</span><span>${(payText || "").toLowerCase().includes("momo") || momoLink ? "☑" : "☐"} MoMo / Mobile Money</span><span>☐ Bank / Banki</span></div></div><table><thead><tr><th>Item / Akazi</th><th class="n">Qty</th><th class="n">Price</th><th class="n">Total</th></tr></thead><tbody>${lines}</tbody></table><div class="totalbox"><div class="total-label">Amount / Igiteranyo</div><div class="total">${money(total)}</div></div><div class="amountwords"><strong>Amount in words / Amafaranga mu magambo:</strong> ${money(total)} Rwandan francs</div>${paid ? '<p style="text-align:right"><span class="stamp">PAID ✓ / YISHYUWE</span></p>' : ""}${note ? `<p><b>Ibyakozwe / Notes:</b></p><div class="note">${esc(note)}</div>` : ""}${!paid && (payText || momoLink) ? `<div class="pay"><b>Uko wakwishyura / How to pay</b>${payText ? "\n" + esc(payText) : ""}</div>` : ""}<div class="actions"><button onclick="window.print()">🖨️ Print / Save PDF</button>${momoLink ? `<a class="b g" href="${momoLink}">📲 Kwishyura na MoMo</a>` : ""}${phone ? `<a class="b" target="_blank" rel="noopener" href="https://wa.me/${esc(phone)}?text=${encodeURIComponent(textMsg)}">Send on WhatsApp</a>` : ""}</div><div class="receipt-foot"><div class="thanks">Thank you for choosing GD Electric Motors.<br>Murakoze guhitamo serivisi zacu.</div><div class="sign">Customer / Receiver signature</div></div></div></body></html>`;
     // Open synchronously (inside the tap) as a real blob page so the phone shows it full width.
     const w = window.open(URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" })), "_blank");
     if (!w) return alert("Browser yabujije gufungura receipt. Emerera pop-ups hanyuma wongere ugerageze.");
