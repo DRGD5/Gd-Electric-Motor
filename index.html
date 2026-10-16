@@ -320,10 +320,10 @@
   body { font-size: 12px !important; }
   .hero { margin: 8px 10px 14px !important; border-radius: 18px !important; }
   .hero-copy { padding: 12px 12px 4px !important; }
-  .hero h1 { font-size: clamp(1.1rem, 4.8vw, 1.4rem) !important; line-height: 1.16 !important; margin: 5px 0 7px !important; }
+  .hero h1 { font-size: clamp(1.1rem, 4.8vw, 1.4rem) !important; line-height: 1.16 !important; margin: 5px 0 9px !important; }
   .hero-copy > :first-child { font-size: 10px !important; letter-spacing: 1.2px !important; }
-  .hero p { font-size: 12px !important; line-height: 1.35 !important; margin: 0 0 8px !important; }
-  .hero-copy .primary, .hero .primary { padding: 8px 12px !important; font-size: 12px !important; }
+  .hero p { font-size: 12px !important; line-height: 1.4 !important; margin: 0 0 10px !important; }
+  .hero-copy .primary, .hero .primary { padding: 9px 13px !important; font-size: 12px !important; }
   .hero-art { padding: 0 7px 7px !important; }
   .hero-art img { height: 115px !important; max-height: 115px !important; border-radius: 13px !important; }
   .search, .search-wrap { margin: 6px 10px !important; }
@@ -377,6 +377,107 @@
   }
 }
 
+    .rc-modal { position:fixed; inset:0; z-index:10100; background:rgba(0,0,0,.65); overflow:auto; }
+    .rc-modal[hidden] { display:none; }
+    .rc-sheet { background:#12142a; color:#f4f4ff; max-width:560px; min-height:100%; margin:0 auto; padding:16px; box-sizing:border-box; }
+    .rc-head { display:flex; justify-content:space-between; align-items:center; }
+    .rc-head h2 { margin:0; }
+    .rc-head button { background:#2b3160; color:#fff; border:0; border-radius:50%; width:40px; height:40px; font-size:1.1rem; }
+    .rc-sheet label { display:block; margin:14px 0 6px; font-weight:800; font-size:.95rem; color:#cfd2ff; }
+    .rc-sheet input:not([type=checkbox]), .rc-sheet textarea { width:100%; box-sizing:border-box; padding:12px; border-radius:12px; border:1.5px solid #3b4180; background:#0b0e1b; color:#fff; font-size:1rem; }
+    .rc-sheet textarea { min-height:84px; }
+    .rc-rowhead, .rc-row { display:grid; grid-template-columns:1fr 62px 96px 36px; gap:6px; align-items:center; margin-bottom:6px; }
+    .rc-rowhead { font-size:.8rem; color:#9aa0d8; }
+    .rc-x { background:#7f1d1d; color:#fff; border:0; border-radius:10px; height:42px; }
+    .rc-total { margin:12px 0; font-size:1.2rem; text-align:right; }
+    .rc-check { display:flex !important; align-items:center; gap:10px; }
+    .rc-check input { width:22px; height:22px; }
+    .st-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:12px 0; }
+    .st-card { background:#0b0e1b; border:1px solid #2b3160; border-radius:16px; padding:12px; }
+    .st-card small { display:block; opacity:.75; }
+    .st-card b { font-size:1.6rem; display:block; margin:2px 0; color:#5eead4; }
+    .st-bars { display:flex; align-items:flex-end; gap:8px; height:150px; margin-top:8px; }
+    .st-bar { flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; height:100%; }
+    .st-bar i { display:block; width:100%; background:linear-gradient(180deg,#7b4dff,#5b2fe0); border-radius:8px 8px 0 0; min-height:3px; }
+    .st-bar span { font-size:.78rem; margin-top:4px; opacity:.8; }
+    .st-bar em { font-style:normal; font-size:.8rem; font-weight:800; margin-bottom:2px; }
+    /* floating chat + phone buttons: stacked (no overlap) and only on the Home page */
+    #gdChatOpenBtn { bottom:205px !important; right:18px !important; }
+    body[data-view]:not([data-view="home"]) .whatsapp-float,
+    body[data-view]:not([data-view="home"]) #gdChatOpenBtn { display:none !important; }
+    /* ---- open-your-shop card (Account page) ---- */
+    .sp-hero { position:relative; overflow:hidden; margin:18px 0; padding:22px 18px; border-radius:26px; color:#fff; background:radial-gradient(120% 120% at 100% 0%,#7b4dff 0%,#3b1fb8 45%,#0f2a4a 100%); border:1px solid rgba(255,255,255,.18); box-shadow:0 14px 36px rgba(91,47,224,.4); }
+    .sp-hero::after { content:"🏪"; position:absolute; right:-6px; top:-14px; font-size:6.5rem; opacity:.12; }
+    .sp-tag { display:inline-block; background:#2dd4bf; color:#032b28; font-weight:900; font-size:.72rem; letter-spacing:1px; padding:4px 12px; border-radius:99px; }
+    .sp-hero h2 { margin:10px 0 6px; font-size:1.6rem; }
+    .sp-hero p { margin:0 0 12px; opacity:.92; line-height:1.45; }
+    .sp-list { list-style:none; padding:0; margin:0 0 14px; display:grid; gap:7px; font-weight:700; }
+    .sp-steps { display:flex; align-items:center; justify-content:space-between; gap:4px; background:rgba(0,0,0,.28); border-radius:16px; padding:10px; margin-bottom:16px; }
+    .sp-steps div { display:flex; flex-direction:column; align-items:center; text-align:center; font-size:.78rem; gap:4px; flex:1; }
+    .sp-steps b { width:28px; height:28px; border-radius:50%; background:#fff; color:#3b1fb8; display:grid; place-items:center; }
+    .sp-steps i { font-style:normal; opacity:.7; }
+    .sp-cta { width:100%; border:0; border-radius:16px; padding:16px; font-size:1.1rem; font-weight:900; color:#032b28; background:linear-gradient(135deg,#5eead4,#2dd4bf); box-shadow:0 8px 20px rgba(45,212,191,.45); }
+    .sp-ghost { border:2px solid rgba(255,255,255,.35); background:transparent; color:#fff; border-radius:16px; padding:14px 18px; font-weight:800; }
+    .sp-hint { display:block; margin-top:10px; opacity:.85; text-align:center; }
+    .sp-card { margin:18px 0; padding:16px; border-radius:22px; background:linear-gradient(160deg,#0b3d3a,#0f2a4a); border:2px solid #2dd4bf; color:#fff; }
+    .sp-mine { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+    .sp-mine img, .sp-mine .shop-logo-ph { width:64px; height:64px; border-radius:50%; object-fit:cover; margin:0; flex:none; }
+    .sp-mine h3 { margin:2px 0 6px; }
+    .sp-actions { display:flex; gap:10px; }
+    .sp-actions .sp-cta { flex:1; padding:14px; font-size:1rem; }
+    .sp-del { width:100%; margin-top:12px; padding:12px; border-radius:14px; border:1.5px solid #ef4444; background:rgba(239,68,68,.12); color:#fecaca; font-weight:800; }
+    .sp-pill { display:inline-block; padding:3px 12px; border-radius:99px; font-size:.8rem; font-weight:900; }
+    .sp-pill.ok { background:#16a34a; } .sp-pill.wait { background:#f59e0b; color:#1f1300; } .sp-pill.bad { background:#dc2626; }
+    /* ---- floating chat/phone buttons: only a small "head" peeks out; tap once to slide out ---- */
+    .whatsapp-float, #gdChatOpenBtn { width:50px !important; height:50px !important; font-size:1.4rem !important; right:0 !important; transform:translateX(58%) !important; opacity:.8; transition:transform .25s ease, opacity .25s ease; }
+    #gdChatOpenBtn { bottom:196px !important; }
+    .whatsapp-float { bottom:136px !important; }
+    .whatsapp-float.fab-open, #gdChatOpenBtn.fab-open { transform:translateX(-14px) !important; opacity:1; }
+</style>
+<style>
+/* Services: horizontal swipe slider, similar to the reference shop page */
+#servicesSection { min-width: 0 !important; overflow: hidden !important; }
+#servicesSection .svc-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 14px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: scroll !important;
+  overflow-y: hidden !important;
+  touch-action: pan-x pan-y !important;
+  padding: 2px 2px 14px !important;
+  scroll-snap-type: x mandatory !important;
+  scroll-padding-left: 2px !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-x: contain !important;
+  scrollbar-width: thin;
+}
+#servicesSection .svc-card {
+  flex: 0 0 84% !important;
+  width: 84% !important;
+  max-width: 340px !important;
+  min-width: 84% !important;
+  margin: 0 !important;
+  scroll-snap-align: start !important;
+  border-radius: 18px !important;
+}
+#servicesSection .svc-card img {
+  display: block !important;
+  width: 100% !important;
+  height: clamp(155px, 48vw, 230px) !important;
+  max-height: none !important;
+  object-fit: cover !important;
+}
+#servicesSection .svc-body { padding: 14px !important; gap: 9px !important; }
+#servicesSection .svc-body h3 { font-size: 1.05rem !important; line-height: 1.35 !important; }
+#servicesSection .svc-body p { font-size: .9rem !important; line-height: 1.5 !important; }
+@media (min-width: 700px) {
+  #servicesSection .svc-card { flex-basis: 320px !important; width: 320px !important; }
+}
 </style>
 </head>
 <body>
@@ -454,6 +555,7 @@
   <section id="view-account" class="view">
     <h1 class="page-title" data-en="Account" data-rw="Konti">Account</h1>
     <div id="accountContent"></div>
+    <div id="accountShopPromo"></div>
     <div class="info-card"><h3 data-en="Need help?" data-rw="Ukeneye ubufasha?">Need help?</h3><p data-en="Use the WhatsApp button to ask about prices, delivery and product availability." data-rw="Kanda kuri WhatsApp ubaze ibiciro, kugeza ibicuruzwa n'ibihari.">Use the WhatsApp button to ask about prices, delivery and product availability.</p><button class="primary" onclick="contactWhatsApp()" data-en="Contact us on WhatsApp" data-rw="Twandikire kuri WhatsApp">Contact us on WhatsApp</button></div>
   </section>
 
@@ -510,8 +612,10 @@
 
       <div class="admin-shortcuts" aria-label="Admin menu">
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminServicesSection')"><span>🛠️ Serivisi dukora <span class="users-count count-total" id="svcTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminStatsSection')"><span>📊 Abasuye website <span class="users-count count-new" id="statsTodayBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span>🧩 Ibice bya website</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminShopsSection')"><span>🏪 Amaduka y'abakiriya <span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminChatSection')"><span>💬 Chat n'abakiriya <span class="users-count count-total" id="chatTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span>📦 Ibyatumijwe (Orders) <span class="users-count count-new" id="ordersNewBadge" hidden>0</span> <span class="users-count count-total" id="ordersTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminRequestsSection')"><span>🛒 Ubusabe bwa serivisi <span class="users-count count-new" id="reqNewBadge" hidden>0</span> <span class="users-count count-total" id="reqTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span>➕ Ongeramo igicuruzwa</span><span class="shortcut-arrow">›</span></button>
@@ -519,11 +623,12 @@
 
       <div class="info-card admin-section" id="adminServicesSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminServicesSection')"><h2>🛠️ Serivisi dukora</h2><span class="shortcut-arrow">⌃</span></button>
-        <form onsubmit="adminSaveService(event)">
+        <form id="svcForm" onsubmit="adminSaveService(event)">
           <div class="form-row"><input id="svcName" placeholder="Izina rya serivisi (urugero: Rewinding)" required></div>
           <div class="form-row"><textarea id="svcDesc" placeholder="Ibisobanuro bigufi"></textarea></div>
           <div class="form-row"><label>Ifoto (si ngombwa)</label><input id="svcImage" type="file" accept="image/*"></div>
           <button class="primary" type="submit" id="svcBtn">Bika serivisi</button>
+          <button class="secondary" type="button" id="svcCancelBtn" onclick="adminCancelServiceEdit()" hidden>Reka guhindura</button>
           <div id="svcMsg" class="status-msg"></div>
         </form>
         <div id="adminServices"></div>
@@ -532,13 +637,14 @@
       <div class="info-card admin-section" id="adminSectionsSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminSectionsSection')"><h2>🧩 Ibice bya website</h2><span class="shortcut-arrow">⌃</span></button>
         <p>Kora igice gishya kigaragara ku rupapuro rwa mbere (Ahabanza), munsi y'ibicuruzwa.</p>
-        <form onsubmit="adminSaveSection(event)">
+        <form id="secForm" onsubmit="adminSaveSection(event)">
           <div class="form-row"><input id="secTitle" placeholder="Umutwe w'igice (urugero: Ibyo dukora)" required></div>
           <div class="form-row"><textarea id="secBody" placeholder="Ibisobanuro (si ngombwa)"></textarea></div>
           <div class="form-row"><label>Ifoto (si ngombwa)</label><input id="secImage" type="file" accept="image/*"></div>
           <div class="form-row"><input id="secBtnLabel" placeholder="Izina rya button (si ngombwa, urugero: Reba byinshi)"></div>
           <div class="form-row"><input id="secBtnLink" placeholder="Link ya button (https://... cyangwa nimero ya WhatsApp)"></div>
           <button class="primary" type="submit" id="secBtn">Bika igice</button>
+          <button class="secondary" type="button" id="secCancelBtn" onclick="adminCancelSectionEdit()" hidden>Reka guhindura</button>
           <div id="secMsg" class="status-msg"></div>
         </form>
         <div id="adminSections"></div>
@@ -549,15 +655,28 @@
         <div id="adminShops"></div>
       </div>
 
+      <div class="info-card admin-section" id="adminChatSection" hidden>
+        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminChatSection')"><h2>💬 Chat n'abakiriya</h2><span class="shortcut-arrow">⌃</span></button>
+        <p>Hitamo umukiriya kugira ngo usome ubutumwa kandi umusubize.</p>
+        <div id="adminChatThreads"></div>
+      </div>
+
+      <div class="info-card admin-section" id="adminStatsSection" hidden>
+        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminStatsSection')"><h2 data-en="📊 Website visitors" data-rw="📊 Abasuye website">📊 Abasuye website</h2><span class="shortcut-arrow">⌃</span></button>
+        <div id="adminStats"></div>
+      </div>
+
       <div class="info-card admin-section" id="adminOrdersSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminOrdersSection')"><h2>📦 Ibyatumijwe (Orders)</h2><span class="shortcut-arrow">⌃</span></button>
         <p>Hindura aho commande igeze. Guhagarika commande ntibisiba amateka yayo.</p>
+        <button class="secondary" type="button" onclick="gdReceiptNew()" style="margin-bottom:10px">🧾 Receipt nshya (nta order)</button>
         <div id="adminOrders"></div>
       </div>
 
       <div class="info-card admin-section" id="adminRequestsSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminRequestsSection')"><h2>🛒 Ubusabe bwa serivisi (Service Requests)</h2><span class="shortcut-arrow">⌃</span></button>
         <p>Reba ubusabe bw'abakiriya kandi uhindure uko serivisi yabo ihagaze.</p>
+        <button class="secondary" type="button" onclick="gdReceiptNew()" style="margin-bottom:10px">🧾 Receipt nshya (nta busabe)</button>
         <div id="adminServiceRequests"></div>
       </div>
 
@@ -585,6 +704,17 @@
     </div>
   </section>
 </main>
+
+<style>
+#gdChatPanel{position:fixed;right:14px;bottom:88px;width:min(360px,calc(100vw - 28px));height:min(480px,65vh);z-index:10050;background:#111426;color:#f4f4ff;border:1px solid #39334e;border-radius:18px;box-shadow:0 12px 40px #0006;display:flex;flex-direction:column;overflow:hidden}
+#gdChatPanel[hidden]{display:none}#gdChatHead{padding:13px;background:#5420df;display:flex;justify-content:space-between;align-items:center;font-weight:800}
+#gdChatMessages{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.gd-chat-msg{padding:9px 11px;border-radius:12px;background:#22253a;max-width:88%;overflow-wrap:anywhere;align-self:flex-start}.gd-chat-msg.mine{align-self:flex-end;background:#5420df}.gd-chat-msg small{display:block;opacity:.7;font-size:10px;margin-top:4px}
+#gdChatForm{display:flex;gap:6px;padding:9px;border-top:1px solid #33364b}#gdChatInput{flex:1;min-width:0;background:#090b17;color:white;border:1px solid #39334e;border-radius:10px;padding:10px}#gdChatForm button{background:#5420df;color:white;border:0;border-radius:10px;padding:10px;font-weight:bold}
+.gd-chat-thread{padding:10px;border-bottom:1px solid #33364b;display:flex;justify-content:space-between;gap:10px;align-items:center}.gd-chat-thread button{background:#5420df;color:white;border:0;border-radius:9px;padding:8px}
+</style>
+<button type="button" id="gdChatOpenBtn" aria-label="Chat with GD Electric Motors" onclick="gdOpenChat()" style="position:fixed;right:18px;bottom:155px;z-index:10040;border:0;border-radius:50%;width:58px;height:58px;background:#5420df;color:white;font-size:25px;box-shadow:0 8px 24px #5420df66">💬</button>
+<section id="gdChatPanel" hidden aria-label="Customer chat"><div id="gdChatHead"><span id="gdChatTitle">Chat na GD Electric Motors</span><button type="button" onclick="gdCloseChat()" style="background:transparent;color:white;border:0;font-size:22px">×</button></div><div id="gdChatMessages"><p>Muraho! Andika ubutumwa bwawe hano.</p></div><form id="gdChatForm" onsubmit="gdSendChat(event)"><input id="gdChatInput" maxlength="1500" placeholder="Andika ubutumwa..." required><button type="submit">Ohereza</button></form></section>
 
 <a href="#" class="whatsapp-float" aria-label="Twandikire kuri WhatsApp" onclick="contactWhatsApp();return false;">☏</a>
 
@@ -637,11 +767,114 @@
   }
   const money = n => new Intl.NumberFormat("en-US").format(n) + " RWF";
   const t = (en,rw) => language === "rw" ? rw : en;
+
+  // Site-wide bilingual text for labels that were previously hard-coded in Kinyarwanda.
+  const RW_EN = {
+    "Ahabanza":"Home", "Ibicuruzwa":"Products", "Konti":"Account", "Byabitswe":"Saved", "Agaseke":"Cart", "Admin":"Admin",
+    "Ibicuruzwa wabikije":"Saved products", "Ibicuruzwa wabikije ♡":"Saved products ♡", "Nta burenganzira":"Access denied",
+    "Abantu bose bafunguye konti. Umuhe inshingano hanyuma ukande \"Bika\".":"All registered accounts. Assign a role, then click \"Save\".",
+    "Shakisha izina, email cyangwa telefoni...":"Search name, email, or phone...", "Serivisi dukora":"Our services", "Ubusabe bwa serivisi":"Service requests",
+    "Ongeramo igicuruzwa":"Add product", "Izina rya serivisi (urugero: Rewinding)":"Service name (e.g. Rewinding)", "Ibisobanuro bigufi":"Short description",
+    "Bika serivisi":"Save service", "Bika impinduka":"Save changes", "Reka guhindura":"Cancel edit", "Bika igice":"Save section",
+    "Reka guhindura igice":"Cancel section edit", "Kora igice gishya kigaragara ku rupapuro rwa mbere (Ahabanza), munsi y'ibicuruzwa.":"Create a new section shown on the Home page, below the products.",
+    "Umutwe w'igice (urugero: Ibyo dukora)":"Section title (e.g. What we do)", "Izina rya button (si ngombwa, urugero: Reba byinshi)":"Button label (optional, e.g. See more)",
+    "Hitamo umukiriya kugira ngo usome ubutumwa kandi umusubize.":"Select a customer to read and reply to their messages.",
+    "Hindura aho commande igeze. Guhagarika commande ntibisiba amateka yayo.":"Update the order status. Cancelling an order does not delete its history.",
+    "Reba ubusabe bw'abakiriya kandi uhindure uko serivisi yabo ihagaze.":"View customer service requests and update their status.",
+    "Izina (Kinyarwanda)":"Name (Kinyarwanda)", "Ibisobanuro (Kinyarwanda)":"Description (Kinyarwanda)", "Icyiciro":"Category",
+    "Igiciro (RWF)":"Price (RWF)", "Igiciro cya kera (RWF), si ngombwa":"Previous price (RWF), optional", "Ifoto":"Image",
+    "Urugero: Pompe y'amazi":"Example: Water Pump", "Ibicuruzwa biri ku rubuga":"Products on the website", "Reba ibicuruzwa":"View products",
+    "Amaduka y'abakiriya":"Customer shops", "Chat n'abakiriya":"Customer chat", "Ibyatumijwe (Orders)":"Orders", "Subiza":"Reply", "Hindura":"Edit", "Siba":"Delete", "Bika":"Save", "Subiza iyi serivisi":"Restore this service",
+    "Nta konti zibonetse.":"No accounts found.", "Nta busabe bwa serivisi burahagera.":"No service requests yet.", "Nta biganiro birahari. Ubutumwa bw'abakiriya buzagaragara hano.":"No conversations yet. Customer messages will appear here.",
+    "Ubutumwa bwawe buzagaragara hano.":"Your messages will appear here.", "Umukiriya":"Customer", "Nta butumwa burandikwa":"No messages yet", "Chat na GD Electric Motors":"Chat with GD Electric Motors",
+    "Ntibishobotse gusoma ubutumwa. Reba amategeko ya Firebase (Firestore Rules).":"Could not load messages. Check Firebase Firestore Rules.",
+    "Chat ntiyafungutse. Reba internet cyangwa Firestore Rules.":"Chat could not open. Check your internet connection or Firestore Rules.",
+    "Banza winjire muri konti kugira ngo wandikire GD Electric Motors.":"Please sign in to message GD Electric Motors.",
+    "Ubutumwa ntibwoherejwe:":"Message not sent:", "Ohereza":"Send", "Andika ubutumwa...":"Type a message...", "Andika ubutumwa":"Write a message",
+    "Nta gicuruzwa urongeramo.":"You have not added any products.", "Ibicuruzwa by'ibanze":"Default products", "Bikomeza kugaragara hamwe n'ibyo wongeraho, keretse ubisibye.":"These remain visible alongside your added products unless you remove them.",
+    "Hindura igicuruzwa":"Edit product", "Hindura igicuruzwa cy'ibanze":"Edit default product", "Bika igicuruzwa":"Save product", "Reka guhindura":"Cancel editing",
+    "Ongeramo igicuruzwa cy'ibanze":"Add default product", "Nta bicuruzwa bibonetse.":"No products found.", "Nta bicuruzwa urabika.":"You have not saved any products yet.",
+    "Nta bicuruzwa biraboneka.":"No products available yet.", "Nta maduka aracyaboneka.":"No shops available yet.", "ibicuruzwa":"products", "Ibyiciro":"Categories",
+    "Baza kuri WhatsApp":"Ask on WhatsApp", "Saba iyi serivisi":"Request this service", "Saba serivisi":"Request service", "Siba iyi serivisi?":"Delete this service?",
+    "Gusiba iyi serivisi?":"Delete this service?", "Andika izina rya serivisi.":"Enter a service name.", "Andika umutwe w'igice.":"Enter a section title.",
+    "Impinduka zabitswe.":"Changes saved.", "Serivisi yabitswe.":"Service saved.", "Igice cyabitswe. Reba ku rupapuro rwa mbere.":"Section saved. Check the Home page.",
+    "Ntibyakunze:":"Failed:", "Gusiba byanze:":"Delete failed:", "Guhindura igiciro byanze:":"Could not update the price:", "Andika igiciro cyemewe.":"Enter a valid price.",
+    "Andika igiciro gishya cyose (RWF):":"Enter the new total price (RWF):", "Igiciro cyahinduwe neza. Print Receipt izagaragara igihe commande izaba ishojwe.":"Price updated. Print Receipt will be available when the order is completed.",
+    "Banza ushyire commande kuri 'Byarangiye / Byatanze' mbere yo gukora receipt.":"Mark the order as 'Completed / Delivered' before creating a receipt.",
+    "Browser yabujije gufungura receipt. Emerera pop-ups hanyuma wongere ugerageze.":"Your browser blocked the receipt. Allow pop-ups and try again.",
+    "Impamvu yo guhagarika serivisi (si ngombwa):":"Reason for cancelling the service (optional):", "Kohereza ifoto byanze":"Image upload failed",
+    "Andika izina ry'igicuruzwa.":"Enter a product name.", "Andika igiciro.":"Enter a price.", "Habaye ikibazo.":"Something went wrong.",
+    "Nta burenganzira. Reba amategeko (rules) ya Firestore.":"Access denied. Check the Firestore rules.", "Gusiba iki gice?":"Delete this section?",
+    "Guhisha iyi serivisi y'ibanze? Ushobora kuyisubiza nyuma.":"Hide this default service? You can restore it later.",
+    "Gusiba iki gicuruzwa?":"Delete this product?", "Gusiba iri duka?":"Delete this shop?", "Guhagarika iri duka? Ntirizongera kugaragara ku bantu.":"Suspend this shop? It will no longer be visible to the public.",
+    "Gusiba iri duka n'ibicuruzwa byaryo byose?":"Delete this shop and all its products?", "Nta burenganzira. Reba amategeko ya Firestore.":"Access denied. Check Firestore rules.",
+    "Ntibyashobotse kuyikura mu mateka. Reba uburenganzira bwa Firestore.":"Could not hide this order. Check Firestore permissions.",
+    "Banza winjire cyangwa ufungure konti kugira ngo uzajye ukurikirana ubusabe bwa serivisi yawe.":"Please sign in or create an account to track your service request.",
+    "Ubusabe bwa serivisi bwoherejwe. Jya muri Konti urebe aho bugeze.":"Service request sent. Open Account to track its status.",
+    "Ntibyashobotse kohereza ubusabe. Reba internet cyangwa amategeko ya Firebase.":"Could not send the request. Check your internet connection or Firebase rules.",
+    "Izina rya serivisi":"Service name", "Ibicuruzwa by'ibanze":"Default products", "Icy'ibanze":"Default", "Iy'ibanze":"Default",
+    "yahishwe":"hidden", "ibicuruzwa bihari":"products available", "Bika shop":"Save shop", "Hindura shop":"Edit shop", "Fungura shop yawe":"Open your shop",
+    "Hindura shop yawe":"Edit your shop", "Ongeramo igicuruzwa":"Add product", "Bika igicuruzwa":"Save product", "Igiciro":"Price", "Ibicuruzwa by'ibanze":"Default products",
+    "Twandikire":"Contact us", "Reba byose":"See all", "Shakisha":"Search", "Shakisha ibicuruzwa n\'ibyiciro...":"Search products and categories...", "Andika ubutumwa...":"Type a message...", "Nta bicuruzwa urongeramo.":"You have not added any products.",
+    "Kuraho akayunguruzo":"Clear filter", "Byakiriwe":"Received", "Irimo gutegurwa":"Being prepared", "Byarangiye":"Completed", "Byatanze":"Delivered", "Birimo gukorwa":"In progress", "Yahagaritswe":"Cancelled",
+    "Hitamo ururimi":"Choose language", "Injira nka admin":"Sign in as admin", "Injira":"Sign in", "Sohoka":"Sign out",
+    "Iyi paji ni iya admin gusa.":"This page is for administrators only.", "Email":"Email", "Password":"Password",
+    "Izina ryawe":"Your name", "Telefoni":"Phone", "Bika amakuru":"Save details", "Amakuru yabitswe kuri telefoni yawe.":"Details saved on this device.",
+    "Ifoto (si ngombwa)":"Photo (optional)", "Kohereza":"Send", "Shyiramo izina":"Enter a name", "Izina":"Name", "Ubutumwa":"Message", "Umutwe":"Title", "Ibisobanuro":"Description",
+    "Ifoto y'igicuruzwa":"Product image", "Ibyiciro byose":"All categories", "Kurikirana komande yanjye":"Track my order",
+    "Reba aho komande zawe zigeze hano.":"See the latest status of your orders here.", "Agaseke kawe karimo ubusa.":"Your cart is empty.",
+    "Igiteranyo cy'agateganyo":"Estimated total", "Ibiciro n'ibihari byemezwe natwe mbere yo kwishyura.":"Prices and stock should be confirmed with us before payment.",
+    "Nta bicuruzwa bibonetse. Gerageza gushakisha ukundi.":"No products found. Try another search.", "Ukeneye ubufasha?":"Need help?",
+    "Gura ukurikije ibyiciro":"Shop by category", "Banza winjire":"Please sign in first", "Amakuru yawe":"Your details", "Konti yawe":"Your account",
+    "Abasuye website":"Website visitors", "Winjiye nka":"Signed in as", "Abakiriya (Accounts)":"Customers (Accounts)", "Ibice bya website":"Website sections",
+    "Ubusabe bwa serivisi (Service Requests)":"Service Requests", "Muraho! Andika ubutumwa bwawe hano.":"Hello! Write your message here.",
+    "Ibisobanuro (si ngombwa)":"Description (optional)", "Link ya button (https://... cyangwa nimero ya WhatsApp)":"Button link (https://... or WhatsApp number)",
+    "Byiteguye gufatwa/kugezwa":"Ready for pickup/delivery", "Byarangiye / Byatanzwe":"Completed / Delivered", "Byahagaritswe":"Cancelled",
+    "Emeza":"Approve", "Hagarika":"Suspend", "Reba":"View", "Itegereje":"Pending", "Yemejwe":"Approved", "Bika inshingano":"Save role",
+    "Inshingano (urugero: gukurikirana orders)":"Duties (e.g. follow up orders)", "Umukiriya (Customer)":"Customer", "Umukozi (Staff)":"Staff",
+    "Umutekinisiye":"Technician", "Ushinzwe kugurisha":"Sales", "Umuyobozi (Manager)":"Manager", "Abakiriya bose:":"All customers:",
+    "Ongeramo iduka":"Add a shop", "Fungura iduka":"Open a shop", "Ibisobanuro by'iduka":"Shop description", "Icyiciro cy'igicuruzwa":"Product category", "Igiciro cya kera":"Previous price"
+  };
+  const EN_RW = Object.fromEntries(Object.entries(RW_EN).map(([rw,en]) => [en,rw]));
+  function translatePage() {
+    const dict = language === "en" ? RW_EN : EN_RW;
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+    for (const node of nodes) {
+      const original = node.nodeValue;
+      const trimmed = original.trim();
+      if (!trimmed) continue;
+      let key = trimmed, prefix = "";
+      if (!Object.prototype.hasOwnProperty.call(dict, key)) {
+        // Labels like "🛠️ Serivisi dukora": keep the emoji/symbol prefix and translate the words.
+        const pm = trimmed.match(/^([^\p{L}\p{N}(]+)\s*(.+)$/u);
+        if (pm && Object.prototype.hasOwnProperty.call(dict, pm[2])) { prefix = pm[1] + " "; key = pm[2]; } else continue;
+      }
+      const leading = original.match(/^\s*/)?.[0] || "";
+      const trailing = original.match(/\s*$/)?.[0] || "";
+      const translated = prefix + dict[key];
+      if (translated !== trimmed) node.nodeValue = leading + translated + trailing;
+    }
+    document.querySelectorAll("input[placeholder],textarea[placeholder],button[aria-label],input[aria-label],img[alt]").forEach(el => {
+      for (const attr of ["placeholder","aria-label","alt"]) {
+        if (!el.hasAttribute(attr)) continue;
+        const val = el.getAttribute(attr);
+        if (dict[val]) el.setAttribute(attr, dict[val]);
+      }
+    });
+  }
+  let languageObserverStarted = false;
+  function startLanguageObserver() {
+    if (languageObserverStarted) return;
+    languageObserverStarted = true;
+    new MutationObserver(() => translatePage()).observe(document.body, {subtree:true,childList:true,characterData:true});
+  }
   const productName = p => t(p.en,p.rw);
   const categoryName = c => t(c.en,c.rw);
 
   function showView(name) {
     document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+    document.body.dataset.view = name;
     const target=document.getElementById("view-"+name);
     if(target) target.classList.add("active");
     document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
@@ -652,19 +885,23 @@
     window.scrollTo({top:0,behavior:"smooth"});
   }
   function setLanguage(lang) {
-    language=lang; document.documentElement.lang=lang==="rw"?"rw":"en";
-    document.getElementById("langEN").classList.toggle("active",lang==="en");
-    document.getElementById("langRW").classList.toggle("active",lang==="rw");
-    document.querySelectorAll("[data-en][data-rw]").forEach(el=>{
-      if(el.matches("input")) return;
-      el.innerHTML=el.dataset[lang];
+    language = lang === "en" ? "en" : "rw";
+    localStorage.setItem("gdLanguage", language);
+    document.documentElement.lang = language;
+    document.getElementById("langEN").classList.toggle("active", language === "en");
+    document.getElementById("langRW").classList.toggle("active", language === "rw");
+    document.querySelectorAll("[data-en][data-rw]").forEach(el => {
+      if (el.matches("input,textarea")) return;
+      el.innerHTML = el.dataset[language];
     });
-    document.querySelectorAll("[data-placeholder-en]").forEach(el=>el.placeholder=el.dataset["placeholder"+(lang==="rw"?"Rw":"En")]);
+    document.querySelectorAll("[data-placeholder-en]").forEach(el => el.placeholder = el.dataset["placeholder" + (language === "rw" ? "Rw" : "En")]);
     renderHome(); renderCategories(); renderSaved(); renderCart();
-    if(window.renderAccount) window.renderAccount();
-    if(window.renderServices) window.renderServices();
-    if(window.gdRefreshShops) window.gdRefreshShops();
+    if (window.renderAccount) window.renderAccount();
+    if (window.renderServices) window.renderServices();
+    if (window.gdRefreshShops) window.gdRefreshShops();
     renderOrderDone();
+    translatePage();
+    startLanguageObserver();
   }
   function handleSearch(value) {
     searchTerm=value.trim().toLowerCase();
@@ -835,7 +1072,7 @@
   }
   function init(){
     document.getElementById("year").textContent=new Date().getFullYear();
-    setLanguage("rw");
+    setLanguage(localStorage.getItem("gdLanguage") || "rw");
   }
   init();
 </script>
@@ -843,7 +1080,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
-  import { getFirestore, collection, onSnapshot, doc, setDoc, getDoc, addDoc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+  import { getFirestore, collection, onSnapshot, doc, setDoc, getDoc, addDoc, updateDoc, deleteDoc, query, where, increment } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBxazRYoL06ufQcdAv5WNySmcqmXF7_z_E",
@@ -861,8 +1098,24 @@
   const db = getFirestore(app);
   const $ = id => document.getElementById(id);
 
+  // Sample product overrides must be handled inside this Firebase module.
+  // Keeping this listener here avoids stopping the classic homepage script at startup.
+  let sampleOverrides = {};
+  function applySampleOverrides() {
+    sampleProducts.forEach(p => {
+      const patch = sampleOverrides[String(p.id)];
+      if (patch) Object.assign(p, patch);
+    });
+  }
+  onSnapshot(doc(db, "settings", "sampleProductOverrides"), snap => {
+    sampleOverrides = snap.exists() ? (snap.data() || {}) : {};
+    applySampleOverrides();
+    setProducts(dbProducts);
+    renderAdminList();
+  }, err => console.warn("Sample product overrides:", err));
+
   let dbProducts = [];
-  let editingId = null, editingImage = "";
+  let editingId = null, editingImage = "", editingSampleId = null;
   let currentUser = null;
   const ADMIN_EMAIL = "gady22th@gmail.com"; // must match the admin email in Firebase Authentication and in the Firestore rules
   let profile = null, pendingProfile = null, myOrders = [], allOrders = [], myServiceRequests = [], allServiceRequests = [], accMode = "login", allUsers = [], unsubUsers = null, unsubOrders = null, unsubServiceRequests = null;
@@ -877,12 +1130,49 @@
   }, err => console.error("Firestore:", err));
 
   // ----- admin auth -----
+  // ----- visitor statistics -----
+  const todayKey = () => new Date().toLocaleDateString("en-CA");
+  function countVisit() {
+    try {
+      if (localStorage.getItem("gdNoCount") || sessionStorage.getItem("gdSess")) return;
+      sessionStorage.setItem("gdSess", "1");
+      const day = todayKey(), isNew = !localStorage.getItem("gdVid"), uniq = localStorage.getItem("gdLastDay") !== day ? 1 : 0;
+      if (isNew) localStorage.setItem("gdVid", Math.random().toString(36).slice(2));
+      localStorage.setItem("gdLastDay", day);
+      const inc = () => ({ visits: increment(1), unique: increment(uniq), newV: increment(isNew ? 1 : 0) });
+      setDoc(doc(db, "stats", "d-" + day), { date: day, ...inc() }, { merge: true }).catch(() => {});
+      setDoc(doc(db, "stats", "total"), { date: "total", ...inc() }, { merge: true }).catch(() => {});
+    } catch (e) {}
+  }
+  let statsDocs = {};
+  function renderAdminStats() {
+    const el = $("adminStats"); if (!el) return;
+    const g = k => statsDocs[k] || { visits: 0, unique: 0, newV: 0 };
+    const dayKey = n => { const d = new Date(); d.setDate(d.getDate() - n); return "d-" + d.toLocaleDateString("en-CA"); };
+    const sum = (n, f) => { let t = 0; for (let i = 0; i < n; i++) t += g(dayKey(i))[f] || 0; return t; };
+    const td = g(dayKey(0)), yd = g(dayKey(1)), tot = g("total");
+    const badge = $("statsTodayBadge"); if (badge) { badge.textContent = td.unique || 0; badge.hidden = !(td.unique > 0); }
+    const days = []; for (let i = 6; i >= 0; i--) { const k = dayKey(i); days.push({ k, label: k.slice(7), v: g(k).unique || 0 }); }
+    const max = Math.max(1, ...days.map(d => d.v));
+    el.innerHTML = `<p style="opacity:.8;margin:6px 0">${t("Unique visitors = different phones/computers per day. Visits = times the site was opened.", "Abasuye (unique) = telefoni zitandukanye ku munsi. Gusura = inshuro urubuga rwafunguwe.")}</p>
+      <div class="st-grid">
+        <div class="st-card"><small>${t("Today", "Uyu munsi")}</small><b>${td.unique || 0}</b><small>${td.visits || 0} ${t("visits", "gusura")}</small></div>
+        <div class="st-card"><small>${t("Yesterday", "Ejo")}</small><b>${yd.unique || 0}</b><small>${yd.visits || 0} ${t("visits", "gusura")}</small></div>
+        <div class="st-card"><small>${t("Last 7 days", "Iminsi 7")}</small><b>${sum(7, "unique")}</b><small>${sum(7, "visits")} ${t("visits", "gusura")}</small></div>
+        <div class="st-card"><small>${t("Last 30 days", "Iminsi 30")}</small><b>${sum(30, "unique")}</b><small>${sum(30, "visits")} ${t("visits", "gusura")}</small></div>
+        <div class="st-card"><small>${t("All time visits", "Gusura byose")}</small><b>${tot.visits || 0}</b><small>${t("since stats started", "kuva twatangira kubara")}</small></div>
+        <div class="st-card"><small>${t("New visitors (all time)", "Abashya (byose)")}</small><b>${tot.newV || 0}</b><small>${t("first-time devices", "ababwa ku nshuro ya mbere")}</small></div>
+      </div>
+      <strong>${t("Unique visitors, last 7 days", "Abasuye mu minsi 7 ishize")}</strong>
+      <div class="st-bars">${days.map(d => `<div class="st-bar"><em>${d.v}</em><i style="height:${Math.round(d.v / max * 100)}%"></i><span>${esc(d.label)}</span></div>`).join("")}</div>`;
+  }
+
   // ----- roles & permissions -----
   // Owner (ADMIN_EMAIL) can do everything. Other roles get only what is listed here.
-  const ROLE_PERMS = { manager: ["products","services","orders","requests","sections"], staff: ["orders","requests"], sales: ["orders","products"], technician: ["requests"] };
+  const ROLE_PERMS = { manager: ["products","services","orders","requests","sections","chats","stats"], staff: ["orders","requests","chats"], sales: ["orders","products","chats"], technician: ["requests","chats"] };
   let perms = new Set(), listenerKey = "", listenerUnsubs = [], unsubProfile = null;
   window.gdCan = p => perms.has(p);
-  const computePerms = (user, prof) => isAdminUser(user) ? new Set(["products","services","orders","requests","users","sections","shops"]) : new Set(ROLE_PERMS[(prof && prof.role) || ""] || []);
+  const computePerms = (user, prof) => isAdminUser(user) ? new Set(["products","services","orders","requests","users","sections","shops","stats","chats"]) : new Set(ROLE_PERMS[(prof && prof.role) || ""] || []);
 
   function stopListeners() { listenerUnsubs.forEach(f => { try { f(); } catch (e) {} }); listenerUnsubs = []; listenerKey = ""; }
 
@@ -891,7 +1181,7 @@
     renderCustomSections(); renderShopsHome(); renderAdminShops();
     $("adminDenied").hidden = !(currentUser && !staff);
     $("adminPanel").hidden = !staff;
-    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection"], shops: ["adminShopsSection"] };
+    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection"], shops: ["adminShopsSection"], stats: ["adminStatsSection"], chats: ["adminChatSection"] };
     Object.keys(map).forEach(perm => {
       const ok = perms.has(perm);
       map[perm].forEach(id => {
@@ -911,6 +1201,11 @@
     stopListeners(); listenerKey = key;
     myOrders = []; allOrders = []; myServiceRequests = []; allServiceRequests = []; window.gdMyOrders = [];
     const owner = isAdminUser(user);
+    if (perms.has("stats")) listenerUnsubs.push(onSnapshot(collection(db, "stats"), snap => { statsDocs = {}; snap.docs.forEach(d => { statsDocs[d.id] = d.data(); }); renderAdminStats(); }, err => console.error("Stats:", err)));
+    if (perms.has("chats")) listenerUnsubs.push(onSnapshot(collection(db, "chats"), snap => {
+      chatThreads = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+      renderAdminChatThreads();
+    }, err => { console.warn("Chat threads:", err); const box=$("adminChatThreads"); if(box) box.innerHTML="<p>Chat ntiboneka. Reba Firestore Rules kuri chats.</p>"; }));
     const sortNew = snap => snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     const mine = name => query(collection(db, name), where("userId", "==", user.uid));
     if (perms.has("orders")) listenerUnsubs.push(onSnapshot(collection(db, "orders"), snap => { allOrders = sortNew(snap); renderAdminOrders(); }, err => console.error("Orders:", err)));
@@ -926,6 +1221,8 @@
 
   onAuthStateChanged(auth, async user => {
     currentUser = user; window.gdUser = user;
+    if (user && isAdminUser(user)) { try { localStorage.setItem("gdNoCount", "1"); } catch (e) {} }
+    if (!window.gdVisitCounted) { window.gdVisitCounted = true; countVisit(); }
     if (unsubProfile) { unsubProfile(); unsubProfile = null; }
     stopListeners();
     if (window.gdShopAuth) window.gdShopAuth(user);
@@ -1059,6 +1356,50 @@
     setBadge("svcTotalBadge", (window.gdServicesCount || 0));
   }
   window.updateAdminBadges = updateAdminBadges;
+  // ----- customer / admin live chat -----
+  let activeChatId = null, activeChatAdmin = false, unsubChatMessages = null, chatThreads = [];
+  function stopChatMessages() { if (unsubChatMessages) { unsubChatMessages(); unsubChatMessages = null; } }
+  function renderChatMessages(list) {
+    const box = $("gdChatMessages"); if (!box) return;
+    box.innerHTML = list.length ? list.map(m => `<div class="gd-chat-msg ${(activeChatAdmin ? m.senderRole === "admin" : m.senderId === (currentUser && currentUser.uid)) ? "mine" : ""}">${esc(m.text || "")}<small>${esc(m.senderName || (m.senderRole === "admin" ? "GD Electric Motors" : "Umukiriya"))}${activeChatAdmin && m.staffName ? " (" + esc(m.staffName) + ")" : ""} · ${m.createdAt ? new Date(m.createdAt).toLocaleString() : ""}</small></div>`).join("") : "<p>Ubutumwa bwawe buzagaragara hano.</p>";
+    box.scrollTop = box.scrollHeight;
+  }
+  function watchChatMessages(uid, adminMode) {
+    stopChatMessages(); activeChatId = uid; activeChatAdmin = adminMode;
+    $("gdChatTitle").textContent = adminMode ? "Chat: " + (chatThreads.find(c => c.id === uid)?.name || uid) : "Chat na GD Electric Motors";
+    unsubChatMessages = onSnapshot(collection(db, "chats", uid, "messages"), snap => {
+      const list = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+      renderChatMessages(list);
+    }, err => { console.error("Chat messages:", err); $("gdChatMessages").innerHTML = "<p>Ntibishobotse gusoma ubutumwa. Reba amategeko ya Firebase (Firestore Rules).</p>"; });
+  }
+  window.gdOpenChat = async () => {
+    if (!currentUser) { alert("Banza winjire muri konti kugira ngo wandikire GD Electric Motors."); showView("account"); return; }
+    $("gdChatPanel").hidden = false;
+    try {
+      await setDoc(doc(db, "chats", currentUser.uid), { userId: currentUser.uid, name: (profile && profile.name) || currentUser.displayName || "Umukiriya", email: currentUser.email || "", phone: (profile && profile.phone) || "", updatedAt: Date.now() }, { merge: true });
+      watchChatMessages(currentUser.uid, false);
+    } catch (err) { console.error(err); $("gdChatMessages").innerHTML = "<p>Chat ntiyafungutse. Reba internet cyangwa Firestore Rules.</p>"; }
+  };
+  window.gdCloseChat = () => { $("gdChatPanel").hidden = true; stopChatMessages(); };
+  window.gdAdminOpenChat = uid => { $("gdChatPanel").hidden = false; watchChatMessages(uid, true); };
+  window.gdSendChat = async e => {
+    e.preventDefault(); if (!currentUser || !activeChatId) return;
+    const input = $("gdChatInput"), textValue = input.value.trim(); if (!textValue) return;
+    const uid = activeChatId, adminMode = activeChatAdmin;
+    input.disabled = true;
+    try {
+      await addDoc(collection(db, "chats", uid, "messages"), { text: textValue, senderId: currentUser.uid, senderRole: adminMode ? "admin" : "customer", senderName: adminMode ? "GD Electric Motors" : ((profile && profile.name) || currentUser.displayName || "Umukiriya"), ...(adminMode ? { staffName: (profile && profile.name) || currentUser.displayName || currentUser.email || "" } : {}), createdAt: Date.now() });
+      await setDoc(doc(db, "chats", uid), { userId: uid, lastMessage: textValue, updatedAt: Date.now(), lastSenderRole: adminMode ? "admin" : "customer" }, { merge: true });
+      input.value = "";
+    } catch (err) { alert("Ubutumwa ntibwoherejwe: " + (err.code || err.message) + ". Reba Firestore Rules."); }
+    input.disabled = false; input.focus();
+  };
+  function renderAdminChatThreads() {
+    const el = $("adminChatThreads"); if (!el) return;
+    const b = $("chatTotalBadge"); if (b) { b.textContent = String(chatThreads.length); b.hidden = !chatThreads.length; }
+    el.innerHTML = chatThreads.length ? chatThreads.map(c => `<div class="gd-chat-thread"><div><strong>${esc(c.name || "Umukiriya")}</strong><br><small>${esc(c.phone || c.email || c.id)}</small><br><small>${esc(c.lastMessage || "Nta butumwa burandikwa")}</small></div><button onclick="gdAdminOpenChat('${esc(c.id)}')">Subiza</button></div>`).join("") : "<p>Nta biganiro birahari. Ubutumwa bw'abakiriya buzagaragara hano.</p>";
+  }
+
   function renderAdminOrders() {
     updateAdminBadges();
     const el = $("adminOrders"); if (!el) return;
@@ -1070,6 +1411,7 @@
           <small>${esc(o.email || "Guest order")} · ${new Date(o.createdAt || 0).toLocaleString()}</small>
           <div style="margin-top:6px;color:var(--muted);font-size:.88rem">${(o.items || []).map(i => esc(i.name) + " × " + Number(i.qty)).join("<br>")}</div>
           <div style="margin-top:6px;font-weight:900"><span style="color:var(--green)">${money(o.total || 0)}</span> · ${esc(statusLabel(o.status))}</div>
+          <div class="btns" style="margin-top:8px"><button class="secondary" onclick="adminEditOrderPrice('${esc(o.id)}')">✏️ Hindura igiciro</button>${o.status !== "cancelled" ? `<button class="primary" onclick="gdPrintReceipt('${esc(o.id)}')">🧾 Receipt / Invoice</button>` : ""}</div>
           ${o.cancelReason ? `<small>${t("Cancellation reason", "Impamvu yo guhagarika")}: ${esc(o.cancelReason)}</small>` : ""}
         </div>
         <div class="btns" style="flex-wrap:wrap">
@@ -1114,6 +1456,7 @@
           <small>${esc(r.name || "")} · ${esc(r.phone || "")} · ${esc(r.email || "")} · ${new Date(r.createdAt || 0).toLocaleString()}</small>
           ${r.details ? `<p>${esc(r.details)}</p>` : ""}
           <div style="font-weight:900">${esc(statusLabel(r.status))}</div>
+          ${r.status !== "cancelled" ? `<div class="btns" style="margin-top:8px"><button class="primary" onclick="gdPrintServiceReceipt('${esc(r.id)}')">🧾 Receipt / Invoice</button></div>` : ""}
           ${r.cancelReason ? `<small>Impamvu: ${esc(r.cancelReason)}</small>` : ""}
         </div>
         <div class="btns" style="flex-wrap:wrap">${statuses.map(st => `<button class="secondary ${st === "cancelled" ? "danger-btn" : ""}" onclick="adminServiceRequestStatus('${esc(r.id)}','${st}')" ${r.status === st ? "disabled" : ""}>${esc(statusLabel(st))}</button>`).join("")}</div>
@@ -1169,20 +1512,37 @@
       console.error(err); alert(t("Could not send the request. Check your internet connection or Firebase rules.", "Ntibyashobotse kohereza ubusabe. Reba internet cyangwa amategeko ya Firebase."));
     }
   };
+  let editingServiceId = null, editingServiceImage = "";
   function renderAdminServices() {
     const el = $("adminServices"); if (!el) return;
     const defHidden = hiddenServiceIds.includes("default");
     const defRow = `<div class="admin-row"><div class="cart-details"><strong>Gusubiza amashanyarazi muri moteri (Rewinding)</strong><small>Iy'ibanze ${defHidden ? "· yahishwe" : ""}</small></div><div class="btns"><button class="secondary ${defHidden ? "" : "danger-btn"}" onclick="adminToggleDefaultService()">${defHidden ? "Subiza" : "Siba"}</button></div></div>`;
-    el.innerHTML = defRow + services.map(v => `<div class="admin-row"><div class="cart-details"><strong>${esc(v.name)}</strong></div><div class="btns"><button class="secondary danger-btn" onclick="adminDeleteService('${esc(v.id)}')">Siba</button></div></div>`).join("");
+    el.innerHTML = defRow + services.map(v => `<div class="admin-row"><div class="cart-details"><strong>${esc(v.name)}</strong><small>${esc(v.desc || "")}</small></div><div class="btns"><button class="secondary" onclick="adminEditService('${esc(v.id)}')">Hindura</button><button class="secondary danger-btn" onclick="adminDeleteService('${esc(v.id)}')">Siba</button></div></div>`).join("");
   }
+  window.adminEditService = id => {
+    const v = services.find(x => x.id === id); if (!v) return;
+    editingServiceId = id; editingServiceImage = v.imageUrl || "";
+    $("svcName").value = v.name || ""; $("svcDesc").value = v.desc || ""; $("svcImage").value = "";
+    $("svcBtn").textContent = "Bika impinduka"; $("svcCancelBtn").hidden = false;
+    $("svcName").scrollIntoView({behavior:"smooth",block:"center"});
+  };
+  window.adminCancelServiceEdit = () => {
+    editingServiceId = null; editingServiceImage = "";
+    $("svcForm").reset(); $("svcBtn").textContent = "Bika serivisi"; $("svcCancelBtn").hidden = true;
+    msg("svcMsg", "");
+  };
   window.adminSaveService = async e => {
     e.preventDefault();
     const btn = $("svcBtn"); btn.disabled = true; msg("svcMsg", "Birabikwa...");
     try {
-      let imageUrl = ""; const file = $("svcImage").files[0];
+      let imageUrl = editingServiceImage; const file = $("svcImage").files[0];
       if (file) imageUrl = await uploadToCloudinary(file);
-      await addDoc(collection(db, "services"), { name: $("svcName").value.trim(), desc: $("svcDesc").value.trim(), imageUrl, createdAt: Date.now() });
-      e.target.reset(); msg("svcMsg", "Serivisi yabitswe.", "ok");
+      const data = { name: $("svcName").value.trim(), desc: $("svcDesc").value.trim(), imageUrl, updatedAt: Date.now() };
+      if (!data.name) throw new Error("Andika izina rya serivisi.");
+      const wasEditing = !!editingServiceId;
+      if (editingServiceId) await updateDoc(doc(db, "services", editingServiceId), data);
+      else await addDoc(collection(db, "services"), { ...data, createdAt: Date.now() });
+      window.adminCancelServiceEdit(); msg("svcMsg", wasEditing ? "Impinduka zabitswe." : "Serivisi yabitswe.", "ok");
     } catch (err) { console.error(err); msg("svcMsg", "Ntibyakunze: " + (err.code || err.message), "err"); }
     btn.disabled = false;
   };
@@ -1197,7 +1557,7 @@
     try { await deleteDoc(doc(db, "services", id)); } catch (err) { alert("Gusiba byanze: " + (err.code || err.message)); }
   };
   // ----- custom website sections -----
-  let customSections = [];
+  let customSections = [], editingSectionId = null, editingSectionImage = "";
   onSnapshot(collection(db, "sections"), snap => {
     customSections = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
     renderCustomSections(); renderAdminSections();
@@ -1221,17 +1581,35 @@
   };
   function renderAdminSections() {
     const el = $("adminSections"); if (!el) return;
-    el.innerHTML = customSections.map(v => `<div class="admin-row"><div class="cart-details"><strong>${esc(v.title)}</strong></div><div class="btns"><button class="secondary danger-btn" onclick="adminDeleteSection('${esc(v.id)}')">Siba</button></div></div>`).join("");
+    el.innerHTML = customSections.map(v => `<div class="admin-row"><div class="cart-details"><strong>${esc(v.title)}</strong></div><div class="btns"><button class="secondary" onclick="adminEditSection('${esc(v.id)}')">Hindura</button><button class="secondary danger-btn" onclick="adminDeleteSection('${esc(v.id)}')">Siba</button></div></div>`).join("");
   }
+  window.adminEditSection = id => {
+    const v = customSections.find(x => x.id === id); if (!v) return;
+    editingSectionId = id; editingSectionImage = v.imageUrl || "";
+    $("secTitle").value = v.title || ""; $("secBody").value = v.body || "";
+    $("secBtnLabel").value = v.btnLabel || ""; $("secBtnLink").value = v.btnLink || "";
+    $("secImage").value = ""; $("secBtn").textContent = "Bika impinduka"; $("secCancelBtn").hidden = false;
+    const sec = $("adminSectionsSection"); if (sec && sec.hidden) toggleAdminSection("adminSectionsSection");
+    $("secTitle").scrollIntoView({behavior:"smooth",block:"center"});
+  };
+  window.adminCancelSectionEdit = () => {
+    editingSectionId = null; editingSectionImage = "";
+    $("secForm").reset(); $("secBtn").textContent = "Bika igice"; $("secCancelBtn").hidden = true;
+    msg("secMsg", "");
+  };
   window.adminSaveSection = async e => {
     e.preventDefault();
     if (!perms.has("sections")) return;
     const btn = $("secBtn"); btn.disabled = true; msg("secMsg", "Birabikwa...");
     try {
-      let imageUrl = ""; const file = $("secImage").files[0];
+      let imageUrl = editingSectionImage; const file = $("secImage").files[0];
       if (file) imageUrl = await uploadToCloudinary(file);
-      await addDoc(collection(db, "sections"), { title: $("secTitle").value.trim(), body: $("secBody").value.trim(), imageUrl, btnLabel: $("secBtnLabel").value.trim(), btnLink: $("secBtnLink").value.trim(), createdAt: Date.now() });
-      e.target.reset(); msg("secMsg", "Igice cyabitswe. Reba ku rupapuro rwa mbere.", "ok");
+      const data = { title: $("secTitle").value.trim(), body: $("secBody").value.trim(), imageUrl, btnLabel: $("secBtnLabel").value.trim(), btnLink: $("secBtnLink").value.trim(), updatedAt: Date.now() };
+      if (!data.title) throw new Error("Andika umutwe w'igice.");
+      const wasEditing = !!editingSectionId;
+      if (editingSectionId) await updateDoc(doc(db, "sections", editingSectionId), data);
+      else await addDoc(collection(db, "sections"), { ...data, createdAt: Date.now() });
+      window.adminCancelSectionEdit(); msg("secMsg", wasEditing ? "Impinduka zabitswe." : "Igice cyabitswe. Reba ku rupapuro rwa mbere.", "ok");
     } catch (err) { console.error(err); msg("secMsg", "Ntibyakunze: " + (err.code || err.message), "err"); }
     btn.disabled = false;
   };
@@ -1268,16 +1646,53 @@
   const waNumber = raw => { const d = String(raw || "").replace(/[^0-9]/g, ""); if (d.length === 10 && d[0] === "0") return "250" + d.slice(1); if (d.length === 9) return "250" + d; return d; };
   const myShop = () => currentUser ? shops.find(x => x.id === currentUser.uid) : null;
   function renderShopsHome() {
-    const el = $("shopsHome"); if (!el) return;
+    const approved = shops.filter(x => shopStatus(x) === "approved");
+    const el = $("shopsHome");
+    if (el) el.innerHTML = approved.length ? `<h2>🏪 ${t("Customer shops", "Amaduka y'abakiriya")}</h2>
+      <div class="shop-grid">${approved.map(x => `<div class="shop-card" onclick="openShop('${esc(x.id)}')">${x.logoUrl ? `<img src="${esc(x.logoUrl)}" alt="${esc(x.name)}" loading="lazy">` : `<div class="shop-logo-ph">🏪</div>`}<strong>${esc(x.name)}</strong><small>${shopProducts.filter(pp => pp.shopId === x.id).length} ${t("products", "ibicuruzwa")}</small></div>`).join("")}</div>` : "";
+    renderShopPromo();
+  }
+  // Nice "open your own shop" card on the Account page (so people see it as soon as they go to sign in).
+  function renderShopPromo() {
+    const el = $("accountShopPromo"); if (!el) return;
     const mine = myShop();
-    el.innerHTML = `<h2>🏪 ${t("Customer shops", "Amaduka y'abakiriya")}</h2>
-      ${shops.filter(x => shopStatus(x) === "approved").length ? `<div class="shop-grid">${shops.filter(x => shopStatus(x) === "approved").map(x => `<div class="shop-card" onclick="openShop('${esc(x.id)}')">${x.logoUrl ? `<img src="${esc(x.logoUrl)}" alt="${esc(x.name)}" loading="lazy">` : `<div class="shop-logo-ph">🏪</div>`}<strong>${esc(x.name)}</strong><small>${shopProducts.filter(pp => pp.shopId === x.id).length} ${t("products", "ibicuruzwa")}</small></div>`).join("")}</div>` : `<p style="opacity:.75">${t("No shops yet. Be the first!", "Nta duka riraboneka. Ba uwa mbere!")}</p>`}
-      <button class="shop-cta" type="button" onclick="${mine ? `openShop('${esc(mine.id)}')` : "openShopForm()"}">${mine ? "🏪 " + t("My shop", "Shop yanjye") + (shopStatus(mine) === "approved" ? "" : shopStatus(mine) === "suspended" ? " ⛔" : " ⏳") : "➕ " + t("Open your own shop", "Fungura shop yawe")}</button>`;
+    if (mine) {
+      const st = shopStatus(mine);
+      const pill = st === "approved" ? `<span class="sp-pill ok">✅ ${t("Approved", "Yemejwe")}</span>` : st === "suspended" ? `<span class="sp-pill bad">⛔ ${t("Suspended", "Yahagaritswe")}</span>` : `<span class="sp-pill wait">⏳ ${t("Waiting for approval", "Itegereje kwemezwa")}</span>`;
+      el.innerHTML = `<div class="sp-card"><div class="sp-mine">${mine.logoUrl ? `<img src="${esc(mine.logoUrl)}" alt="">` : `<div class="shop-logo-ph">🏪</div>`}<div><small>${t("My shop", "Shop yanjye")}</small><h3>${esc(mine.name)}</h3>${pill}</div></div>
+        <div class="sp-actions"><button class="sp-cta" type="button" onclick="openShop('${esc(mine.id)}')">🏪 ${t("Open my shop", "Fungura shop yanjye")}</button><button class="sp-ghost" type="button" onclick="openShopForm()">✏️ ${t("Edit", "Hindura")}</button></div>
+        <button class="sp-del" type="button" onclick="deleteMyShop()">🗑️ ${t("Delete my shop (to open a new one)", "Siba shop yanjye (kugira ngo mfungure indi)")}</button>
+        ${st === "suspended" ? `<small class="sp-hint">${t("This shop was suspended. You can delete it and open a new one.", "Iyi shop yahagaritswe. Ushobora kuyisiba ugafungura indi nshya.")}</small>` : ""}</div>`;
+      return;
+    }
+    el.innerHTML = `<div class="sp-hero">
+      <span class="sp-tag">${t("NEW • FREE", "NSHYA • KU BUNTU")}</span>
+      <h2>🏪 ${t("Open your own shop", "Fungura shop yawe")}</h2>
+      <p>${t("Sell your products online under your own shop name.", "Shyira ibicuruzwa byawe kuri internet, ukoresheje izina rya shop yawe bwite.")}</p>
+      <ul class="sp-list">
+        <li>✅ ${t("Your shop gets its own name and logo", "Shop yawe igira izina na logo yawe")}</li>
+        <li>✅ ${t("Add your products with photos and prices", "Ongeramo ibicuruzwa byawe n'amafoto n'ibiciro")}</li>
+        <li>✅ ${t("Customers contact you directly on WhatsApp", "Abakiriya bakwandikira kuri WhatsApp ako kanya")}</li>
+      </ul>
+      <div class="sp-steps"><div><b>1</b><span>${t("Sign in", "Injira")}</span></div><i>→</i><div><b>2</b><span>${t("Fill shop details", "Uzuza amakuru")}</span></div><i>→</i><div><b>3</b><span>${t("Admin approves", "Admin yemeza")}</span></div></div>
+      <button class="sp-cta" type="button" onclick="openShopForm()">➕ ${t("Open your shop now", "Fungura shop yawe ubu")}</button>
+      ${currentUser ? "" : `<small class="sp-hint">${t("You need an account first — sign in or create one above.", "Banza ufungure konti cyangwa winjire hejuru.")}</small>`}
+    </div>`;
   }
   window.gdRefreshShops = () => {
     renderShopsHome(); if (typeof renderCustomSections === "function") renderCustomSections();
     if ($("view-shop").classList.contains("active")) renderShopPage();
     if ($("view-shopform").classList.contains("active")) { const mine = myShop(); $("shopFormTitle").textContent = mine ? t("Edit your shop", "Hindura shop yawe") : t("Open your shop", "Fungura shop yawe"); }
+  };
+  window.deleteMyShop = async () => {
+    if (!currentUser) return;
+    if (!confirm(t("Delete your shop and all its products? This cannot be undone. You can open a new shop afterwards.", "Gusiba shop yawe n'ibicuruzwa byayo byose? Ntibisubirwaho. Nyuma ushobora gufungura indi nshya."))) return;
+    try {
+      for (const pp of shopProducts.filter(v => v.shopId === currentUser.uid)) await deleteDoc(doc(db, "shopProducts", pp.id));
+      await deleteDoc(doc(db, "shops", currentUser.uid));
+      showView("account");
+      alert(t("Your shop was deleted. You can now open a new one.", "Shop yawe yasibwe. Ubu ushobora gufungura indi nshya."));
+    } catch (err) { alert(t("Failed: ", "Byanze: ") + (err.code || err.message)); }
   };
   window.openShop = id => { currentShopId = id; renderShopPage(); showView("shop"); };
   window.openShopForm = () => {
@@ -1315,7 +1730,7 @@
         <h1>${esc(x.name)}</h1>${x.desc ? `<p style="white-space:pre-wrap">${esc(x.desc)}</p>` : ""}
         <p>📞 ${esc(x.phone || "")}</p>
         <a class="primary" style="display:inline-block;text-decoration:none" href="${wa}" target="_blank" rel="noopener">💬 WhatsApp</a>
-        ${mineOwner ? `<div style="margin-top:10px"><button class="secondary" onclick="openShopForm()">✏️ ${t("Edit shop", "Hindura shop")}</button></div>` : ""}</div>
+        ${mineOwner ? `<div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="secondary" onclick="openShopForm()">✏️ ${t("Edit shop", "Hindura shop")}</button><button class="secondary danger-btn" onclick="deleteMyShop()">🗑️ ${t("Delete shop", "Siba shop")}</button></div>` : ""}</div>
       ${mineOwner ? `<div class="shop-form-box"><h3 style="margin-top:0">➕ ${t("Add a product", "Ongeramo igicuruzwa")}</h3>
         <form onsubmit="saveShopProduct(event)">
           <div class="form-row"><input id="spName" placeholder="${t("Product name", "Izina ry'igicuruzwa")}" required></div>
@@ -1390,6 +1805,86 @@
     if (!confirm("Guhagarika iyi order? Amateka yayo azagumaho.")) return;
     window.adminOrderStatus(id, "cancelled");
   };
+  window.adminEditOrderPrice = async id => {
+    const o = allOrders.find(x => x.id === id); if (!o) return;
+    const raw = prompt("Andika igiciro gishya cyose (RWF):", String(Number(o.total || 0)));
+    if (raw === null) return;
+    const total = Number(raw);
+    if (!Number.isFinite(total) || total < 0 || raw.trim() === "") { alert("Andika igiciro cyemewe."); return; }
+    try {
+      await updateDoc(doc(db, "orders", id), { total, priceEditedAt: Date.now(), priceEditedBy: (currentUser && currentUser.email) || "" });
+      alert("Igiciro cyahinduwe neza. Print Receipt izagaragara igihe commande izaba ishojwe.");
+    } catch (err) { alert("Guhindura igiciro byanze: " + (err.code || err.message)); }
+  };
+  // ----- receipts / invoices (orders, service work, or blank) -----
+  let payCfg = { payPhone: "", payName: "", momoCode: "" };
+  onSnapshot(doc(db, "settings", "payment"), snap => { payCfg = snap.exists() ? snap.data() : { payPhone: "", payName: "", momoCode: "" }; }, () => {});
+  const rcRowHtml = (r = {}) => `<div class="rc-row"><input class="rc-d" placeholder="Icyakozwe cyangwa igicuruzwa" value="${esc(r.d || "")}"><input class="rc-q" type="number" min="0" step="any" inputmode="decimal" value="${r.q ?? 1}" oninput="rcCalc()"><input class="rc-p" type="number" min="0" step="any" inputmode="numeric" placeholder="Igiciro" value="${r.p ?? ""}" oninput="rcCalc()"><button type="button" class="rc-x" onclick="this.parentNode.remove();rcCalc()">✕</button></div>`;
+  window.rcCalc = () => {
+    let t = 0; document.querySelectorAll("#rcRows .rc-row").forEach(r => { t += (Number(r.querySelector(".rc-q").value) || 0) * (Number(r.querySelector(".rc-p").value) || 0); });
+    $("rcTotal").textContent = money(t);
+  };
+  window.rcAddRow = () => { $("rcRows").insertAdjacentHTML("beforeend", rcRowHtml()); rcCalc(); };
+  window.rcClose = () => { const m = $("rcModal"); if (m) m.hidden = true; };
+  function rcOpen(init) {
+    let m = $("rcModal");
+    if (!m) { m = document.createElement("div"); m.id = "rcModal"; m.className = "rc-modal"; document.body.appendChild(m); }
+    m.innerHTML = `<div class="rc-sheet">
+      <div class="rc-head"><h2>🧾 Receipt / Invoice</h2><button type="button" onclick="rcClose()">✕</button></div>
+      <label>Izina ry'umukiriya</label><input id="rcName" value="${esc(init.name || "")}">
+      <label>Telefoni (WhatsApp)</label><input id="rcPhone" type="tel" value="${esc(init.phone || "")}">
+      <label>Ibyakozwe / ibyaguzwe</label>
+      <div class="rc-rowhead"><span>Icyakozwe</span><span>Qty</span><span>Igiciro</span><span></span></div>
+      <div id="rcRows">${(init.rows && init.rows.length ? init.rows : [{}]).map(rcRowHtml).join("")}</div>
+      <button type="button" class="secondary" onclick="rcAddRow()">+ Ongeramo umurongo</button>
+      <div class="rc-total">Igiteranyo: <b id="rcTotal">0 RWF</b></div>
+      <label>Ibisobanuro by'akazi kakozwe (si ngombwa)</label>
+      <textarea id="rcNote" placeholder="Urugero: Twasubije amashanyarazi muri moteri, dusimbuza bearing...">${esc(init.note || "")}</textarea>
+      <label class="rc-check"><input type="checkbox" id="rcPaid"> Yamaze kwishyura (PAID)</label>
+      <label>Uburyo bwo kwishyura 1: MoMo kuri nimero ya telefoni</label>
+      <input id="rcPayPhone" type="tel" placeholder="Nimero ya MoMo (urugero 0788 xxx xxx)" value="${esc(payCfg.payPhone || "")}">
+      <input id="rcPayName" style="margin-top:6px" placeholder="Izina rigaragara kuri iyo nimero (si ngombwa)" value="${esc(payCfg.payName || "")}">
+      <label>Uburyo bwo kwishyura 2: MoMo Pay code</label>
+      <input id="rcMomo" inputmode="numeric" placeholder="Code yo kwishyura (urugero 123456)" value="${esc(payCfg.momoCode || "")}">
+      <label class="rc-check"><input type="checkbox" id="rcSave" checked> Bika ubu buryo bwo kwishyura nk'ubusanzwe</label>
+      <button type="button" class="primary" style="width:100%;margin-top:10px" onclick="rcGenerate()">Kora receipt</button>
+    </div>`;
+    m.hidden = false; m.dataset.id = init.id || ""; rcCalc();
+  }
+  window.rcGenerate = () => {
+    const rows = [...document.querySelectorAll("#rcRows .rc-row")].map(r => ({ d: r.querySelector(".rc-d").value.trim(), q: Number(r.querySelector(".rc-q").value) || 0, p: Number(r.querySelector(".rc-p").value) || 0 })).filter(r => r.d);
+    if (!rows.length) return alert("Andika nibura umurongo umwe (icyakozwe cyangwa igicuruzwa).");
+    const name = $("rcName").value.trim(), phoneRaw = $("rcPhone").value.trim(), note = $("rcNote").value.trim();
+    const paid = $("rcPaid").checked, momo = $("rcMomo").value.replace(/[^0-9]/g, ""), payPhone = $("rcPayPhone").value.trim(), payName = $("rcPayName").value.trim();
+    const payText = [payPhone ? `1) MoMo (telefoni): ${payPhone}${payName ? " - " + payName : ""}` : "", momo ? `2) MoMo Pay code: ${momo}` : ""].filter(Boolean).join("\n");
+    const total = rows.reduce((a, r) => a + r.q * r.p, 0);
+    const rid = $("rcModal").dataset.id || ("GD-" + Date.now().toString().slice(-8));
+    const phone = phoneRaw.replace(/[^0-9]/g, "").replace(/^0/, "250");
+    const lines = rows.map(r => `<tr><td>${esc(r.d)}</td><td class="n">${r.q}</td><td class="n">${r.p ? money(r.p) : "-"}</td><td class="n">${r.p ? money(r.q * r.p) : "-"}</td></tr>`).join("");
+    const textMsg = `GD ELECTRIC MOTORS - ${paid ? "RECEIPT" : "INVOICE"}\nNo: ${rid}\n` + rows.map(r => `${r.d} x${r.q}${r.p ? " = " + money(r.q * r.p) : ""}`).join("\n") + `\nTOTAL: ${money(total)}\n` + (paid ? "PAID. Murakoze!" : (payText ? "Kwishyura:\n" + payText : "Please make payment."));
+    const momoLink = (!paid && momo && total > 0) ? `tel:*182*8*1*${momo}*${Math.round(total)}%23` : "";
+    const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${paid ? "Receipt" : "Invoice"} - GD Electric Motors</title><style>html,body{width:100%}body{font:18px Arial,sans-serif;color:#111;max-width:760px;margin:0 auto;padding:22px 18px;box-sizing:border-box}h1{text-align:center;font-size:28px;margin:0 0 4px}p{line-height:1.5}.sub{text-align:center;letter-spacing:2px;font-weight:bold;margin:0 0 12px}table{width:100%;border-collapse:collapse;margin:18px 0}th,td{padding:10px 6px;border-bottom:1px solid #ccc;text-align:left;font-size:16px}.n{text-align:right;white-space:nowrap}.total{font-size:24px;font-weight:bold;text-align:right}.stamp{display:inline-block;border:3px solid #16a34a;color:#16a34a;font-weight:bold;padding:4px 14px;border-radius:8px;transform:rotate(-6deg)}.pay{border:2px dashed #5420df;border-radius:12px;padding:14px;margin:18px 0;background:#f6f2ff;white-space:pre-wrap}.note{background:#f4f4f4;border-radius:10px;padding:12px;white-space:pre-wrap}.actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}button,a.b{padding:15px 18px;border:0;border-radius:10px;background:#5420df;color:#fff;text-decoration:none;font-weight:bold;font-size:17px;text-align:center;flex:1 1 220px}a.g{background:#16a34a}small{color:#555}@media print{.actions{display:none}body{padding:0}}</style></head><body><h1>GD ELECTRIC MOTORS</h1><p class="sub">${paid ? "PAYMENT RECEIPT" : "INVOICE / AMAFARANGA YO KWISHYURA"}</p><hr><p><b>No:</b> ${esc(rid)}<br><b>Customer:</b> ${esc(name || "-")}<br><b>Phone:</b> ${esc(phoneRaw || "-")}<br><b>Date:</b> ${new Date().toLocaleString()}</p><table><thead><tr><th>Item / Akazi</th><th class="n">Qty</th><th class="n">Price</th><th class="n">Total</th></tr></thead><tbody>${lines}</tbody></table><p class="total">TOTAL: ${money(total)}</p>${paid ? '<p style="text-align:right"><span class="stamp">PAID ✓ / YISHYUWE</span></p>' : ""}${note ? `<p><b>Ibyakozwe / Notes:</b></p><div class="note">${esc(note)}</div>` : ""}${!paid && (payText || momoLink) ? `<div class="pay"><b>Uko wakwishyura / How to pay</b>${payText ? "\n" + esc(payText) : ""}</div>` : ""}<div class="actions"><button onclick="window.print()">🖨️ Print / Save PDF</button>${momoLink ? `<a class="b g" href="${momoLink}">📲 Kwishyura na MoMo</a>` : ""}${phone ? `<a class="b" target="_blank" rel="noopener" href="https://wa.me/${esc(phone)}?text=${encodeURIComponent(textMsg)}">Send on WhatsApp</a>` : ""}</div><small>Generated by GD Electric Motors.</small></body></html>`;
+    // Open synchronously (inside the tap) as a real blob page so the phone shows it full width.
+    const w = window.open(URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" })), "_blank");
+    if (!w) return alert("Browser yabujije gufungura receipt. Emerera pop-ups hanyuma wongere ugerageze.");
+    if ($("rcSave").checked && (payPhone !== (payCfg.payPhone || "") || payName !== (payCfg.payName || "") || momo !== (payCfg.momoCode || ""))) {
+      setDoc(doc(db, "settings", "payment"), { payPhone, payName, momoCode: momo, updatedAt: Date.now() }, { merge: true }).catch(err => console.warn("Payment settings:", err));
+    }
+    rcClose();
+  };
+  window.gdPrintReceipt = id => {
+    const o = allOrders.find(x => x.id === id); if (!o) return alert("Commande ntiyabonetse.");
+    const rows = (o.items || []).map(i => ({ d: i.name || "Igicuruzwa", q: Number(i.qty || 1), p: Number(i.price || 0) }));
+    const sum = rows.reduce((a, r) => a + r.q * r.p, 0), diff = Number(o.total || 0) - sum;
+    if (rows.length && Math.abs(diff) > 0.5) rows.push({ d: "Ihinduka ry'igiciro (adjustment)", q: 1, p: diff });
+    rcOpen({ id: o.id, name: o.name, phone: o.phone, rows, paid: false });
+  };
+  window.gdPrintServiceReceipt = id => {
+    const r = allServiceRequests.find(x => x.id === id); if (!r) return alert("Ubusabe ntibwabonetse.");
+    rcOpen({ id: r.id, name: r.name, phone: r.phone, rows: [{ d: r.serviceName || "Serivisi", q: 1, p: "" }], note: r.details || "" });
+  };
+  window.gdReceiptNew = () => rcOpen({ rows: [{}] });
+
   window.adminServiceRequestStatus = async (id, status) => {
     let data = { status, updatedAt: Date.now() };
     if (status === "cancelled") {
@@ -1458,11 +1953,15 @@
       const file = $("fPhoto").files[0];
       if (file) { msg("adminMsg", "Ifoto iri koherezwa..."); imageUrl = await uploadToCloudinary(file); }
 
-      const id = editingId || Date.now();
-      await setDoc(doc(db, "products", String(id)), {
-        category: $("fCategory").value, en: nameEn, rw: nameRw, descEn, descRw,
-        price, oldPrice: old, imageUrl: imageUrl || ""
-      });
+      const productData = { category: $("fCategory").value, en: nameEn, rw: nameRw, descEn, descRw, price, oldPrice: old, imageUrl: imageUrl || "" };
+      if (editingSampleId !== null) {
+        await setDoc(doc(db, "settings", "sampleProductOverrides"), { [String(editingSampleId)]: productData }, { merge: true });
+        Object.assign(sampleProducts.find(x => x.id === editingSampleId) || {}, productData);
+        applySampleOverrides(); setProducts(dbProducts); renderAdminList();
+      } else {
+        const id = editingId || Date.now();
+        await setDoc(doc(db, "products", String(id)), productData);
+      }
       msg("adminMsg", "Byabitswe neza ✓", "ok");
       resetForm(true);
     } catch (err) {
@@ -1481,7 +1980,7 @@
   };
 
   function resetForm(keepMsg) {
-    editingId = null; editingImage = "";
+    editingId = null; editingImage = ""; editingSampleId = null;
     $("adminForm").reset(); fillCategories();
     $("fPreview").style.display = "none";
     $("adminFormTitle").textContent = "Ongeramo igicuruzwa";
@@ -1531,10 +2030,24 @@
       <div class="admin-row" style="${h ? "opacity:.6" : ""}">
         <div class="cart-emoji">${p.imageUrl ? `<img src="${esc(p.imageUrl)}" alt="">` : iconOf(p)}</div>
         <div class="cart-details"><strong>${esc(p.rw || p.en)}</strong><small>${money(p.price)} · Icy'ibanze ${h ? "· cyahishwe" : ""}</small></div>
-        <div class="btns"><button class="secondary ${h ? "" : "danger-btn"}" onclick="adminToggleSample(${p.id})">${h ? "Subiza" : "Siba"}</button></div>
+        <div class="btns"><button class="secondary" onclick="adminEditSample(${p.id})">Hindura</button><button class="secondary ${h ? "" : "danger-btn"}" onclick="adminToggleSample(${p.id})">${h ? "Subiza" : "Siba"}</button></div>
       </div>`; }).join("");
     el.innerHTML = (mine || '<p style="color:var(--muted)">Nta gicuruzwa urongeramo.</p>') + '<h3 style="margin:16px 0 4px">Ibicuruzwa by\'ibanze</h3><p style="color:var(--muted);margin:0 0 6px">Bikomeza kugaragara hamwe n\'ibyo wongeraho, keretse ubisibye.</p>' + base;
   }
+  window.adminEditSample = id => {
+    const p = sampleProducts.find(x => x.id === Number(id)); if (!p) return;
+    editingId = null; editingSampleId = Number(id); editingImage = p.imageUrl || "";
+    $("fNameRw").value = p.rw || ""; $("fNameEn").value = p.en || "";
+    $("fDescRw").value = p.descRw || ""; $("fDescEn").value = p.descEn || "";
+    $("fCategory").value = p.category; $("fPrice").value = p.price;
+    $("fOldPrice").value = p.oldPrice ?? ""; $("fPhoto").value = "";
+    adminPreview($("fPhoto"));
+    $("adminFormTitle").textContent = "Hindura igicuruzwa cy'ibanze";
+    $("adminSaveBtn").textContent = "Bika impinduka";
+    $("adminCancelBtn").hidden = false; msg("adminMsg", "");
+    const sec = $("adminAddProductSection"); if (sec) sec.hidden = false;
+    $("adminForm").scrollIntoView({ behavior: "smooth", block: "start" });
+  };
   window.adminToggleSample = async id => {
     const hide = !hiddenSampleIds.includes(id);
     if (hide && !confirm("Guhisha iki gicuruzwa cy'ibanze? Ushobora kucyisubiza nyuma.")) return;
@@ -1543,5 +2056,25 @@
   };
   window.gdStatusLabel = statusLabel;
 </script>
+
+<script>
+(function () {
+  var timer = null;
+  function fabs() { return document.querySelectorAll("#gdChatOpenBtn, .whatsapp-float"); }
+  function closeAll() { fabs().forEach(function (b) { b.classList.remove("fab-open"); }); }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("#gdChatOpenBtn, .whatsapp-float");
+    if (!b) { closeAll(); return; }
+    if (!b.classList.contains("fab-open")) {
+      e.preventDefault(); e.stopImmediatePropagation();
+      fabs().forEach(function (x) { x.classList.add("fab-open"); });
+      clearTimeout(timer); timer = setTimeout(closeAll, 4500);
+    } else { clearTimeout(timer); timer = setTimeout(closeAll, 800); }
+  }, true);
+  window.addEventListener("scroll", function () { if (document.querySelector(".fab-open")) closeAll(); }, { passive: true });
+})();
+</script>
 </body>
 </html>
+
+
