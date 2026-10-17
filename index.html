@@ -1910,7 +1910,7 @@
     </div>`;
     m.hidden = false; m.dataset.id = init.id || ""; rcCalc();
   }
-  window.rcGenerate = () => {
+  window.rcGenerate = (opts = {}) => {
     const rows = [...document.querySelectorAll("#rcRows .rc-row")].map(r => ({ d: r.querySelector(".rc-d").value.trim(), q: Number(r.querySelector(".rc-q").value) || 0, p: Number(r.querySelector(".rc-p").value) || 0 })).filter(r => r.d);
     if (!rows.length) return alert("Andika nibura umurongo umwe (icyakozwe cyangwa igicuruzwa).");
     const name = $("rcName").value.trim(), phoneRaw = $("rcPhone").value.trim(), note = $("rcNote").value.trim();
@@ -1933,24 +1933,27 @@
     // Open synchronously (inside the tap) as a real blob page so the phone shows it full width.
     const w = window.open(URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" })), "_blank");
     if (!w) return alert("Browser yabujije gufungura receipt. Emerera pop-ups hanyuma wongere ugerageze.");
-    if ($("rcSave").checked && (payPhone !== (payCfg.payPhone || "") || payName !== (payCfg.payName || "") || momo !== (payCfg.momoCode || ""))) {
+    if (!opts.customer && $("rcSave").checked && (payPhone !== (payCfg.payPhone || "") || payName !== (payCfg.payName || "") || momo !== (payCfg.momoCode || ""))) {
       setDoc(doc(db, "settings", "payment"), { payPhone, payName, momoCode: momo, updatedAt: Date.now() }, { merge: true }).catch(err => console.warn("Payment settings:", err));
     }
     rcClose();
   };
   window.gdPrintReceipt = id => {
-    // Admins can print any order; customers can print only their own completed orders.
-    const o = allOrders.find(x => x.id === id) || myOrders.find(x => x.id === id);
+    // Staff/admin: open the editable invoice form. Customer: only their own COMPLETED orders,
+    // and the invoice is generated directly (no editable form, no settings write).
+    const fromAll = allOrders.find(x => x.id === id);
+    const o = fromAll || myOrders.find(x => x.id === id);
     if (!o) return alert("Commande ntiyabonetse.");
-    const isOwner = !!currentUser && !!o.uid && o.uid === currentUser.uid;
-    const canAdminPrint = isAdminUser(currentUser);
-    if (!canAdminPrint && (!isOwner || o.status !== "done")) {
+    const staffPrint = !!fromAll || isAdminUser(currentUser);
+    const isOwner = !!currentUser && !!o.userId && o.userId === currentUser.uid;
+    if (!staffPrint && (!isOwner || o.status !== "done")) {
       return alert(t("The invoice will be available when your order is completed.", "Fagitire izaboneka komande yawe imaze kurangira."));
     }
-    const rows = (o.items || []).map(i => ({ d: i.name || "Igicuruzwa", q: Number(i.qty || 1), p: Number(i.price || 0) }));
+    const rows = (o.items || []).map(i => ({ d: i.name || t("Item", "Igicuruzwa"), q: Number(i.qty || 1), p: Number(i.price || 0) }));
     const sum = rows.reduce((a, r) => a + r.q * r.p, 0), diff = Number(o.total || 0) - sum;
-    if (rows.length && Math.abs(diff) > 0.5) rows.push({ d: "Ihinduka ry'igiciro (adjustment)", q: 1, p: diff });
+    if (rows.length && Math.abs(diff) > 0.5) rows.push({ d: t("Price adjustment", "Ihinduka ry'igiciro"), q: 1, p: diff });
     rcOpen({ id: o.id, name: o.name, phone: o.phone, rows, paid: false });
+    if (!staffPrint) { const m = $("rcModal"); if (m) m.hidden = true; rcGenerate({ customer: true }); }
   };
   window.gdPrintServiceReceipt = id => {
     const r = allServiceRequests.find(x => x.id === id); if (!r) return alert("Ubusabe ntibwabonetse.");
