@@ -1360,7 +1360,7 @@
     const p = profile || {};
     const admin = isAdminUser(currentUser);
     const visibleCustomerOrders = myOrders.filter(o => !o.hiddenForCustomer);
-    const ordersHtml = visibleCustomerOrders.length ? visibleCustomerOrders.map(o => `<div class="admin-row" style="align-items:flex-start"><div class="cart-details"><strong>${money(o.total || 0)}</strong><small>${new Date(o.createdAt || 0).toLocaleDateString()} · <b>${esc(statusLabel(o.status))}</b></small><div style="margin-top:6px;color:var(--muted);font-size:.88rem">${(o.items || []).map(i => esc(i.name) + " × " + Number(i.qty)).join("<br>")}</div>${o.status === "cancelled" && o.cancelReason ? `<small>${t("Reason", "Impamvu")}: ${esc(o.cancelReason)}</small>` : ""}${o.status === "done" ? `<button class="secondary" style="margin-top:8px" onclick="hideCustomerOrder('${esc(o.id)}')">${t("Remove from my history", "Kuraho mu mateka yanjye")}</button>` : ""}</div></div>`).join("") : `<p style="color:var(--muted)">${t("You have no orders yet.", "Nta commande urakora.")}</p>`;
+    const ordersHtml = visibleCustomerOrders.length ? visibleCustomerOrders.map(o => `<div class="admin-row" style="align-items:flex-start"><div class="cart-details"><strong>${money(o.total || 0)}</strong><small>${new Date(o.createdAt || 0).toLocaleDateString()} · <b>${esc(statusLabel(o.status))}</b></small><div style="margin-top:6px;color:var(--muted);font-size:.88rem">${(o.items || []).map(i => esc(i.name) + " × " + Number(i.qty)).join("<br>")}</div>${o.status === "cancelled" && o.cancelReason ? `<small>${t("Reason", "Impamvu")}: ${esc(o.cancelReason)}</small>` : ""}${o.status === "done" ? `<button class="primary" style="margin-top:8px" onclick="gdPrintReceipt('${esc(o.id)}')">🧾 ${t("View invoice / Save PDF", "Reba fagitire / Bika PDF")}</button><button class="secondary" style="margin-top:8px" onclick="hideCustomerOrder('${esc(o.id)}')">${t("Remove from my history", "Kuraho mu mateka yanjye")}</button>` : ""}</div></div>`).join("") : `<p style="color:var(--muted)">${t("You have no orders yet.", "Nta commande urakora.")}</p>`;
     const requestsHtml = myServiceRequests.length ? myServiceRequests.map(r => `<div class="admin-row" style="align-items:flex-start"><div class="cart-details"><strong>${esc(r.serviceName || t("Service request", "Ubusabe bwa serivisi"))}</strong><small>${new Date(r.createdAt || 0).toLocaleString()} · <b>${esc(statusLabel(r.status))}</b></small>${r.details ? `<p>${esc(r.details)}</p>` : ""}${r.status === "cancelled" && r.cancelReason ? `<small>${t("Reason", "Impamvu")}: ${esc(r.cancelReason)}</small>` : ""}</div></div>`).join("") : `<p style="color:var(--muted)">${t("You have not requested a service yet.", "Nta serivisi urasaba.")}</p>`;
     el.innerHTML = `<div class="info-card">
         <h2>${esc(p.name || currentUser.email)}</h2>
@@ -1939,7 +1939,14 @@
     rcClose();
   };
   window.gdPrintReceipt = id => {
-    const o = allOrders.find(x => x.id === id); if (!o) return alert("Commande ntiyabonetse.");
+    // Admins can print any order; customers can print only their own completed orders.
+    const o = allOrders.find(x => x.id === id) || myOrders.find(x => x.id === id);
+    if (!o) return alert("Commande ntiyabonetse.");
+    const isOwner = !!currentUser && !!o.uid && o.uid === currentUser.uid;
+    const canAdminPrint = isAdminUser(currentUser);
+    if (!canAdminPrint && (!isOwner || o.status !== "done")) {
+      return alert(t("The invoice will be available when your order is completed.", "Fagitire izaboneka komande yawe imaze kurangira."));
+    }
     const rows = (o.items || []).map(i => ({ d: i.name || "Igicuruzwa", q: Number(i.qty || 1), p: Number(i.price || 0) }));
     const sum = rows.reduce((a, r) => a + r.q * r.p, 0), diff = Number(o.total || 0) - sum;
     if (rows.length && Math.abs(diff) > 0.5) rows.push({ d: "Ihinduka ry'igiciro (adjustment)", q: 1, p: diff });
