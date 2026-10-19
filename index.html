@@ -1472,7 +1472,7 @@
           <small>${esc(o.email || "Guest order")} · ${new Date(o.createdAt || 0).toLocaleString()}</small>
           <div style="margin-top:6px;color:var(--muted);font-size:.88rem">${(o.items || []).map(i => esc(i.name) + " × " + Number(i.qty)).join("<br>")}</div>
           <div style="margin-top:6px;font-weight:900"><span style="color:var(--green)">${money(o.total || 0)}</span> · ${esc(statusLabel(o.status))}</div>
-          <div class="btns" style="margin-top:8px"><button class="secondary" onclick="adminEditOrderPrice('${esc(o.id)}')">✏️ Hindura igiciro</button>${o.status !== "cancelled" ? `<button class="primary" onclick="gdPrintReceipt('${esc(o.id)}')">🧾 Receipt / Invoice</button>` : ""}</div>
+          <div class="btns" style="margin-top:8px"><button class="secondary" onclick="adminEditOrderPrice('${esc(o.id)}')">✏️ Hindura igiciro</button>${o.status !== "cancelled" ? `<button class="primary" onclick="gdPrintReceipt('${esc(o.id)}')">🧾 Receipt / Invoice</button>` : ""}${isAdminUser(currentUser) ? `<button class="secondary danger-btn" onclick="adminDeleteOrder('${esc(o.id)}')">🗑️ Siba</button>` : ""}</div>
           ${o.cancelReason ? `<small>${t("Cancellation reason", "Impamvu yo guhagarika")}: ${esc(o.cancelReason)}</small>` : ""}
         </div>
         <div class="btns" style="flex-wrap:wrap">
@@ -1517,7 +1517,7 @@
           <small>${esc(r.name || "")} · ${esc(r.phone || "")} · ${esc(r.email || "")} · ${new Date(r.createdAt || 0).toLocaleString()}</small>
           ${r.details ? `<p>${esc(r.details)}</p>` : ""}
           <div style="font-weight:900">${esc(statusLabel(r.status))}</div>
-          ${r.status !== "cancelled" ? `<div class="btns" style="margin-top:8px"><button class="primary" onclick="gdPrintServiceReceipt('${esc(r.id)}')">🧾 Receipt / Invoice</button></div>` : ""}
+          ${r.status !== "cancelled" ? `<div class="btns" style="margin-top:8px"><button class="primary" onclick="gdPrintServiceReceipt('${esc(r.id)}')">🧾 Receipt / Invoice</button>${isAdminUser(currentUser) ? `<button class="secondary danger-btn" onclick="adminDeleteServiceRequest(\'${esc(r.id)}\')">🗑️ Siba</button>` : ""}</div>` : ""}
           ${r.cancelReason ? `<small>Impamvu: ${esc(r.cancelReason)}</small>` : ""}
         </div>
         <div class="btns" style="flex-wrap:wrap">${statuses.map(st => `<button class="secondary ${st === "cancelled" ? "danger-btn" : ""}" onclick="adminServiceRequestStatus('${esc(r.id)}','${st}')" ${r.status === st ? "disabled" : ""}>${esc(statusLabel(st))}</button>`).join("")}</div>
@@ -1865,6 +1865,16 @@
   window.adminOrderDelete = async id => {
     if (!confirm("Guhagarika iyi order? Amateka yayo azagumaho.")) return;
     window.adminOrderStatus(id, "cancelled");
+  };
+  window.adminDeleteOrder = async id => {
+    if (!isAdminUser(currentUser)) return alert("Admin gusa ni we ushobora gusiba.");
+    if (!confirm("Uremeza gusiba iyi komande burundu? Invoice yayo nayo izavaho kandi ntibisubizwa.")) return;
+    try { await deleteDoc(doc(db, "orders", id)); } catch (err) { alert("Gusiba byanze: " + (err.code || err.message)); }
+  };
+  window.adminDeleteServiceRequest = async id => {
+    if (!isAdminUser(currentUser)) return alert("Admin gusa ni we ushobora gusiba.");
+    if (!confirm("Uremeza gusiba ubu busabe bwa serivisi burundu? Invoice yabwo nayo izavaho kandi ntibisubizwa.")) return;
+    try { await deleteDoc(doc(db, "serviceRequests", id)); } catch (err) { alert("Gusiba byanze: " + (err.code || err.message)); }
   };
   window.adminEditOrderPrice = async id => {
     const o = allOrders.find(x => x.id === id); if (!o) return;
