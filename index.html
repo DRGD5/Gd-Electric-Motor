@@ -920,7 +920,7 @@
       if (!Object.prototype.hasOwnProperty.call(dict, key)) {
         // Labels like "🛠️ Serivisi dukora": keep the emoji/symbol prefix and translate the words.
         const pm = trimmed.match(/^([^\p{L}\p{N}(]+)\s*(.+)$/u);
-        if (pm && Object.prototype.hasOwnProperty.call(dict, pm[2])) { prefix = pm[1] + " "; key = pm[2]; } else continue;
+        if (pm && Object.prototype.hasOwnProperty.call(dict, pm[2])) { prefix = pm[1].trim() + " "; key = pm[2]; } else continue;
       }
       const leading = original.match(/^\s*/)?.[0] || "";
       const trailing = original.match(/\s*$/)?.[0] || "";
@@ -1378,7 +1378,7 @@
         <h2>${esc(p.name || currentUser.email)}</h2>
         <p>${esc(currentUser.email)}${p.phone ? "<br>" + esc(p.phone) : ""}</p>
         <button class="secondary" onclick="accLogout()">${t("Sign out", "Sohoka")}</button>
-        ${perms.size ? `<button class="primary" onclick="showView('admin')">${admin ? "⚙ Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi")}</button>` : ""}
+        ${perms.size ? `<button class="primary" onclick="showView('admin')">${admin ? "Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi")}</button>` : ""}
       </div>
       ${admin ? "" : `<div class="info-card"><h2>${t("My orders / Track order", "Ibyo watumije / Kurikirana commande")}</h2>${ordersHtml}</div><div class="info-card"><h2>${t("My service requests", "Ubusabe bwanjye bwa serivisi")}</h2>${requestsHtml}</div>`}`;
   }
