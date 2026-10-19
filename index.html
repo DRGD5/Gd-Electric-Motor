@@ -162,7 +162,7 @@
     .order-new { border:2px solid #25d366 !important; animation:gdPulse 1.4s ease 3; }
     .order-badge { display:inline-block; background:#25d366; color:#04210f; border-radius:99px; padding:2px 9px; font-size:.72rem; font-weight:900; margin-left:8px; }
     @keyframes gdPulse { 0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.0)} 50%{box-shadow:0 0 0 8px rgba(37,211,102,.35)} }
-    .bottom-nav { position:fixed; z-index:30; bottom:0; left:0; right:0; background:rgba(5,6,13,.97); border-top:1px solid #2b2a3b; padding:8px max(10px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)); display:grid; grid-template-columns:repeat(6,1fr); backdrop-filter:blur(14px); }
+    .bottom-nav { position:fixed; z-index:30; bottom:0; left:0; right:0; background:rgba(5,6,13,.97); border-top:1px solid #2b2a3b; padding:8px max(10px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)); display:grid; grid-template-columns:repeat(5,1fr); backdrop-filter:blur(14px); }
     .nav-item { color:#9999aa; background:transparent; border:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:3px 0; font-size:.73rem; font-weight:700; }
     .nav-item .nav-icon { font-size:1.45rem; line-height:1.2; }
     .nav-item.active { color:var(--purple-light); }
@@ -369,7 +369,7 @@
 @media (max-width: 650px) {
   .bottom-nav {
     padding: 3px 4px calc(3px + env(safe-area-inset-bottom)) !important;
-    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
     min-height: 0 !important;
   }
   .bottom-nav .nav-item {
@@ -545,22 +545,22 @@
 
 </style>
 <style>.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-.hero-banner{position:relative;margin:14px 0 8px;border-radius:26px;overflow:hidden;background:linear-gradient(135deg,#0b0d18 0%,#1b1236 100%);min-height:250px;box-shadow:0 12px 30px rgba(20,10,60,.25)}
-.hb-slide{position:absolute;inset:0;display:grid;grid-template-columns:1.25fr 1fr;align-items:stretch;opacity:0;transition:opacity .8s ease;pointer-events:none}
-.hb-slide.active{opacity:1;pointer-events:auto}
-.hb-text{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:8px;padding:22px 8px 44px 22px;min-width:0}
-.hb-eyebrow{font-size:.72rem;font-weight:800;letter-spacing:.22em;color:#c4b5fd}
-.hb-title{font-size:clamp(1.35rem,6.2vw,2.2rem);font-weight:900;line-height:1.1;color:#fff}
-.hb-sub{font-size:.95rem;font-weight:700;color:#a58bff}
-.hb-text .primary{margin-top:10px;padding:12px 20px!important;font-size:.95rem!important}
+.hero-banner{position:relative;margin:14px 0 8px;border-radius:26px;overflow:hidden;background:linear-gradient(135deg,#0b0d18 0%,#1b1236 100%);min-height:185px;box-shadow:0 12px 30px rgba(20,10,60,.25)}
+.hb-slide{position:absolute;inset:0;display:grid;grid-template-columns:1.25fr 1fr;align-items:stretch;opacity:0;transition:opacity .3s ease;pointer-events:none}
+.hb-slide.active{opacity:1;pointer-events:auto;transition:opacity .4s ease .3s}
+.hb-text{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:5px;padding:12px 8px 32px 18px;min-width:0}
+.hb-eyebrow{font-size:.62rem;font-weight:800;letter-spacing:.2em;color:#c4b5fd}
+.hb-title{overflow-wrap:anywhere;font-size:clamp(1.1rem,5vw,1.7rem);font-weight:900;line-height:1.1;color:#fff}
+.hb-sub{font-size:.8rem;font-weight:700;color:#a58bff}
+.hb-text .primary{margin-top:6px;padding:8px 16px!important;font-size:.85rem!important}
 .hb-img{position:relative;min-width:0}
 .hb-img img{display:block;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;object-fit:cover!important;border-radius:0!important}
 .hb-img.contain{padding:14px}
 .hb-img.contain img{object-fit:contain!important;background:#fff;border-radius:18px!important}
-.hb-dots{position:absolute;left:22px;bottom:16px;display:flex;gap:8px;z-index:2}
+.hb-dots{position:absolute;left:18px;bottom:12px;display:flex;gap:8px;z-index:2}
 .hb-dots button{width:9px;height:9px;padding:0;border:0;border-radius:99px;background:rgba(255,255,255,.35);transition:width .3s,background .3s}
 .hb-dots button.on{width:26px;background:#a58bff}
-@media(min-width:900px){.hero-banner{min-height:340px}.hb-text{padding-left:44px}.hb-dots{left:44px}.hb-title{font-size:2.6rem}}</style>
+@media(min-width:900px){.hero-banner{min-height:260px}.hb-text{padding-left:44px}.hb-dots{left:44px}.hb-title{font-size:2.1rem}}</style>
 </head>
 <body>
 <header class="topbar">
@@ -599,7 +599,7 @@
     </section>
     <div id="shopsHome" class="shop-wrap"></div>
     <div id="customSections"></div>
-    <footer>© <span id="year"></span> GD Electric Motor. <span data-en="All rights reserved." data-rw="Uburenganzira bwose burabitswe.">All rights reserved.</span> <a href="#" class="admin-link" onclick="document.getElementById('privDlg').showModal();return false;" data-en="Privacy" data-rw="Ibanga">Privacy</a> <a href="#" class="admin-link" onclick="showView('admin');return false;">Admin</a></footer>
+    <footer>© <span id="year"></span> GD Electric Motor. <span data-en="All rights reserved." data-rw="Uburenganzira bwose burabitswe.">All rights reserved.</span> <a href="#" class="admin-link" onclick="document.getElementById('privDlg').showModal();return false;" data-en="Privacy" data-rw="Ibanga">Privacy</a></footer>
   </section>
 
   <section id="view-categories" class="view">
@@ -707,8 +707,10 @@
 
       <div class="info-card admin-section" id="adminSectionsSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminSectionsSection')"><h2>🧩 Ibice bya website</h2><span class="shortcut-arrow">⌃</span></button>
-        <p>Kora igice gishya kigaragara ku rupapuro rwa mbere (Ahabanza), munsi y'ibicuruzwa.</p>
+        <p>Kora igice gishya kigaragara ku rupapuro rwa mbere (Ahabanza), munsi y'ibicuruzwa, cyangwa slide nshya ku banner yo hejuru.</p>
         <form id="secForm" onsubmit="adminSaveSection(event)">
+          <div class="form-row"><label>Kigaragara he?</label><select id="secKind" onchange="gdSecKindChange()"><option value="section">Igice cyo hasi (munsi y'ibicuruzwa)</option><option value="slide">Slide yo hejuru (banner igenda)</option></select></div>
+          <div class="form-row" id="secShopRow" hidden><label>Amamaza shop (si ngombwa)</label><select id="secShop" onchange="gdSecShopPick()"><option value="">— Nta shop —</option></select></div>
           <div class="form-row"><input id="secTitle" placeholder="Umutwe w'igice (urugero: Ibyo dukora)" required></div>
           <div class="form-row"><textarea id="secBody" placeholder="Ibisobanuro (si ngombwa)"></textarea></div>
           <div class="form-row"><label>Ifoto (si ngombwa)</label><input id="secImage" type="file" accept="image/*"></div>
@@ -795,7 +797,6 @@
   <button class="nav-item" data-view="account" onclick="showView('account')"><span class="nav-icon">♙</span><span data-en="Account" data-rw="Konti">Account</span></button>
   <button class="nav-item" data-view="saved" onclick="showView('saved')"><span class="nav-icon">♡</span><span data-en="Saved" data-rw="Byabitswe">Saved</span></button>
   <button class="nav-item" data-view="cart" onclick="showView('cart')"><span class="nav-icon">🛒</span><span data-en="Cart" data-rw="Agaseke">Cart</span></button>
-  <button class="nav-item" data-view="admin" onclick="showView('admin')"><span class="nav-icon">⚙</span><span>Admin</span></button>
 </nav>
 
 <script>
@@ -1377,7 +1378,7 @@
         <h2>${esc(p.name || currentUser.email)}</h2>
         <p>${esc(currentUser.email)}${p.phone ? "<br>" + esc(p.phone) : ""}</p>
         <button class="secondary" onclick="accLogout()">${t("Sign out", "Sohoka")}</button>
-        ${perms.size ? `<button class="primary" onclick="showView('admin')">${admin ? "Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi")}</button>` : ""}
+        ${perms.size ? `<button class="primary" onclick="showView('admin')">${admin ? "⚙ Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi")}</button>` : ""}
       </div>
       ${admin ? "" : `<div class="info-card"><h2>${t("My orders / Track order", "Ibyo watumije / Kurikirana commande")}</h2>${ordersHtml}</div><div class="info-card"><h2>${t("My service requests", "Ubusabe bwanjye bwa serivisi")}</h2>${requestsHtml}</div>`}`;
   }
@@ -1630,7 +1631,7 @@
   let customSections = [], editingSectionId = null, editingSectionImage = "";
   onSnapshot(collection(db, "sections"), snap => {
     customSections = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-    renderCustomSections(); renderAdminSections();
+    renderCustomSections(); renderAdminSections(); renderHeroSlides();
   }, err => console.error("Sections:", err));
   function secLink(raw) {
     const v = (raw || "").trim(); if (!v) return "";
@@ -1640,7 +1641,7 @@
   }
   function renderCustomSections() {
     const el = $("customSections"); if (!el) return;
-    el.innerHTML = customSections.map(v => { const link = secLink(v.btnLink); return `<section class="cs-card">${v.imageUrl ? `<img src="${esc(v.imageUrl)}" alt="${esc(v.title)}" loading="lazy">` : ""}
+    el.innerHTML = customSections.filter(v => v.kind !== "slide").map(v => { const link = secLink(v.btnLink); return `<section class="cs-card">${v.imageUrl ? `<img src="${esc(v.imageUrl)}" alt="${esc(v.title)}" loading="lazy">` : ""}
       <div class="cs-body"><h2>${esc(v.title)}</h2>${v.body ? `<p>${esc(v.body)}</p>` : ""}
       ${link && v.btnLabel ? `<a class="primary" style="display:inline-block;text-decoration:none;text-align:center" href="${esc(link)}" target="_blank" rel="noopener">${esc(v.btnLabel)}</a>` : ""}</div></section>`; }).join("")
       ;
@@ -1651,20 +1652,21 @@
   };
   function renderAdminSections() {
     const el = $("adminSections"); if (!el) return;
-    el.innerHTML = customSections.map(v => `<div class="admin-row"><div class="cart-details"><strong>${esc(v.title)}</strong></div><div class="btns"><button class="secondary" onclick="adminEditSection('${esc(v.id)}')">Hindura</button><button class="secondary danger-btn" onclick="adminDeleteSection('${esc(v.id)}')">Siba</button></div></div>`).join("");
+    el.innerHTML = customSections.map(v => `<div class="admin-row"><div class="cart-details"><strong>${v.kind === "slide" ? "🎞 " : ""}${esc(v.title)}</strong>${v.kind === "slide" ? "<small>Slide yo hejuru</small>" : ""}</div><div class="btns"><button class="secondary" onclick="adminEditSection('${esc(v.id)}')">Hindura</button><button class="secondary danger-btn" onclick="adminDeleteSection('${esc(v.id)}')">Siba</button></div></div>`).join("");
   }
   window.adminEditSection = id => {
     const v = customSections.find(x => x.id === id); if (!v) return;
     editingSectionId = id; editingSectionImage = v.imageUrl || "";
     $("secTitle").value = v.title || ""; $("secBody").value = v.body || "";
     $("secBtnLabel").value = v.btnLabel || ""; $("secBtnLink").value = v.btnLink || "";
+    $("secKind").value = v.kind === "slide" ? "slide" : "section"; gdSecKindChange(); $("secShop").value = v.shopId || "";
     $("secImage").value = ""; $("secBtn").textContent = "Bika impinduka"; $("secCancelBtn").hidden = false;
     const sec = $("adminSectionsSection"); if (sec && sec.hidden) toggleAdminSection("adminSectionsSection");
     $("secTitle").scrollIntoView({behavior:"smooth",block:"center"});
   };
   window.adminCancelSectionEdit = () => {
     editingSectionId = null; editingSectionImage = "";
-    $("secForm").reset(); $("secBtn").textContent = "Bika igice"; $("secCancelBtn").hidden = true;
+    $("secForm").reset(); gdSecKindChange(); $("secBtn").textContent = "Bika igice"; $("secCancelBtn").hidden = true;
     msg("secMsg", "");
   };
   window.adminSaveSection = async e => {
@@ -1674,15 +1676,53 @@
     try {
       let imageUrl = editingSectionImage; const file = $("secImage").files[0];
       if (file) imageUrl = await uploadToCloudinary(file);
-      const data = { title: $("secTitle").value.trim(), body: $("secBody").value.trim(), imageUrl, btnLabel: $("secBtnLabel").value.trim(), btnLink: $("secBtnLink").value.trim(), updatedAt: Date.now() };
+      const kind = $("secKind").value === "slide" ? "slide" : "section";
+      const shopId = kind === "slide" ? $("secShop").value : "";
+      if (shopId && !imageUrl) { const sh = shops.find(x => x.id === shopId); if (sh && sh.logoUrl) imageUrl = sh.logoUrl; }
+      const data = { kind, shopId, title: $("secTitle").value.trim(), body: $("secBody").value.trim(), imageUrl, btnLabel: $("secBtnLabel").value.trim(), btnLink: $("secBtnLink").value.trim(), updatedAt: Date.now() };
       if (!data.title) throw new Error("Andika umutwe w'igice.");
       const wasEditing = !!editingSectionId;
       if (editingSectionId) await updateDoc(doc(db, "sections", editingSectionId), data);
       else await addDoc(collection(db, "sections"), { ...data, createdAt: Date.now() });
-      window.adminCancelSectionEdit(); msg("secMsg", wasEditing ? "Impinduka zabitswe." : "Igice cyabitswe. Reba ku rupapuro rwa mbere.", "ok");
+      window.adminCancelSectionEdit(); msg("secMsg", wasEditing ? "Impinduka zabitswe." : (kind === "slide" ? "Slide yabitswe. Reba ku banner yo hejuru." : "Igice cyabitswe. Reba ku rupapuro rwa mbere."), "ok");
     } catch (err) { console.error(err); msg("secMsg", "Ntibyakunze: " + (err.code || err.message), "err"); }
     btn.disabled = false;
   };
+  window.gdSecKindChange = () => {
+    const slide = $("secKind").value === "slide";
+    $("secShopRow").hidden = !slide; if (!slide) $("secShop").value = "";
+    $("secBtn").textContent = editingSectionId ? "Bika impinduka" : (slide ? "Bika slide" : "Bika igice");
+    fillSecShops();
+  };
+  function fillSecShops() {
+    const sel = $("secShop"); if (!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">— Nta shop —</option>' + shops.filter(x => shopStatus(x) === "approved").map(x => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("");
+    sel.value = cur;
+  }
+  window.gdSecShopPick = () => {
+    const sh = shops.find(x => x.id === $("secShop").value); if (!sh) return;
+    if (!$("secTitle").value.trim()) $("secTitle").value = sh.name || "";
+    if (!$("secBtnLabel").value.trim()) $("secBtnLabel").value = "Fungura shop";
+  };
+  function renderHeroSlides() {
+    const box = $("heroBanner"); if (!box) return;
+    box.querySelectorAll(".hb-dyn").forEach(n => n.remove());
+    const dots = $("hbDots");
+    customSections.filter(v => v.kind === "slide").forEach(v => {
+      const shop = v.shopId ? shops.find(x => x.id === v.shopId && shopStatus(x) === "approved") : null;
+      if (v.shopId && !shop) return;
+      const img = v.imageUrl || (shop && shop.logoUrl) || "";
+      const link = secLink(v.btnLink);
+      const label = v.btnLabel || (shop ? "Fungura shop" : "");
+      const btn = shop ? `<button class="primary" type="button" onclick="openShop('${esc(shop.id)}')">${esc(label)} →</button>`
+        : (link && label ? `<a class="primary" href="${esc(link)}" target="_blank" rel="noopener">${esc(label)} →</a>` : "");
+      const d = document.createElement("div"); d.className = "hb-slide hb-dyn";
+      d.innerHTML = `<div class="hb-text">${shop ? '<div class="hb-eyebrow">🏪 SHOP</div>' : ""}<div class="hb-title">${esc(v.title)}</div>${v.body ? `<div class="hb-sub">${esc(v.body)}</div>` : ""}${btn}</div><div class="hb-img${shop && !v.imageUrl ? " contain" : ""}">${img ? `<img src="${esc(img)}" alt="${esc(v.title)}" loading="lazy">` : ""}</div>`;
+      box.insertBefore(d, dots);
+    });
+    if (window.gdHeroRebuild) window.gdHeroRebuild();
+  }
   window.adminDeleteSection = async id => {
     if (!confirm("Gusiba iki gice?")) return;
     try { await deleteDoc(doc(db, "sections", id)); } catch (err) { alert("Gusiba byanze: " + (err.code || err.message)); }
@@ -1696,7 +1736,7 @@
     const m = new Map();
     shopsApproved.forEach(x => m.set(x.id, x)); if (shopsMine) m.set(shopsMine.id, shopsMine); shopsAll.forEach(x => m.set(x.id, x));
     shops = [...m.values()].sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-    renderShopsHome(); renderAdminShops(); if ($("view-shop").classList.contains("active")) renderShopPage();
+    renderShopsHome(); renderAdminShops(); fillSecShops(); renderHeroSlides(); if ($("view-shop").classList.contains("active")) renderShopPage();
   }
   const shopObj = d => ({ id: d.id, ...d.data() });
   onSnapshot(query(collection(db, "shops"), where("status", "==", "approved")), snap => { shopsApproved = snap.docs.map(shopObj); mergeShops(); }, err => console.error("Shops:", err));
@@ -2190,13 +2230,18 @@
 (function(){
   var box=document.getElementById("heroBanner"); if(!box) return;
   if(typeof PUMP_IMG!=="undefined") document.getElementById("hbPump").src=PUMP_IMG;
-  var slides=[].slice.call(box.querySelectorAll(".hb-slide")), dotsBox=document.getElementById("hbDots"), cur=0, timer=null, x0=null;
-  var dots=slides.map(function(_,i){var b=document.createElement("button");b.type="button";b.setAttribute("aria-label","Slide "+(i+1));b.onclick=function(){go(i);restart();};dotsBox.appendChild(b);return b;});
-  function go(n){cur=(n+slides.length)%slides.length;slides.forEach(function(s,i){s.classList.toggle("active",i===cur);dots[i].classList.toggle("on",i===cur);});}
-  function restart(){clearInterval(timer);if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;timer=setInterval(function(){if(!document.hidden)go(cur+1);},4500);}
+  var slides=[], dotsBox=document.getElementById("hbDots"), dots=[], cur=0, timer=null, x0=null;
+  function go(n){if(!slides.length)return;cur=(n+slides.length)%slides.length;slides.forEach(function(s,i){s.classList.toggle("active",i===cur);if(dots[i])dots[i].classList.toggle("on",i===cur);});}
+  function restart(){clearInterval(timer);if(slides.length<2)return;if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;timer=setInterval(function(){if(!document.hidden)go(cur+1);},4500);}
+  function build(){
+    slides=[].slice.call(box.querySelectorAll(".hb-slide")); dotsBox.innerHTML="";
+    dots=slides.map(function(_,i){var b=document.createElement("button");b.type="button";b.setAttribute("aria-label","Slide "+(i+1));b.onclick=function(){go(i);restart();};dotsBox.appendChild(b);return b;});
+    go(Math.min(cur,slides.length-1));
+  }
+  window.gdHeroRebuild=function(){build();restart();};
   box.addEventListener("touchstart",function(e){x0=e.touches[0].clientX;},{passive:true});
   box.addEventListener("touchend",function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40){go(cur+(dx<0?1:-1));restart();}},{passive:true});
-  go(0);restart();
+  build();restart();
 })();
 </script>
 </body>
