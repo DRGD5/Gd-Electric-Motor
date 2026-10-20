@@ -11,6 +11,10 @@
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="GD Motors">
   <title>GD Electric Motors | Motors, Pumps & Spare Parts in Rwanda</title>
   <meta name="description" content="GD Electric Motors: electric motors, fan motors, water pumps and spare parts in Rwanda. Contact us on WhatsApp for prices and orders.">
   <link rel="canonical" href="https://drgd5.github.io/Gd-Electric-Motor/">
@@ -590,6 +594,11 @@
 .work-body h3{margin:0 0 6px;font-size:1rem}
 .work-body blockquote{margin:0;color:#cfcde0;font-size:.92rem;line-height:1.45}
 .work-who{margin-top:8px;color:#bd8cff;font-weight:800;font-size:.85rem}
+#installBar{position:fixed;left:10px;right:10px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:8px;background:#111526;color:#f7f5ff;border:1px solid #5420e8;border-radius:16px;padding:10px 12px;box-shadow:0 10px 30px rgba(0,0,0,.35);font-size:.85rem}
+#installBar[hidden]{display:none}
+#installBar .it{flex:1;line-height:1.3}
+#installBar .primary{padding:8px 14px;font-size:.85rem;white-space:nowrap}
+#installBar .ix{background:transparent;border:0;color:#a6a5b7;font-size:1.1rem;padding:4px 6px}
 </style>
 </head>
 <body>
@@ -634,7 +643,7 @@
     </section>
     <div id="shopsHome" class="shop-wrap"></div>
     <div id="customSections"></div>
-    <footer>© <span id="year"></span> GD Electric Motor. <span data-en="All rights reserved." data-rw="Uburenganzira bwose burabitswe.">All rights reserved.</span> <a href="#" class="admin-link" onclick="document.getElementById('privDlg').showModal();return false;" data-en="Privacy" data-rw="Ibanga">Privacy</a></footer>
+    <footer>© <span id="year"></span> GD Electric Motor. <span data-en="All rights reserved." data-rw="Uburenganzira bwose burabitswe.">All rights reserved.</span> <a href="#" class="admin-link" onclick="document.getElementById('privDlg').showModal();return false;" data-en="Privacy" data-rw="Ibanga">Privacy</a> · <a href="#" class="admin-link" onclick="gdShowInstall();return false;" data-en="📲 Install app" data-rw="📲 Shyira app kuri telefoni">📲 Shyira app kuri telefoni</a></footer>
   </section>
 
   <section id="view-product" class="view"><div id="productDetail"></div></section>
@@ -2371,6 +2380,44 @@
   box.addEventListener("touchstart",function(e){x0=e.touches[0].clientX;},{passive:true});
   box.addEventListener("touchend",function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40){go(cur+(dx<0?1:-1));restart();}},{passive:true});
   build();restart();
+})();
+</script>
+<div id="installBar" hidden>
+  <span class="it" id="installTxtA" data-en="Install GD Electric Motors as an app on your phone" data-rw="Shyira GD Electric Motors kuri telefoni yawe nka app">Shyira GD Electric Motors kuri telefoni yawe nka app</span>
+  <span class="it" id="installTxtI" hidden data-en="Tap the Share button, then “Add to Home Screen”" data-rw="Kanda Share, hanyuma “Add to Home Screen”">Kanda Share, hanyuma “Add to Home Screen”</span>
+  <button class="primary" id="installBtn" type="button" data-en="Install" data-rw="Shyiraho">Shyiraho</button>
+  <button class="ix" id="installX" type="button" aria-label="Close">✕</button>
+</div>
+<script>
+(function(){
+  var bar=document.getElementById("installBar"); if(!bar) return;
+  if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)){
+    window.addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
+  }
+  var standalone=(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone;
+  var KEY="gdInstallDismissed", deferred=null;
+  var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.MSStream;
+  function show(mode){
+    bar.hidden=false;
+    document.getElementById("installTxtA").hidden=mode!=="a";
+    document.getElementById("installTxtI").hidden=mode!=="i";
+    document.getElementById("installBtn").hidden=mode!=="a";
+  }
+  function dismissedRecently(){ try{ return Date.now()-(Number(localStorage.getItem(KEY))||0) < 7*864e5; }catch(e){ return false; } }
+  window.addEventListener("beforeinstallprompt",function(e){ e.preventDefault(); deferred=e; if(!standalone && !dismissedRecently()) show("a"); });
+  if(isIOS && !standalone && !dismissedRecently()) setTimeout(function(){ show("i"); },3500);
+  document.getElementById("installBtn").onclick=function(){
+    if(!deferred) return;
+    deferred.prompt();
+    deferred.userChoice.then(function(){ deferred=null; bar.hidden=true; });
+  };
+  document.getElementById("installX").onclick=function(){ bar.hidden=true; try{ localStorage.setItem(KEY,String(Date.now())); }catch(e){} };
+  window.addEventListener("appinstalled",function(){ bar.hidden=true; });
+  window.gdShowInstall=function(){
+    if(standalone){ alert(document.documentElement.lang==="en"?"The app is already installed.":"App yamaze gushyirwa kuri telefoni yawe."); return; }
+    if(deferred) show("a"); else if(isIOS) show("i");
+    else alert(document.documentElement.lang==="en"?"Open the browser menu (⋮) and choose “Install app” or “Add to Home screen”.":"Fungura menu ya browser (⋮) ukande “Install app” cyangwa “Add to Home screen”.");
+  };
 })();
 </script>
 </body>
