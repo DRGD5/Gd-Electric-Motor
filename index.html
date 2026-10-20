@@ -1188,7 +1188,7 @@
     const rows=entries.map(([id,qty])=>{const p=products.find(x=>x.id===Number(id));total+=p.price*qty;
       return `<div class="cart-row"><div class="cart-emoji">${p.imageUrl?`<img src="${esc(p.imageUrl)}" alt="">`:iconOf(p)}</div><div class="cart-details"><strong>${esc(productName(p))}</strong><small>${money(p.price)} × ${qty}</small></div><div class="qty"><button onclick="changeQty(${p.id},-1)">−</button><span>${qty}</span><button onclick="changeQty(${p.id},1)">+</button></div></div>`;
     }).join("");
-    el.innerHTML=`${rows}<div style="display:flex;justify-content:space-between;gap:12px;margin:20px 0;font-size:1.1rem;font-weight:900"><span>${t("Estimated total","Igiteranyo cy'agateganyo")}</span><span style="color:var(--green)">${money(total)}</span></div><p>${t("Prices and stock should be confirmed with us before payment.","Ibiciro n'ibihari byemezwe natwe mbere yo kwishyura.")}</p><div class="form-row"><input id="orderName" placeholder="${t("Your name","Amazina yawe")}" autocomplete="name" value="${esc(customer.name||(window.gdProfile&&window.gdProfile.name)||"")}" oninput="setCust('name',this.value)"></div><div class="form-row"><input id="orderPhone" placeholder="${t("Phone number","Nimero ya telefoni")}" inputmode="tel" autocomplete="tel" value="${esc(customer.phone||(window.gdProfile&&window.gdProfile.phone)||"")}" oninput="setCust('phone',this.value)"></div><button class="primary" id="submitOrderBtn" onclick="submitOrder()">${t("Submit order ✓","Ohereza order (Submit) ✓")}</button> <button class="secondary" onclick="clearCart()">${t("Clear cart","Siba ibiri mu gaseke")}</button>${renderCartOrderTracking()}`;
+    el.innerHTML=`${rows}<div style="display:flex;justify-content:space-between;gap:12px;margin:20px 0;font-size:1.1rem;font-weight:900"><span>${t("Estimated total","Igiteranyo cy'agateganyo")}</span><span style="color:var(--green)">${money(total)}</span></div><p>${t("Prices and stock should be confirmed with us before payment.","Ibiciro n'ibihari byemezwe natwe mbere yo kwishyura.")}</p><div class="form-row"><input id="orderName" placeholder="${t("Your name","Amazina yawe")}" autocomplete="name" value="${esc(customer.name||(window.gdProfile&&window.gdProfile.name)||"")}" oninput="setCust('name',this.value)"></div><div class="form-row"><input id="orderPhone" placeholder="${t("Phone number (10 digits)","Nimero ya telefoni (imibare 10)")}" inputmode="tel" autocomplete="tel" value="${esc(customer.phone||(window.gdProfile&&window.gdProfile.phone)||"")}" oninput="setCust('phone',this.value)"></div><button class="primary" id="submitOrderBtn" onclick="submitOrder()">${t("Submit order ✓","Ohereza order (Submit) ✓")}</button> <button class="secondary" onclick="clearCart()">${t("Clear cart","Siba ibiri mu gaseke")}</button>${renderCartOrderTracking()}`;
     updateCounts();
   }
   function renderCartOrderTracking() {
@@ -1233,22 +1233,26 @@
     showView("cart");
     setTimeout(()=>{const el=document.getElementById("orderTracking"); if(el) el.scrollIntoView({behavior:"smooth",block:"start"});},150);
   }
+  window.gdPhoneCheck = function(raw){
+    const n=String(raw||"").replace(/\D/g,"").length;
+    if(n===10) return null;
+    if(n===0) return t("Please enter your phone number (10 digits).","Andika nimero ya telefoni (imibare 10).");
+    if(n<10) return t("Phone number is too short: you typed "+n+" digits. It must be exactly 10 digits.","Nimero ya telefoni ni ngufi: wanditse imibare "+n+". Igomba kuba imibare 10 neza.");
+    return t("Phone number is too long: you typed "+n+" digits. It must be exactly 10 digits.","Nimero ya telefoni ni ndende: wanditse imibare "+n+". Igomba kuba imibare 10 neza.");
+  };
   async function submitOrder(){
     if(window.__ordering) return;
-    if(!window.gdUser){
-      alert(t("Please sign in or create an account before placing an order so you can track it.", "Banza winjire cyangwa ufungure konti mbere yo kohereza commande kugira ngo uzajye uyikurikirana."));
-      showView("account"); return;
-    }
     const entries=Object.entries(cart).filter(([id,q])=>q>0);
     const items=entries.map(([id,qty])=>{const p=products.find(x=>x.id===Number(id));return p?{id:Number(id),name:productName(p),qty:Number(qty),price:p.price}:null;}).filter(Boolean);
     if(!items.length) return;
     const name=(document.getElementById("orderName")?.value||"").trim(), phone=(document.getElementById("orderPhone")?.value||"").trim();
-    if(name.length<2||phone.replace(/\D/g,"").length<9){ alert(t("Please enter your name and phone number.","Andika amazina yawe na nimero ya telefoni.")); return; }
+    if(name.length<2){ alert(t("Please enter your name.","Andika amazina yawe.")); return; }
+    const phoneErr=window.gdPhoneCheck(phone); if(phoneErr){ alert(phoneErr); return; }
     const total=items.reduce((s,i)=>s+i.price*i.qty,0);
     window.__ordering=true;
     const btn=document.getElementById("submitOrderBtn"); if(btn){btn.disabled=true;btn.textContent=t("Submitting...","Birohereza...");}
     let prof;
-    try{ prof=await window.gdSaveOrder(items,total,name,phone); }
+    try{ prof=await window.gdSaveOrder(items,total,name,phone.replace(/\D/g,"")); }
     catch(e){ console.error(e); window.__ordering=false; if(btn){btn.disabled=false;btn.textContent=t("Submit order ✓","Ohereza order (Submit) ✓");} alert(t("Could not submit your order. Please try again.","Ntibyashobotse kohereza order yawe. Ongera ugerageze.")); return; }
     const lines=items.map(i=>`${i.name} × ${i.qty} — ${money(i.price*i.qty)}`);
     window.lastOrderText=t("Hello GD Electric Motor, I have submitted an order:\n","Muraho GD Electric Motor, nohereje order:\n")+lines.join("\n")+"\n"+t("Estimated total: ","Igiteranyo cy'agateganyo: ")+money(total)+(prof&&prof.name?"\nName: "+prof.name:"")+(prof&&prof.phone?"\nPhone: "+prof.phone:"");
@@ -1258,7 +1262,7 @@
     clearCart();
     renderOrderDone();
     window.scrollTo(0,0);
-    gdToast(t("✅ Order submitted successfully! We have received it.","✅ Komande yawe yoherejwe neza! Twayakiriye."), t("Track order","Kurikirana"), gdGoTracking);
+    gdToast(t("✅ Order submitted successfully! We have received it.","✅ Komande yawe yoherejwe neza! Twayakiriye."), window.gdUser?t("Track order","Kurikirana"):"", window.gdUser?gdGoTracking:null);
   }
   function renderOrderDone(){
     const el=document.getElementById("orderDone"); if(!el) return;
@@ -1697,22 +1701,55 @@
   window.renderServices = renderServices;
   renderServices();
   window.serviceWhatsApp = name => openWhatsApp(t("Hello GD Electric Motor, I would like to ask about: ", "Muraho GD Electric Motor, ndifuza kubaza kuri: ") + name);
-  window.requestService = async name => {
-    if (!currentUser) {
-      alert(t("Please sign in or create an account first so you can track your service request.", "Banza winjire cyangwa ufungure konti kugira ngo uzajye ukurikirana ubusabe bwa serivisi yawe."));
-      showView("account"); return;
-    }
-    const details = prompt(t("Describe your motor/problem (optional):", "Sobanura moteri cyangwa ikibazo ufite (si ngombwa):"), "");
-    if (details === null) return;
+  window.svcClose = () => { const m = $("svcModal"); if (m) m.hidden = true; };
+  window.svcPhoneHint = () => {
+    const err = $("svcReqErr"); if (!err) return;
+    const n = $("svcReqPhone").value.replace(/\D/g, "").length;
+    if (n > 10) { err.textContent = window.gdPhoneCheck($("svcReqPhone").value); err.hidden = false; } else err.hidden = true;
+  };
+  window.requestService = name => {
+    let m = $("svcModal");
+    if (!m) { m = document.createElement("div"); m.id = "svcModal"; m.className = "rc-modal"; document.body.appendChild(m); }
+    let saved = {}; try { saved = JSON.parse(localStorage.getItem("gdCustomer") || "{}") || {}; } catch (e) {}
+    const preName = saved.name || (profile && profile.name) || (currentUser && currentUser.displayName) || "";
+    const prePhone = saved.phone || (profile && profile.phone) || "";
+    m.dataset.svc = name;
+    m.innerHTML = `<div class="rc-sheet">
+      <div class="rc-head"><h2>🛠️ ${t("Request service", "Saba serivisi")}</h2><button type="button" onclick="svcClose()">✕</button></div>
+      <p style="margin:10px 0 0;color:#cfd2ff"><b>${esc(name)}</b></p>
+      <label>${t("Your name", "Amazina yawe")}</label>
+      <input id="svcReqName" autocomplete="name" value="${esc(preName)}">
+      <label>${t("Phone number (10 digits)", "Nimero ya telefoni (imibare 10)")}</label>
+      <input id="svcReqPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="07XXXXXXXX" value="${esc(prePhone)}" oninput="svcPhoneHint()">
+      <p id="svcReqErr" style="color:#ff8a80;font-size:.9rem;margin:8px 0 0" hidden></p>
+      <label>${t("Describe your motor/problem (optional)", "Sobanura moteri cyangwa ikibazo ufite (si ngombwa)")}</label>
+      <textarea id="svcReqDetails"></textarea>
+      <button type="button" class="primary" id="svcReqBtn" style="width:100%;margin-top:14px" onclick="svcSubmit()">${t("Send request", "Ohereza ubusabe")}</button>
+    </div>`;
+    m.hidden = false;
+  };
+  window.svcSubmit = async () => {
+    const m = $("svcModal"), err = $("svcReqErr"), btn = $("svcReqBtn");
+    const nm = $("svcReqName").value.trim(), phRaw = $("svcReqPhone").value, dt = $("svcReqDetails").value.trim();
+    const bad = nm.length < 2 ? t("Please enter your name.", "Andika amazina yawe.") : window.gdPhoneCheck(phRaw);
+    if (bad) { err.textContent = bad; err.hidden = false; return; }
+    const ph = phRaw.replace(/\D/g, "");
+    btn.disabled = true; btn.textContent = t("Sending...", "Birohereza...");
     try {
-      await addDoc(collection(db, "serviceRequests"), {
-        userId: currentUser.uid, email: currentUser.email || "", name: (profile && profile.name) || currentUser.displayName || "",
-        phone: (profile && profile.phone) || "", serviceName: name, details: details.trim(), status: "new", createdAt: Date.now()
-      });
-      alert(t("Your service request was sent. Open Account to track its status.", "Ubusabe bwa serivisi bwoherejwe. Jya muri Konti urebe aho bugeze."));
-      showView("account");
-    } catch (err) {
-      console.error(err); alert(t("Could not send the request. Check your internet connection or Firebase rules.", "Ntibyashobotse kohereza ubusabe. Reba internet cyangwa amategeko ya Firebase."));
+      const d = { name: nm, phone: ph, serviceName: m.dataset.svc, details: dt, status: "new", createdAt: Date.now() };
+      if (currentUser) { d.userId = currentUser.uid; d.email = currentUser.email || ""; }
+      await addDoc(collection(db, "serviceRequests"), d);
+      try { localStorage.setItem("gdCustomer", JSON.stringify({ name: nm, phone: ph })); } catch (e) {}
+      if (window.gdTrack) gdTrack("service_request", { service_name: m.dataset.svc });
+      m.innerHTML = `<div class="rc-sheet" style="text-align:center;padding-top:60px">
+        <div style="font-size:56px">✅</div>
+        <h2>${t("Request received", "Ubusabe bwakiriwe")}</h2>
+        <p style="font-size:1.05rem;line-height:1.6">${t("Thank you, " + esc(nm) + "! You will be helped as soon as possible. We will contact you on " + esc(ph) + ".", "Murakoze, " + esc(nm) + "! Muzahabwa ubufasha vuba bishoboka. Tuzabahamagara kuri " + esc(ph) + ".")}</p>
+        <button type="button" class="primary" style="width:100%;margin-top:18px" onclick="svcClose()">${t("OK", "Sawa")}</button>
+      </div>`;
+    } catch (e) {
+      console.error(e); btn.disabled = false; btn.textContent = t("Send request", "Ohereza ubusabe");
+      err.textContent = t("Could not send the request. Check your internet connection and try again.", "Ntibyashobotse kohereza ubusabe. Reba internet wongere ugerageze."); err.hidden = false;
     }
   };
   let editingServiceId = null, editingServiceImage = "";
