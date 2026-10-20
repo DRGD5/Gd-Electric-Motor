@@ -561,6 +561,36 @@
 .hb-dots button{width:9px;height:9px;padding:0;border:0;border-radius:99px;background:rgba(255,255,255,.35);transition:width .3s,background .3s}
 .hb-dots button.on{width:26px;background:#a58bff}
 @media(min-width:900px){.hero-banner{min-height:260px}.hb-text{padding-left:44px}.hb-dots{left:44px}.hb-title{font-size:2.1rem}}</style>
+<style>
+.stock-badge{position:absolute;left:10px;bottom:10px;z-index:2;font-size:.7rem;font-weight:800;padding:3px 9px;border-radius:999px}
+.stock-badge.out{background:#b42318;color:#fff}.stock-badge.star{background:#f59e0b;color:#1a1200}
+.product.out .product-visual img,.product.out .product-visual .emoji{opacity:.5}
+.product-visual img,.product-visual .emoji,.product-link{cursor:pointer}
+.pd-back{margin:6px 0 10px}
+.pd-card{display:grid;gap:14px;padding:14px}
+.pd-img{position:relative;background:#fff;border-radius:18px;overflow:hidden;display:grid;place-items:center;min-height:200px;font-size:6rem;color:#161b2b}
+.pd-img img{width:100%;max-height:340px;object-fit:contain;display:block}
+.pd-title{font-size:1.4rem;margin:0;line-height:1.2}
+.pd-status{display:inline-block;font-weight:800;font-size:.8rem;padding:4px 12px;border-radius:999px;width:fit-content}
+.pd-status.in{background:#0f5132;color:#d1fae5}.pd-status.out{background:#b42318;color:#fff}
+.pd-desc{margin:0;color:var(--muted);line-height:1.5}
+.pd-actions{display:grid;gap:8px}
+.pd-share{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pd-share button{padding:11px 8px;border-radius:14px;font-weight:800}
+.pd-wa{background:#128c4a;color:#fff;border:0}
+#worksSection[hidden]{display:none}
+.works-row{display:flex;gap:12px;overflow-x:auto;padding:2px 2px 10px;scroll-snap-type:x mandatory}
+.work-card{flex:0 0 82%;max-width:340px;scroll-snap-align:start;background:#111526;color:#f7f5ff;border:1px solid #34304b;border-radius:20px;overflow:hidden}
+.work-ba{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:#000}
+.work-ba.one{grid-template-columns:1fr}
+.work-ba figure{margin:0;position:relative}
+.work-ba img{width:100%;height:150px;object-fit:cover;display:block}
+.work-ba figcaption{position:absolute;left:6px;top:6px;background:#000a;color:#fff;font-size:.68rem;font-weight:800;padding:2px 8px;border-radius:999px}
+.work-body{padding:12px 14px 14px}
+.work-body h3{margin:0 0 6px;font-size:1rem}
+.work-body blockquote{margin:0;color:#cfcde0;font-size:.92rem;line-height:1.45}
+.work-who{margin-top:8px;color:#bd8cff;font-weight:800;font-size:.85rem}
+</style>
 </head>
 <body>
 <header class="topbar">
@@ -597,10 +627,17 @@
       <div class="section-heading"><div><h2 data-en="🔥 Popular products" data-rw="🔥 Ibicuruzwa bikunzwe">🔥 Popular products</h2><div class="deal-sub" data-en="Browse our product selection" data-rw="Reba ibicuruzwa dufite">Browse our product selection</div></div><button class="text-link" onclick="showView('categories')" data-en="See all →" data-rw="Reba byose →">See all →</button></div>
       <div class="products" id="homeProducts"></div>
     </section>
+
+    <section class="section" id="worksSection" hidden>
+      <div class="section-heading"><h2 data-en="Completed work &amp; customer reviews" data-rw="Imirimo yarangiye n'ibitekerezo by'abakiriya">Imirimo yarangiye n'ibitekerezo by'abakiriya</h2></div>
+      <div class="works-row" id="worksList"></div>
+    </section>
     <div id="shopsHome" class="shop-wrap"></div>
     <div id="customSections"></div>
     <footer>© <span id="year"></span> GD Electric Motor. <span data-en="All rights reserved." data-rw="Uburenganzira bwose burabitswe.">All rights reserved.</span> <a href="#" class="admin-link" onclick="document.getElementById('privDlg').showModal();return false;" data-en="Privacy" data-rw="Ibanga">Privacy</a></footer>
   </section>
+
+  <section id="view-product" class="view"><div id="productDetail"></div></section>
 
   <section id="view-categories" class="view">
     <h1 class="page-title" data-en="Categories" data-rw="Ibyiciro">Categories</h1>
@@ -709,11 +746,14 @@
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminSectionsSection')"><h2>🧩 Ibice bya website</h2><span class="shortcut-arrow">⌃</span></button>
         <p>Kora igice gishya kigaragara ku rupapuro rwa mbere (Ahabanza), munsi y'ibicuruzwa, cyangwa slide nshya ku banner yo hejuru.</p>
         <form id="secForm" onsubmit="adminSaveSection(event)">
-          <div class="form-row"><label>Kigaragara he?</label><select id="secKind" onchange="gdSecKindChange()"><option value="section">Igice cyo hasi (munsi y'ibicuruzwa)</option><option value="slide">Slide yo hejuru (banner igenda)</option></select></div>
+          <div class="form-row"><label>Kigaragara he?</label><select id="secKind" onchange="gdSecKindChange()"><option value="section">Igice cyo hasi (munsi y'ibicuruzwa)</option><option value="slide">Slide yo hejuru (banner igenda)</option><option value="work">Umurimo warangiye (amafoto + igitekerezo cy'umukiriya)</option></select></div>
           <div class="form-row" id="secShopRow" hidden><label>Amamaza shop (si ngombwa)</label><select id="secShop" onchange="gdSecShopPick()"><option value="">— Nta shop —</option></select></div>
           <div class="form-row"><input id="secTitle" placeholder="Umutwe w'igice (urugero: Ibyo dukora)" required></div>
           <div class="form-row"><textarea id="secBody" placeholder="Ibisobanuro (si ngombwa)"></textarea></div>
           <div class="form-row"><label>Ifoto (si ngombwa)</label><input id="secImage" type="file" accept="image/*"></div>
+          <div class="form-row" id="secImage2Row" hidden><label>Ifoto ya kabiri: nyuma y'akazi (si ngombwa)</label><input id="secImage2" type="file" accept="image/*"></div>
+          <div class="form-row" id="secWhoRow" hidden><input id="secWho" placeholder="Izina ry'umukiriya (urugero: Jean, Kigali)"></div>
+          <small id="secWorkHint" hidden style="color:var(--muted)">Umutwe: umurimo wakozwe. Ibisobanuro: icyo umukiriya avuga. Ifoto ya mbere ni iya mbere y'akazi, iya kabiri ni iya nyuma.</small>
           <div class="form-row"><input id="secBtnLabel" placeholder="Izina rya button (si ngombwa, urugero: Reba byinshi)"></div>
           <div class="form-row"><input id="secBtnLink" placeholder="Link ya button (https://... cyangwa nimero ya WhatsApp)"></div>
           <button class="primary" type="submit" id="secBtn">Bika igice</button>
@@ -763,6 +803,8 @@
           <div class="form-row"><label>Icyiciro</label><select id="fCategory"></select></div>
           <div class="form-row"><label>Igiciro (RWF)</label><input id="fPrice" type="number" min="0" inputmode="numeric" required></div>
           <div class="form-row"><label>Igiciro cya kera (RWF), si ngombwa</label><input id="fOldPrice" type="number" min="0" inputmode="numeric"></div>
+          <div class="form-row"><label>Uko bimeze</label><select id="fStatus"><option value="available">Birahari</option><option value="out">Byashize</option></select></div>
+          <div class="form-row"><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fFeatured" style="width:auto"> Shyira iki gicuruzwa imbere (bikunzwe / promo)</label></div>
           <div class="form-row"><label>Ifoto</label><input id="fPhoto" type="file" accept="image/*" onchange="adminPreview(this)"><img id="fPreview" class="photo-preview" alt="Product photo preview"></div>
           <button class="primary" type="submit" id="adminSaveBtn">Bika igicuruzwa</button>
           <button class="secondary" type="button" id="adminCancelBtn" onclick="adminCancel()" hidden>Reka guhindura</button>
@@ -834,8 +876,9 @@
   function setProducts(list) {
     dbList = list || [];
     // Added products first (newest), the original sample products stay unless the admin hides them.
-    products = [...dbList, ...sampleProducts.filter(p => !hiddenSampleIds.includes(p.id))];
+    products = [...dbList, ...sampleProducts.filter(p => !hiddenSampleIds.includes(p.id))].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
     renderHome(); renderCategories(); renderSaved(); renderCart();
+    if (typeof openFromUrl === "function") openFromUrl();
   }
   const money = n => new Intl.NumberFormat("en-US").format(n) + " RWF";
   const t = (en,rw) => language === "rw" ? rw : en;
@@ -944,7 +987,12 @@
   const productName = p => t(p.en,p.rw);
   const categoryName = c => t(c.en,c.rw);
 
+  const BASE_TITLE = document.title;
   function showView(name) {
+    if (name !== "product") {
+      if (location.search.indexOf("p=") > -1) { try { history.replaceState(null, "", location.pathname); } catch (e) {} }
+      if (document.title !== BASE_TITLE) document.title = BASE_TITLE;
+    }
     document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
     document.body.dataset.view = name;
     const target=document.getElementById("view-"+name);
@@ -987,23 +1035,82 @@
   function productCard(p) {
     const isSaved=saved.includes(p.id);
     const discount=p.oldPrice?Math.round((1-p.price/p.oldPrice)*100):null;
-    return `<article class="product">
-      <div class="product-visual ${p.imageUrl?'has-img':''}">${p.imageUrl?`<img src="${esc(p.imageUrl)}" alt="${esc(productName(p))}" loading="lazy">`:`<span class="emoji">${iconOf(p)}</span>`}${discount?`<span class="discount">-${discount}%</span>`:""}
-        <button class="save-btn ${isSaved?'saved':''}" aria-label="Bika igicuruzwa" onclick="toggleSaved(${p.id})">${isSaved?'♥':'♡'}</button>
-      </div>
-      <div class="product-info"><h3>${esc(productName(p))}</h3><p>${esc(t(p.descEn,p.descRw))}</p>
-        <div class="price-row"><span class="price">${money(p.price)}</span>${p.oldPrice?`<span class="old-price">${money(p.oldPrice)}</span>`:""}</div>
-        <div class="shop-controls">
+    const out=p.status==="out";
+    const open=`onclick="openProduct(${p.id})"`;
+    const controls=out
+      ?`<div class="shop-controls"><button class="shop-add" disabled style="opacity:.5;width:100%">${t("Out of stock","Byashize")}</button></div>`
+      :`<div class="shop-controls">
           <div class="shop-qty" aria-label="${t("Quantity","Umubare")}">
             <button type="button" aria-label="Minus" onclick="setProductQty(${p.id},-1)">−</button>
             <span id="productQty-${p.id}">${productQty[p.id] || 1}</span>
             <button type="button" aria-label="Plus" onclick="setProductQty(${p.id},1)">+</button>
           </div>
           <button class="shop-add" onclick="addToCart(${p.id}, productQty[${p.id}] || 1)">${t("Add","Ongeraho")}</button>
-        </div>
+        </div>`;
+    return `<article class="product ${out?'out':''}">
+      <div class="product-visual ${p.imageUrl?'has-img':''}">${p.imageUrl?`<img src="${esc(p.imageUrl)}" alt="${esc(productName(p))}" loading="lazy" ${open}>`:`<span class="emoji" ${open}>${iconOf(p)}</span>`}${discount?`<span class="discount">-${discount}%</span>`:""}${out?`<span class="stock-badge out">${t("Out of stock","Byashize")}</span>`:(p.featured?`<span class="stock-badge star">⭐ ${t("Featured","Bikunzwe")}</span>`:"")}
+        <button class="save-btn ${isSaved?'saved':''}" aria-label="Bika igicuruzwa" onclick="toggleSaved(${p.id})">${isSaved?'♥':'♡'}</button>
+      </div>
+      <div class="product-info"><h3 class="product-link" ${open}>${esc(productName(p))}</h3><p>${esc(t(p.descEn,p.descRw))}</p>
+        <div class="price-row"><span class="price">${money(p.price)}</span>${p.oldPrice?`<span class="old-price">${money(p.oldPrice)}</span>`:""}</div>
+        ${controls}
         <button class="secondary product-ask" onclick="askProduct(${p.id})">${t("Ask on WhatsApp","Baza kuri WhatsApp")}</button>
       </div></article>`;
   }
+  let prevView = "home";
+  function productUrl(id) { return location.origin + location.pathname + "?p=" + id; }
+  function renderProductPage(p) {
+    const out = p.status === "out";
+    const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : null;
+    document.getElementById("productDetail").innerHTML = `
+      <button class="text-link pd-back" type="button" onclick="closeProduct()">← ${t("Back","Subira inyuma")}</button>
+      <div class="info-card pd-card">
+        <div class="pd-img">${p.imageUrl ? `<img src="${esc(p.imageUrl)}" alt="${esc(productName(p))}">` : `<span class="emoji">${iconOf(p)}</span>`}${discount ? `<span class="discount">-${discount}%</span>` : ""}</div>
+        <h1 class="pd-title">${esc(productName(p))}</h1>
+        <div class="price-row"><span class="price">${money(p.price)}</span>${p.oldPrice ? `<span class="old-price">${money(p.oldPrice)}</span>` : ""}</div>
+        <span class="pd-status ${out ? "out" : "in"}">${out ? t("Out of stock", "Byashize") : t("Available", "Birahari")}</span>
+        <p class="pd-desc">${esc(t(p.descEn, p.descRw))}</p>
+        <div class="pd-actions">
+          ${out ? "" : `<div class="shop-controls"><div class="shop-qty"><button type="button" onclick="pdQty(${p.id},-1)">−</button><span id="pdQty">${productQty[p.id] || 1}</span><button type="button" onclick="pdQty(${p.id},1)">+</button></div><button class="shop-add" onclick="addToCart(${p.id}, productQty[${p.id}] || 1)">${t("Add","Ongeraho")}</button></div>`}
+          <button class="secondary product-ask" onclick="askProduct(${p.id})">${t("Ask on WhatsApp","Baza kuri WhatsApp")}</button>
+        </div>
+        <div class="pd-share">
+          <button class="pd-wa" type="button" onclick="shareProduct(${p.id})">${t("Share on WhatsApp","Sangiza kuri WhatsApp")}</button>
+          <button class="secondary" type="button" onclick="copyProductLink(${p.id})">${t("Copy link","Kopiya link")}</button>
+        </div>
+      </div>`;
+  }
+  function openProduct(id, fromUrl) {
+    const p = products.find(x => x.id === id); if (!p) return false;
+    const cur = (document.querySelector(".view.active") || {}).id;
+    if (cur && cur !== "view-product") prevView = cur.replace("view-", "");
+    renderProductPage(p);
+    showView("product");
+    document.title = productName(p) + " | GD Electric Motors";
+    if (!fromUrl) { try { history.pushState({ p: id }, "", "?p=" + id); } catch (e) {} }
+    return true;
+  }
+  function closeProduct() { showView(prevView && prevView !== "product" ? prevView : "home"); }
+  function pdQty(id, d) { productQty[id] = Math.max(1, (Number(productQty[id]) || 1) + d); const el = document.getElementById("pdQty"); if (el) el.textContent = productQty[id]; }
+  function shareProduct(id) {
+    const p = products.find(x => x.id === id); if (!p) return;
+    const text = productName(p) + " - " + money(p.price) + "\nGD Electric Motor\n" + productUrl(id);
+    window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank", "noopener");
+  }
+  function copyProductLink(id) {
+    const url = productUrl(id), btn = event && event.currentTarget;
+    const done = () => { if (btn) { const old = btn.textContent; btn.textContent = t("Copied ✓", "Link yakopowe ✓"); setTimeout(() => btn.textContent = old, 1500); } };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, () => prompt("Link:", url));
+    else prompt("Link:", url);
+  }
+  function currentUrlProductId() { const v = new URLSearchParams(location.search).get("p"); return v ? Number(v) : null; }
+  function openFromUrl() {
+    const id = currentUrlProductId(); if (!id) return;
+    const pv = document.getElementById("view-product");
+    if (pv && pv.classList.contains("active")) { const p = products.find(x => x.id === id); if (p) renderProductPage(p); return; }
+    openProduct(id, true);
+  }
+  window.addEventListener("popstate", () => { const id = currentUrlProductId(); if (id && products.find(x => x.id === id)) openProduct(id, true); else if (document.getElementById("view-product").classList.contains("active")) showView(prevView || "home"); });
   function renderHome() {
     document.getElementById("homeCategories").innerHTML=categories.map(categoryCard).join("");
     document.getElementById("homeProducts").innerHTML=products.slice(0,4).map(productCard).join("");
@@ -1039,6 +1146,8 @@
   }
   function addToCart(id, quantity = 1) {
     const amount = Math.max(1, Number(quantity) || 1);
+    const pr = products.find(x => x.id === id);
+    if (pr && pr.status === "out") { alert(t("This product is out of stock. Ask us on WhatsApp.", "Iki gicuruzwa cyashize. Tubaze kuri WhatsApp.")); return; }
     cart[id]=(cart[id]||0)+amount; localStorage.setItem("gdCart",JSON.stringify(cart)); updateCounts();
     const btn=event?.currentTarget;
     if(btn){const old=btn.textContent;btn.textContent=t("Added ✓","Byongewe ✓");setTimeout(()=>btn.textContent=old,1000);}
@@ -1628,10 +1737,10 @@
     try { await deleteDoc(doc(db, "services", id)); } catch (err) { alert("Gusiba byanze: " + (err.code || err.message)); }
   };
   // ----- custom website sections -----
-  let customSections = [], editingSectionId = null, editingSectionImage = "";
+  let customSections = [], editingSectionId = null, editingSectionImage = "", editingSectionImage2 = "";
   onSnapshot(collection(db, "sections"), snap => {
     customSections = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-    renderCustomSections(); renderAdminSections(); renderHeroSlides();
+    renderCustomSections(); renderAdminSections(); renderHeroSlides(); renderWorks();
   }, err => console.error("Sections:", err));
   function secLink(raw) {
     const v = (raw || "").trim(); if (!v) return "";
@@ -1641,7 +1750,7 @@
   }
   function renderCustomSections() {
     const el = $("customSections"); if (!el) return;
-    el.innerHTML = customSections.filter(v => v.kind !== "slide").map(v => { const link = secLink(v.btnLink); return `<section class="cs-card">${v.imageUrl ? `<img src="${esc(v.imageUrl)}" alt="${esc(v.title)}" loading="lazy">` : ""}
+    el.innerHTML = customSections.filter(v => !v.kind || v.kind === "section").map(v => { const link = secLink(v.btnLink); return `<section class="cs-card">${v.imageUrl ? `<img src="${esc(v.imageUrl)}" alt="${esc(v.title)}" loading="lazy">` : ""}
       <div class="cs-body"><h2>${esc(v.title)}</h2>${v.body ? `<p>${esc(v.body)}</p>` : ""}
       ${link && v.btnLabel ? `<a class="primary" style="display:inline-block;text-decoration:none;text-align:center" href="${esc(link)}" target="_blank" rel="noopener">${esc(v.btnLabel)}</a>` : ""}</div></section>`; }).join("")
       ;
@@ -1652,20 +1761,21 @@
   };
   function renderAdminSections() {
     const el = $("adminSections"); if (!el) return;
-    el.innerHTML = customSections.map(v => `<div class="admin-row"><div class="cart-details"><strong>${v.kind === "slide" ? "🎞 " : ""}${esc(v.title)}</strong>${v.kind === "slide" ? "<small>Slide yo hejuru</small>" : ""}</div><div class="btns"><button class="secondary" onclick="adminEditSection('${esc(v.id)}')">Hindura</button><button class="secondary danger-btn" onclick="adminDeleteSection('${esc(v.id)}')">Siba</button></div></div>`).join("");
+    el.innerHTML = customSections.map(v => `<div class="admin-row"><div class="cart-details"><strong>${v.kind === "slide" ? "🎞 " : v.kind === "work" ? "🛠 " : ""}${esc(v.title)}</strong>${v.kind === "slide" ? "<small>Slide yo hejuru</small>" : v.kind === "work" ? "<small>Umurimo warangiye</small>" : ""}</div><div class="btns"><button class="secondary" onclick="adminEditSection('${esc(v.id)}')">Hindura</button><button class="secondary danger-btn" onclick="adminDeleteSection('${esc(v.id)}')">Siba</button></div></div>`).join("");
   }
   window.adminEditSection = id => {
     const v = customSections.find(x => x.id === id); if (!v) return;
-    editingSectionId = id; editingSectionImage = v.imageUrl || "";
+    editingSectionId = id; editingSectionImage = v.imageUrl || ""; editingSectionImage2 = v.imageUrl2 || "";
     $("secTitle").value = v.title || ""; $("secBody").value = v.body || "";
     $("secBtnLabel").value = v.btnLabel || ""; $("secBtnLink").value = v.btnLink || "";
-    $("secKind").value = v.kind === "slide" ? "slide" : "section"; gdSecKindChange(); $("secShop").value = v.shopId || "";
+    $("secKind").value = (v.kind === "slide" || v.kind === "work") ? v.kind : "section"; gdSecKindChange(); $("secShop").value = v.shopId || "";
+    $("secWho").value = v.who || ""; $("secImage2").value = "";
     $("secImage").value = ""; $("secBtn").textContent = "Bika impinduka"; $("secCancelBtn").hidden = false;
     const sec = $("adminSectionsSection"); if (sec && sec.hidden) toggleAdminSection("adminSectionsSection");
     $("secTitle").scrollIntoView({behavior:"smooth",block:"center"});
   };
   window.adminCancelSectionEdit = () => {
-    editingSectionId = null; editingSectionImage = "";
+    editingSectionId = null; editingSectionImage = ""; editingSectionImage2 = "";
     $("secForm").reset(); gdSecKindChange(); $("secBtn").textContent = "Bika igice"; $("secCancelBtn").hidden = true;
     msg("secMsg", "");
   };
@@ -1676,22 +1786,27 @@
     try {
       let imageUrl = editingSectionImage; const file = $("secImage").files[0];
       if (file) imageUrl = await uploadToCloudinary(file);
-      const kind = $("secKind").value === "slide" ? "slide" : "section";
+      const kind = ["slide", "work"].includes($("secKind").value) ? $("secKind").value : "section";
       const shopId = kind === "slide" ? $("secShop").value : "";
+      const who = kind === "work" ? $("secWho").value.trim() : "";
+      let imageUrl2 = kind === "work" ? editingSectionImage2 : ""; const file2 = $("secImage2").files[0];
+      if (kind === "work" && file2) imageUrl2 = await uploadToCloudinary(file2);
       if (shopId && !imageUrl) { const sh = shops.find(x => x.id === shopId); if (sh && sh.logoUrl) imageUrl = sh.logoUrl; }
-      const data = { kind, shopId, title: $("secTitle").value.trim(), body: $("secBody").value.trim(), imageUrl, btnLabel: $("secBtnLabel").value.trim(), btnLink: $("secBtnLink").value.trim(), updatedAt: Date.now() };
+      const data = { kind, shopId, who, imageUrl2, title: $("secTitle").value.trim(), body: $("secBody").value.trim(), imageUrl, btnLabel: $("secBtnLabel").value.trim(), btnLink: $("secBtnLink").value.trim(), updatedAt: Date.now() };
       if (!data.title) throw new Error("Andika umutwe w'igice.");
       const wasEditing = !!editingSectionId;
       if (editingSectionId) await updateDoc(doc(db, "sections", editingSectionId), data);
       else await addDoc(collection(db, "sections"), { ...data, createdAt: Date.now() });
-      window.adminCancelSectionEdit(); msg("secMsg", wasEditing ? "Impinduka zabitswe." : (kind === "slide" ? "Slide yabitswe. Reba ku banner yo hejuru." : "Igice cyabitswe. Reba ku rupapuro rwa mbere."), "ok");
+      window.adminCancelSectionEdit(); msg("secMsg", wasEditing ? "Impinduka zabitswe." : (kind === "slide" ? "Slide yabitswe. Reba ku banner yo hejuru." : kind === "work" ? "Umurimo wabitswe. Reba ku rupapuro rwa mbere." : "Igice cyabitswe. Reba ku rupapuro rwa mbere."), "ok");
     } catch (err) { console.error(err); msg("secMsg", "Ntibyakunze: " + (err.code || err.message), "err"); }
     btn.disabled = false;
   };
   window.gdSecKindChange = () => {
-    const slide = $("secKind").value === "slide";
+    const kd = $("secKind").value, slide = kd === "slide", work = kd === "work";
     $("secShopRow").hidden = !slide; if (!slide) $("secShop").value = "";
-    $("secBtn").textContent = editingSectionId ? "Bika impinduka" : (slide ? "Bika slide" : "Bika igice");
+    $("secImage2Row").hidden = !work; $("secWhoRow").hidden = !work; $("secWorkHint").hidden = !work;
+    $("secBtnLabel").parentElement.hidden = work; $("secBtnLink").parentElement.hidden = work;
+    $("secBtn").textContent = editingSectionId ? "Bika impinduka" : (slide ? "Bika slide" : work ? "Bika umurimo" : "Bika igice");
     fillSecShops();
   };
   function fillSecShops() {
@@ -1705,6 +1820,17 @@
     if (!$("secTitle").value.trim()) $("secTitle").value = sh.name || "";
     if (!$("secBtnLabel").value.trim()) $("secBtnLabel").value = "Fungura shop";
   };
+  function renderWorks() {
+    const el = $("worksList"), sec = $("worksSection"); if (!el || !sec) return;
+    const list = customSections.filter(v => v.kind === "work").slice().reverse();
+    sec.hidden = !list.length;
+    el.innerHTML = list.map(v => {
+      const im = (u, cap) => `<figure><img src="${esc(u)}" alt="${esc(v.title)}" loading="lazy">${cap ? `<figcaption>${cap}</figcaption>` : ""}</figure>`;
+      const imgs = v.imageUrl && v.imageUrl2 ? `<div class="work-ba">${im(v.imageUrl, t("Before", "Mbere"))}${im(v.imageUrl2, t("After", "Nyuma"))}</div>`
+        : (v.imageUrl || v.imageUrl2) ? `<div class="work-ba one">${im(v.imageUrl || v.imageUrl2, "")}</div>` : "";
+      return `<article class="work-card">${imgs}<div class="work-body"><h3>${esc(v.title)}</h3>${v.body ? `<blockquote>“${esc(v.body)}”</blockquote>` : ""}${v.who ? `<div class="work-who">— ${esc(v.who)}</div>` : ""}</div></article>`;
+    }).join("");
+  }
   function renderHeroSlides() {
     const box = $("heroBanner"); if (!box) return;
     box.querySelectorAll(".hb-dyn").forEach(n => n.remove());
@@ -1791,6 +1917,7 @@
   }
   window.gdRefreshShops = () => {
     renderShopsHome(); if (typeof renderCustomSections === "function") renderCustomSections();
+    if (typeof renderWorks === "function") renderWorks(); if (typeof renderHeroSlides === "function") renderHeroSlides();
     if ($("view-shop").classList.contains("active")) renderShopPage();
     if ($("view-shopform").classList.contains("active")) { const mine = myShop(); $("shopFormTitle").textContent = mine ? t("Edit your shop", "Hindura shop yawe") : t("Open your shop", "Fungura shop yawe"); }
   };
@@ -2090,7 +2217,7 @@
       const file = $("fPhoto").files[0];
       if (file) { msg("adminMsg", "Ifoto iri koherezwa..."); imageUrl = await uploadToCloudinary(file); }
 
-      const productData = { category: $("fCategory").value, en: nameEn, rw: nameRw, descEn, descRw, price, oldPrice: old, imageUrl: imageUrl || "" };
+      const productData = { category: $("fCategory").value, en: nameEn, rw: nameRw, descEn, descRw, price, oldPrice: old, imageUrl: imageUrl || "", status: $("fStatus").value === "out" ? "out" : "available", featured: $("fFeatured").checked };
       if (editingSampleId !== null) {
         await setDoc(doc(db, "settings", "sampleProductOverrides"), { [String(editingSampleId)]: productData }, { merge: true });
         Object.assign(sampleProducts.find(x => x.id === editingSampleId) || {}, productData);
@@ -2141,6 +2268,7 @@
     $("fDescRw").value = p.descRw || ""; $("fDescEn").value = p.descEn || "";
     $("fCategory").value = p.category; $("fPrice").value = p.price;
     $("fOldPrice").value = p.oldPrice ?? ""; $("fPhoto").value = "";
+    $("fStatus").value = p.status === "out" ? "out" : "available"; $("fFeatured").checked = !!p.featured;
     adminPreview($("fPhoto"));
     $("adminFormTitle").textContent = "Hindura igicuruzwa";
     $("adminSaveBtn").textContent = "Bika impinduka";
@@ -2160,13 +2288,13 @@
     const mine = dbProducts.map(p => `
       <div class="admin-row">
         <div class="cart-emoji">${p.imageUrl ? `<img src="${esc(p.imageUrl)}" alt="">` : iconOf(p)}</div>
-        <div class="cart-details"><strong>${esc(p.rw || p.en)}</strong><small>${money(p.price)}</small></div>
+        <div class="cart-details"><strong>${esc(p.rw || p.en)}</strong><small>${money(p.price)}${p.status === "out" ? " · Byashize" : ""}${p.featured ? " · ⭐" : ""}</small></div>
         <div class="btns"><button class="secondary" onclick="adminEdit(${p.id})">Hindura</button><button class="secondary danger-btn" onclick="adminDelete(${p.id})">Siba</button></div>
       </div>`).join("");
     const base = sampleProducts.map(p => { const h = hiddenSampleIds.includes(p.id); return `
       <div class="admin-row" style="${h ? "opacity:.6" : ""}">
         <div class="cart-emoji">${p.imageUrl ? `<img src="${esc(p.imageUrl)}" alt="">` : iconOf(p)}</div>
-        <div class="cart-details"><strong>${esc(p.rw || p.en)}</strong><small>${money(p.price)} · Icy'ibanze ${h ? "· cyahishwe" : ""}</small></div>
+        <div class="cart-details"><strong>${esc(p.rw || p.en)}</strong><small>${money(p.price)}${p.status === "out" ? " · Byashize" : ""}${p.featured ? " · ⭐" : ""} · Icy'ibanze ${h ? "· cyahishwe" : ""}</small></div>
         <div class="btns"><button class="secondary" onclick="adminEditSample(${p.id})">Hindura</button><button class="secondary ${h ? "" : "danger-btn"}" onclick="adminToggleSample(${p.id})">${h ? "Subiza" : "Siba"}</button></div>
       </div>`; }).join("");
     el.innerHTML = (mine || '<p style="color:var(--muted)">Nta gicuruzwa urongeramo.</p>') + '<h3 style="margin:16px 0 4px">Ibicuruzwa by\'ibanze</h3><p style="color:var(--muted);margin:0 0 6px">Bikomeza kugaragara hamwe n\'ibyo wongeraho, keretse ubisibye.</p>' + base;
@@ -2178,6 +2306,7 @@
     $("fDescRw").value = p.descRw || ""; $("fDescEn").value = p.descEn || "";
     $("fCategory").value = p.category; $("fPrice").value = p.price;
     $("fOldPrice").value = p.oldPrice ?? ""; $("fPhoto").value = "";
+    $("fStatus").value = p.status === "out" ? "out" : "available"; $("fFeatured").checked = !!p.featured;
     adminPreview($("fPhoto"));
     $("adminFormTitle").textContent = "Hindura igicuruzwa cy'ibanze";
     $("adminSaveBtn").textContent = "Bika impinduka";
