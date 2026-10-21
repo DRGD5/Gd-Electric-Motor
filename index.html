@@ -626,6 +626,28 @@
   gtag('config', 'G-Z60776C87E');
   window.gdTrack = function(name, params){ try { gtag('event', name, params || {}); } catch(e) {} };
 </script>
+<style>
+/* ===== Compact header + compact service cards (final overrides) ===== */
+@media (max-width:650px){
+  .header-row{padding:4px 12px 2px!important;gap:6px!important;min-height:0!important}
+  .brand img,.brand-logo,.header-logo{height:26px!important;max-height:26px!important;width:auto!important}
+  .lang-pill{height:28px!important;padding:0 10px!important;font-size:.78rem!important}
+  .icon-btn{width:28px!important;height:28px!important;font-size:1rem!important}
+  .topbar .primary{padding:4px 10px!important;font-size:.78rem!important}
+  .search-wrap{padding:0 12px 5px!important;margin:0!important}
+  .search{margin:0!important;padding:3px 12px!important;min-height:0!important;gap:8px!important}
+  .search span{font-size:1rem!important}
+  .search input,.search input[type="search"]{min-height:0!important;height:20px!important;padding:0!important;font-size:.82rem!important;line-height:20px!important}
+}
+#servicesSection .svc-grid{gap:10px!important}
+#servicesSection .svc-card{flex:0 0 44%!important;width:44%!important;min-width:44%!important;max-width:200px!important;border-radius:14px!important}
+#servicesSection .svc-card img{height:clamp(85px,26vw,115px)!important}
+#servicesSection .svc-body{padding:8px!important;gap:5px!important}
+#servicesSection .svc-body h3{font-size:.85rem!important;line-height:1.25!important}
+#servicesSection .svc-body p{font-size:.78rem!important;line-height:1.35!important}
+#servicesSection .svc-body .shop-hint{font-size:.8rem!important;line-height:1!important;text-align:center}
+#servicesSection .svc-body button{padding:7px 6px!important;font-size:.74rem!important;border-radius:999px!important;min-height:0!important}
+</style>
 </head>
 <body>
 <header class="topbar">
