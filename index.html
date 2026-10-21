@@ -569,6 +569,23 @@
 .stock-badge{position:absolute;left:10px;bottom:10px;z-index:2;font-size:.7rem;font-weight:800;padding:3px 9px;border-radius:999px}
 .stock-badge.out{background:#b42318;color:#fff}.stock-badge.star{background:#f59e0b;color:#1a1200}
 .product.out .product-visual img,.product.out .product-visual .emoji{opacity:.5}
+.product.compact{cursor:pointer;transition:transform .15s}
+.product.compact:active{transform:scale(.98)}
+.product.compact .product-visual,.product.compact .product-visual.has-img{aspect-ratio:1/1;min-height:0}
+.product.compact .product-info{padding:12px 12px 14px;flex:0 0 auto}
+.product.compact .product-info h3{margin:0;font-size:1rem;line-height:1.3;text-align:center}
+.shop-hint{text-align:center;font-size:1.25rem;line-height:1;margin-top:6px}
+@media (prefers-reduced-motion:no-preference){.shop-hint{animation:shopHint 1.4s ease-in-out infinite}}
+@keyframes shopHint{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+.shop-now{display:block;width:100%;margin-top:6px;padding:10px 12px;border:0;border-radius:999px;background:linear-gradient(135deg,#6d28d9,#4f46e5);color:#fff;font-weight:800;font-size:.92rem;font-family:inherit;cursor:pointer}
+.shop-now:active{transform:scale(.97)}
+.shop-now:disabled{background:#3a3d52;color:#aeb2c8;cursor:default}
+.svc-card{cursor:default}
+.svc-body h3{text-align:center}
+.svc-chev{display:inline-block;font-size:.8em;opacity:.7;transition:transform .2s}
+.svc-card.open .svc-chev{transform:rotate(180deg)}
+.svc-card:not(.open) .svc-desc,.svc-card:not(.open) .svc-wa{display:none!important}
+.svc-body .shop-hint{margin-top:0}
 .product-visual img,.product-visual .emoji,.product-link{cursor:pointer}
 .pd-back{margin:6px 0 10px}
 .pd-card{display:grid;gap:14px;padding:14px}
@@ -1051,9 +1068,9 @@
     return `<button class="category ${activeCategory===c.id?'selected':''}" onclick="selectCategory('${c.id}')">
       <span class="category-art">${c.icon}</span><strong>${categoryName(c)}</strong></button>`;
   }
-  function productCard(p) {
+  function productCard(p, compact) {
     const isSaved=saved.includes(p.id);
-    const discount=p.oldPrice?Math.round((1-p.price/p.oldPrice)*100):null;
+    const discount=(p.oldPrice>p.price)?Math.round((1-p.price/p.oldPrice)*100):null;
     const out=p.status==="out";
     const open=`onclick="openProduct(${p.id})"`;
     const controls=out
@@ -1066,12 +1083,21 @@
           </div>
           <button class="shop-add" onclick="addToCart(${p.id}, productQty[${p.id}] || 1)">${t("Add","Ongeraho")}</button>
         </div>`;
+    if (compact === true) {
+      return `<article class="product compact ${out?'out':''}" ${open}>
+      <div class="product-visual ${p.imageUrl?'has-img':''}">${p.imageUrl?`<img src="${esc(p.imageUrl)}" alt="${esc(productName(p))}" loading="lazy">`:`<span class="emoji">${iconOf(p)}</span>`}${discount?`<span class="discount">-${discount}%</span>`:""}${out?`<span class="stock-badge out">${t("Out of stock","Byashize")}</span>`:(p.featured?`<span class="stock-badge star">⭐ ${t("Featured","Bikunzwe")}</span>`:"")}
+        <button class="save-btn ${isSaved?'saved':''}" aria-label="Bika igicuruzwa" onclick="event.stopPropagation();toggleSaved(${p.id})">${isSaved?'♥':'♡'}</button>
+      </div>
+      <div class="product-info"><h3 class="product-link">${esc(productName(p))}</h3>
+        ${out?`<button type="button" class="shop-now" disabled>${t("Out of stock","Byashize")}</button>`:`<div class="shop-hint" aria-hidden="true">👇</div><button type="button" class="shop-now" onclick="event.stopPropagation();openProduct(${p.id})">${t("Shop now","Gura nonaha")}</button>`}
+      </div></article>`;
+    }
     return `<article class="product ${out?'out':''}">
       <div class="product-visual ${p.imageUrl?'has-img':''}">${p.imageUrl?`<img src="${esc(p.imageUrl)}" alt="${esc(productName(p))}" loading="lazy" ${open}>`:`<span class="emoji" ${open}>${iconOf(p)}</span>`}${discount?`<span class="discount">-${discount}%</span>`:""}${out?`<span class="stock-badge out">${t("Out of stock","Byashize")}</span>`:(p.featured?`<span class="stock-badge star">⭐ ${t("Featured","Bikunzwe")}</span>`:"")}
         <button class="save-btn ${isSaved?'saved':''}" aria-label="Bika igicuruzwa" onclick="toggleSaved(${p.id})">${isSaved?'♥':'♡'}</button>
       </div>
       <div class="product-info"><h3 class="product-link" ${open}>${esc(productName(p))}</h3><p>${esc(t(p.descEn,p.descRw))}</p>
-        <div class="price-row"><span class="price">${money(p.price)}</span>${p.oldPrice?`<span class="old-price">${money(p.oldPrice)}</span>`:""}</div>
+        <div class="price-row"><span class="price">${money(p.price)}</span>${discount?`<span class="old-price">${money(p.oldPrice)}</span>`:""}</div>
         ${controls}
         <button class="secondary product-ask" onclick="askProduct(${p.id})">${t("Ask on WhatsApp","Baza kuri WhatsApp")}</button>
       </div></article>`;
@@ -1083,13 +1109,13 @@
   function shareUrl(id) { return SHARE_BASE ? SHARE_BASE.replace(/\/$/, "") + "/?p=" + id : productUrl(id); }
   function renderProductPage(p) {
     const out = p.status === "out";
-    const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : null;
+    const discount = (p.oldPrice > p.price) ? Math.round((1 - p.price / p.oldPrice) * 100) : null;
     document.getElementById("productDetail").innerHTML = `
       <button class="text-link pd-back" type="button" onclick="closeProduct()">← ${t("Back","Subira inyuma")}</button>
       <div class="info-card pd-card">
         <div class="pd-img">${p.imageUrl ? `<img src="${esc(p.imageUrl)}" alt="${esc(productName(p))}">` : `<span class="emoji">${iconOf(p)}</span>`}${discount ? `<span class="discount">-${discount}%</span>` : ""}</div>
         <h1 class="pd-title">${esc(productName(p))}</h1>
-        <div class="price-row"><span class="price">${money(p.price)}</span>${p.oldPrice ? `<span class="old-price">${money(p.oldPrice)}</span>` : ""}</div>
+        <div class="price-row"><span class="price">${money(p.price)}</span>${discount ? `<span class="old-price">${money(p.oldPrice)}</span>` : ""}</div>
         <span class="pd-status ${out ? "out" : "in"}">${out ? t("Out of stock", "Byashize") : t("Available", "Birahari")}</span>
         <p class="pd-desc">${esc(t(p.descEn, p.descRw))}</p>
         <div class="pd-actions">
@@ -1136,7 +1162,7 @@
   window.addEventListener("popstate", () => { const id = currentUrlProductId(); if (id && products.find(x => x.id === id)) openProduct(id, true); else if (document.getElementById("view-product").classList.contains("active")) showView(prevView || "home"); });
   function renderHome() {
     document.getElementById("homeCategories").innerHTML=categories.map(categoryCard).join("");
-    document.getElementById("homeProducts").innerHTML=products.slice(0,4).map(productCard).join("");
+    document.getElementById("homeProducts").innerHTML=products.slice(0,4).map(p=>productCard(p,true)).join("");
     updateCounts();
   }
   function renderCategories() {
@@ -1697,9 +1723,12 @@
   function renderServices() {
     const el = $("servicesList"); if (!el) return;
     el.innerHTML = serviceList().map(v => `<div class="svc-card">${(v.imageUrl || v.img) ? `<img src="${esc(v.imageUrl || v.img)}" alt="${esc(v.name)}" loading="lazy">` : ""}
-      <div class="svc-body"><h3>${esc(v.name)}</h3>${v.desc ? `<p>${esc(v.desc)}</p>` : ""}
-      <button class="primary" onclick="requestService(this.dataset.n)" data-n="${esc(v.name)}">${t("Request service", "Saba iyi serivisi")}</button>
-      <button class="secondary" onclick="serviceWhatsApp(this.dataset.n)" data-n="${esc(v.name)}">${t("Ask on WhatsApp", "Baza kuri WhatsApp")}</button></div></div>`).join("");
+      <div class="svc-body"><h3>${esc(v.name)}</h3>
+      <div class="shop-hint" aria-hidden="true">👇</div>
+      <button class="primary" onclick="event.stopPropagation();requestService(this.dataset.n)" data-n="${esc(v.name)}">${t("Request service", "Saba serivisi")}</button>
+      <button type="button" class="secondary svc-more" onclick="event.stopPropagation();this.closest('.svc-card').classList.toggle('open')">${t("Details", "Ibisobanuro")} <span class="svc-chev" aria-hidden="true">▾</span></button>
+      ${v.desc ? `<p class="svc-desc">${esc(v.desc)}</p>` : ""}
+      <button class="secondary svc-wa" onclick="event.stopPropagation();serviceWhatsApp(this.dataset.n)" data-n="${esc(v.name)}">${t("Ask on WhatsApp", "Baza kuri WhatsApp")}</button></div></div>`).join("");
   }
   window.renderServices = renderServices;
   renderServices();
