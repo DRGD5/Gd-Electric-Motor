@@ -2233,6 +2233,11 @@ body{margin:0;background:#c9ccd3;font:14px/1.5 system-ui,-apple-system,Segoe UI,
 .foot{margin:34px 18px 0;background:#4a5fa5;color:#fff;text-align:center;border-radius:24px 24px 0 0;padding:14px 12px;font-size:12px}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 0}
 .cap .pb,.cap .payhint{display:none}
+.cap .wrap{width:640px;max-width:none;margin:0;padding:0}
+.cap .sheet{width:640px;min-height:905px;display:flex;flex-direction:column;border-radius:0;box-shadow:none}
+.cap .bottom{margin-bottom:34px}
+.cap .foot{margin-top:auto}
+.cap .actions{display:none}
 .actions button,.actions a{flex:1 1 140px;padding:14px 16px;border:0;border-radius:99px;background:#4a5fa5;color:#fff;text-decoration:none;font-weight:800;font-size:15px;text-align:center;cursor:pointer;font-family:inherit}
 .actions .wa{background:#25d366;color:#04210f}
 @media(max-width:480px){.g{grid-template-columns:22px 1fr 58px 28px 70px;gap:2px}.thead{font-size:9px;margin:-34px 12px 0;padding:0 6px}.items{margin:8px 12px 0;padding:0 6px}.item{font-size:11px}.bottom{margin:14px 18px 0}.foot{margin:30px 12px 0}.top{padding:14px 16px 48px}.hrow.info{flex-wrap:wrap}.dates{gap:16px}}
@@ -2241,7 +2246,7 @@ body{margin:0;background:#c9ccd3;font:14px/1.5 system-ui,-apple-system,Segoe UI,
 </style></head><body><div class="wrap"><div class="sheet" id="sheet">
 <div class="top">
 <div class="hrow"><a class="brand" href="https://drgd5.github.io/Gd-Electric-Motor/" target="_blank" rel="noopener">${logoSrc ? `<img src="${logoSrc}" alt="">` : ""}<div><h1>GD ELECTRIC MOTORS</h1><small>${t("MOTORS, PUMPS & SPARE PARTS", "MOTERI, POMPE N'IBIKORESHO")}</small></div></a>
-<div class="contact"><b>${t("CONTACT", "TUHAMAGARE")}</b><span>Rwanda</span><span>+250 796 022 617</span><span><a id="siteLink" href="https://drgd5.github.io/Gd-Electric-Motor/" target="_blank" rel="noopener">drgd5.github.io ↗</a></span></div></div>
+<div class="contact"><b>${t("CONTACT", "TUHAMAGARE")}</b><span>Rwanda</span><span>+250 796 022 617</span><span><a id="siteLink" href="https://drgd5.github.io/Gd-Electric-Motor/" target="_blank" rel="noopener">drgd5.github.io</a></span></div></div>
 <div class="hrow info"><div><small>${paid ? t("Receipt to", "Inyemezabwishyu ya") : t("Invoice to", "Fagitire ya")}</small><b>${esc(name || "-")}</b>${phoneRaw ? `<span>${esc(phoneRaw)}</span>` : ""}</div>
 <div class="dates"><div><small>${docWord} ${t("Date", "Itariki")}</small><b>${rcLabelDate}</b></div><div><small>No.</small><b>${esc(rid)}</b></div></div></div>
 </div>
@@ -2260,10 +2265,9 @@ var SITE_URL = "https://drgd5.github.io/Gd-Electric-Motor/";
 function gdRun(btn, job) {
   if (!window.html2canvas) { alert(NEED_NET); return; }
   var old = btn.innerHTML; btn.disabled = true; btn.innerHTML = BUSY_TXT;
-  document.body.classList.add("cap");
   setTimeout(function () {
     job().catch(function (e) { console.error(e); alert("Error: " + (e && e.message ? e.message : e)); })
-      .then(function () { document.body.classList.remove("cap"); btn.disabled = false; btn.innerHTML = old; });
+      .then(function () { btn.disabled = false; btn.innerHTML = old; });
   }, 80);
 }
 function gdCapture() {
@@ -2272,6 +2276,7 @@ function gdCapture() {
     scale: 3, backgroundColor: "#ffffff", useCORS: true, logging: false, windowWidth: 700,
     onclone: function (d) {
       try {
+        d.body.classList.add("cap");
         var s = d.getElementById("sheet").getBoundingClientRect(), a = d.getElementById("siteLink").getBoundingClientRect();
         if (s.width > 0 && a.width > 0) window.__lk = { x: a.left - s.left, y: a.top - s.top, w: a.width, h: a.height, sw: s.width };
       } catch (e) {}
