@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js" crossorigin>
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js" crossorigin>
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js" crossorigin>
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -47,7 +50,7 @@
     button, input, select { font: inherit; }
     button { cursor: pointer; }
     a { color: inherit; text-decoration: none; }
-    .topbar { position: sticky; top: 0; z-index: 20; background: rgba(8,11,24,.96); backdrop-filter: blur(14px); border-bottom: 1px solid #25263a; }
+    .topbar { position: sticky; top: 0; z-index: 20; background: rgba(8,11,24,.98); border-bottom: 1px solid #25263a; }
     .header-row { max-width: 1120px; margin: auto; padding: 14px 20px 10px; display:flex; align-items:center; gap:14px; }
     .brand { font-size: clamp(1.35rem,4vw,2rem); font-weight: 900; letter-spacing: -.8px; white-space: nowrap; }
     .brand span { color: var(--green); }
@@ -641,6 +644,7 @@
 </script>
 <style>
 /* ===== Compact header + compact service cards (final overrides) ===== */
+#shopsHome > h2{display:none!important}
 @media (max-width:650px){
   .header-row{padding:4px 12px 2px!important;gap:6px!important;min-height:0!important}
   .brand img,.brand-logo,.header-logo{height:26px!important;max-height:26px!important;width:auto!important}
@@ -942,13 +946,16 @@
 
 
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const thumb = (u, w) => String(u || "").replace("/upload/f_auto,q_auto,w_700/", "/upload/f_auto,q_auto,w_" + w + "/");
   const iconOf = p => p.icon || categories.find(c=>c.id===p.category)?.icon || "⚙️";
   let hiddenSampleIds = [], dbList = [];
   function setProducts(list) {
     dbList = list || [];
     // Added products first (newest), the original sample products stay unless the admin hides them.
     products = [...dbList, ...sampleProducts.filter(p => !hiddenSampleIds.includes(p.id))].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-    renderHome(); renderCategories(); renderSaved(); renderCart();
+    if (!window.__gdRenderQ) {
+      window.__gdRenderQ = requestAnimationFrame(() => { window.__gdRenderQ = 0; renderHome(); renderCategories(); renderSaved(); renderCart(); });
+    }
     if (typeof openFromUrl === "function") openFromUrl();
   }
   const money = n => new Intl.NumberFormat("en-US").format(n) + " RWF";
@@ -1121,7 +1128,7 @@
         </div>`;
     if (compact === true) {
       return `<article class="product compact ${out?'out':''}" ${open}>
-      <div class="product-visual ${p.imageUrl?'has-img':''}">${p.imageUrl?`<img src="${esc(p.imageUrl)}" alt="${esc(productName(p))}" loading="lazy">`:`<span class="emoji">${iconOf(p)}</span>`}${discount?`<span class="discount">-${discount}%</span>`:""}${out?`<span class="stock-badge out">${t("Out of stock","Byashize")}</span>`:(p.featured?`<span class="stock-badge star">⭐ ${t("Featured","Bikunzwe")}</span>`:"")}
+      <div class="product-visual ${p.imageUrl?'has-img':''}">${p.imageUrl?`<img src="${esc(thumb(p.imageUrl,420))}" alt="${esc(productName(p))}" loading="lazy" decoding="async">`:`<span class="emoji">${iconOf(p)}</span>`}${discount?`<span class="discount">-${discount}%</span>`:""}${out?`<span class="stock-badge out">${t("Out of stock","Byashize")}</span>`:(p.featured?`<span class="stock-badge star">⭐ ${t("Featured","Bikunzwe")}</span>`:"")}
         <button class="save-btn ${isSaved?'saved':''}" aria-label="Bika igicuruzwa" onclick="event.stopPropagation();toggleSaved(${p.id})">${isSaved?'♥':'♡'}</button>
       </div>
       <div class="product-info"><h3 class="product-link">${esc(productName(p))}</h3>
@@ -1129,7 +1136,7 @@
       </div></article>`;
     }
     return `<article class="product ${out?'out':''}">
-      <div class="product-visual ${p.imageUrl?'has-img':''}">${p.imageUrl?`<img src="${esc(p.imageUrl)}" alt="${esc(productName(p))}" loading="lazy" ${open}>`:`<span class="emoji" ${open}>${iconOf(p)}</span>`}${discount?`<span class="discount">-${discount}%</span>`:""}${out?`<span class="stock-badge out">${t("Out of stock","Byashize")}</span>`:(p.featured?`<span class="stock-badge star">⭐ ${t("Featured","Bikunzwe")}</span>`:"")}
+      <div class="product-visual ${p.imageUrl?'has-img':''}">${p.imageUrl?`<img src="${esc(thumb(p.imageUrl,420))}" alt="${esc(productName(p))}" loading="lazy" decoding="async" ${open}>`:`<span class="emoji" ${open}>${iconOf(p)}</span>`}${discount?`<span class="discount">-${discount}%</span>`:""}${out?`<span class="stock-badge out">${t("Out of stock","Byashize")}</span>`:(p.featured?`<span class="stock-badge star">⭐ ${t("Featured","Bikunzwe")}</span>`:"")}
         <button class="save-btn ${isSaved?'saved':''}" aria-label="Bika igicuruzwa" onclick="toggleSaved(${p.id})">${isSaved?'♥':'♡'}</button>
       </div>
       <div class="product-info"><h3 class="product-link" ${open}>${esc(productName(p))}</h3><p>${esc(t(p.descEn,p.descRw))}</p>
@@ -1174,7 +1181,7 @@
       <button class="text-link pd-back" type="button" onclick="closeProduct()">← ${t("Back","Subira inyuma")}</button>
       <div class="info-card pd-card">
         <div class="pd-img" id="pdMain">${pdImgs.length ? `<img id="pdMainImg" src="${esc(pdImgs[0].url)}" alt="${esc(productName(p))}">` : `<span class="emoji">${iconOf(p)}</span>`}${pdImgs.length > 1 ? `<button type="button" class="pd-nav prev" aria-label="Previous" onclick="pdStep(-1)">‹</button><button type="button" class="pd-nav next" aria-label="Next" onclick="pdStep(1)">›</button>` : ""}${discount ? `<span class="discount">-${discount}%</span>` : ""}</div>
-        ${pdImgs.length > 1 ? `<div class="pd-thumbs">${pdImgs.map((g, i) => `<button type="button" class="pd-thumb${i === 0 ? " on" : ""}" onclick="pdShow(${i})"><img src="${esc(g.url)}" alt="" loading="lazy">${g.label ? `<span>${esc(g.label)}</span>` : ""}</button>`).join("")}</div>` : ""}
+        ${pdImgs.length > 1 ? `<div class="pd-thumbs">${pdImgs.map((g, i) => `<button type="button" class="pd-thumb${i === 0 ? " on" : ""}" onclick="pdShow(${i})"><img src="${esc(thumb(g.url,140))}" alt="" loading="lazy" decoding="async">${g.label ? `<span>${esc(g.label)}</span>` : ""}</button>`).join("")}</div>` : ""}
         <h1 class="pd-title">${esc(productName(p))}</h1>
         <div class="price-row"><span class="price">${money(p.price)}</span>${discount ? `<span class="old-price">${money(p.oldPrice)}</span>` : ""}</div>
         <span class="pd-status ${out ? "out" : "in"}">${out ? t("Out of stock", "Byashize") : t("Available", "Birahari")}</span>
@@ -1277,7 +1284,7 @@
     if(!entries.length){el.innerHTML=`<p>${t("Your cart is empty.","Agaseke kawe karimo ubusa.")}</p><button class="primary" onclick="showView('categories')">${t("Browse products","Reba ibicuruzwa")}</button>${renderCartOrderTracking()}`;updateCounts();return;}
     let total=0;
     const rows=entries.map(([id,qty])=>{const p=products.find(x=>x.id===Number(id));total+=p.price*qty;
-      return `<div class="cart-row"><div class="cart-emoji">${p.imageUrl?`<img src="${esc(p.imageUrl)}" alt="">`:iconOf(p)}</div><div class="cart-details"><strong>${esc(productName(p))}</strong><small>${money(p.price)} × ${qty}</small></div><div class="qty"><button onclick="changeQty(${p.id},-1)">−</button><span>${qty}</span><button onclick="changeQty(${p.id},1)">+</button></div></div>`;
+      return `<div class="cart-row"><div class="cart-emoji">${p.imageUrl?`<img src="${esc(thumb(p.imageUrl,140))}" alt="" loading="lazy" decoding="async">`:iconOf(p)}</div><div class="cart-details"><strong>${esc(productName(p))}</strong><small>${money(p.price)} × ${qty}</small></div><div class="qty"><button onclick="changeQty(${p.id},-1)">−</button><span>${qty}</span><button onclick="changeQty(${p.id},1)">+</button></div></div>`;
     }).join("");
     el.innerHTML=`${rows}<div style="display:flex;justify-content:space-between;gap:12px;margin:20px 0;font-size:1.1rem;font-weight:900"><span>${t("Estimated total","Igiteranyo cy'agateganyo")}</span><span style="color:var(--green)">${money(total)}</span></div><p>${t("Prices and stock should be confirmed with us before payment.","Ibiciro n'ibihari byemezwe natwe mbere yo kwishyura.")}</p><div class="form-row"><input id="orderName" placeholder="${t("Your name","Amazina yawe")}" autocomplete="name" value="${esc(customer.name||(window.gdProfile&&window.gdProfile.name)||"")}" oninput="setCust('name',this.value)"></div><div class="form-row"><input id="orderPhone" placeholder="${t("Phone number (10 digits)","Nimero ya telefoni (imibare 10)")}" inputmode="tel" autocomplete="tel" value="${esc(customer.phone||(window.gdProfile&&window.gdProfile.phone)||"")}" oninput="setCust('phone',this.value)"></div><button class="primary" id="submitOrderBtn" onclick="submitOrder()">${t("Submit order ✓","Ohereza order (Submit) ✓")}</button> <button class="secondary" onclick="clearCart()">${t("Clear cart","Siba ibiri mu gaseke")}</button>${renderCartOrderTracking()}`;
     updateCounts();
@@ -2588,13 +2595,13 @@ function gdSavePdf(btn) {
     const el = $("adminList"); if (!el) return;
     const mine = dbProducts.map(p => `
       <div class="admin-row">
-        <div class="cart-emoji">${p.imageUrl ? `<img src="${esc(p.imageUrl)}" alt="">` : iconOf(p)}</div>
+        <div class="cart-emoji">${p.imageUrl ? `<img src="${esc(thumb(p.imageUrl,140))}" alt="" loading="lazy" decoding="async">` : iconOf(p)}</div>
         <div class="cart-details"><strong>${esc(p.rw || p.en)}</strong><small>${money(p.price)}${p.status === "out" ? " · Byashize" : ""}${p.featured ? " · ⭐" : ""}</small></div>
         <div class="btns"><button class="secondary" onclick="adminEdit(${p.id})">Hindura</button><button class="secondary danger-btn" onclick="adminDelete(${p.id})">Siba</button></div>
       </div>`).join("");
     const base = sampleProducts.map(p => { const h = hiddenSampleIds.includes(p.id); return `
       <div class="admin-row" style="${h ? "opacity:.6" : ""}">
-        <div class="cart-emoji">${p.imageUrl ? `<img src="${esc(p.imageUrl)}" alt="">` : iconOf(p)}</div>
+        <div class="cart-emoji">${p.imageUrl ? `<img src="${esc(thumb(p.imageUrl,140))}" alt="" loading="lazy" decoding="async">` : iconOf(p)}</div>
         <div class="cart-details"><strong>${esc(p.rw || p.en)}</strong><small>${money(p.price)}${p.status === "out" ? " · Byashize" : ""}${p.featured ? " · ⭐" : ""} · Icy'ibanze ${h ? "· cyahishwe" : ""}</small></div>
         <div class="btns"><button class="secondary" onclick="adminEditSample(${p.id})">Hindura</button><button class="secondary ${h ? "" : "danger-btn"}" onclick="adminToggleSample(${p.id})">${h ? "Subiza" : "Siba"}</button></div>
       </div>`; }).join("");
