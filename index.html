@@ -645,6 +645,20 @@
 <style>
 /* ===== Compact header + compact service cards (final overrides) ===== */
 #shopsHome > h2{display:none!important}
+.shop-block{background:#141830;border:1px solid #2b3160;border-radius:20px;padding:12px;margin-top:12px}
+.shop-block-head{display:flex;align-items:center;gap:10px;cursor:pointer}
+.shop-block-head img,.shop-block-head .shop-logo-ph{width:44px;height:44px;border-radius:50%;object-fit:cover;flex:0 0 auto;margin:0;background:#222a55;display:grid;place-items:center}
+.shop-block-head > div:nth-child(2){flex:1;min-width:0}
+.shop-block-head strong{display:block;word-break:break-word}
+.shop-block-head small{opacity:.7}
+.shop-block-go{font-weight:800;font-size:.8rem;color:#bd8cff;white-space:nowrap}
+.shop-block-row{display:flex;gap:10px;overflow-x:auto;margin-top:10px;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.shop-mini{flex:0 0 130px;background:#0d1020;border:1px solid #2b3160;border-radius:14px;overflow:hidden;cursor:pointer}
+.shop-mini img,.shop-mini-ph{width:100%;height:100px;object-fit:cover;display:grid;place-items:center;background:#222a55;font-size:2rem}
+.shop-mini-body{padding:7px 8px;display:flex;flex-direction:column;gap:2px;font-size:.78rem}
+.shop-mini-body span{font-weight:700;line-height:1.25;word-break:break-word}
+.shop-mini-body b{color:#25d6a0;font-size:.78rem}
+
 @media (max-width:650px){
   .header-row{padding:4px 12px 2px!important;gap:6px!important;min-height:0!important}
   .brand img,.brand-logo,.header-logo{height:26px!important;max-height:26px!important;width:auto!important}
@@ -2086,7 +2100,11 @@
     const approved = shops.filter(x => shopStatus(x) === "approved");
     const el = $("shopsHome");
     if (el) el.innerHTML = approved.length ? `<h2>🏪 ${t("Customer shops", "Amaduka y'abakiriya")}</h2>
-      <div class="shop-grid">${approved.map(x => `<div class="shop-card" onclick="openShop('${esc(x.id)}')">${x.logoUrl ? `<img src="${esc(x.logoUrl)}" alt="${esc(x.name)}" loading="lazy">` : `<div class="shop-logo-ph">🏪</div>`}<strong>${esc(x.name)}</strong><small>${shopProducts.filter(pp => pp.shopId === x.id).length} ${t("products", "ibicuruzwa")}</small></div>`).join("")}</div>` : "";
+      ${approved.map(x => {
+        const list = shopProducts.filter(pp => pp.shopId === x.id);
+        return `<div class="shop-block"><div class="shop-block-head" onclick="openShop('${esc(x.id)}')">${x.logoUrl ? `<img src="${esc(x.logoUrl)}" alt="${esc(x.name)}" loading="lazy">` : `<div class="shop-logo-ph">🏪</div>`}<div><strong>${esc(x.name)}</strong><small>${list.length} ${t("products", "ibicuruzwa")}</small></div><span class="shop-block-go">${t("Open", "Fungura")} ›</span></div>
+        ${list.length ? `<div class="shop-block-row">${list.map(pp => `<div class="shop-mini" onclick="openShop('${esc(x.id)}')">${pp.imageUrl ? `<img src="${esc(thumb(pp.imageUrl, 420))}" alt="${esc(pp.name)}" loading="lazy" decoding="async">` : `<div class="shop-mini-ph">🏪</div>`}<div class="shop-mini-body"><span>${esc(pp.name)}</span>${pp.price ? `<b>${money(pp.price)}</b>` : ""}</div></div>`).join("")}</div>` : ""}</div>`;
+      }).join("")}` : "";
     renderShopPromo();
   }
   // Nice "open your own shop" card on the Account page (so people see it as soon as they go to sign in).
