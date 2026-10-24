@@ -646,6 +646,11 @@
 </script>
 <style>
 /* ===== Compact header + compact service cards (final overrides) ===== */
+#shopsHome > h2{display:none!important}
+.shop-mini-body span{color:#fff}
+#homeCategories{display:flex!important;overflow-x:auto;gap:6px!important;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:none}
+#homeCategories::-webkit-scrollbar{display:none}
+#homeCategories .category{flex:0 0 calc(25% - 5px);min-width:78px;scroll-snap-align:start}
 .category-art img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
 .shop-block{background:#141830;border:1px solid #2b3160;border-radius:20px;padding:12px;margin-top:12px}
 .shop-block-head{display:flex;align-items:center;gap:10px;cursor:pointer}
@@ -1128,6 +1133,13 @@
     if(searchTerm && current!=="categories") showView("categories");
     renderCategories();
   }
+  function shopCategoryCards() {
+    return (window.gdApprovedShops||[]).map(x=>`<button class="category" onclick="openShop('${esc(x.id)}')"><span class="category-art">${x.logoUrl?`<img src="${esc(x.logoUrl)}" alt="" loading="lazy">`:"🏪"}</span><strong>${esc(x.name)}</strong></button>`).join("");
+  }
+  function renderHomeCategories() {
+    const el=document.getElementById("homeCategories"); if(!el) return;
+    el.innerHTML=categories.map(categoryCard).join("")+shopCategoryCards();
+  }
   function categoryCard(c) {
     return `<button class="category ${activeCategory===c.id?'selected':''}" onclick="selectCategory('${c.id}')">
       <span class="category-art">${c.icon}</span><strong>${categoryName(c)}</strong></button>`;
@@ -1251,12 +1263,12 @@
   }
   window.addEventListener("popstate", () => { const id = currentUrlProductId(); if (id && products.find(x => x.id === id)) openProduct(id, true); else if (document.getElementById("view-product").classList.contains("active")) showView(prevView || "home"); });
   function renderHome() {
-    document.getElementById("homeCategories").innerHTML=categories.map(categoryCard).join("");
+    renderHomeCategories();
     document.getElementById("homeProducts").innerHTML=products.slice(0,4).map(p=>productCard(p,true)).join("");
     updateCounts();
   }
   function renderCategories() {
-    document.getElementById("allCategories").innerHTML=categories.map(categoryCard).join("")+(window.gdApprovedShops||[]).map(x=>`<button class="category" onclick="openShop('${esc(x.id)}')"><span class="category-art">${x.logoUrl?`<img src="${esc(x.logoUrl)}" alt="" loading="lazy">`:"🏪"}</span><strong>${esc(x.name)}</strong></button>`).join("");
+    document.getElementById("allCategories").innerHTML=categories.map(categoryCard).join("")+shopCategoryCards();
     let list=products.filter(p=>{
       const catOK=!activeCategory||p.category===activeCategory;
       const text=[p.en,p.rw,p.descEn,p.descRw,categories.find(c=>c.id===p.category)?.en||""].join(" ").toLowerCase();
@@ -2128,6 +2140,7 @@
     const approved = shops.filter(x => shopStatus(x) === "approved");
     window.gdShops = shops; window.gdApprovedShops = approved;
     if (typeof renderCategories === "function") renderCategories();
+    if (typeof renderHomeCategories === "function") renderHomeCategories();
     const el = $("shopsHome");
     const homeItems = shopProducts.map(pp => ({ pp, sh: approved.find(x => x.id === pp.shopId) })).filter(o => o.sh).slice(0, 14);
     if (el) el.innerHTML = homeItems.length ? `<h2>🏪 ${t("From new shops", "Ibiva mu maduka mashya")}</h2>
