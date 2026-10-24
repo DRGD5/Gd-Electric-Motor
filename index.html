@@ -234,6 +234,8 @@
     .shop-prod img { width:100%; height:130px; object-fit:cover; background:#222a55; }
     .shop-prod .sp-body { padding:10px; display:flex; flex-direction:column; gap:6px; flex:1; }
     .shop-prod .sp-price { color:#34d399; font-weight:900; }
+    .shop-prod .sp-body strong { color:#fff; }
+    .shop-prod .sp-body p { color:#cbd5e1; margin:0; }
     .shop-prod p { margin:0; font-size:.88rem; opacity:.85; }
     .shop-form-box { background:#141830; border:1px solid #2b3160; border-radius:20px; padding:16px; margin-top:14px; }
     .shop-form-box .form-row { margin-bottom:10px; }
@@ -644,7 +646,6 @@
 </script>
 <style>
 /* ===== Compact header + compact service cards (final overrides) ===== */
-#shopsHome{display:none!important}
 .category-art img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
 .shop-block{background:#141830;border:1px solid #2b3160;border-radius:20px;padding:12px;margin-top:12px}
 .shop-block-head{display:flex;align-items:center;gap:10px;cursor:pointer}
@@ -654,7 +655,9 @@
 .shop-block-head small{opacity:.7}
 .shop-block-go{font-weight:800;font-size:.8rem;color:#bd8cff;white-space:nowrap}
 .shop-block-row{display:flex;gap:10px;overflow-x:auto;margin-top:10px;padding-bottom:4px;-webkit-overflow-scrolling:touch}
-.shop-mini{flex:0 0 130px;background:#0d1020;border:1px solid #2b3160;border-radius:14px;overflow:hidden;cursor:pointer}
+.shop-badge{position:absolute;top:6px;left:6px;z-index:1;background:rgba(84,32,232,.94);color:#fff;font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:999px;max-width:calc(100% - 12px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.shop-mini .primary{margin-top:6px;padding:6px 8px!important;font-size:.72rem!important;border-radius:999px!important;min-height:0!important}
+.shop-mini{position:relative;flex:0 0 140px;background:#0d1020;border:1px solid #2b3160;border-radius:14px;overflow:hidden;cursor:pointer}
 .shop-mini img,.shop-mini-ph{width:100%;height:100px;object-fit:cover;display:grid;place-items:center;background:#222a55;font-size:2rem}
 .shop-mini-body{padding:7px 8px;display:flex;flex-direction:column;gap:2px;font-size:.78rem}
 .shop-mini-body span{font-weight:700;line-height:1.25;word-break:break-word}
@@ -1383,7 +1386,7 @@
     const btn=document.getElementById("submitOrderBtn"); if(btn){btn.disabled=true;btn.textContent=t("Submitting...","Birohereza...");}
     let prof;
     try{ prof=await window.gdSaveOrder(items,total,name,phone.replace(/\D/g,"")); }
-    catch(e){ console.error(e); window.__ordering=false; if(btn){btn.disabled=false;btn.textContent=t("Submit order ✓","Ohereza order (Submit) ✓");} alert(t("Could not submit your order. Please try again.","Ntibyashobotse kohereza order yawe. Ongera ugerageze.")); return; }
+    catch(e){ console.error(e); window.__ordering=false; if(btn){btn.disabled=false;btn.textContent=t("Submit order ✓","Ohereza order (Submit) ✓");} alert(t("Could not submit your order. Please try again.","Ntibyashobotse kohereza order yawe. Ongera ugerageze.")+"\n("+((e&&(e.code||e.message))||"error")+")"); return; }
     const lines=items.map(i=>`${i.name} × ${i.qty} — ${money(i.price*i.qty)}`);
     window.lastOrderPhone=ownerShop?ownerShop.shopPhone:null;
     const orderTo=ownerShop&&ownerShop.shopName?ownerShop.shopName:"GD Electric Motor";
@@ -2126,12 +2129,9 @@
     window.gdShops = shops; window.gdApprovedShops = approved;
     if (typeof renderCategories === "function") renderCategories();
     const el = $("shopsHome");
-    if (el) el.innerHTML = approved.length ? `<h2>🏪 ${t("Customer shops", "Amaduka y'abakiriya")}</h2>
-      ${approved.map(x => {
-        const list = shopProducts.filter(pp => pp.shopId === x.id);
-        return `<div class="shop-block"><div class="shop-block-head" onclick="openShop('${esc(x.id)}')">${x.logoUrl ? `<img src="${esc(x.logoUrl)}" alt="${esc(x.name)}" loading="lazy">` : `<div class="shop-logo-ph">🏪</div>`}<div><strong>${esc(x.name)}</strong><small>${list.length} ${t("products", "ibicuruzwa")}</small></div><span class="shop-block-go">${t("Open", "Fungura")} ›</span></div>
-        ${list.length ? `<div class="shop-block-row">${list.map(pp => `<div class="shop-mini" onclick="openShop('${esc(x.id)}')">${pp.imageUrl ? `<img src="${esc(thumb(pp.imageUrl, 420))}" alt="${esc(pp.name)}" loading="lazy" decoding="async">` : `<div class="shop-mini-ph">🏪</div>`}<div class="shop-mini-body"><span>${esc(pp.name)}</span>${pp.price ? `<b>${money(pp.price)}</b>` : ""}</div></div>`).join("")}</div>` : ""}</div>`;
-      }).join("")}` : "";
+    const homeItems = shopProducts.map(pp => ({ pp, sh: approved.find(x => x.id === pp.shopId) })).filter(o => o.sh).slice(0, 14);
+    if (el) el.innerHTML = homeItems.length ? `<h2>🏪 ${t("From new shops", "Ibiva mu maduka mashya")}</h2>
+      <div class="shop-block-row">${homeItems.map(({ pp, sh }) => `<div class="shop-mini" onclick="openShop('${esc(sh.id)}')">${pp.imageUrl ? `<img src="${esc(thumb(pp.imageUrl, 420))}" alt="${esc(pp.name)}" loading="lazy" decoding="async">` : `<div class="shop-mini-ph">🏪</div>`}<span class="shop-badge">🏪 ${esc(sh.name)}</span><div class="shop-mini-body"><span>${esc(pp.name)}</span><b>${Number(pp.price) > 0 ? money(pp.price) : t("Ask for price", "Baza igiciro")}</b>${Number(pp.price) > 0 ? `<button type="button" class="primary" onclick="event.stopPropagation();addToCart('s_${esc(pp.id)}')">${t("Add to cart", "Shyira mu gaseke")}</button>` : ""}</div></div>`).join("")}</div>` : "";
     renderShopPromo();
   }
   // Nice "open your own shop" card on the Account page (so people see it as soon as they go to sign in).
@@ -2224,8 +2224,8 @@
           <div id="spMsg" class="status-msg"></div>
         </form></div>` : ""}
       <div class="shop-prod-grid">${list.length ? list.map(pp => `<div class="shop-prod">${pp.imageUrl ? `<img src="${esc(pp.imageUrl)}" alt="${esc(pp.name)}" loading="lazy">` : ""}
-        <div class="sp-body"><strong>${esc(pp.name)}</strong><span class="sp-price">${money(pp.price || 0)}</span>${pp.desc ? `<p>${esc(pp.desc)}</p>` : ""}
-        <button class="primary" type="button" onclick="addToCart('s_${esc(pp.id)}')">${t("Add to cart", "Shyira mu gaseke")}</button>
+        <div class="sp-body"><strong>${esc(pp.name)}</strong><span class="sp-price">${Number(pp.price) > 0 ? money(pp.price) : t("Ask for price", "Baza igiciro")}</span>${pp.desc ? `<p>${esc(pp.desc)}</p>` : ""}
+        ${Number(pp.price) > 0 ? `<button class="primary" type="button" onclick="addToCart('s_${esc(pp.id)}')">${t("Add to cart", "Shyira mu gaseke")}</button>` : ""}
         <a class="secondary" style="text-align:center;text-decoration:none" href="${wa}?text=${encodeURIComponent(t("Hello, I am interested in: ", "Muraho, ndifuza: ") + pp.name + " (" + money(pp.price || 0) + ")")}" target="_blank" rel="noopener">${t("Ask on WhatsApp", "Baza kuri WhatsApp")}</a>
         ${mineOwner || isAdminUser(currentUser) ? `<button class="secondary danger-btn" onclick="deleteShopProduct('${esc(pp.id)}')">${t("Delete", "Siba")}</button>` : ""}</div></div>`).join("") : `<p style="opacity:.75;grid-column:1/-1">${t("No products yet.", "Nta bicuruzwa biraboneka.")}</p>`}</div>`;
   }
