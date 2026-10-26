@@ -2,7 +2,7 @@
 // Pages: network first (updates show as soon as you are online), cached copy when offline.
 // Own files (icons etc.): cache first, refreshed in the background.
 // Firebase, Cloudinary and fonts are never touched: they go straight to the network.
-const VERSION = "gd-v1";
+const VERSION = "gd-v2";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", e => {
