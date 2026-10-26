@@ -7,7 +7,7 @@
   <meta name="google-site-verification" content="6i5ym3yTP3Ow6MQ-3rSWYP4usw1ndVJPUDOcHY6z-oc" />
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
-  <link rel="preload" as="image" href="assets/hero-repair.webp" fetchpriority="high">
+  <link rel="preload" as="image" href="hero-repair.webp" fetchpriority="high">
   <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
   <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js" crossorigin>
   <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js" crossorigin>
@@ -734,7 +734,7 @@
 
 <main>
   <section id="view-home" class="view active">
-    <h1 class="sr-only" data-en="GD Electric Motors - electric motors, pumps and spare parts in Rwanda" data-rw="GD Electric Motors - moteri, pompe n'ibikoresho mu Rwanda">GD Electric Motors - electric motors, pumps and spare parts in Rwanda</h1><div class="hero-banner" id="heroBanner" aria-roledescription="carousel" aria-label="GD Electric Motors"><div class="hb-slide active"><div class="hb-text"><div class="hb-eyebrow" data-en="REPAIR" data-rw="GUSANA">REPAIR</div><div class="hb-title" data-en="Motor repair" data-rw="Gusana moteri">Motor repair</div><div class="hb-sub" data-en="Fast & reliable" data-rw="Vuba kandi neza">Fast & reliable</div><button class="primary" onclick="showView('categories')" data-en="Shop now →" data-rw="Reba byose →">Shop now →</button></div><div class="hb-img"><img src="assets/hero-repair.webp" alt="Motor repair and rewinding" fetchpriority="high" decoding="async"></div></div><div class="hb-slide"><div class="hb-text"><div class="hb-eyebrow" data-en="WATER PUMPS" data-rw="POMPE Z'AMAZI">WATER PUMPS</div><div class="hb-title" data-en="Water pumps" data-rw="Pompe z'amazi">Water pumps</div><div class="hb-sub" data-en="Ask for the price" data-rw="Baza igiciro">Ask for the price</div><button class="primary" onclick="showView('categories')" data-en="Shop now →" data-rw="Reba byose →">Shop now →</button></div><div class="hb-img contain"><img id="hbPump" alt="Water pump" decoding="async"></div></div><div class="hb-slide"><div class="hb-text"><div class="hb-eyebrow" data-en="SERVICE" data-rw="SERIVISI">SERVICE</div><div class="hb-title" data-en="Rewinding" data-rw="Rewinding">Rewinding</div><div class="hb-sub" data-en="We do it for you" data-rw="Turabigukorera">We do it for you</div><button class="primary" onclick="showView('categories')" data-en="Shop now →" data-rw="Reba byose →">Shop now →</button></div><div class="hb-img contain"><img src="assets/img-rewinding.webp" alt="Rewinding service" loading="lazy" decoding="async"></div></div><div class="hb-dots" id="hbDots"></div></div>
+    <h1 class="sr-only" data-en="GD Electric Motors - electric motors, pumps and spare parts in Rwanda" data-rw="GD Electric Motors - moteri, pompe n'ibikoresho mu Rwanda">GD Electric Motors - electric motors, pumps and spare parts in Rwanda</h1><div class="hero-banner" id="heroBanner" aria-roledescription="carousel" aria-label="GD Electric Motors"><div class="hb-slide active"><div class="hb-text"><div class="hb-eyebrow" data-en="REPAIR" data-rw="GUSANA">REPAIR</div><div class="hb-title" data-en="Motor repair" data-rw="Gusana moteri">Motor repair</div><div class="hb-sub" data-en="Fast & reliable" data-rw="Vuba kandi neza">Fast & reliable</div><button class="primary" onclick="showView('categories')" data-en="Shop now →" data-rw="Reba byose →">Shop now →</button></div><div class="hb-img"><img src="hero-repair.webp" alt="Motor repair and rewinding" fetchpriority="high" decoding="async"></div></div><div class="hb-slide"><div class="hb-text"><div class="hb-eyebrow" data-en="WATER PUMPS" data-rw="POMPE Z'AMAZI">WATER PUMPS</div><div class="hb-title" data-en="Water pumps" data-rw="Pompe z'amazi">Water pumps</div><div class="hb-sub" data-en="Ask for the price" data-rw="Baza igiciro">Ask for the price</div><button class="primary" onclick="showView('categories')" data-en="Shop now →" data-rw="Reba byose →">Shop now →</button></div><div class="hb-img contain"><img id="hbPump" alt="Water pump" decoding="async"></div></div><div class="hb-slide"><div class="hb-text"><div class="hb-eyebrow" data-en="SERVICE" data-rw="SERIVISI">SERVICE</div><div class="hb-title" data-en="Rewinding" data-rw="Rewinding">Rewinding</div><div class="hb-sub" data-en="We do it for you" data-rw="Turabigukorera">We do it for you</div><button class="primary" onclick="showView('categories')" data-en="Shop now →" data-rw="Reba byose →">Shop now →</button></div><div class="hb-img contain"><img src="img-rewinding.webp" alt="Rewinding service" loading="lazy" decoding="async"></div></div><div class="hb-dots" id="hbDots"></div></div>
 
     <section class="section">
       <div class="section-heading"><h2 data-en="Shop by category" data-rw="Gura ukurikije ibyiciro">Shop by category</h2><button class="text-link" onclick="showView('categories')" data-en="All categories →" data-rw="Ibyiciro byose →">All categories →</button></div>
@@ -980,7 +980,7 @@
     {id:"parts", en:"Spare Parts", rw:"Ibikoresho byazo", icon:"🔩"}
   ];
   // Original sample products: they stay on the site next to products you add; the admin can hide each one.
-  const PUMP_IMG = "assets/img-pump.webp";
+  const PUMP_IMG = "img-pump.webp";
   let products = [
     {id:1,category:"electric",en:"Electric Motor",rw:"Moteri y'amashanyarazi",descEn:"Reliable motor for different applications.",descRw:"Moteri ikoreshwa mu mirimo itandukanye.",price:85000,oldPrice:95000,icon:"⚙️"},
     {id:2,category:"fan",en:"Fan Motor",rw:"Moteri ya fan",descEn:"Fan motors and related services.",descRw:"Moteri za fan na serivisi zijyanye na zo.",price:28000,oldPrice:null,icon:"🌀"},
@@ -1852,7 +1852,7 @@
 
 
   // ----- services -----
-  const REWIND_IMG = "assets/img-rewinding.webp";
+  const REWIND_IMG = "img-rewinding.webp";
   let services = [], hiddenServiceIds = [];
   let svcShopItemIds = [];
   async function saveHidden(patch) { await setDoc(doc(db, "settings", "hidden"), patch, { merge: true }); }
