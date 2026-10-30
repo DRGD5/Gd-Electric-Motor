@@ -797,6 +797,32 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
   <div class="gd-toast" id="gdToast" role="status" aria-live="polite"></div>
   <section id="view-cart" class="view">
     <h1 class="page-title" data-en="Your cart 🛒" data-rw="Agaseke kawe 🛒">Your cart 🛒</h1>
+    <div id="cartStaffPanel" hidden>
+      <div class="admin-shortcuts" aria-label="Staff menu">
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminChatSection')"><span>💬 Chat n'abakiriya <span class="users-count count-total" id="chatTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span>📦 Ibyatumijwe (Orders) <span class="users-count count-new" id="ordersNewBadge" hidden>0</span> <span class="users-count count-total" id="ordersTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminRequestsSection')"><span>🛒 Ubusabe bwa serivisi <span class="users-count count-new" id="reqNewBadge" hidden>0</span> <span class="users-count count-total" id="reqTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+      </div>
+      <div class="info-card admin-section" id="adminChatSection" hidden>
+        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminChatSection')"><h2>💬 Chat n'abakiriya</h2><span class="shortcut-arrow">⌃</span></button>
+        <p>Hitamo umukiriya kugira ngo usome ubutumwa kandi umusubize.</p>
+        <div id="adminChatThreads"></div>
+      </div>
+
+      <div class="info-card admin-section" id="adminOrdersSection" hidden>
+        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminOrdersSection')"><h2>📦 Ibyatumijwe (Orders)</h2><span class="shortcut-arrow">⌃</span></button>
+        <p>Hindura aho commande igeze. Guhagarika commande ntibisiba amateka yayo.</p>
+        <button class="secondary" type="button" onclick="gdReceiptNew()" style="margin-bottom:10px">🧾 Receipt nshya (nta order)</button>
+        <div id="adminOrders"></div>
+      </div>
+
+      <div class="info-card admin-section" id="adminRequestsSection" hidden>
+        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminRequestsSection')"><h2>🛒 Ubusabe bwa serivisi (Service Requests)</h2><span class="shortcut-arrow">⌃</span></button>
+        <p>Reba ubusabe bw'abakiriya kandi uhindure uko serivisi yabo ihagaze.</p>
+        <button class="secondary" type="button" onclick="gdReceiptNew()" style="margin-bottom:10px">🧾 Receipt nshya (nta busabe)</button>
+        <div id="adminServiceRequests"></div>
+      </div>
+    </div>
     <div class="info-card" id="orderDone" hidden></div>
     <div class="info-card" id="cartContents"></div>
   </section>
@@ -864,9 +890,6 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminStatsSection')"><span>📊 Abasuye website <span class="users-count count-new" id="statsTodayBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span>🧩 Ibice bya website</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminShopsSection')"><span>🏪 Amaduka y'abakiriya <span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminChatSection')"><span>💬 Chat n'abakiriya <span class="users-count count-total" id="chatTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span>📦 Ibyatumijwe (Orders) <span class="users-count count-new" id="ordersNewBadge" hidden>0</span> <span class="users-count count-total" id="ordersTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminRequestsSection')"><span>🛒 Ubusabe bwa serivisi <span class="users-count count-new" id="reqNewBadge" hidden>0</span> <span class="users-count count-total" id="reqTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span>➕ Ongeramo igicuruzwa</span><span class="shortcut-arrow">›</span></button>
       </div>
 
@@ -912,29 +935,9 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
         <div id="adminShops"></div>
       </div>
 
-      <div class="info-card admin-section" id="adminChatSection" hidden>
-        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminChatSection')"><h2>💬 Chat n'abakiriya</h2><span class="shortcut-arrow">⌃</span></button>
-        <p>Hitamo umukiriya kugira ngo usome ubutumwa kandi umusubize.</p>
-        <div id="adminChatThreads"></div>
-      </div>
-
       <div class="info-card admin-section" id="adminStatsSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminStatsSection')"><h2 data-en="📊 Website visitors" data-rw="📊 Abasuye website">📊 Abasuye website</h2><span class="shortcut-arrow">⌃</span></button>
         <div id="adminStats"></div>
-      </div>
-
-      <div class="info-card admin-section" id="adminOrdersSection" hidden>
-        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminOrdersSection')"><h2>📦 Ibyatumijwe (Orders)</h2><span class="shortcut-arrow">⌃</span></button>
-        <p>Hindura aho commande igeze. Guhagarika commande ntibisiba amateka yayo.</p>
-        <button class="secondary" type="button" onclick="gdReceiptNew()" style="margin-bottom:10px">🧾 Receipt nshya (nta order)</button>
-        <div id="adminOrders"></div>
-      </div>
-
-      <div class="info-card admin-section" id="adminRequestsSection" hidden>
-        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminRequestsSection')"><h2>🛒 Ubusabe bwa serivisi (Service Requests)</h2><span class="shortcut-arrow">⌃</span></button>
-        <p>Reba ubusabe bw'abakiriya kandi uhindure uko serivisi yabo ihagaze.</p>
-        <button class="secondary" type="button" onclick="gdReceiptNew()" style="margin-bottom:10px">🧾 Receipt nshya (nta busabe)</button>
-        <div id="adminServiceRequests"></div>
       </div>
 
       <div class="info-card admin-section" id="adminAddProductSection" hidden>
@@ -1586,6 +1589,7 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
     renderCustomSections(); renderShopsHome(); renderAdminShops();
     $("adminDenied").hidden = !(currentUser && !staff);
     $("adminPanel").hidden = !staff;
+    { const sp = $("cartStaffPanel"); if (sp) sp.hidden = !(perms.has("chats") || perms.has("orders") || perms.has("requests")); }
     const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection"], shops: ["adminShopsSection"], stats: ["adminStatsSection"], chats: ["adminChatSection"] };
     Object.keys(map).forEach(perm => {
       const ok = perms.has(perm);
