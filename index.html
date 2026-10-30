@@ -2480,14 +2480,14 @@ body{margin:0;background:#c9ccd3;font:14px/1.5 system-ui,-apple-system,Segoe UI,
 .cap .pb,.cap .payhint{display:none}
 .cap .wrap{width:640px;max-width:none;margin:0;padding:0}
 .cap .sheet{width:640px;min-height:905px;display:flex;flex-direction:column;border-radius:0;box-shadow:none}
-.cap .bottom{margin-bottom:34px}
-.cap .foot{margin-top:auto}
+.cap .bottom{margin-top:auto;margin-bottom:34px}
+.cap .foot{margin-top:0}
 .cap .actions{display:none}
 .actions button,.actions a{flex:1 1 140px;padding:14px 16px;border:0;border-radius:99px;background:#4a5fa5;color:#fff;text-decoration:none;font-weight:800;font-size:15px;text-align:center;cursor:pointer;font-family:inherit}
 .actions .wa{background:#25d366;color:#04210f}
 @media(max-width:480px){.g{grid-template-columns:22px 1fr 58px 28px 70px;gap:2px}.thead{font-size:9px;margin:-34px 12px 0;padding:0 6px}.items{margin:8px 12px 0;padding:0 6px}.item{font-size:11px}.bottom{margin:14px 18px 0}.foot{margin:30px 12px 0}.top{padding:14px 16px 48px}.hrow.info{flex-wrap:wrap}.dates{gap:16px}}
 @page{size:A4;margin:0}
-@media print{body{background:#fff}.wrap{max-width:none;padding:0}.sheet{box-shadow:none;border-radius:0}.actions,.pb,.payhint{display:none}}
+@media print{.sheet{display:flex;flex-direction:column;min-height:297mm}.bottom{margin-top:auto;margin-bottom:34px}.foot{margin-top:0}body{background:#fff}.wrap{max-width:none;padding:0}.sheet{box-shadow:none;border-radius:0}.actions,.pb,.payhint{display:none}}
 </style></head><body><div class="wrap"><div class="sheet" id="sheet">
 <div class="top">
 <div class="hrow"><a class="brand" href="https://drgd5.github.io/Gd-Electric-Motor/" target="_blank" rel="noopener">${logoSrc ? `<img src="${logoSrc}" alt="">` : ""}<div><h1>GD ELECTRIC MOTORS</h1><small>${t("MOTORS, PUMPS & SPARE PARTS", "MOTERI, POMPE N'IBIKORESHO")}</small></div></a>
@@ -2498,7 +2498,7 @@ body{margin:0;background:#c9ccd3;font:14px/1.5 system-ui,-apple-system,Segoe UI,
 <div class="g thead"><span>NO.</span><span>${t("ITEM DESCRIPTION", "IGICURUZWA / AKAZI")}</span><span>${t("PRICE", "IGICIRO")}</span><span>QTY.</span><span>${t("TOTAL", "YOSE")}</span></div>
 <div class="items">${itemRows}</div>
 <div class="bottom">${leftBox}<div class="sum"><div class="tpill"><span>${t("Total", "Igiteranyo")}</span><b>${money(total)}</b></div>${paid ? `<div style="text-align:right"><span class="stamp">${t("PAID ✓", "YISHYUWE ✓")}</span></div>` : ""}<div class="sign">${t("Authorised Sign", "Umukono")}</div></div></div>
-<div class="foot">${t("Thank you for your business", "Murakoze cyane ko mwahisemo GD Electric Motors")}</div>
+<div class="foot">${t("Thank you", "Murakoze")}</div>
 </div>
 <div class="actions"><button type="button" onclick="gdSavePdf(this)">📄 ${t("Save as PDF", "Bika PDF")}</button><button type="button" onclick="gdSaveImage(this)">🖼️ ${t("Save as Image", "Bika ifoto")}</button>${phone ? `<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${esc(phone)}?text=${encodeURIComponent(textMsg)}">${t("Send on WhatsApp", "Ohereza kuri WhatsApp")}</a>` : ""}</div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script>
