@@ -1485,6 +1485,8 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
   init();
 </script>
 
+<script>(function(){try{var h=localStorage.getItem("gdSvcHtml"),el=document.getElementById("servicesList");if(h&&el){el.innerHTML=h;el.setAttribute("data-cached","1")}}catch(e){}})();
+window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesList");if(el)localStorage.setItem("gdSvcHtml",el.innerHTML)}catch(e){}};</script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
@@ -1889,8 +1891,9 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
   onSnapshot(collection(db, "services"), snap => {
     services = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
     window.gdServicesCount = services.length; if (window.updateAdminBadges) window.updateAdminBadges();
+    window.gdSvcLoaded = true;
     renderServices(); renderAdminServices();
-  }, err => console.error("Services:", err));
+  }, err => { console.error("Services:", err); window.gdSvcLoaded = true; renderServices(); });
   function serviceList() {
     const base = hiddenServiceIds.includes("default") ? [] : [{ id: "default", img: REWIND_IMG,
       name: t("Motor rewinding", "Gusubiza amashanyarazi muri moteri (Rewinding)"),
@@ -1933,6 +1936,7 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
   };
   function renderServices() {
     const el = $("servicesList"); if (!el) return;
+    if (el.dataset.cached === "1" && !window.gdSvcLoaded) return;
     el.innerHTML = serviceList().map(v => `<div class="svc-card">${(v.imageUrl || v.img) ? `<img src="${esc(thumb(v.imageUrl || v.img, 480))}" alt="${esc(v.name)}" loading="lazy" decoding="async">` : ""}
       <div class="svc-body"><h3>${esc(v.name)}</h3>
       <div class="shop-hint" aria-hidden="true">👇</div>
@@ -1940,6 +1944,7 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
       <button type="button" class="secondary svc-more" onclick="event.stopPropagation();this.closest('.svc-card').classList.toggle('open')">${t("Details", "Ibisobanuro")} <span class="svc-chev" aria-hidden="true">▾</span></button>
       ${v.desc ? `<p class="svc-desc">${esc(v.desc)}</p>` : ""}
       <button class="secondary svc-wa" onclick="event.stopPropagation();serviceWhatsApp(this.dataset.n)" data-n="${esc(v.name)}">${t("Ask on WhatsApp", "Baza kuri WhatsApp")}</button></div></div>`).join("") + svcShopCards();
+    if (window.gdSvcLoaded && window.gdSaveSvcCache) window.gdSaveSvcCache();
   }
   window.renderServices = renderServices;
   renderServices();
