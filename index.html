@@ -1930,7 +1930,7 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
   };
   function renderServices() {
     const el = $("servicesList"); if (!el) return;
-    el.innerHTML = serviceList().map(v => `<div class="svc-card">${(v.imageUrl || v.img) ? `<img src="${esc(v.imageUrl || v.img)}" alt="${esc(v.name)}" loading="lazy">` : ""}
+    el.innerHTML = serviceList().map(v => `<div class="svc-card">${(v.imageUrl || v.img) ? `<img src="${esc(thumb(v.imageUrl || v.img, 480))}" alt="${esc(v.name)}" loading="lazy" decoding="async">` : ""}
       <div class="svc-body"><h3>${esc(v.name)}</h3>
       <div class="shop-hint" aria-hidden="true">👇</div>
       <button class="primary" onclick="event.stopPropagation();requestService(this.dataset.n)" data-n="${esc(v.name)}">${t("Request service", "Saba serivisi")}</button>
@@ -2284,7 +2284,7 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
           <button class="primary" type="submit" id="spBtn">${t("Save product", "Bika igicuruzwa")}</button>
           <div id="spMsg" class="status-msg"></div>
         </form></div>` : ""}
-      <div class="shop-prod-grid">${list.length ? list.map(pp => `<div class="shop-prod">${pp.imageUrl ? `<img src="${esc(pp.imageUrl)}" alt="${esc(pp.name)}" loading="lazy">` : ""}
+      <div class="shop-prod-grid">${list.length ? list.map(pp => `<div class="shop-prod">${pp.imageUrl ? `<img src="${esc(thumb(pp.imageUrl, 420))}" alt="${esc(pp.name)}" loading="lazy" decoding="async">` : ""}
         <div class="sp-body"><strong>${esc(pp.name)}</strong><span class="sp-price">${Number(pp.price) > 0 ? money(pp.price) : t("Ask for price", "Baza igiciro")}</span>${pp.desc ? `<p>${esc(pp.desc)}</p>` : ""}
         ${Number(pp.price) > 0 ? `<button class="primary" type="button" onclick="addToCart('s_${esc(pp.id)}')">${t("Add to cart", "Shyira mu gaseke")}</button>` : ""}
         <a class="secondary" style="text-align:center;text-decoration:none" href="${wa}?text=${encodeURIComponent(t("Hello, I am interested in: ", "Muraho, ndifuza: ") + pp.name + " (" + money(pp.price || 0) + ")")}" target="_blank" rel="noopener">${t("Ask on WhatsApp", "Baza kuri WhatsApp")}</a>
@@ -2627,7 +2627,7 @@ function gdSavePdf(btn) {
     else img.style.display = "none";
   };
 
-  function resizeImage(file, maxSide = 900) {
+  function resizeImage(file, maxSide = 800) {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => {
@@ -2635,7 +2635,7 @@ function gdSavePdf(btn) {
         const c = document.createElement("canvas");
         c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
         c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-        c.toBlob(b => b ? resolve(b) : reject(new Error("resize")), "image/jpeg", 0.82);
+        c.toBlob(b => b ? resolve(b) : reject(new Error("resize")), "image/jpeg", 0.8);
         URL.revokeObjectURL(img.src);
       };
       img.onerror = () => reject(new Error("Ifoto ntisomeka"));
@@ -2651,7 +2651,9 @@ function gdSavePdf(btn) {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: "POST", body: fd });
     const data = await res.json();
     if (!data.secure_url) throw new Error(data.error?.message || "Kohereza ifoto byanze");
-    return data.secure_url.replace("/upload/", "/upload/f_auto,q_auto,w_700/");
+    const finalUrl = data.secure_url.replace("/upload/", "/upload/f_auto,q_auto,w_700/");
+    try { [140, 420, 480].forEach(w => { new Image().src = thumb(finalUrl, w); }); new Image().src = finalUrl; } catch (e) {}
+    return finalUrl;
   }
 
   window.adminSave = async e => {
