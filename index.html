@@ -875,6 +875,81 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
 .pl-fab{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:5100;width:auto!important;margin:0!important;border:0;border-radius:999px;padding:14px 20px;font-weight:900;font-size:.95rem;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 10px 26px rgba(37,99,235,.5);display:none}
 #gdPage:not([hidden]) #adminListWrap .pl-fab{display:flex;gap:6px;align-items:center}
 </style>
+<style id="gdFormsDesign">
+/* ===== GD admin pages: rich form design ===== */
+#gdPage{--ac1:var(--g1,#2563eb);--ac2:var(--g2,#7c3aed);background:radial-gradient(120% 60% at 50% -10%,color-mix(in srgb,var(--ac1) 20%,transparent),transparent 70%),var(--bg)}
+#gdPage .ceo-top{background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+#gdPage .ceo-back{transition:.2s;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+#gdPage .ceo-back:active{transform:scale(.9);background:linear-gradient(135deg,var(--ac1),var(--ac2));color:#fff;border-color:transparent}
+#gdPage .ceo-top h2{background:linear-gradient(90deg,var(--ac1),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+/* hero */
+#gdPage .gd-hero{box-shadow:0 18px 40px -10px color-mix(in srgb,var(--ac1) 65%,transparent);animation:gdUp .45s ease both}
+#gdPage .gd-hero-ic{animation:gdFloat 3.2s ease-in-out infinite;box-shadow:0 8px 20px rgba(0,0,0,.18)}
+#gdPage .gd-hero::before{animation:gdPulse 6s ease-in-out infinite}
+#gdPage .gd-hero-tx b{font-size:1.3rem;letter-spacing:.2px}
+@keyframes gdFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
+@keyframes gdPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.18);opacity:.6}}
+/* card */
+#gdPage .gd-body>.info-card,#gdPage .gd-body .info-card.in-page{position:relative;background:linear-gradient(160deg,color-mix(in srgb,var(--panel) 92%,var(--ac1)) 0%,var(--panel) 55%);border:1px solid color-mix(in srgb,var(--ac1) 28%,var(--line));border-radius:28px;padding:22px 18px 20px;overflow:hidden;box-shadow:0 18px 40px -18px rgba(0,0,0,.5)}
+#gdPage .gd-body>.info-card::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,var(--ac1),var(--ac2))}
+#gdPage .gd-body>.info-card::after{content:"";position:absolute;right:-70px;top:-70px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--ac2) 30%,transparent),transparent 70%);pointer-events:none}
+#gdPage .gd-body>.info-card>p{background:color-mix(in srgb,var(--ac1) 12%,transparent);border-left:4px solid var(--ac1);border-radius:14px;padding:12px 14px;margin:0 0 14px;font-size:.9rem;color:var(--text);opacity:.9}
+/* section captions inside forms */
+#gdPage .form-row:has(#fNameRw)::before{content:"📝  Amazina y'igicuruzwa"}
+#gdPage .form-row:has(#fDescRw)::before{content:"📄  Ibisobanuro"}
+#gdPage .form-row:has(#fCategory)::before{content:"💰  Icyiciro n'ibiciro"}
+#gdPage .form-row:has(#fStatus)::before{content:"📦  Uko bimeze"}
+#gdPage .form-row:has(#fPhoto)::before{content:"🖼️  Amafoto"}
+#gdPage .form-row:has(#svcName)::before{content:"🛠️  Izina rya serivisi"}
+#gdPage .form-row:has(#svcDesc)::before{content:"📝  Ibisobanuro"}
+#gdPage .form-row:has(#secKind)::before{content:"📍  Aho kigaragara"}
+#gdPage .form-row:has(#secTitle)::before{content:"✍️  Ibikubiyemo"}
+#gdPage .form-row:has(#secImage)::before{content:"🖼️  Amafoto"}
+#gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Button (si ngombwa)"}
+#gdPage .form-row:has(#fNameRw)::before,#gdPage .form-row:has(#fDescRw)::before,#gdPage .form-row:has(#fCategory)::before,#gdPage .form-row:has(#fStatus)::before,#gdPage .form-row:has(#fPhoto)::before,#gdPage .form-row:has(#svcName)::before,#gdPage .form-row:has(#svcDesc)::before,#gdPage .form-row:has(#secKind)::before,#gdPage .form-row:has(#secTitle)::before,#gdPage .form-row:has(#secImage)::before,#gdPage .form-row:has(#secBtnLabel)::before{display:block;margin:10px 0 2px;padding:7px 14px;border-radius:999px;font-size:.8rem;font-weight:900;letter-spacing:.4px;color:#fff;width:fit-content;background:linear-gradient(135deg,var(--ac1),var(--ac2));box-shadow:0 6px 16px -4px color-mix(in srgb,var(--ac1) 70%,transparent)}
+/* form rows */
+#gdPage .form-row{margin:10px 0;gap:8px;animation:gdUp .45s ease both}
+#gdPage .form-row:nth-child(2){animation-delay:.04s}#gdPage .form-row:nth-child(3){animation-delay:.08s}#gdPage .form-row:nth-child(4){animation-delay:.12s}#gdPage .form-row:nth-child(5){animation-delay:.16s}#gdPage .form-row:nth-child(6){animation-delay:.2s}#gdPage .form-row:nth-child(7){animation-delay:.24s}
+#gdPage .form-row>label{color:var(--text);font-size:.82rem;font-weight:800;letter-spacing:.3px;display:flex;align-items:center;gap:8px;opacity:.92}
+#gdPage .form-row>label::before{content:"";width:6px;height:16px;border-radius:4px;background:linear-gradient(180deg,var(--ac1),var(--ac2));flex:0 0 auto}
+/* inputs */
+#gdPage .form-row input:not([type=checkbox]):not([type=file]),#gdPage .form-row select,#gdPage .form-row textarea{width:100%;box-sizing:border-box;font-family:inherit;font-size:1rem;color:#f7f5ff;background:linear-gradient(180deg,#0a0d1a,#0e1224);border:1.5px solid #2a3350;border-radius:18px;padding:15px 16px;min-height:54px;transition:border-color .2s,box-shadow .2s,transform .2s;box-shadow:inset 0 2px 6px rgba(0,0,0,.35)}
+#gdPage .form-row textarea{min-height:110px;line-height:1.5;resize:vertical}
+#gdPage .form-row input::placeholder,#gdPage .form-row textarea::placeholder{color:#7f86a3;font-family:inherit}
+#gdPage .form-row input:focus,#gdPage .form-row select:focus,#gdPage .form-row textarea:focus{outline:0;border-color:var(--ac1);box-shadow:0 0 0 4px color-mix(in srgb,var(--ac1) 28%,transparent),inset 0 2px 6px rgba(0,0,0,.25);transform:translateY(-1px)}
+#gdPage .form-row select{appearance:none;-webkit-appearance:none;padding-right:46px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%238cb6ff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"),linear-gradient(180deg,#0a0d1a,#0e1224);background-repeat:no-repeat,no-repeat;background-position:right 16px center,0 0}
+/* file upload zone */
+#gdPage .form-row input[type=file]{width:100%;box-sizing:border-box;color:#aab1cc;background:color-mix(in srgb,var(--ac1) 8%,#0a0d1a);border:2px dashed color-mix(in srgb,var(--ac1) 60%,#2a3350);border-radius:20px;padding:16px;font-size:.88rem;transition:.2s}
+#gdPage .form-row input[type=file]:hover,#gdPage .form-row input[type=file]:focus{border-color:var(--ac1);background:color-mix(in srgb,var(--ac1) 16%,#0a0d1a);outline:0}
+#gdPage .form-row input[type=file]::file-selector-button{border:0;border-radius:999px;padding:11px 18px;margin-right:12px;font-weight:900;font-size:.88rem;color:#fff;cursor:pointer;background:linear-gradient(135deg,var(--ac1),var(--ac2));box-shadow:0 6px 14px -4px color-mix(in srgb,var(--ac1) 70%,transparent)}
+#gdPage .photo-preview{max-width:100%;width:100%;max-height:260px;object-fit:cover;border-radius:20px;border:2px solid color-mix(in srgb,var(--ac1) 50%,transparent);box-shadow:0 14px 30px -10px rgba(0,0,0,.6)}
+/* featured toggle */
+#gdPage .form-row label:has(#fFeatured){background:linear-gradient(135deg,rgba(245,158,11,.16),rgba(249,115,22,.1));border:1.5px solid rgba(245,158,11,.45);border-radius:18px;padding:14px 16px;font-size:.92rem;cursor:pointer;gap:12px!important}
+#gdPage .form-row label:has(#fFeatured)::before{display:none}
+#gdPage #fFeatured{appearance:none;-webkit-appearance:none;flex:0 0 auto;width:52px!important;height:30px;min-height:0!important;padding:0!important;border-radius:999px!important;border:0!important;background:#2a3350!important;position:relative;transition:.25s;box-shadow:none!important}
+#gdPage #fFeatured::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.25s;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+#gdPage #fFeatured:checked{background:linear-gradient(135deg,#f59e0b,#f97316)!important}
+#gdPage #fFeatured:checked::after{transform:translateX(22px)}
+/* buttons */
+#gdPage .gd-body form>.primary{width:100%;margin-top:14px;padding:17px 20px;font-size:1.05rem;border-radius:20px;color:#fff;background:linear-gradient(135deg,var(--ac1),var(--ac2));box-shadow:0 14px 28px -8px color-mix(in srgb,var(--ac1) 75%,transparent);transition:transform .15s,filter .2s}
+#gdPage .gd-body form>.primary:active{transform:scale(.97)}
+#gdPage .gd-body form>.primary::before{content:"💾"}
+#gdPage .gd-body form>.secondary{width:100%;margin-top:10px;padding:15px 20px;border-radius:20px;border:1.5px solid color-mix(in srgb,var(--ac1) 55%,var(--line));background:transparent;color:var(--text)}
+#gdPage .gd-body .danger-btn{border:1.5px solid #ef4444;color:#ef4444;background:rgba(239,68,68,.08);border-radius:999px;font-weight:900}
+#gdPage .status-msg:not(:empty){padding:12px 14px;border-radius:14px;font-weight:700;background:rgba(127,127,160,.15)}
+#gdPage .status-msg.ok{background:rgba(16,185,129,.16);border:1px solid rgba(16,185,129,.5)}
+#gdPage .status-msg.err{background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.5)}
+/* list rows (services, sections, shops...) */
+#gdPage .gd-body .admin-row{position:relative;background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid color-mix(in srgb,var(--ac1) 25%,var(--line));border-left:5px solid var(--ac1);border-radius:20px;padding:14px;margin:10px 0;box-shadow:0 8px 20px -10px rgba(0,0,0,.5);transition:transform .2s,box-shadow .2s}
+#gdPage .gd-body .admin-row:active{transform:scale(.985)}
+#gdPage .gd-body .admin-row strong{font-size:1rem}
+#gdPage .gd-body .admin-row small{color:var(--muted)}
+#gdPage .gd-body .admin-row .cart-emoji{border-radius:16px;overflow:hidden;box-shadow:0 6px 14px -4px rgba(0,0,0,.5)}
+#gdPage .gd-body .admin-row .btns button{border-radius:999px;font-weight:800}
+#gdPage .gd-body>.info-card h3{margin:22px 0 6px;display:flex;align-items:center;gap:8px}
+#gdPage .gd-body>.info-card h3::before{content:"";width:6px;height:18px;border-radius:4px;background:linear-gradient(180deg,var(--ac1),var(--ac2))}
+#gdPage ::-webkit-scrollbar{width:0}
+</style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
 <header class="topbar">
@@ -2993,7 +3068,7 @@ function gdSavePdf(btn) {
     if (id === "adminAddProductSection") { const h = $("adminFormTitle"); if (h && h.textContent.trim()) title = h.textContent.replace(/^[^\p{L}\p{N}]+/u, "").trim() || title; }
     $("gdPageTitle").textContent = title; $("gdPageSub").textContent = cfg.sub;
     $("gdPageHTitle").textContent = title; $("gdPageHSub").textContent = cfg.sub; $("gdPageIcon").textContent = cfg.icon;
-    $("gdPageHero").style.setProperty("--g1", cfg.c[0]); $("gdPageHero").style.setProperty("--g2", cfg.c[1]);
+    $("gdPageHero").style.setProperty("--g1", cfg.c[0]); $("gdPageHero").style.setProperty("--g2", cfg.c[1]); shell.style.setProperty("--g1", cfg.c[0]); shell.style.setProperty("--g2", cfg.c[1]); shell.dataset.pg = id;
     window.gdPageRefresh();
     const wasOpen = !shell.hidden;
     shell.hidden = false; shell.scrollTop = 0; document.body.style.overflow = "hidden";
