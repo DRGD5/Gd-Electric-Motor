@@ -722,6 +722,17 @@ var b=document.getElementById("themeToggle");if(b){b.textContent=t==="dark"?"\u2
 window.gdToggleTheme=function(){gdApplyTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark")};
 document.addEventListener("DOMContentLoaded",function(){gdApplyTheme(document.documentElement.getAttribute("data-theme")||"light")});})();</script>
 <style id="gdThemeCss">
+.gd-hero{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;border-radius:24px;padding:18px;margin-bottom:14px;color:#fff;background:linear-gradient(135deg,var(--g1,#2563eb),var(--g2,#7c3aed));box-shadow:0 14px 34px rgba(0,0,0,.18)}
+.gd-hero::before,.gd-hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.13)}
+.gd-hero::before{width:150px;height:150px;right:-45px;top:-55px}
+.gd-hero::after{width:90px;height:90px;left:40%;bottom:-55px}
+.gd-hero-ic{position:relative;flex:0 0 auto;width:56px;height:56px;border-radius:18px;display:grid;place-items:center;font-size:1.8rem;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3)}
+.gd-hero-tx{position:relative;min-width:0}
+.gd-hero-tx b{display:block;font-size:1.2rem;line-height:1.2}
+.gd-hero-tx span{display:block;font-size:.82rem;opacity:.9;margin-top:3px}
+.gd-body>.in-page{margin:0;animation:gdUp .35s ease both}
+.gd-body .admin-section-toggle{display:none}
+@keyframes gdUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .ceo-page{position:fixed;inset:0;z-index:5000;background:var(--bg);color:var(--text);overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .ceo-page[hidden]{display:none}
 .ceo-top{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px;background:var(--bg);border-bottom:1px solid var(--line)}
@@ -2787,7 +2798,52 @@ function gdSavePdf(btn) {
     btn.disabled = false;
   };
 
+  // ----- full-page view for the admin tiles (services, visitors, sections, shops, add product, accounts) -----
+  const GD_PAGES = {
+    adminServicesSection: { icon: "🛠️", title: "Serivisi dukora", sub: "Ongeramo, hindura cyangwa ukureho serivisi", c: ["#f97316", "#ef4444"] },
+    adminStatsSection: { icon: "📊", title: "Abasuye website", sub: "Reba abantu basuye urubuga", c: ["#0ea5e9", "#2563eb"] },
+    adminSectionsSection: { icon: "🧩", title: "Ibice bya website", sub: "Gucunga ibice by'urubuga rwawe", c: ["#8b5cf6", "#ec4899"] },
+    adminShopsSection: { icon: "🏪", title: "Amaduka y'abakiriya", sub: "Emeza cyangwa wange amaduka", c: ["#10b981", "#14b8a6"] },
+    adminAddProductSection: { icon: "➕", title: "Ongeramo igicuruzwa", sub: "Uzuza amakuru y'igicuruzwa", c: ["#2563eb", "#7c3aed"] },
+    adminUsersSection: { icon: "👥", title: "Abakiriya (Accounts)", sub: "Abafite konti ku rubuga", c: ["#14b8a6", "#0ea5e9"] }
+  };
+  let gdPageCur = null, gdPageHome = null;
+  function gdPageShell() {
+    let p = $("gdPage"); if (p) return p;
+    p = document.createElement("div"); p.id = "gdPage"; p.className = "ceo-page"; p.hidden = true;
+    p.innerHTML = `<div class="ceo-top"><button type="button" class="ceo-back" onclick="gdClosePage()" aria-label="Back">←</button><div><h2 id="gdPageTitle"></h2><small id="gdPageSub"></small></div></div>
+      <div class="ceo-wrap"><div class="gd-hero" id="gdPageHero"><div class="gd-hero-ic" id="gdPageIcon"></div><div class="gd-hero-tx"><b id="gdPageHTitle"></b><span id="gdPageHSub"></span></div></div><div id="gdPageBody" class="gd-body"></div></div>`;
+    document.body.appendChild(p); return p;
+  }
+  function gdRestore() {
+    if (!gdPageCur) return;
+    gdPageCur.hidden = true; gdPageCur.classList.remove("in-page");
+    if (gdPageHome && gdPageHome.parentNode) gdPageHome.parentNode.replaceChild(gdPageCur, gdPageHome);
+    gdPageCur = null; gdPageHome = null;
+  }
+  window.gdOpenPage = id => {
+    const sec = document.getElementById(id), cfg = GD_PAGES[id]; if (!sec || !cfg) return;
+    const shell = gdPageShell(), body = $("gdPageBody");
+    if (gdPageCur && gdPageCur !== sec) gdRestore();
+    if (gdPageCur !== sec) { gdPageHome = document.createComment("gdpage"); sec.parentNode.insertBefore(gdPageHome, sec); body.appendChild(sec); gdPageCur = sec; }
+    sec.hidden = false; sec.classList.add("in-page");
+    let title = cfg.title;
+    if (id === "adminAddProductSection") { const h = $("adminFormTitle"); if (h && h.textContent.trim()) title = h.textContent.replace(/^[^\p{L}\p{N}]+/u, "").trim() || title; }
+    $("gdPageTitle").textContent = title; $("gdPageSub").textContent = cfg.sub;
+    $("gdPageHTitle").textContent = title; $("gdPageHSub").textContent = cfg.sub; $("gdPageIcon").textContent = cfg.icon;
+    $("gdPageHero").style.setProperty("--g1", cfg.c[0]); $("gdPageHero").style.setProperty("--g2", cfg.c[1]);
+    const wasOpen = !shell.hidden;
+    shell.hidden = false; shell.scrollTop = 0; document.body.style.overflow = "hidden";
+    if (!wasOpen) { try { history.pushState({ gdPage: 1 }, ""); } catch (e) {} }
+  };
+  window.gdClosePage = fromPop => {
+    const p = $("gdPage"); if (!p || p.hidden) return;
+    p.hidden = true; document.body.style.overflow = ""; gdRestore();
+    if (fromPop !== true) { try { if (history.state && history.state.gdPage) history.back(); } catch (e) {} }
+  };
+  window.addEventListener("popstate", () => { const p = $("gdPage"); if (p && !p.hidden) window.gdClosePage(true); });
   window.toggleAdminSection = id => {
+    if (GD_PAGES[id]) return window.gdOpenPage(id);
     const target = document.getElementById(id);
     if (!target) return;
     const willOpen = target.hidden;
@@ -2807,8 +2863,7 @@ function gdSavePdf(btn) {
   window.adminCancel = () => resetForm();
   window.openAddProductForm = () => {
     resetForm();
-    const productSection = document.getElementById("adminAddProductSection");
-    if (productSection) productSection.hidden = false;
+    window.gdOpenPage("adminAddProductSection");
     document.getElementById("adminForm").scrollIntoView({behavior:"smooth", block:"start"});
     document.getElementById("fNameRw").focus({preventScroll:true});
   };
@@ -2863,7 +2918,7 @@ function gdSavePdf(btn) {
     $("adminFormTitle").textContent = "Hindura igicuruzwa cy'ibanze";
     $("adminSaveBtn").textContent = "Bika impinduka";
     $("adminCancelBtn").hidden = false; msg("adminMsg", "");
-    const sec = $("adminAddProductSection"); if (sec) sec.hidden = false;
+    window.gdOpenPage("adminAddProductSection");
     $("adminForm").scrollIntoView({ behavior: "smooth", block: "start" });
   };
   window.adminToggleSample = async id => {
