@@ -950,6 +950,47 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
 #gdPage .gd-body>.info-card h3::before{content:"";width:6px;height:18px;border-radius:4px;background:linear-gradient(180deg,var(--ac1),var(--ac2))}
 #gdPage ::-webkit-scrollbar{width:0}
 </style>
+<style id="gdShortcutDesign">
+/* ===== Cart staff menu: rich colourful cards ===== */
+#cartStaffPanel .sc-head{display:flex;align-items:center;gap:12px;margin:2px 0 14px;padding:14px 16px;border-radius:22px;background:linear-gradient(135deg,rgba(37,99,235,.14),rgba(124,58,237,.12));border:1px solid rgba(124,138,255,.28)}
+#cartStaffPanel .sc-head-ic{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;font-size:1.45rem;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 8px 18px -4px rgba(37,99,235,.6);animation:scSpin 8s linear infinite}
+#cartStaffPanel .sc-head b{display:block;font-size:1.08rem}
+#cartStaffPanel .sc-head small{color:var(--muted);font-size:.8rem}
+@keyframes scSpin{0%,90%,100%{transform:rotate(0)}95%{transform:rotate(25deg)}}
+#cartStaffPanel .sc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 16px}
+#cartStaffPanel .admin-shortcut.sc{--c1:#2563eb;--c2:#06b6d4;position:relative;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:10px;min-height:150px;padding:16px 14px 14px;border-radius:26px;color:#fff;text-align:left;border:1px solid rgba(255,255,255,.22);background:linear-gradient(145deg,var(--c1),var(--c2));box-shadow:0 16px 30px -12px color-mix(in srgb,var(--c1) 85%,transparent),inset 0 1px 0 rgba(255,255,255,.35);animation:gdUp .5s ease both;transition:transform .18s,box-shadow .18s}
+#cartStaffPanel .admin-shortcut.sc[hidden]{display:none!important}
+#cartStaffPanel .admin-shortcut.sc:active{transform:scale(.95)}
+#cartStaffPanel .admin-shortcut.sc::before{content:"";position:absolute;z-index:-1;right:-38px;top:-38px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.17)}
+#cartStaffPanel .admin-shortcut.sc::after{content:"";position:absolute;z-index:-1;left:-24px;bottom:-46px;width:110px;height:110px;border-radius:50%;background:rgba(0,0,0,.12)}
+#cartStaffPanel .sc:nth-child(2){animation-delay:.04s}#cartStaffPanel .sc:nth-child(3){animation-delay:.08s}#cartStaffPanel .sc:nth-child(4){animation-delay:.12s}#cartStaffPanel .sc:nth-child(5){animation-delay:.16s}#cartStaffPanel .sc:nth-child(6){animation-delay:.2s}#cartStaffPanel .sc:nth-child(7){animation-delay:.24s}#cartStaffPanel .sc:nth-child(8){animation-delay:.28s}
+#cartStaffPanel .sc-ic{width:52px;height:52px;border-radius:18px;display:grid;place-items:center;font-size:1.65rem;flex:0 0 auto;background:rgba(255,255,255,.24);border:1px solid rgba(255,255,255,.4);backdrop-filter:blur(6px);box-shadow:0 8px 16px -6px rgba(0,0,0,.35);animation:gdFloat 3.4s ease-in-out infinite}
+#cartStaffPanel .sc:nth-child(even) .sc-ic{animation-delay:-1.4s}
+#cartStaffPanel .sc-tx{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+#cartStaffPanel .sc-t{font-size:.98rem;font-weight:900;line-height:1.2;overflow-wrap:anywhere;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+#cartStaffPanel .sc-s{font-size:.72rem;font-weight:600;opacity:.88;line-height:1.25}
+#cartStaffPanel .sc-badges{position:absolute;top:12px;right:12px;display:flex;gap:5px;flex-direction:column;align-items:flex-end}
+#cartStaffPanel .sc-badges .users-count{margin:0;font-size:.78rem;font-weight:900;padding:3px 10px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.28);border:2px solid rgba(255,255,255,.85)}
+#cartStaffPanel .sc-badges .users-count[hidden]{display:none}
+#cartStaffPanel .sc .shortcut-arrow{position:absolute;right:12px;bottom:12px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:1.2rem;line-height:1;background:rgba(255,255,255,.26);border:1px solid rgba(255,255,255,.45);transition:transform .2s}
+#cartStaffPanel .sc:active .shortcut-arrow{transform:translateX(4px)}
+/* wide cards */
+#cartStaffPanel .sc.sc-wide{grid-column:1/-1;flex-direction:row;align-items:center;min-height:96px;padding:14px 60px 14px 14px;gap:14px}
+#cartStaffPanel .sc.sc-wide .sc-badges{position:static;flex-direction:row;margin-right:4px}
+#cartStaffPanel .sc.sc-wide .shortcut-arrow{top:50%;bottom:auto;transform:translateY(-50%)}
+#cartStaffPanel .sc.sc-wide:active .shortcut-arrow{transform:translateY(-50%) translateX(4px)}
+/* colours */
+#cartStaffPanel .sc-chat{--c1:#2563eb;--c2:#06b6d4}
+#cartStaffPanel .sc-orders{--c1:#ef4444;--c2:#f97316}
+#cartStaffPanel .sc-req{--c1:#8b5cf6;--c2:#ec4899}
+#cartStaffPanel .sc-svc{--c1:#f59e0b;--c2:#ea580c}
+#cartStaffPanel .sc-stats{--c1:#0ea5e9;--c2:#6366f1}
+#cartStaffPanel .sc-sec{--c1:#10b981;--c2:#0d9488}
+#cartStaffPanel .sc-shop{--c1:#ec4899;--c2:#f43f5e}
+#cartStaffPanel .sc-add{--c1:#7c3aed;--c2:#2563eb}
+#cartStaffPanel .sc-add .sc-ic{font-size:1.9rem;background:rgba(255,255,255,.3)}
+@media(max-width:480px){#cartStaffPanel .sc-grid{gap:10px}#cartStaffPanel .admin-shortcut.sc{min-height:140px;padding:14px 12px 12px;border-radius:24px}#cartStaffPanel .sc-t{font-size:.92rem}}
+</style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
 <header class="topbar">
@@ -1017,15 +1058,16 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
   <section id="view-cart" class="view">
     <h1 class="page-title" data-en="Your cart 🛒" data-rw="Agaseke kawe 🛒">Your cart 🛒</h1>
     <div id="cartStaffPanel" hidden>
-      <div class="admin-shortcuts" aria-label="Staff menu">
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminChatSection')"><span>💬 Chat n'abakiriya <span class="users-count count-total" id="chatTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span>📦 Ibyatumijwe (Orders) <span class="users-count count-new" id="ordersNewBadge" hidden>0</span> <span class="users-count count-total" id="ordersTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminRequestsSection')"><span>🛒 Ubusabe bwa serivisi <span class="users-count count-new" id="reqNewBadge" hidden>0</span> <span class="users-count count-total" id="reqTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminServicesSection')"><span>🛠️ Serivisi dukora <span class="users-count count-total" id="svcTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminStatsSection')"><span>📊 Abasuye website <span class="users-count count-new" id="statsTodayBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span>🧩 Ibice bya website</span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminShopsSection')"><span>🏪 Amaduka y'abakiriya <span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span>➕ Ongeramo igicuruzwa</span><span class="shortcut-arrow">›</span></button>
+      <div class="sc-head"><span class="sc-head-ic">⚙️</span><div><b>Ibikorwa by'akazi</b><small>Hitamo icyo ushaka gukora</small></div></div>
+      <div class="admin-shortcuts sc-grid" aria-label="Staff menu">
+        <button class="admin-shortcut sc sc-chat sc-wide" type="button" onclick="toggleAdminSection('adminChatSection')"><span class="sc-ic">💬</span><span class="sc-tx"><span class="sc-t">Chat n'abakiriya</span><span class="sc-s">Soma ubutumwa usubize</span></span><span class="sc-badges"><span class="users-count count-total" id="chatTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut sc sc-orders" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span class="sc-ic">📦</span><span class="sc-tx"><span class="sc-t">Ibyatumijwe (Orders)</span><span class="sc-s">Komande z'abakiriya</span></span><span class="sc-badges"><span class="users-count count-new" id="ordersNewBadge" hidden>0</span><span class="users-count count-total" id="ordersTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut sc sc-req" type="button" onclick="toggleAdminSection('adminRequestsSection')"><span class="sc-ic">🛒</span><span class="sc-tx"><span class="sc-t">Ubusabe bwa serivisi</span><span class="sc-s">Kurikirana ubusabe</span></span><span class="sc-badges"><span class="users-count count-new" id="reqNewBadge" hidden>0</span><span class="users-count count-total" id="reqTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut sc sc-svc" type="button" onclick="toggleAdminSection('adminServicesSection')"><span class="sc-ic">🛠️</span><span class="sc-tx"><span class="sc-t">Serivisi dukora</span><span class="sc-s">Ongeramo cyangwa uhindure</span></span><span class="sc-badges"><span class="users-count count-total" id="svcTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut sc sc-stats" type="button" onclick="toggleAdminSection('adminStatsSection')"><span class="sc-ic">📊</span><span class="sc-tx"><span class="sc-t">Abasuye website</span><span class="sc-s">Reba abasuye urubuga</span></span><span class="sc-badges"><span class="users-count count-new" id="statsTodayBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut sc sc-sec" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span class="sc-ic">🧩</span><span class="sc-tx"><span class="sc-t">Ibice bya website</span><span class="sc-s">Slides n'ibice by'urubuga</span></span><span class="sc-badges"></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut sc sc-shop" type="button" onclick="toggleAdminSection('adminShopsSection')"><span class="sc-ic">🏪</span><span class="sc-tx"><span class="sc-t">Amaduka y'abakiriya</span><span class="sc-s">Emeza cyangwa wange</span></span><span class="sc-badges"><span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut sc sc-add sc-wide" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span class="sc-ic">➕</span><span class="sc-tx"><span class="sc-t">Ongeramo igicuruzwa</span><span class="sc-s">Shyiraho igicuruzwa gishya</span></span><span class="sc-badges"></span><span class="shortcut-arrow">›</span></button>
       </div>
       <div class="info-card admin-section pl-entry" id="adminProductListSection">
         <div class="admin-products-heading"><h2>Ibicuruzwa biri ku rubuga</h2><div class="btns"><button class="secondary" type="button" onclick="gdOpenPage('adminListWrap')">👁️ Reba ibicuruzwa</button><button class="primary" type="button" onclick="openAddProductForm()">＋ Ongeramo igicuruzwa</button></div></div>
@@ -1268,6 +1310,8 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
 
   // Site-wide bilingual text for labels that were previously hard-coded in Kinyarwanda.
   const RW_EN = {
+    "Ibikorwa by'akazi":"Work tools", "Hitamo icyo ushaka gukora":"Choose what you want to do", "Soma ubutumwa usubize":"Read and reply to messages", "Komande z'abakiriya":"Customer orders", "Kurikirana ubusabe":"Track requests", "Ongeramo cyangwa uhindure":"Add or edit", "Reba abasuye urubuga":"See who visited", "Slides n'ibice by'urubuga":"Slides and page sections", "Emeza cyangwa wange":"Approve or reject", "Shyiraho igicuruzwa gishya":"Post a new product",
+
     "Ahabanza":"Home", "Ibicuruzwa":"Products", "Konti":"Account", "Byabitswe":"Saved", "Agaseke":"Cart", "Admin":"Admin",
     "Ibicuruzwa wabikije":"Saved products", "Ibicuruzwa wabikije ♡":"Saved products ♡", "Nta burenganzira":"Access denied",
     "Abantu bose bafunguye konti. Umuhe inshingano hanyuma ukande \"Bika\".":"All registered accounts. Assign a role, then click \"Save\".",
