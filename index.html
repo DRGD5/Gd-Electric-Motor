@@ -722,6 +722,27 @@ var b=document.getElementById("themeToggle");if(b){b.textContent=t==="dark"?"\u2
 window.gdToggleTheme=function(){gdApplyTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark")};
 document.addEventListener("DOMContentLoaded",function(){gdApplyTheme(document.documentElement.getAttribute("data-theme")||"light")});})();</script>
 <style id="gdThemeCss">
+#adminUsers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+#adminUsers .user-card{margin-top:0;padding:12px;border-left:0;border-top:5px solid #64748b;border-radius:20px;display:flex;flex-direction:column;box-shadow:0 8px 20px rgba(0,0,0,.18);animation:gdUp .4s ease both}
+#adminUsers .user-card.role-staff{border-top-color:#2563eb}
+#adminUsers .user-card.role-technician{border-top-color:#ea580c}
+#adminUsers .user-card.role-sales{border-top-color:#16a34a}
+#adminUsers .user-card.role-manager{border-top-color:#7c3aed}
+.u-top{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:8px}
+.u-avatar{width:40px;height:40px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:1.05rem;background:linear-gradient(135deg,#64748b,#94a3b8)}
+.role-staff .u-avatar{background:linear-gradient(135deg,#2563eb,#38bdf8)}
+.role-technician .u-avatar{background:linear-gradient(135deg,#ea580c,#f59e0b)}
+.role-sales .u-avatar{background:linear-gradient(135deg,#16a34a,#84cc16)}
+.role-manager .u-avatar{background:linear-gradient(135deg,#7c3aed,#3376ea)}
+#adminUsers .role-badge{margin:0;font-size:.66rem;padding:3px 8px;text-align:center}
+.u-name{font-size:.95rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-card small.u-line{font-size:.74rem;line-height:1.35}
+.u-actions{margin-top:auto;padding-top:6px}
+#adminUsers .user-card select,#adminUsers .user-card input{padding:9px 10px;font-size:.8rem;margin-top:6px}
+#adminUsers .user-card button{padding:10px;font-size:.82rem;margin-top:8px}
+.u-chips{display:flex;gap:6px;overflow-x:auto;margin:12px 0 0;padding-bottom:2px}
+.u-chip{flex:0 0 auto;width:auto;margin:0;border:1.5px solid rgba(45,212,191,.5);background:rgba(255,255,255,.06);color:#e2e8f0;border-radius:999px;padding:7px 12px;font-weight:800;font-size:.78rem}
+.u-chip.on{background:#2dd4bf;color:#032b28;border-color:#2dd4bf}
 .gd-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
 .gd-chips:empty{display:none}
 .gd-chips span{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:3px 10px;font-size:.78rem;font-weight:800}
@@ -938,6 +959,7 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
         <div class="users-head"><h2>👥 Abakiriya (Accounts)</h2><span class="users-count" id="adminUsersCount">0</span></div>
         <p class="users-sub">Abantu bose bafunguye konti. Umuhe inshingano hanyuma ukande "Bika".</p>
         <input id="userSearch" class="users-search" placeholder="🔎 Shakisha izina, email cyangwa telefoni..." oninput="renderAdminUsers()">
+        <div class="u-chips" id="adminUsersChips"></div>
         <div id="adminUsers"></div>
       </div>
 
@@ -1945,22 +1967,33 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   }
 
   const ROLE_OPTIONS = [["customer","Umukiriya"],["staff","Umukozi (Staff)"],["technician","Umutekinisiye"],["sales","Ushinzwe kugurisha"],["manager","Umuyobozi (Manager)"]];
+  let usersRoleFilter = "all";
+  window.setUserRoleFilter = r => { usersRoleFilter = r; renderAdminUsers(); };
   function renderAdminUsers() {
     const el = $("adminUsers"); if (!el) return;
+    if (window.gdPageRefresh) window.gdPageRefresh();
     const qv = (($("userSearch") || {}).value || "").trim().toLowerCase();
-    const list = allUsers.filter(u => !qv || [u.name, u.email, u.phone].some(x => (x || "").toLowerCase().includes(qv)));
-    const c = $("adminUsersCount"); if (c) c.textContent = qv ? list.length + " / " + allUsers.length : String(allUsers.length);
+    const roleOf = u => u.role || "customer";
+    const list = allUsers.filter(u => (usersRoleFilter === "all" || roleOf(u) === usersRoleFilter) && (!qv || [u.name, u.email, u.phone].some(x => (x || "").toLowerCase().includes(qv))));
+    const c = $("adminUsersCount"); if (c) c.textContent = (qv || usersRoleFilter !== "all") ? list.length + " / " + allUsers.length : String(allUsers.length);
     const bc = $("adminUsersBtnCount"); if (bc) bc.textContent = String(allUsers.length);
     const label = r => (ROLE_OPTIONS.find(x => x[0] === r) || ROLE_OPTIONS[0])[1];
-    el.innerHTML = list.length ? list.map(u => { const r = u.role || "customer"; return `
+    const short = { customer: "👤 Abakiriya", staff: "🧑‍💼 Staff", technician: "🔧 Tekinisiye", sales: "💼 Sales", manager: "⭐ Manager" };
+    const chips = $("adminUsersChips");
+    if (chips) chips.innerHTML = [["all", "👥 Bose"], ...Object.entries(short)].map(([k, v]) => `<button type="button" class="u-chip ${usersRoleFilter === k ? "on" : ""}" onclick="setUserRoleFilter('${k}')">${v} · ${k === "all" ? allUsers.length : allUsers.filter(u => roleOf(u) === k).length}</button>`).join("");
+    el.innerHTML = list.length ? list.map(u => { const r = roleOf(u); return `
       <div class="user-card role-${esc(r)}">
-        <strong>${esc(u.name || "(nta zina)")}</strong><span class="role-badge">${esc(label(r))}</span>
-        <small>${esc(u.email || "")}${u.phone ? " · " + esc(u.phone) : ""}</small>
-        <small>${u.createdAt ? "Yafunguye: " + new Date(u.createdAt).toLocaleDateString() : ""}</small>
-        <select id="role_${esc(u.uid)}">${ROLE_OPTIONS.map(o => `<option value="${o[0]}" ${r === o[0] ? "selected" : ""}>${o[1]}</option>`).join("")}</select>
-        <input id="duty_${esc(u.uid)}" placeholder="Inshingano (urugero: gukurikirana orders)" value="${esc(u.duties || "")}">
-        <button onclick="adminSaveUserRole('${esc(u.uid)}')">💾 Bika</button>
-      </div>`; }).join("") : '<p style="color:#cbd5e1">Nta konti zibonetse.</p>';
+        <div class="u-top"><div class="u-avatar">${esc((u.name || u.email || "?").trim().charAt(0).toUpperCase())}</div><span class="role-badge">${esc(label(r))}</span></div>
+        <strong class="u-name">${esc(u.name || "(nta zina)")}</strong>
+        <small class="u-line">📧 ${esc(u.email || "—")}</small>
+        ${u.phone ? `<small class="u-line">📞 ${esc(u.phone)}</small>` : ""}
+        <small class="u-line">${u.createdAt ? "📅 " + new Date(u.createdAt).toLocaleDateString() : ""}</small>
+        <div class="u-actions">
+          <select id="role_${esc(u.uid)}">${ROLE_OPTIONS.map(o => `<option value="${o[0]}" ${r === o[0] ? "selected" : ""}>${o[1]}</option>`).join("")}</select>
+          <input id="duty_${esc(u.uid)}" placeholder="Inshingano..." value="${esc(u.duties || "")}">
+          <button onclick="adminSaveUserRole('${esc(u.uid)}')">💾 Bika</button>
+        </div>
+      </div>`; }).join("") : '<p style="color:#cbd5e1;grid-column:1/-1">Nta konti zibonetse.</p>';
   }
   window.renderAdminUsers = renderAdminUsers;
   window.adminSaveUserRole = async uid => {
@@ -2823,7 +2856,8 @@ function gdSavePdf(btn) {
       stats: () => { const live = allOrders.filter(o => o.status !== "cancelled"); return ["🆕 " + allOrders.filter(o => o.status === "new").length + " " + t("new", "nshya"), "📦 " + allOrders.length + " " + t("total", "zose"), "💰 " + money(live.reduce((a, o) => a + (Number(o.total) || 0), 0))]; } },
     adminRequestsSection: { icon: "🛠️", title: "Ubusabe bwa serivisi", sub: "Reba ubusabe kandi uhindure uko buhagaze", c: ["#8b5cf6", "#ec4899"],
       stats: () => ["🆕 " + allServiceRequests.filter(r => r.status === "new").length + " " + t("new", "bushya"), "🛠️ " + allServiceRequests.length + " " + t("total", "bwose"), "✅ " + allServiceRequests.filter(r => r.status === "done").length + " " + t("done", "bwarangiye")] },
-    adminUsersSection: { icon: "👥", title: "Abakiriya (Accounts)", sub: "Abafite konti ku rubuga", c: ["#14b8a6", "#0ea5e9"] }
+    adminUsersSection: { icon: "👥", title: "Abakiriya (Accounts)", sub: "Abafite konti ku rubuga", c: ["#14b8a6", "#0ea5e9"],
+      stats: () => { const st = allUsers.filter(u => (u.role || "customer") !== "customer").length; return ["👥 " + allUsers.length + " " + t("accounts", "konti"), "🧑‍💼 " + st + " " + t("staff", "abakozi"), "🛒 " + (allUsers.length - st) + " " + t("customers", "abakiriya")]; } }
   };
   let gdPageCur = null, gdPageHome = null;
   function gdPageShell() {
