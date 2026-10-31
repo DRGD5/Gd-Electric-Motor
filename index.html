@@ -901,6 +901,11 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminChatSection')"><span>💬 Chat n'abakiriya <span class="users-count count-total" id="chatTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span>📦 Ibyatumijwe (Orders) <span class="users-count count-new" id="ordersNewBadge" hidden>0</span> <span class="users-count count-total" id="ordersTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminRequestsSection')"><span>🛒 Ubusabe bwa serivisi <span class="users-count count-new" id="reqNewBadge" hidden>0</span> <span class="users-count count-total" id="reqTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminServicesSection')"><span>🛠️ Serivisi dukora <span class="users-count count-total" id="svcTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminStatsSection')"><span>📊 Abasuye website <span class="users-count count-new" id="statsTodayBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span>🧩 Ibice bya website</span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminShopsSection')"><span>🏪 Amaduka y'abakiriya <span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span>➕ Ongeramo igicuruzwa</span><span class="shortcut-arrow">›</span></button>
       </div>
       <div class="info-card admin-section" id="adminChatSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminChatSection')"><h2>💬 Chat n'abakiriya</h2><span class="shortcut-arrow">⌃</span></button>
@@ -986,12 +991,7 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
       </div>
 
       <div class="admin-shortcuts" aria-label="Admin menu">
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminServicesSection')"><span>🛠️ Serivisi dukora <span class="users-count count-total" id="svcTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="openCeoPage('adminCeoSection')"><span>👑 CEO · Abakiriya ba mbere</span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminStatsSection')"><span>📊 Abasuye website <span class="users-count count-new" id="statsTodayBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span>🧩 Ibice bya website</span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminShopsSection')"><span>🏪 Amaduka y'abakiriya <span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span>➕ Ongeramo igicuruzwa</span><span class="shortcut-arrow">›</span></button>
       </div>
 
       <div class="info-card admin-section" id="adminServicesSection" hidden>
@@ -1205,7 +1205,8 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
     "Emeza":"Approve", "Hagarika":"Suspend", "Reba":"View", "Itegereje":"Pending", "Yemejwe":"Approved", "Bika inshingano":"Save role",
     "Inshingano (urugero: gukurikirana orders)":"Duties (e.g. follow up orders)", "Umukiriya (Customer)":"Customer", "Umukozi (Staff)":"Staff",
     "Umutekinisiye":"Technician", "Ushinzwe kugurisha":"Sales", "Umuyobozi (Manager)":"Manager", "Abakiriya bose:":"All customers:",
-    "Ongeramo iduka":"Add a shop", "Fungura iduka":"Open a shop", "Ibisobanuro by'iduka":"Shop description", "Icyiciro cy'igicuruzwa":"Product category", "Igiciro cya kera":"Previous price"
+    "Ongeramo iduka":"Add a shop", "Fungura iduka":"Open a shop", "Ibisobanuro by'iduka":"Shop description", "Icyiciro cy'igicuruzwa":"Product category", "Igiciro cya kera":"Previous price",
+    "CEO · Abakiriya ba mbere":"CEO · Top customers", "Abakiriya ba mbere":"Top customers", "Bose":"All", "Abakiriya":"Customers", "Tekinisiye":"Technicians", "Ongeramo, hindura cyangwa ukureho serivisi":"Add, edit or remove services", "Reba abantu basuye urubuga":"See who visited the website", "Gucunga ibice by'urubuga rwawe":"Manage your website sections", "Emeza cyangwa wange amaduka":"Approve or reject shops", "Uzuza amakuru y'igicuruzwa":"Fill in the product details", "Abafite konti ku rubuga":"People with an account on the website", "Soma ubutumwa kandi usubize abakiriya":"Read messages and reply to customers", "Hindura aho komande igeze":"Update the order status", "Reba ubusabe kandi uhindure uko buhagaze":"View requests and update their status", "(nta zina)":"(no name)", "Inshingano...":"Duties..."
   };
   const EN_RW = Object.fromEntries(Object.entries(RW_EN).map(([rw,en]) => [en,rw]));
   function translatePage() {
@@ -1749,7 +1750,8 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     renderCustomSections(); renderShopsHome(); renderAdminShops();
     $("adminDenied").hidden = !(currentUser && !staff);
     $("adminPanel").hidden = !staff;
-    { const sp = $("cartStaffPanel"); if (sp) sp.hidden = !(perms.has("chats") || perms.has("orders") || perms.has("requests")); }
+    { const ah = document.querySelector("#view-admin .admin-title-row .page-title"); if (ah) ah.textContent = isAdminUser(currentUser) ? "👑 Super Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi"); }
+    { const sp = $("cartStaffPanel"); if (sp) sp.hidden = !["chats", "orders", "requests", "services", "stats", "sections", "shops", "products"].some(k => perms.has(k)); }
     const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection"], shops: ["adminShopsSection"], stats: ["adminStatsSection"], chats: ["adminChatSection"], ceo: ["adminCeoSection"] };
     Object.keys(map).forEach(perm => {
       const ok = perms.has(perm);
@@ -1883,11 +1885,11 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
         <div class="acc-head">
           <label class="acc-avatar" for="accPhotoInput" title="${t("Change photo", "Hindura ifoto")}">${p.photoURL ? `<img src="${esc(avUrl(p.photoURL, 200))}" alt="">` : `<span>${esc((p.name || currentUser.email || "?").trim().charAt(0).toUpperCase())}</span>`}<i class="acc-cam">📷</i></label>
           <input id="accPhotoInput" type="file" accept="image/*" hidden onchange="accUploadPhoto(this)">
-          <div><h2>${esc(p.name || currentUser.email)}</h2><p>${esc(currentUser.email)}${p.phone ? "<br>" + esc(p.phone) : ""}</p></div>
+          <div><h2>${esc(p.name || currentUser.email)}</h2><p>${esc(currentUser.email)}${p.phone ? "<br>" + esc(p.phone) : ""}</p>${admin ? '<span class="role-badge" style="margin:6px 0 0;background:linear-gradient(135deg,#f59e0b,#ef4444)">👑 Super Admin</span>' : ""}</div>
         </div>
         <div id="accPhotoMsg" class="status-msg"></div>
         <button class="secondary" onclick="accLogout()">${t("Sign out", "Sohoka")}</button>
-        ${perms.size ? `<button class="primary" onclick="showView('admin')">${admin ? "Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi")}</button>` : ""}
+        ${perms.size ? `<button class="primary" onclick="showView('admin')">${admin ? "👑 Super Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi")}</button>` : ""}
       </div>
       ${admin ? "" : `<div class="info-card"><h2>${t("My orders / Track order", "Ibyo watumije / Kurikirana commande")}</h2>${ordersHtml}</div><div class="info-card"><h2>${t("My service requests", "Ubusabe bwanjye bwa serivisi")}</h2>${requestsHtml}</div>`}`;
   }
@@ -2033,7 +2035,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const label = r => (ROLE_OPTIONS.find(x => x[0] === r) || ROLE_OPTIONS[0])[1];
     const short = { customer: "👤 Abakiriya", staff: "🧑‍💼 Staff", technician: "🔧 Tekinisiye", sales: "💼 Sales", manager: "⭐ Manager" };
     const chips = $("adminUsersChips");
-    if (chips) chips.innerHTML = [["all", "👥 Bose"], ...Object.entries(short)].map(([k, v]) => `<button type="button" class="u-chip ${usersRoleFilter === k ? "on" : ""}" onclick="setUserRoleFilter('${k}')">${v} · ${k === "all" ? allUsers.length : allUsers.filter(u => roleOf(u) === k).length}</button>`).join("");
+    if (chips) chips.innerHTML = [["all", "👥 Bose"], ...Object.entries(short)].map(([k, v]) => `<button type="button" class="u-chip ${usersRoleFilter === k ? "on" : ""}" onclick="setUserRoleFilter('${k}')">${v} <b style="opacity:.8">${k === "all" ? allUsers.length : allUsers.filter(u => roleOf(u) === k).length}</b></button>`).join("");
     el.innerHTML = list.length ? list.map(u => { const r = roleOf(u); return `
       <div class="user-card role-${esc(r)}"${u.createdAt ? ` title="Yafunguye: ${esc(new Date(u.createdAt).toLocaleDateString())}"` : ""}>
         <div class="u-top"><div class="u-avatar">${u.photoURL ? `<img src="${esc(avUrl(u.photoURL, 96))}" alt="" loading="lazy">` : esc((u.name || u.email || "?").trim().charAt(0).toUpperCase())}</div><div class="u-id"><strong class="u-name">${esc(u.name || "(nta zina)")}</strong><span class="role-badge">${esc(label(r))}</span></div></div>
