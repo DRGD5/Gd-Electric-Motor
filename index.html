@@ -1778,7 +1778,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     if (perms.has("requests")) listenerUnsubs.push(onSnapshot(collection(db, "serviceRequests"), snap => { allServiceRequests = sortNew(snap); renderAdminServiceRequests(); renderCeo(); }, err => console.error("Service requests:", err)));
     if (!owner) listenerUnsubs.push(onSnapshot(mine("serviceRequests"), snap => { myServiceRequests = sortNew(snap); renderAccount(); }, err => console.error("My service requests:", err)));
     if (perms.has("users")) listenerUnsubs.push(onSnapshot(collection(db, "users"), snap => {
-      allUsers = snap.docs.map(d => ({ uid: d.id, ...d.data() })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      allUsers = snap.docs.map(d => ({ uid: d.id, ...d.data() })).filter(u => !isAdminUser(u)).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
       renderAdminUsers();
     }, err => { console.error("Users:", err); const el = $("adminUsers"); if (el) el.innerHTML = '<p style="color:var(--danger)">Ntibishoboka kubona abakiriya. Reba amategeko ya Firestore (rules) kuri collection "users".</p>'; }));
     renderAdminList(); renderAccount(); renderAdminOrders(); renderAdminServiceRequests(); renderCart();
@@ -1888,7 +1888,13 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     msg("accPhotoMsg", t("Uploading photo...", "Ndimo kohereza ifoto..."));
     try {
       const url = await uploadToCloudinary(f);
-      await updateDoc(doc(db, "users", currentUser.uid), { photoURL: url });
+      const ref = doc(db, "users", currentUser.uid);
+      try { await updateDoc(ref, { photoURL: url }); }
+      catch (e1) {
+        if (e1.code !== "not-found") throw e1;
+        // older accounts have no profile document yet: create it with the photo
+        await setDoc(ref, { name: (profile && profile.name) || currentUser.displayName || "", phone: (profile && profile.phone) || "", email: currentUser.email || "", role: "customer", createdAt: Date.now(), photoURL: url });
+      }
       if (profile) profile.photoURL = url;
       renderAccount();
     } catch (err) { msg("accPhotoMsg", t("Photo not saved: ", "Ifoto ntibitswe: ") + (err.code || err.message), "err"); }
