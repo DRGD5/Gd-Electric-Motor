@@ -722,6 +722,18 @@ var b=document.getElementById("themeToggle");if(b){b.textContent=t==="dark"?"\u2
 window.gdToggleTheme=function(){gdApplyTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark")};
 document.addEventListener("DOMContentLoaded",function(){gdApplyTheme(document.documentElement.getAttribute("data-theme")||"light")});})();</script>
 <style id="gdThemeCss">
+.gd-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.gd-chips:empty{display:none}
+.gd-chips span{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:3px 10px;font-size:.78rem;font-weight:800}
+.gd-body .admin-row{border-left:4px solid #64748b;border-radius:18px;animation:gdUp .4s ease both}
+.gd-body .admin-row:nth-child(2){animation-delay:.05s}.gd-body .admin-row:nth-child(3){animation-delay:.1s}.gd-body .admin-row:nth-child(4){animation-delay:.15s}.gd-body .admin-row:nth-child(5){animation-delay:.2s}
+.gd-body .admin-row[data-st="new"]{border-left-color:#ef4444}
+.gd-body .admin-row[data-st="processing"]{border-left-color:#3b82f6}
+.gd-body .admin-row[data-st="ready"]{border-left-color:#8b5cf6}
+.gd-body .admin-row[data-st="done"]{border-left-color:#10b981}
+.gd-body .admin-row[data-st="cancelled"]{border-left-color:#94a3b8;opacity:.75}
+.st-pill{display:inline-block;padding:3px 11px;border-radius:999px;font-size:.78rem;font-weight:800;color:#fff;background:#64748b}
+.st-new{background:#ef4444}.st-processing{background:#3b82f6}.st-ready{background:#8b5cf6}.st-done{background:#10b981}.st-cancelled{background:#94a3b8}
 .gd-hero{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;border-radius:24px;padding:18px;margin-bottom:14px;color:#fff;background:linear-gradient(135deg,var(--g1,#2563eb),var(--g2,#7c3aed));box-shadow:0 14px 34px rgba(0,0,0,.18)}
 .gd-hero::before,.gd-hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.13)}
 .gd-hero::before{width:150px;height:150px;right:-45px;top:-55px}
@@ -1913,16 +1925,16 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   }
 
   function renderAdminOrders() {
-    updateAdminBadges();
+    updateAdminBadges(); if (window.gdPageRefresh) window.gdPageRefresh();
     const el = $("adminOrders"); if (!el) return;
     const statuses = ["new", "processing", "ready", "done", "cancelled"];
     el.innerHTML = allOrders.length ? allOrders.map(o => `
-      <div class="admin-row" style="align-items:flex-start;flex-wrap:wrap">
+      <div class="admin-row" data-st="${esc(o.status || "new")}" style="align-items:flex-start;flex-wrap:wrap">
         <div class="cart-details">
           <strong>${esc(o.name || "")} · ${esc(o.phone || "")}</strong>
           <small>${esc(o.email || "Guest order")} · ${new Date(o.createdAt || 0).toLocaleString()}</small>
           <div style="margin-top:6px;color:var(--muted);font-size:.88rem">${(o.items || []).map(i => esc(i.name) + " × " + Number(i.qty)).join("<br>")}</div>
-          <div style="margin-top:6px;font-weight:900"><span style="color:var(--green)">${money(o.total || 0)}</span> · ${esc(statusLabel(o.status))}</div>
+          <div style="margin-top:6px;font-weight:900"><span style="color:var(--green)">${money(o.total || 0)}</span> · <span class="st-pill st-${esc(o.status || "new")}">${esc(statusLabel(o.status))}</span></div>
           <div class="btns" style="margin-top:8px"><button class="secondary" onclick="adminEditOrderPrice('${esc(o.id)}')">✏️ Hindura igiciro</button>${o.status !== "cancelled" ? `<button class="primary" onclick="gdPrintReceipt('${esc(o.id)}')">🧾 Receipt / Invoice</button>` : ""}${isAdminUser(currentUser) ? `<button class="secondary danger-btn" onclick="adminDeleteOrder('${esc(o.id)}')">🗑️ Siba</button>` : ""}</div>
           ${o.cancelReason ? `<small>${t("Cancellation reason", "Impamvu yo guhagarika")}: ${esc(o.cancelReason)}</small>` : ""}
         </div>
@@ -1959,15 +1971,15 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   };
 
   function renderAdminServiceRequests() {
-    updateAdminBadges();
+    updateAdminBadges(); if (window.gdPageRefresh) window.gdPageRefresh();
     const el = $("adminServiceRequests"); if (!el) return;
     const statuses = ["new", "processing", "ready", "done", "cancelled"];
     el.innerHTML = allServiceRequests.length ? allServiceRequests.map(r => `
-      <div class="admin-row" style="align-items:flex-start;flex-wrap:wrap">
+      <div class="admin-row" data-st="${esc(r.status || "new")}" style="align-items:flex-start;flex-wrap:wrap">
         <div class="cart-details"><strong>${esc(r.serviceName || "Service")}</strong>
           <small>${esc(r.name || "")} · ${esc(r.phone || "")} · ${esc(r.email || "")} · ${new Date(r.createdAt || 0).toLocaleString()}</small>
           ${r.details ? `<p>${esc(r.details)}</p>` : ""}
-          <div style="font-weight:900">${esc(statusLabel(r.status))}</div>
+          <div style="font-weight:900"><span class="st-pill st-${esc(r.status || "new")}">${esc(statusLabel(r.status))}</span></div>
           ${r.status !== "cancelled" ? `<div class="btns" style="margin-top:8px"><button class="primary" onclick="gdPrintServiceReceipt('${esc(r.id)}')">🧾 Receipt / Invoice</button>${isAdminUser(currentUser) ? `<button class="secondary danger-btn" onclick="adminDeleteServiceRequest(\'${esc(r.id)}\')">🗑️ Siba</button>` : ""}</div>` : ""}
           ${r.cancelReason ? `<small>Impamvu: ${esc(r.cancelReason)}</small>` : ""}
         </div>
@@ -2805,6 +2817,12 @@ function gdSavePdf(btn) {
     adminSectionsSection: { icon: "🧩", title: "Ibice bya website", sub: "Gucunga ibice by'urubuga rwawe", c: ["#8b5cf6", "#ec4899"] },
     adminShopsSection: { icon: "🏪", title: "Amaduka y'abakiriya", sub: "Emeza cyangwa wange amaduka", c: ["#10b981", "#14b8a6"] },
     adminAddProductSection: { icon: "➕", title: "Ongeramo igicuruzwa", sub: "Uzuza amakuru y'igicuruzwa", c: ["#2563eb", "#7c3aed"] },
+    adminChatSection: { icon: "💬", title: "Chat n'abakiriya", sub: "Soma ubutumwa kandi usubize abakiriya", c: ["#2563eb", "#06b6d4"],
+      stats: () => { const b = $("chatTotalBadge"); const n = b && !b.hidden ? b.textContent : "0"; return ["💬 " + n + " " + t("chats", "ibiganiro")]; } },
+    adminOrdersSection: { icon: "📦", title: "Ibyatumijwe (Orders)", sub: "Hindura aho komande igeze", c: ["#ef4444", "#f97316"],
+      stats: () => { const live = allOrders.filter(o => o.status !== "cancelled"); return ["🆕 " + allOrders.filter(o => o.status === "new").length + " " + t("new", "nshya"), "📦 " + allOrders.length + " " + t("total", "zose"), "💰 " + money(live.reduce((a, o) => a + (Number(o.total) || 0), 0))]; } },
+    adminRequestsSection: { icon: "🛠️", title: "Ubusabe bwa serivisi", sub: "Reba ubusabe kandi uhindure uko buhagaze", c: ["#8b5cf6", "#ec4899"],
+      stats: () => ["🆕 " + allServiceRequests.filter(r => r.status === "new").length + " " + t("new", "bushya"), "🛠️ " + allServiceRequests.length + " " + t("total", "bwose"), "✅ " + allServiceRequests.filter(r => r.status === "done").length + " " + t("done", "bwarangiye")] },
     adminUsersSection: { icon: "👥", title: "Abakiriya (Accounts)", sub: "Abafite konti ku rubuga", c: ["#14b8a6", "#0ea5e9"] }
   };
   let gdPageCur = null, gdPageHome = null;
@@ -2812,7 +2830,7 @@ function gdSavePdf(btn) {
     let p = $("gdPage"); if (p) return p;
     p = document.createElement("div"); p.id = "gdPage"; p.className = "ceo-page"; p.hidden = true;
     p.innerHTML = `<div class="ceo-top"><button type="button" class="ceo-back" onclick="gdClosePage()" aria-label="Back">←</button><div><h2 id="gdPageTitle"></h2><small id="gdPageSub"></small></div></div>
-      <div class="ceo-wrap"><div class="gd-hero" id="gdPageHero"><div class="gd-hero-ic" id="gdPageIcon"></div><div class="gd-hero-tx"><b id="gdPageHTitle"></b><span id="gdPageHSub"></span></div></div><div id="gdPageBody" class="gd-body"></div></div>`;
+      <div class="ceo-wrap"><div class="gd-hero" id="gdPageHero"><div class="gd-hero-ic" id="gdPageIcon"></div><div class="gd-hero-tx"><b id="gdPageHTitle"></b><span id="gdPageHSub"></span><div class="gd-chips" id="gdPageChips"></div></div></div><div id="gdPageBody" class="gd-body"></div></div>`;
     document.body.appendChild(p); return p;
   }
   function gdRestore() {
@@ -2821,6 +2839,11 @@ function gdSavePdf(btn) {
     if (gdPageHome && gdPageHome.parentNode) gdPageHome.parentNode.replaceChild(gdPageCur, gdPageHome);
     gdPageCur = null; gdPageHome = null;
   }
+  window.gdPageRefresh = () => {
+    const ch = $("gdPageChips"); if (!ch) return;
+    const cfg = gdPageCur && GD_PAGES[gdPageCur.id];
+    ch.innerHTML = cfg && cfg.stats ? cfg.stats().map(x => "<span>" + esc(x) + "</span>").join("") : "";
+  };
   window.gdOpenPage = id => {
     const sec = document.getElementById(id), cfg = GD_PAGES[id]; if (!sec || !cfg) return;
     const shell = gdPageShell(), body = $("gdPageBody");
@@ -2832,6 +2855,7 @@ function gdSavePdf(btn) {
     $("gdPageTitle").textContent = title; $("gdPageSub").textContent = cfg.sub;
     $("gdPageHTitle").textContent = title; $("gdPageHSub").textContent = cfg.sub; $("gdPageIcon").textContent = cfg.icon;
     $("gdPageHero").style.setProperty("--g1", cfg.c[0]); $("gdPageHero").style.setProperty("--g2", cfg.c[1]);
+    window.gdPageRefresh();
     const wasOpen = !shell.hidden;
     shell.hidden = false; shell.scrollTop = 0; document.body.style.overflow = "hidden";
     if (!wasOpen) { try { history.pushState({ gdPage: 1 }, ""); } catch (e) {} }
