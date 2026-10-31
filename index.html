@@ -1177,6 +1177,52 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 #rcModal .rc-foot{position:sticky;bottom:0;margin:0 -14px -14px;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,#0e1230 70%,rgba(14,18,48,0))}
 #rcModal .rc-foot .primary{width:100%;padding:16px;font-size:1.05rem;border-radius:16px;background:linear-gradient(135deg,#2563eb,#25d6a0);box-shadow:0 14px 26px -10px rgba(37,214,160,.55)}
 @media (min-width:600px){#rcModal .rc-sheet{border-radius:0}}
+
+/* ===== Shop owner area: new design ===== */
+.sh-owner{display:grid!important;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.sh-owner button{display:flex;align-items:center;justify-content:center;gap:8px;width:100%!important;padding:13px 10px;border-radius:18px!important;font-weight:900;font-size:.92rem;color:#fff;transition:transform .15s}
+.sh-owner button:active{transform:scale(.96)}
+.sh-owner .sh-oi{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.18);font-size:.95rem}
+.sh-owner .sh-edit{border:0;background:linear-gradient(135deg,#2563eb,#06b6d4);box-shadow:0 12px 22px -10px rgba(37,99,235,.8)}
+.sh-owner .sh-del{border:1.5px solid rgba(239,68,68,.65);background:rgba(239,68,68,.12);color:#ff8f8f}
+.sh-owner .sh-del .sh-oi{background:rgba(239,68,68,.22)}
+.ap-box{position:relative;overflow:hidden;margin-top:18px!important;padding:18px 16px 18px!important;border:1px solid rgba(124,138,255,.3)!important;border-radius:28px!important;background:radial-gradient(110% 50% at 0% 0%,rgba(37,99,235,.30),transparent 60%),radial-gradient(90% 50% at 100% 100%,rgba(37,214,160,.14),transparent 60%),linear-gradient(170deg,#12183f,#0b0f2a)!important;box-shadow:0 22px 40px -22px rgba(0,0,0,.8)}
+.ap-box::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,#25d6a0,#2563eb,#8b5cf6,#ec4899)}
+.ap-head{display:flex;align-items:center;gap:12px;margin:4px 0 14px}
+.ap-ic{display:grid;place-items:center;flex:0 0 auto;width:46px;height:46px;border-radius:15px;font-size:1.3rem;background:linear-gradient(135deg,#25d6a0,#2563eb);box-shadow:0 12px 22px -10px rgba(37,214,160,.7)}
+.ap-head h3{margin:0;font-size:1.25rem;line-height:1.15;color:#fff}
+.ap-head small{display:block;margin-top:2px;color:#9aa6e8;font-size:.78rem;font-weight:700}
+.ap-field{margin:0 0 14px}
+.ap-field>label{display:flex;align-items:center;gap:8px;margin:0 0 7px 2px;font-size:.84rem;font-weight:800;color:#dfe5ff}
+.ap-field>label b{display:grid;place-items:center;width:24px;height:24px;border-radius:8px;font-size:.8rem;background:rgba(124,138,255,.2)}
+.ap-box input:not([type=file]),.ap-box textarea{width:100%;box-sizing:border-box;padding:15px 16px;min-height:54px;border-radius:18px;border:1.5px solid #2f3a7a;background:linear-gradient(180deg,#080b1c,#0c1130);color:#fff;font:inherit;font-size:1rem;transition:border-color .2s,box-shadow .2s}
+.ap-box textarea{min-height:104px;line-height:1.5;resize:vertical}
+.ap-box input::placeholder,.ap-box textarea::placeholder{color:#7480a6}
+.ap-box input:focus,.ap-box textarea:focus{outline:0;border-color:#5b8cff;box-shadow:0 0 0 4px rgba(91,140,255,.22)}
+.ap-price{position:relative}
+.ap-price input{padding-right:70px!important;font-weight:800;font-size:1.1rem!important}
+.ap-price span{position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:7px 12px;border-radius:12px;font-size:.78rem;font-weight:900;color:#4ff0be;background:rgba(37,214,160,.14);pointer-events:none}
+.ap-field>label.ap-drop{display:block;margin:0!important;color:inherit;font-size:inherit;cursor:pointer;border:2px dashed #4a5fc4;border-radius:22px;background:rgba(91,140,255,.08);overflow:hidden;transition:.2s}
+.ap-drop:active{transform:scale(.985)}
+.ap-drop:hover{border-color:#7aa2ff;background:rgba(91,140,255,.14)}
+.ap-drop-in{display:flex;flex-direction:column;align-items:center;gap:4px;padding:26px 12px;text-align:center}
+.ap-drop-in i{font-style:normal;display:grid;place-items:center;width:54px;height:54px;border-radius:50%;font-size:1.6rem;background:linear-gradient(135deg,#2563eb,#8b5cf6);box-shadow:0 12px 22px -10px rgba(37,99,235,.8)}
+.ap-drop-in b{color:#fff;font-size:.95rem}
+.ap-drop-in small{color:#8e9ae0;font-size:.74rem;font-weight:700}
+.ap-drop img{display:block;width:100%;max-height:240px;object-fit:cover}
+.ap-save{width:100%;margin-top:4px;padding:16px;border-radius:18px!important;font-size:1.05rem;font-weight:900;border:0;color:#fff;background:linear-gradient(135deg,#2563eb,#25d6a0)!important;box-shadow:0 16px 28px -12px rgba(37,214,160,.55)!important}
+.ap-save:disabled{opacity:.6}
+.ap-box .status-msg:not(:empty){padding:12px 14px;border-radius:14px;font-weight:700;background:rgba(127,127,160,.15)}
+.ap-box .status-msg.ok{background:rgba(16,185,129,.16);border:1px solid rgba(16,185,129,.5)}
+.ap-box .status-msg.err{background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.5)}
+
+/* ===== Home: long page with ALL products ===== */
+#homeProducts{margin-top:4px}
+#shopsHome .shop-block-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;overflow:visible!important;padding-bottom:0}
+#shopsHome .shop-mini{flex:none!important;min-width:0}
+#shopsHome .shop-mini img,#shopsHome .shop-mini-ph{height:130px}
+@media(min-width:760px){#shopsHome .shop-block-row{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:1000px){#shopsHome .shop-block-row{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
@@ -1777,7 +1823,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
   window.addEventListener("popstate", () => { const id = currentUrlProductId(); if (id && products.find(x => x.id === id)) openProduct(id, true); else if (document.getElementById("view-product").classList.contains("active")) showView(prevView || "home"); });
   function renderHome() {
     renderHomeCategories();
-    document.getElementById("homeProducts").innerHTML=products.slice(0,4).map(p=>productCard(p,true)).join("");
+    document.getElementById("homeProducts").innerHTML=products.map(p=>productCard(p,true)).join("");
     updateCounts();
   }
   function renderCategories() {
@@ -2757,7 +2803,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     if (typeof renderCategories === "function") renderCategories();
     if (typeof renderHomeCategories === "function") renderHomeCategories();
     const el = $("shopsHome");
-    const homeItems = shopProducts.map(pp => ({ pp, sh: approved.find(x => x.id === pp.shopId) })).filter(o => o.sh).slice(0, 14);
+    const homeItems = shopProducts.map(pp => ({ pp, sh: approved.find(x => x.id === pp.shopId) })).filter(o => o.sh);
     if (el) el.innerHTML = homeItems.length ? `<h2>🏪 ${t("From new shops", "Ibiva mu maduka mashya")}</h2>
       <div class="shop-block-row">${homeItems.map(({ pp, sh }) => `<div class="shop-mini" onclick="openShop('${esc(sh.id)}')">${pp.imageUrl ? `<img src="${esc(thumb(pp.imageUrl, 420))}" alt="${esc(pp.name)}" loading="lazy" decoding="async">` : `<div class="shop-mini-ph">🏪</div>`}<span class="shop-badge">🏪 ${esc(sh.name)}</span><div class="shop-mini-body"><span>${esc(pp.name)}</span><b>${Number(pp.price) > 0 ? money(pp.price) : t("Ask for price", "Baza igiciro")}</b>${Number(pp.price) > 0 ? `<button type="button" class="primary" onclick="event.stopPropagation();addToCart('s_${esc(pp.id)}')">${t("Add to cart", "Shyira mu gaseke")}</button>` : ""}</div></div>`).join("")}</div>` : "";
     renderShopPromo();
@@ -2847,14 +2893,17 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
         <div class="sh-chips"><span>📦 ${list.length} ${t("products", "ibicuruzwa")}</span>${ph ? `<span>📞 ${esc(ph)}</span>` : ""}${st === "approved" ? `<span class="sh-chip-ok">✅ ${t("Verified", "Ryemejwe")}</span>` : ""}</div>
         ${x.desc ? `<p class="sh-desc">${esc(x.desc)}</p>` : ""}
         <div class="sh-actions">${ph ? `<a class="sh-act sh-call" href="tel:${esc(ph.replace(/\s+/g, ""))}">📞 <span>${t("Call", "Hamagara")}</span></a>` : ""}<a class="sh-act sh-wa" href="${wa}" target="_blank" rel="noopener">💬 <span>WhatsApp</span></a><button type="button" class="sh-act sh-share" onclick="shareShop('${esc(x.name).replace(/'/g, "&#39;")}','${esc(ph)}')">🔗 <span>${t("Share", "Sangiza")}</span></button></div>
-        ${mineOwner ? `<div class="sh-owner"><button class="secondary" onclick="openShopForm()">✏️ ${t("Edit shop", "Hindura shop")}</button><button class="secondary danger-btn" onclick="deleteMyShop()">🗑️ ${t("Delete shop", "Siba shop")}</button></div>` : ""}</div>
-      ${mineOwner ? `<div class="shop-form-box"><h3 style="margin-top:0">➕ ${t("Add a product", "Ongeramo igicuruzwa")}</h3>
+        ${mineOwner ? `<div class="sh-owner"><button type="button" class="sh-edit" onclick="openShopForm()"><span class="sh-oi">✏️</span><span>${t("Edit shop", "Hindura shop")}</span></button><button type="button" class="sh-del" onclick="deleteMyShop()"><span class="sh-oi">🗑️</span><span>${t("Delete shop", "Siba shop")}</span></button></div>` : ""}</div>
+      ${mineOwner ? `<div class="shop-form-box ap-box">
+        <div class="ap-head"><span class="ap-ic">➕</span><div><h3>${t("Add a product", "Ongeramo igicuruzwa")}</h3><small>${t("Fill in the details and add a photo", "Uzuza amakuru hanyuma ushyireho ifoto")}</small></div></div>
         <form onsubmit="saveShopProduct(event)">
-          <div class="form-row"><input id="spName" placeholder="${t("Product name", "Izina ry'igicuruzwa")}" required></div>
-          <div class="form-row"><input id="spPrice" type="number" min="0" inputmode="numeric" placeholder="${t("Price (RWF)", "Igiciro (RWF)")}" required></div>
-          <div class="form-row"><textarea id="spDesc" placeholder="${t("Description (optional)", "Ibisobanuro (si ngombwa)")}"></textarea></div>
-          <div class="form-row"><label>${t("Photo", "Ifoto")}</label><input id="spImage" type="file" accept="image/*"></div>
-          <button class="primary" type="submit" id="spBtn">${t("Save product", "Bika igicuruzwa")}</button>
+          <div class="ap-field"><label for="spName"><b>🏷️</b> ${t("Product name", "Izina ry'igicuruzwa")}</label><input id="spName" placeholder="${t("e.g. 2HP electric motor", "Urugero: Moteri ya 2HP")}" required></div>
+          <div class="ap-field"><label for="spPrice"><b>💰</b> ${t("Price (RWF)", "Igiciro (RWF)")}</label><div class="ap-price"><input id="spPrice" type="number" min="0" inputmode="numeric" placeholder="0" required><span>RWF</span></div></div>
+          <div class="ap-field"><label for="spDesc"><b>📝</b> ${t("Description (optional)", "Ibisobanuro (si ngombwa)")}</label><textarea id="spDesc" placeholder="${t("Write a short description…", "Andika ibisobanuro bigufi…")}"></textarea></div>
+          <div class="ap-field"><label for="spImage"><b>🖼️</b> ${t("Photo", "Ifoto")}</label>
+            <label class="ap-drop" for="spImage"><img id="spPrev" alt="" hidden><span class="ap-drop-in" id="spPrevTxt"><i>📷</i><b>${t("Tap to choose a photo", "Kanda uhitemo ifoto")}</b><small>JPG / PNG</small></span></label>
+            <input id="spImage" type="file" accept="image/*" onchange="spPreview(this)" hidden></div>
+          <button class="primary ap-save" type="submit" id="spBtn">💾 ${t("Save product", "Bika igicuruzwa")}</button>
           <div id="spMsg" class="status-msg"></div>
         </form></div>` : ""}
       <div class="sh-sec-title"><span>🛍️ ${t("Products", "Ibicuruzwa")}</span><i>${list.length}</i></div>
@@ -2864,6 +2913,11 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
         <a class="sp-wa" aria-label="WhatsApp" href="${wa}?text=${encodeURIComponent(t("Hello, I am interested in: ", "Muraho, ndifuza: ") + pp.name + " (" + money(pp.price || 0) + ")")}" target="_blank" rel="noopener">💬</a></div>
         ${mineOwner || isAdminUser(currentUser) ? `<button class="secondary danger-btn sp-del" onclick="deleteShopProduct('${esc(pp.id)}')">🗑️ ${t("Delete", "Siba")}</button>` : ""}</div></div>`).join("") : `<div class="sh-empty"><div>🛍️</div><b>${t("No products yet.", "Nta bicuruzwa biraboneka.")}</b></div>`}</div>`;
   }
+  window.spPreview = inp => {
+    const f = inp.files && inp.files[0], im = $("spPrev"), tx = $("spPrevTxt"); if (!im || !tx) return;
+    if (!f) { im.hidden = true; tx.hidden = false; return; }
+    const r = new FileReader(); r.onload = () => { im.src = r.result; im.hidden = false; tx.hidden = true; }; r.readAsDataURL(f);
+  };
   window.saveShopProduct = async e => {
     e.preventDefault(); const x = myShop(); if (!x) return;
     const btn = $("spBtn"); btn.disabled = true; msg("spMsg", t("Saving...", "Birabikwa..."));
@@ -2871,7 +2925,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       let imageUrl = ""; const file = $("spImage").files[0];
       if (file) imageUrl = await uploadToCloudinary(file);
       await addDoc(collection(db, "shopProducts"), { shopId: x.id, ownerId: currentUser.uid, name: $("spName").value.trim(), price: Number($("spPrice").value) || 0, desc: $("spDesc").value.trim(), imageUrl, createdAt: Date.now() });
-      e.target.reset(); msg("spMsg", t("Product saved.", "Igicuruzwa cyabitswe."), "ok");
+      e.target.reset(); window.spPreview({ files: [] }); msg("spMsg", t("Product saved.", "Igicuruzwa cyabitswe."), "ok");
     } catch (err) { console.error(err); msg("spMsg", t("Failed: ", "Ntibyakunze: ") + (err.code || err.message), "err"); }
     btn.disabled = false;
   };
