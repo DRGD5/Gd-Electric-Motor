@@ -722,6 +722,39 @@ var b=document.getElementById("themeToggle");if(b){b.textContent=t==="dark"?"\u2
 window.gdToggleTheme=function(){gdApplyTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark")};
 document.addEventListener("DOMContentLoaded",function(){gdApplyTheme(document.documentElement.getAttribute("data-theme")||"light")});})();</script>
 <style id="gdThemeCss">
+.ceo-page{position:fixed;inset:0;z-index:5000;background:var(--bg);color:var(--text);overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+.ceo-page[hidden]{display:none}
+.ceo-top{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px;background:var(--bg);border-bottom:1px solid var(--line)}
+.ceo-back{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--line);background:var(--panel);color:var(--text);font-size:1.25rem;line-height:1;display:grid;place-items:center;flex:0 0 auto;padding:0}
+.ceo-top h2{margin:0;font-size:1.2rem}
+.ceo-top small{display:block;color:var(--muted)}
+.ceo-wrap{padding:16px;max-width:720px;margin:0 auto}
+.ceo-hero{position:relative;overflow:hidden;border-radius:24px;padding:18px;color:#fff;background:linear-gradient(135deg,#1e3a8a,#2563eb 55%,#7c3aed);box-shadow:0 14px 34px rgba(37,99,235,.28)}
+.ceo-hero::before,.ceo-hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.10)}
+.ceo-hero::before{width:160px;height:160px;right:-50px;top:-60px}
+.ceo-hero::after{width:100px;height:100px;left:-30px;bottom:-50px}
+.ceo-hero h3{margin:0 0 12px;font-size:.9rem;font-weight:600;opacity:.9;position:relative}
+.ceo-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative}
+.ceo-stat{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:10px 12px}
+.ceo-stat b{display:block;font-size:1.2rem}
+.ceo-stat span{font-size:.75rem;opacity:.85}
+.ceo-stat.wide{grid-column:1/-1}
+.ceo-chips{display:flex;gap:8px;overflow-x:auto;margin:16px 0 14px;padding-bottom:2px}
+.ceo-chip{flex:0 0 auto;border:1.5px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:9px 14px;font-weight:700;font-size:.85rem}
+.ceo-chip.on{background:linear-gradient(135deg,#2563eb,#7c3aed);border-color:transparent;color:#fff}
+.ceo-card{position:relative;display:flex;gap:12px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:14px;margin-bottom:12px}
+.ceo-card.top1{border-color:#f5b301;box-shadow:0 0 0 3px rgba(245,179,1,.15),0 10px 26px rgba(245,179,1,.14)}
+.ceo-rank{position:absolute;top:8px;right:12px;font-size:1.5rem;line-height:1;font-weight:800;color:var(--muted)}
+.ceo-avatar{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:1.1rem;flex:0 0 auto}
+.ceo-info{min-width:0;flex:1;padding-right:28px}
+.ceo-info strong{display:block;font-size:1rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ceo-info small{display:block;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ceo-m{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.ceo-m span{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:.78rem;font-weight:700}
+.ceo-bar{height:6px;border-radius:99px;background:var(--line);margin-top:10px;overflow:hidden}
+.ceo-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#2563eb,#7c3aed)}
+.ceo-empty{text-align:center;color:var(--muted);padding:40px 10px}
+.ceo-empty b{display:block;font-size:2.6rem;margin-bottom:6px}
 .theme-btn{flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1.5px solid #c6d7f5;background:#f6f2ff;font-size:1rem;line-height:1;display:grid;place-items:center;padding:0;color:inherit}
 .theme-btn:active{transform:scale(.94)}
 @media(max-width:480px){.theme-btn{width:28px;height:28px;font-size:.85rem}}
@@ -887,7 +920,7 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
 
       <div class="admin-shortcuts" aria-label="Admin menu">
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminServicesSection')"><span>🛠️ Serivisi dukora <span class="users-count count-total" id="svcTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminCeoSection')"><span>👑 CEO · Abakiriya ba mbere</span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="openCeoPage('adminCeoSection')"><span>👑 CEO · Abakiriya ba mbere</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminStatsSection')"><span>📊 Abasuye website <span class="users-count count-new" id="statsTodayBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span>🧩 Ibice bya website</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminShopsSection')"><span>🏪 Amaduka y'abakiriya <span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
@@ -936,9 +969,9 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
         <div id="adminShops"></div>
       </div>
 
-      <div class="info-card admin-section" id="adminCeoSection" hidden>
-        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminCeoSection')"><h2>👑 CEO · Abakiriya ba mbere</h2><span class="shortcut-arrow">⌃</span></button>
-        <div id="adminCeo"></div>
+      <div class="ceo-page" id="adminCeoSection" hidden>
+        <div class="ceo-top"><button type="button" class="ceo-back" onclick="closeCeoPage()" aria-label="Back">←</button><div><h2>👑 CEO</h2><small>Abakiriya ba mbere</small></div></div>
+        <div class="ceo-wrap" id="adminCeo"></div>
       </div>
 
       <div class="info-card admin-section" id="adminStatsSection" hidden>
@@ -1586,9 +1619,22 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       <div class="st-bars">${days.map(d => `<div class="st-bar"><em>${d.v}</em><i style="height:${Math.round(d.v / max * 100)}%"></i><span>${esc(d.label)}</span></div>`).join("")}</div>`;
   }
 
-  // ----- CEO report: best customers by orders, service requests and money spent -----
+  // ----- CEO page: best customers by orders, service requests and money spent -----
   let ceoSortBy = "money";
   window.ceoSort = k => { ceoSortBy = k; renderCeo(); };
+  window.openCeoPage = () => {
+    const el = $("adminCeoSection"); if (!el) return;
+    if (el.parentElement !== document.body) document.body.appendChild(el);
+    el.hidden = false; el.scrollTop = 0; document.body.style.overflow = "hidden";
+    try { history.pushState({ gdCeo: 1 }, ""); } catch (e) {}
+    renderCeo();
+  };
+  window.closeCeoPage = fromPop => {
+    const el = $("adminCeoSection"); if (!el || el.hidden) return;
+    el.hidden = true; document.body.style.overflow = "";
+    if (fromPop !== true) { try { if (history.state && history.state.gdCeo) history.back(); } catch (e) {} }
+  };
+  window.addEventListener("popstate", () => { const el = $("adminCeoSection"); if (el && !el.hidden) window.closeCeoPage(true); });
   function renderCeo() {
     const box = $("adminCeo"); if (!box) return;
     const byKey = new Map();
@@ -1606,12 +1652,19 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     allServiceRequests.forEach(r => { if (r.status === "cancelled") return; const c = get(r); totReq++; if (c) c.requests++; });
     const k = { money: "spent", orders: "orders", services: "requests" }[ceoSortBy] || "spent";
     const list = [...byKey.values()].filter(c => c.orders || c.requests).sort((a, b) => (b[k] - a[k]) || (b.spent - a.spent) || (b.orders - a.orders) || (b.requests - a.requests)).slice(0, 20);
-    const btn = (id, label) => `<button class="secondary" type="button" onclick="ceoSort('${id}')" ${ceoSortBy === id ? "disabled" : ""}>${label}</button>`;
-    const medal = i => ["🥇", "🥈", "🥉"][i] || (i + 1) + ".";
+    const max = list.length ? Math.max(1, list[0][k]) : 1;
+    const chip = (id, label) => `<button type="button" class="ceo-chip ${ceoSortBy === id ? "on" : ""}" onclick="ceoSort('${id}')">${label}</button>`;
+    const rank = i => ["🥇", "🥈", "🥉"][i] || "#" + (i + 1);
+    const colors = [["#2563eb", "#7c3aed"], ["#0ea5e9", "#14b8a6"], ["#f97316", "#ef4444"], ["#10b981", "#84cc16"], ["#ec4899", "#8b5cf6"]];
+    const avatar = c => { const nm = c.name || c.email || c.phone || "?"; const h = [...nm].reduce((a, ch) => a + ch.charCodeAt(0), 0) % colors.length; return `<div class="ceo-avatar" style="background:linear-gradient(135deg,${colors[h][0]},${colors[h][1]})">${esc(nm.trim().charAt(0).toUpperCase())}</div>`; };
     box.innerHTML = `
-      <div class="admin-row" style="flex-wrap:wrap;gap:8px"><span class="users-count">🛒 ${totOrders}</span><span class="users-count">🛠️ ${totReq}</span><span class="users-count count-new">💰 ${money(revenue)}</span></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">${btn("money", "💰 Amafaranga")}${btn("orders", "🛒 Komande")}${btn("services", "🛠️ Serivisi")}</div>
-      ${list.length ? list.map((c, i) => `<div class="admin-row" style="align-items:flex-start"><div class="cart-details"><strong>${medal(i)} ${esc(c.name || c.email || c.phone || "—")}</strong><small>${esc([c.phone, c.email].filter(Boolean).join(" · "))}</small><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><span class="users-count">🛒 ${c.orders} komande</span><span class="users-count">🛠️ ${c.requests} serivisi</span><span class="users-count count-new">💰 ${money(c.spent)}</span></div></div></div>`).join("") : `<p class="muted">Nta bakiriya baragaragara.</p>`}`;
+      <div class="ceo-hero"><h3>${t("Business at a glance", "Uko ubucuruzi buhagaze")}</h3><div class="ceo-stats">
+        <div class="ceo-stat"><b>🛒 ${totOrders}</b><span>${t("Orders", "Komande")}</span></div>
+        <div class="ceo-stat"><b>🛠️ ${totReq}</b><span>${t("Service requests", "Ubusabe bwa serivisi")}</span></div>
+        <div class="ceo-stat wide"><b>💰 ${money(revenue)}</b><span>${t("Total money in", "Amafaranga yose yinjiye")}</span></div>
+      </div></div>
+      <div class="ceo-chips">${chip("money", "💰 " + t("Money", "Amafaranga"))}${chip("orders", "🛒 " + t("Most orders", "Komande nyinshi"))}${chip("services", "🛠️ " + t("Most services", "Serivisi nyinshi"))}</div>
+      ${list.length ? list.map((c, i) => `<div class="ceo-card ${i === 0 ? "top1" : ""}"><div class="ceo-rank">${rank(i)}</div>${avatar(c)}<div class="ceo-info"><strong>${esc(c.name || c.email || c.phone || "—")}</strong><small>${esc([c.phone, c.email].filter(Boolean).join(" · "))}</small><div class="ceo-m"><span>🛒 ${c.orders}</span><span>🛠️ ${c.requests}</span><span>💰 ${money(c.spent)}</span></div><div class="ceo-bar"><i style="width:${Math.round(c[k] / max * 100)}%"></i></div></div></div>`).join("") : `<div class="ceo-empty"><b>📭</b>${t("No customers yet.", "Nta bakiriya baragaragara.")}</div>`}`;
   }
 
   // ----- roles & permissions -----
