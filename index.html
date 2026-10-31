@@ -830,6 +830,51 @@ html[data-theme="dark"] .lang-pill,html[data-theme="dark"] .theme-btn{background
 html[data-theme="dark"] .product.compact{background:#111526!important;border-color:#303a4b!important}
 html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!important}
 </style>
+<style>
+.pl-entry{background:linear-gradient(135deg,rgba(37,99,235,.18),rgba(6,182,212,.14));border:1.5px solid rgba(37,99,235,.45)!important;border-radius:22px;margin:14px 0}
+.pl-entry h2{margin:0 0 4px}
+.pl-entry .btns{display:flex;gap:8px;flex-wrap:wrap;width:100%}
+.pl-entry .btns button{flex:1 1 140px}
+.pl-bar{display:flex;align-items:center;gap:8px;background:var(--panel-2);border:1.5px solid var(--line);border-radius:16px;padding:0 14px;margin:2px 0 12px;position:sticky;top:0;z-index:3}
+.pl-bar:focus-within{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.2)}
+.pl-bar input{flex:1;min-width:0;background:transparent!important;border:0!important;outline:0;color:var(--text);padding:14px 0;font-size:1rem;box-shadow:none!important;margin:0!important}
+.pl-chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none}
+.pl-chips::-webkit-scrollbar{display:none}
+.pl-chip{flex:0 0 auto;width:auto;margin:0;border:1.5px solid var(--line);background:var(--panel-2);color:var(--text);border-radius:999px;padding:8px 14px;font-weight:800;font-size:.82rem;display:flex;gap:6px;align-items:center;transition:.2s}
+.pl-chip i{font-style:normal;background:rgba(127,127,160,.25);border-radius:999px;padding:1px 8px;font-size:.74rem}
+.pl-chip.on{background:linear-gradient(135deg,#2563eb,#06b6d4);border-color:transparent;color:#fff;box-shadow:0 6px 16px rgba(37,99,235,.35)}
+.pl-chip.on i{background:rgba(255,255,255,.28)}
+.pl-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding-bottom:90px}
+@media(min-width:700px){.pl-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:1000px){.pl-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.pl-card{background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 22px rgba(0,0,0,.14);animation:gdUp .4s ease both;transition:transform .2s,box-shadow .2s}
+.pl-card:active{transform:scale(.98)}
+.pl-card:nth-child(2){animation-delay:.04s}.pl-card:nth-child(3){animation-delay:.08s}.pl-card:nth-child(4){animation-delay:.12s}.pl-card:nth-child(5){animation-delay:.16s}.pl-card:nth-child(6){animation-delay:.2s}
+.pl-card.is-out .pl-img img,.pl-card.is-out .pl-ic{filter:grayscale(.7);opacity:.75}
+.pl-card.is-hid{opacity:.6}
+.pl-img{position:relative;aspect-ratio:1/1;background:linear-gradient(135deg,rgba(37,99,235,.18),rgba(6,182,212,.18));display:grid;place-items:center;overflow:hidden}
+.pl-img img{width:100%;height:100%;object-fit:cover;display:block}
+.pl-ic{font-size:3.2rem}
+.pl-badges{position:absolute;left:8px;top:8px;right:8px;display:flex;flex-wrap:wrap;gap:5px}
+.pl-b{font-size:.66rem;font-weight:800;padding:3px 8px;border-radius:999px;color:#fff;backdrop-filter:blur(6px);background:rgba(15,23,42,.72)}
+.pl-ok{background:rgba(16,185,129,.9)}.pl-out{background:rgba(239,68,68,.92)}.pl-star{background:rgba(245,158,11,.95)}.pl-base{background:rgba(100,116,139,.9)}
+.pl-info{padding:11px 12px 6px;flex:1}
+.pl-info h4{margin:0;font-size:.95rem;line-height:1.25;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pl-cat{font-size:.74rem;color:var(--muted);margin-top:4px}
+.pl-price{margin-top:7px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px}
+.pl-price b{font-size:1rem;color:var(--purple-light)}
+.pl-price s{font-size:.74rem;color:var(--muted)}
+.pl-acts{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px 10px 11px}
+.pl-acts button{width:auto;margin:0;padding:9px 6px;border-radius:12px;font-weight:800;font-size:.78rem;border:0;color:#fff}
+.pl-edit{background:linear-gradient(135deg,#2563eb,#3b82f6)}
+.pl-del{background:linear-gradient(135deg,#ef4444,#f97316)}
+.pl-del.pl-restore{background:linear-gradient(135deg,#10b981,#14b8a6)}
+.pl-empty{grid-column:1/-1;text-align:center;padding:40px 16px;color:var(--muted)}
+.pl-empty div{font-size:3rem}.pl-empty b{display:block;color:var(--text);font-size:1.05rem;margin:6px 0}
+.pl-empty button{width:auto;margin-top:8px;padding:11px 20px}
+.pl-fab{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:5100;width:auto!important;margin:0!important;border:0;border-radius:999px;padding:14px 20px;font-weight:900;font-size:.95rem;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 10px 26px rgba(37,99,235,.5);display:none}
+#gdPage:not([hidden]) #adminListWrap .pl-fab{display:flex;gap:6px;align-items:center}
+</style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
 <header class="topbar">
@@ -907,6 +952,16 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminShopsSection')"><span>🏪 Amaduka y'abakiriya <span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span>➕ Ongeramo igicuruzwa</span><span class="shortcut-arrow">›</span></button>
       </div>
+      <div class="info-card admin-section pl-entry" id="adminProductListSection">
+        <div class="admin-products-heading"><h2>Ibicuruzwa biri ku rubuga</h2><div class="btns"><button class="secondary" type="button" onclick="gdOpenPage('adminListWrap')">👁️ Reba ibicuruzwa</button><button class="primary" type="button" onclick="openAddProductForm()">＋ Ongeramo igicuruzwa</button></div></div>
+        <div id="adminListWrap" hidden>
+          <div class="pl-bar"><span class="pl-sic">🔎</span><input id="plSearch" type="search" placeholder="Shakisha igicuruzwa..." autocomplete="off" oninput="plSetQ(this.value)"></div>
+          <div class="pl-chips" id="plChips"></div>
+          <div id="adminList" class="pl-grid"></div>
+          <button type="button" class="pl-fab" onclick="openAddProductForm()">＋ <span>Ongeramo igicuruzwa</span></button>
+        </div>
+      </div>
+
       <div class="info-card admin-section" id="adminChatSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminChatSection')"><h2>💬 Chat n'abakiriya</h2><span class="shortcut-arrow">⌃</span></button>
         <p>Hitamo umukiriya kugira ngo usome ubutumwa kandi umusubize.</p>
@@ -1066,10 +1121,6 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
         </form>
       </div>
 
-      <div class="info-card admin-section" id="adminProductListSection">
-        <div class="admin-products-heading"><h2>Ibicuruzwa biri ku rubuga</h2><div class="btns"><button class="secondary" type="button" onclick="toggleAdminSection('adminListWrap')">👁️ Reba ibicuruzwa</button><button class="primary" type="button" onclick="openAddProductForm()">＋ Ongeramo igicuruzwa</button></div></div>
-        <div id="adminListWrap" hidden><div id="adminList"></div></div>
-      </div>
     </div>
   </section>
 </main>
@@ -2901,6 +2952,8 @@ function gdSavePdf(btn) {
     adminStatsSection: { icon: "📊", title: "Abasuye website", sub: "Reba abantu basuye urubuga", c: ["#0ea5e9", "#2563eb"] },
     adminSectionsSection: { icon: "🧩", title: "Ibice bya website", sub: "Gucunga ibice by'urubuga rwawe", c: ["#8b5cf6", "#ec4899"] },
     adminShopsSection: { icon: "🏪", title: "Amaduka y'abakiriya", sub: "Emeza cyangwa wange amaduka", c: ["#10b981", "#14b8a6"] },
+    adminListWrap: { icon: "📦", title: "Ibicuruzwa biri ku rubuga", sub: "Shakisha, hindura cyangwa usibe ibicuruzwa byawe", c: ["#2563eb", "#06b6d4"],
+      stats: () => { const all = dbProducts.concat(sampleProducts.filter(p => !hiddenSampleIds.includes(p.id))); return ["📦 " + all.length + " " + t("products", "ibicuruzwa"), "✅ " + all.filter(p => p.status !== "out").length + " " + t("available", "biraboneka"), "⭐ " + all.filter(p => p.featured).length + " " + t("featured", "bikunzwe"), "⛔ " + all.filter(p => p.status === "out").length + " " + t("out", "byashize")]; } },
     adminAddProductSection: { icon: "➕", title: "Ongeramo igicuruzwa", sub: "Uzuza amakuru y'igicuruzwa", c: ["#2563eb", "#7c3aed"] },
     adminChatSection: { icon: "💬", title: "Chat n'abakiriya", sub: "Soma ubutumwa kandi usubize abakiriya", c: ["#2563eb", "#06b6d4"],
       stats: () => { const b = $("chatTotalBadge"); const n = b && !b.hidden ? b.textContent : "0"; return ["💬 " + n + " " + t("chats", "ibiganiro")]; } },
@@ -3000,21 +3053,49 @@ function gdSavePdf(btn) {
     catch (err) { alert("Gusiba byanze: " + (err.code || err.message)); }
   };
 
+  let plQ = "", plF = "all";
+  window.plSetQ = v => { plQ = String(v || "").trim().toLowerCase(); renderAdminList(); };
+  window.plSetF = f => { plF = f; renderAdminList(); };
+  function plCard(p, base) {
+    const h = base && hiddenSampleIds.includes(p.id);
+    const cat = categories.find(c => c.id === p.category);
+    const out = p.status === "out";
+    const img = p.imageUrl ? `<img src="${esc(thumb(p.imageUrl, 400))}" alt="" loading="lazy" decoding="async">` : `<span class="pl-ic">${iconOf(p)}</span>`;
+    const badges = (out ? `<span class="pl-b pl-out">⛔ ${t("Out of stock", "Byashize")}</span>` : `<span class="pl-b pl-ok">✅ ${t("Available", "Biraboneka")}</span>`)
+      + (p.featured ? `<span class="pl-b pl-star">⭐ ${t("Featured", "Bikunzwe")}</span>` : "")
+      + (base ? `<span class="pl-b pl-base">${h ? t("Hidden", "Cyahishwe") : t("Default", "Icy'ibanze")}</span>` : "");
+    const old = p.oldPrice && p.oldPrice > p.price ? `<s>${money(p.oldPrice)}</s>` : "";
+    const acts = base
+      ? `<button class="pl-edit" onclick="adminEditSample(${p.id})">✏️ ${t("Edit", "Hindura")}</button><button class="pl-del ${h ? "pl-restore" : ""}" onclick="adminToggleSample(${p.id})">${h ? "↩️ " + t("Restore", "Subiza") : "🗑️ " + t("Delete", "Siba")}</button>`
+      : `<button class="pl-edit" onclick="adminEdit(${p.id})">✏️ ${t("Edit", "Hindura")}</button><button class="pl-del" onclick="adminDelete(${p.id})">🗑️ ${t("Delete", "Siba")}</button>`;
+    return `<article class="pl-card${out ? " is-out" : ""}${h ? " is-hid" : ""}">
+      <div class="pl-img">${img}<div class="pl-badges">${badges}</div></div>
+      <div class="pl-info"><h4>${esc(p.rw || p.en)}</h4><div class="pl-cat">${cat ? cat.icon + " " + esc(cat[language] || cat.en) : ""}</div>
+      <div class="pl-price"><b>${money(p.price)}</b>${old}</div></div>
+      <div class="pl-acts">${acts}</div></article>`;
+  }
   function renderAdminList() {
     const el = $("adminList"); if (!el) return;
-    const mine = dbProducts.map(p => `
-      <div class="admin-row">
-        <div class="cart-emoji">${p.imageUrl ? `<img src="${esc(thumb(p.imageUrl,140))}" alt="" loading="lazy" decoding="async">` : iconOf(p)}</div>
-        <div class="cart-details"><strong>${esc(p.rw || p.en)}</strong><small>${money(p.price)}${p.status === "out" ? " · Byashize" : ""}${p.featured ? " · ⭐" : ""}</small></div>
-        <div class="btns"><button class="secondary" onclick="adminEdit(${p.id})">Hindura</button><button class="secondary danger-btn" onclick="adminDelete(${p.id})">Siba</button></div>
-      </div>`).join("");
-    const base = sampleProducts.map(p => { const h = hiddenSampleIds.includes(p.id); return `
-      <div class="admin-row" style="${h ? "opacity:.6" : ""}">
-        <div class="cart-emoji">${p.imageUrl ? `<img src="${esc(thumb(p.imageUrl,140))}" alt="" loading="lazy" decoding="async">` : iconOf(p)}</div>
-        <div class="cart-details"><strong>${esc(p.rw || p.en)}</strong><small>${money(p.price)}${p.status === "out" ? " · Byashize" : ""}${p.featured ? " · ⭐" : ""} · Icy'ibanze ${h ? "· cyahishwe" : ""}</small></div>
-        <div class="btns"><button class="secondary" onclick="adminEditSample(${p.id})">Hindura</button><button class="secondary ${h ? "" : "danger-btn"}" onclick="adminToggleSample(${p.id})">${h ? "Subiza" : "Siba"}</button></div>
-      </div>`; }).join("");
-    el.innerHTML = (mine || '<p style="color:var(--muted)">Nta gicuruzwa urongeramo.</p>') + '<h3 style="margin:16px 0 4px">Ibicuruzwa by\'ibanze</h3><p style="color:var(--muted);margin:0 0 6px">Bikomeza kugaragara hamwe n\'ibyo wongeraho, keretse ubisibye.</p>' + base;
+    const mineAll = dbProducts.map(p => ({ p, base: false }));
+    const baseAll = sampleProducts.map(p => ({ p, base: true }));
+    const all = mineAll.concat(baseAll);
+    const match = ({ p, base }) => {
+      if (plQ && !((p.rw || "") + " " + (p.en || "") + " " + (p.descRw || "") + " " + (p.descEn || "")).toLowerCase().includes(plQ)) return false;
+      if (plF === "available") return p.status !== "out";
+      if (plF === "out") return p.status === "out";
+      if (plF === "featured") return !!p.featured;
+      if (plF === "mine") return !base;
+      if (plF === "base") return base;
+      return true;
+    };
+    const chips = [["all", "📋 " + t("All", "Byose"), all.length], ["mine", "🆕 " + t("Mine", "Ibyanjye"), mineAll.length], ["available", "✅ " + t("Available", "Biraboneka"), all.filter(x => x.p.status !== "out").length], ["out", "⛔ " + t("Out", "Byashize"), all.filter(x => x.p.status === "out").length], ["featured", "⭐ " + t("Featured", "Bikunzwe"), all.filter(x => x.p.featured).length], ["base", "📦 " + t("Default", "Iby'ibanze"), baseAll.length]];
+    const ce = $("plChips");
+    if (ce) ce.innerHTML = chips.map(c => `<button type="button" class="pl-chip${plF === c[0] ? " on" : ""}" onclick="plSetF('${c[0]}')">${c[1]} <i>${c[2]}</i></button>`).join("");
+    const shown = all.filter(match);
+    el.innerHTML = shown.length
+      ? shown.map(x => plCard(x.p, x.base)).join("")
+      : `<div class="pl-empty"><div>🔍</div><b>${t("No products found", "Nta gicuruzwa kibonetse")}</b><p>${t("Try another search or add a new product.", "Gerageza irindi zina cyangwa wongereho igicuruzwa gishya.")}</p><button type="button" class="primary" onclick="openAddProductForm()">＋ ${t("Add product", "Ongeramo igicuruzwa")}</button></div>`;
+    if (window.gdPageRefresh) window.gdPageRefresh();
   }
   window.adminEditSample = id => {
     const p = sampleProducts.find(x => x.id === Number(id)); if (!p) return;
