@@ -1084,6 +1084,43 @@ html[lang="en"] #gdPage .form-row:has(#secTitle)::before{content:"✍️  Conten
 html[lang="en"] #gdPage .form-row:has(#secImage)::before{content:"🖼️  Photos"}
 html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Button (optional)"}
 </style>
+<style id="gdServicesDesign">
+/* ===== Home: Our services ===== */
+#servicesSection{position:relative;padding:18px 14px 12px!important;border-radius:30px!important;border:1px solid rgba(124,138,255,.35)!important;background:radial-gradient(120% 70% at 0% 0%,rgba(37,99,235,.38),transparent 60%),radial-gradient(90% 60% at 100% 100%,rgba(236,72,153,.22),transparent 60%),linear-gradient(165deg,#141a45,#0c1030)!important;box-shadow:0 22px 44px -20px rgba(0,0,0,.7)}
+#servicesSection::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,#f97316,#ec4899,#8b5cf6,#2563eb)}
+#servicesSection .svc-head{display:flex!important;align-items:flex-start;justify-content:space-between;gap:10px;margin:2px 2px 14px}
+#servicesSection .svc-head h2{margin:0;font-size:1.45rem;color:#fff}
+#servicesSection .svc-sub{display:block;margin-top:4px;color:#aeb8e6;font-size:.78rem;line-height:1.3;max-width:220px}
+#servicesSection .svc-swipe{flex:0 0 auto;margin-top:4px;padding:6px 12px;border-radius:999px;font-size:.76rem;font-weight:800;color:#fff;background:linear-gradient(135deg,#f97316,#ec4899);box-shadow:0 8px 16px -6px rgba(236,72,153,.8);animation:svcNudge 1.8s ease-in-out infinite}
+@keyframes svcNudge{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+#servicesSection .svc-grid{gap:14px!important;padding:4px 2px 12px!important;scrollbar-width:none}
+#servicesSection .svc-grid::-webkit-scrollbar{display:none}
+#servicesSection .svc-card{--c1:#f97316;--c2:#ec4899;position:relative;display:flex!important;flex-direction:column;border-radius:26px!important;border:1px solid rgba(255,255,255,.14)!important;background:linear-gradient(170deg,#141a3e 0%,#0c102a 100%)!important;box-shadow:0 18px 30px -16px color-mix(in srgb,var(--c1) 70%,#000),0 0 0 1px color-mix(in srgb,var(--c1) 25%,transparent);overflow:hidden!important;transition:transform .2s,box-shadow .2s}
+#servicesSection .svc-card:nth-child(4n+2){--c1:#2563eb;--c2:#06b6d4}
+#servicesSection .svc-card:nth-child(4n+3){--c1:#8b5cf6;--c2:#ec4899}
+#servicesSection .svc-card:nth-child(4n+4){--c1:#10b981;--c2:#0ea5e9}
+#servicesSection .svc-card:active{transform:scale(.98)}
+#servicesSection .svc-card::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--c1),var(--c2))}
+.svc-pic{position:relative;overflow:hidden;background:#fff}
+.svc-pic::after{content:"";position:absolute;inset:auto 0 0 0;height:46%;background:linear-gradient(to top,rgba(12,16,42,.85),transparent);pointer-events:none}
+#servicesSection .svc-pic img{height:clamp(160px,50vw,220px)!important;width:100%!important;display:block;object-fit:cover;transition:transform .5s}
+#servicesSection .svc-card:active .svc-pic img{transform:scale(1.06)}
+.svc-nopic{height:clamp(150px,44vw,200px);display:grid;place-items:center;font-size:4rem;background:linear-gradient(135deg,var(--c1),var(--c2))}
+.svc-tag{position:absolute;left:10px;top:10px;z-index:2;padding:5px 11px;border-radius:999px;font-size:.72rem;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 8px 14px -6px rgba(0,0,0,.7)}
+.svc-num{position:absolute;right:12px;bottom:6px;z-index:2;font-size:2rem;font-weight:900;line-height:1;color:rgba(255,255,255,.9);text-shadow:0 2px 10px rgba(0,0,0,.7);letter-spacing:1px}
+#servicesSection .svc-body{flex:1;display:flex!important;flex-direction:column;padding:14px 14px 18px!important;gap:10px!important}
+#servicesSection .svc-body h3{font-size:1.08rem!important;color:#fff;text-align:center;line-height:1.3!important;min-height:2.6em;display:flex;align-items:center;justify-content:center}
+#servicesSection .svc-body .shop-hint{display:none}
+#servicesSection .svc-body .primary{width:100%;margin:auto 0 0;padding:14px 16px;border:0;border-radius:18px;font-weight:900;font-size:.98rem;color:#fff;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 12px 22px -8px color-mix(in srgb,var(--c1) 85%,#000);display:flex;align-items:center;justify-content:center;gap:8px}
+#servicesSection .svc-go{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.28);font-size:.9rem;transition:transform .2s}
+#servicesSection .svc-card:active .svc-go{transform:translateX(4px)}
+#servicesSection .svc-body .secondary{width:100%;margin:0;padding:12px 14px;border-radius:18px;font-weight:800;color:#e8ecff;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.18)}
+#servicesSection .svc-body .secondary.svc-wa{color:#86efac;border-color:rgba(34,197,94,.55);background:rgba(34,197,94,.1)}
+#servicesSection .svc-desc{margin:0;padding:12px 14px;border-radius:16px;font-size:.88rem!important;line-height:1.55!important;color:#d6dcff!important;background:rgba(255,255,255,.06);border-left:4px solid var(--c1)}
+.svc-dots{display:flex;justify-content:center;gap:7px;margin:2px 0 4px}
+.svc-dots i{width:8px;height:8px;border-radius:999px;background:rgba(255,255,255,.28);transition:.25s}
+.svc-dots i.on{width:26px;background:linear-gradient(90deg,#f97316,#ec4899)}
+</style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
 <header class="topbar">
@@ -1113,7 +1150,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
     </section>
 
     <section class="section" id="servicesSection">
-      <div class="section-heading"><h2 data-en="Our services" data-rw="Serivisi dukora">Our services</h2></div>
+      <div class="section-heading svc-head"><div><h2 data-en="🛠️ Our services" data-rw="🛠️ Serivisi dukora">🛠️ Our services</h2><small class="svc-sub" data-en="Professional repair and rewinding you can trust" data-rw="Gusana no gusubiza amashanyarazi mu mamoteri, twizewe">Professional repair and rewinding you can trust</small></div><span class="svc-swipe" data-en="Swipe ›" data-rw="Sunikira ›">Swipe ›</span></div>
       <div class="svc-grid" id="servicesList"></div>
     </section>
 
@@ -2397,14 +2434,19 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   function renderServices() {
     const el = $("servicesList"); if (!el) return;
     if (el.dataset.cached === "1" && !window.gdSvcLoaded) return;
-    el.innerHTML = serviceList().map(v => `<div class="svc-card">${(v.imageUrl || v.img) ? `<img src="${esc(thumb(v.imageUrl || v.img, 480))}" alt="${esc(v.name)}" loading="lazy" decoding="async">` : ""}
+    el.innerHTML = serviceList().map((v, i) => `<div class="svc-card">${(v.imageUrl || v.img) ? `<div class="svc-pic"><img src="${esc(thumb(v.imageUrl || v.img, 480))}" alt="${esc(v.name)}" loading="lazy" decoding="async"><span class="svc-tag">🛠️ ${t("Service", "Serivisi")}</span><span class="svc-num">${String(i + 1).padStart(2, "0")}</span></div>` : `<div class="svc-pic svc-nopic">🛠️<span class="svc-num">${String(i + 1).padStart(2, "0")}</span></div>`}
       <div class="svc-body"><h3>${esc(v.name)}</h3>
       <div class="shop-hint" aria-hidden="true">👇</div>
-      <button class="primary" onclick="event.stopPropagation();requestService(this.dataset.n)" data-n="${esc(v.name)}">${t("Request service", "Saba serivisi")}</button>
+      <button class="primary" onclick="event.stopPropagation();requestService(this.dataset.n)" data-n="${esc(v.name)}">📩 ${t("Request service", "Saba serivisi")} <span class="svc-go">→</span></button>
       <button type="button" class="secondary svc-more" onclick="event.stopPropagation();this.closest('.svc-card').classList.toggle('open')">${t("Details", "Ibisobanuro")} <span class="svc-chev" aria-hidden="true">▾</span></button>
       ${v.desc ? `<p class="svc-desc">${esc(v.desc)}</p>` : ""}
       <button class="secondary svc-wa" onclick="event.stopPropagation();serviceWhatsApp(this.dataset.n)" data-n="${esc(v.name)}">${t("Ask on WhatsApp", "Baza kuri WhatsApp")}</button></div></div>`).join("") + svcShopCards();
     if (window.gdSvcLoaded && window.gdSaveSvcCache) window.gdSaveSvcCache();
+    (function () {
+      let d = $("svcDots");
+      if (!d) { d = document.createElement("div"); d.id = "svcDots"; d.className = "svc-dots"; el.after(d); el.addEventListener("scroll", () => { const c = el.querySelector(".svc-card"); if (!c) return; const step = c.offsetWidth + 14; const idx = Math.round(el.scrollLeft / step); d.querySelectorAll("i").forEach((x, k) => x.classList.toggle("on", k === idx)); }, { passive: true }); }
+      d.innerHTML = Array.from(el.querySelectorAll(".svc-card")).map((_, k) => `<i class="${k === 0 ? "on" : ""}"></i>`).join("");
+    })();
   }
   window.renderServices = renderServices;
   renderServices();
