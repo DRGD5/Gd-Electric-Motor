@@ -1223,6 +1223,91 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 #shopsHome .shop-mini img,#shopsHome .shop-mini-ph{height:130px}
 @media(min-width:760px){#shopsHome .shop-block-row{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(min-width:1000px){#shopsHome .shop-block-row{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* ===== Banner (slides) manager ===== */
+.hb-off{display:none!important}
+.hb-emoji{display:grid;place-items:center;width:100%;height:100%;font-size:clamp(4rem,18vw,7rem);background:#fff}
+#cartStaffPanel .sc-ban{--c1:#f59e0b;--c2:#ef4444}
+.bn-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.bn-actions button{width:100%;padding:13px 10px;border-radius:16px;font-weight:900;font-size:.9rem}
+.bn-picker{margin:0 0 14px;padding:12px;border-radius:20px;border:1px solid rgba(124,138,255,.3);background:linear-gradient(170deg,rgba(255,255,255,.06),rgba(255,255,255,.02))}
+.bn-picker input{width:100%;box-sizing:border-box;padding:13px 16px;border-radius:99px;border:1.5px solid #2f3a7a;background:#080b1c;color:#fff;font:inherit;margin-bottom:10px}
+#bnPickList{max-height:360px;overflow:auto;display:grid;gap:8px}
+.bn-cap{margin:16px 2px 8px;font-weight:900;font-size:.95rem;color:#dfe5ff}
+#bnList{display:grid;gap:10px}
+.bn-row{display:flex;align-items:center;gap:12px;padding:10px;border-radius:18px;border:1px solid rgba(124,138,255,.25);background:linear-gradient(170deg,rgba(255,255,255,.07),rgba(255,255,255,.03))}
+.bn-row.is-off{opacity:.6}
+.bn-th{flex:0 0 56px;height:56px;border-radius:14px;overflow:hidden;background:#fff;display:grid;place-items:center}
+.bn-th img{width:100%;height:100%;object-fit:cover}
+.bn-th i{font-style:normal;font-size:1.6rem}
+.bn-info{flex:1;min-width:0}
+.bn-info b{display:block;font-size:.95rem;color:#fff;overflow-wrap:anywhere}
+.bn-info small{display:block;margin-top:2px;color:#9aa6e8;font-size:.74rem;font-weight:700}
+.bn-btns{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:46%}
+.bn-b{padding:8px 11px;border-radius:99px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-weight:800;font-size:.76rem;cursor:pointer}
+.bn-b.bn-add{border:0;background:linear-gradient(135deg,#2563eb,#25d6a0)}
+.bn-b.bn-on{background:rgba(16,185,129,.2);border-color:rgba(16,185,129,.6);color:#86efac}
+.bn-b.bn-danger{border-color:rgba(239,68,68,.6);background:rgba(239,68,68,.14);color:#ff8f8f}
+
+/* ===== Cart / checkout: new design ===== */
+#view-cart #cartContents{background:none!important;border:0!important;box-shadow:none!important;padding:0!important}
+.ct-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 2px 12px}
+.ct-head h2{margin:0;font-size:1.15rem}
+.ct-chip{padding:5px 12px;border-radius:99px;font-size:.78rem;font-weight:900;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed)}
+.ct-list{display:grid;gap:12px}
+.ct-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:22px;border:1px solid rgba(124,138,255,.25);background:linear-gradient(170deg,#161c3d,#10142c);box-shadow:0 14px 26px -16px rgba(0,0,0,.8)}
+.ct-img{flex:0 0 72px;height:72px;border-radius:18px;overflow:hidden;background:#fff;display:grid;place-items:center;font-size:2rem;color:#161b2b}
+.ct-img img{width:100%;height:100%;object-fit:contain}
+.ct-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ct-info strong{font-size:.98rem;color:#fff;line-height:1.25;overflow-wrap:anywhere}
+.ct-info small{color:#9aa6e8;font-size:.78rem}
+.ct-line{margin-top:3px;font-size:.95rem;color:#4ff0be}
+.ct-qty{flex-direction:column-reverse;align-items:center;gap:4px;padding:4px;border-radius:99px;background:#0a0d1f;border:1px solid #2f3a7a}
+.ct-qty button{width:32px!important;height:32px!important;border-radius:50%!important;border:0!important;background:linear-gradient(135deg,#2563eb,#7c3aed)!important;font-size:1.05rem;font-weight:900;color:#fff}
+.ct-qty span{font-weight:900;min-width:24px;text-align:center}
+.ct-sum{margin:14px 0;padding:16px;border-radius:24px;border:1px solid rgba(124,138,255,.3);background:radial-gradient(120% 90% at 100% 0%,rgba(37,214,160,.14),transparent 60%),linear-gradient(170deg,#141a3e,#0c102a)}
+.ct-sum-row{display:flex;justify-content:space-between;color:#aeb8e6;font-weight:700;font-size:.9rem;padding-bottom:10px;border-bottom:1px dashed #36418a}
+.ct-total{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:12px}
+.ct-total span{font-weight:900;font-size:1.02rem}
+.ct-total b{font-size:1.5rem;color:#4ff0be;letter-spacing:-.3px}
+.ct-note{margin:10px 0 0;padding:10px 12px;border-radius:14px;font-size:.82rem;line-height:1.45;color:#cfd6ff;background:rgba(255,255,255,.06)}
+.ct-form{padding:16px;border-radius:26px;border:1px solid rgba(124,138,255,.3);background:linear-gradient(170deg,#12183f,#0b0f2a);position:relative;overflow:hidden}
+.ct-form::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,#25d6a0,#2563eb,#8b5cf6)}
+.ct-f{display:block;margin:0 0 12px}
+.ct-f span{display:block;margin:0 0 6px 2px;font-size:.82rem;font-weight:800;color:#dfe5ff}
+.ct-f input{width:100%;box-sizing:border-box;padding:15px 16px;min-height:54px;border-radius:18px;border:1.5px solid #2f3a7a;background:linear-gradient(180deg,#080b1c,#0c1130);color:#fff;font:inherit;font-size:1rem;transition:border-color .2s,box-shadow .2s}
+.ct-f input::placeholder{color:#6f7aa3}
+.ct-f input:focus{outline:0;border-color:#5b8cff;box-shadow:0 0 0 4px rgba(91,140,255,.22)}
+.ct-submit{width:100%;padding:16px;border-radius:18px!important;border:0;font-size:1.05rem;font-weight:900;color:#fff;background:linear-gradient(135deg,#2563eb,#25d6a0)!important;box-shadow:0 16px 28px -12px rgba(37,214,160,.55)!important}
+.ct-submit:disabled{opacity:.65}
+.ct-clear{display:block;width:100%;margin-top:10px;padding:12px;border-radius:16px;border:1px solid rgba(239,68,68,.45);background:rgba(239,68,68,.08);color:#ff9a9a;font-weight:800;font-size:.88rem}
+.ct-trust{display:grid;gap:6px;margin-top:14px;font-size:.78rem;font-weight:700;color:#9aa6e8}
+.ct-trust span{padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.05)}
+.ct-empty{text-align:center;padding:30px 16px;border-radius:26px;border:1px dashed #36418a;background:linear-gradient(170deg,#141a3e,#0c102a)}
+.ct-empty-ic{font-size:3.4rem;line-height:1}
+.ct-empty h3{margin:10px 0 4px}
+.ct-empty p{margin:0 0 16px;color:#9aa6e8}
+.ct-track{border-radius:26px!important}
+.ct-track .info-card{border-radius:18px!important}
+.os-pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.76rem;background:rgba(124,138,255,.2);color:#cfd6ff}
+.os-pill.os-new{background:rgba(59,130,246,.22);color:#93c5fd}
+.os-pill.os-processing{background:rgba(245,158,11,.22);color:#fcd34d}
+.os-pill.os-ready{background:rgba(139,92,246,.24);color:#c4b5fd}
+.os-pill.os-done{background:rgba(16,185,129,.24);color:#6ee7b7}
+.os-pill.os-cancelled{background:rgba(239,68,68,.22);color:#fca5a5}
+.os-steps{display:flex;margin:10px 0 6px}
+.os-steps span{flex:1;position:relative;text-align:center;font-size:.68rem;font-weight:800;color:#6f7aa3;padding-top:20px}
+.os-steps span i{position:absolute;left:0;right:0;top:6px;height:4px;background:#2a3166}
+.os-steps span:first-child i{left:50%}.os-steps span:last-child i{right:50%}
+.os-steps span::before{content:"";position:absolute;left:50%;top:1px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#2a3166;border:2px solid #0c102a;z-index:1}
+.os-steps span.on{color:#6ee7b7}
+.os-steps span.on i{background:linear-gradient(90deg,#25d6a0,#2563eb)}
+.os-steps span.on::before{background:#25d6a0}
+#orderDone{text-align:center;border-radius:26px!important;border:1px solid rgba(16,185,129,.5)!important;background:radial-gradient(120% 80% at 50% 0%,rgba(37,214,160,.18),transparent 60%),linear-gradient(170deg,#0f2a3a,#0b1230)!important}
+.od-ic{display:grid;place-items:center;width:64px;height:64px;margin:4px auto 8px;border-radius:50%;font-size:2rem;font-weight:900;color:#fff;background:linear-gradient(135deg,#10b981,#25d6a0);box-shadow:0 14px 26px -10px rgba(16,185,129,.8)}
+#orderDone h2{margin:6px 0}
+#orderDone .wa-btn{width:100%;margin:8px 0 6px;padding:15px;font-size:1rem}
+#orderDone .secondary{margin:4px 3px;border-radius:99px}
 </style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
@@ -1245,7 +1330,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 
 <main>
   <section id="view-home" class="view active">
-    <h1 class="sr-only" data-en="GD Electric Motors - electric motors, pumps and spare parts in Rwanda" data-rw="GD Electric Motors - moteri, pompe n'ibikoresho mu Rwanda">GD Electric Motors - electric motors, pumps and spare parts in Rwanda</h1><div class="hero-banner" id="heroBanner" aria-roledescription="carousel" aria-label="GD Electric Motors"><div class="hb-slide active"><div class="hb-text"><div class="hb-eyebrow" data-en="REPAIR" data-rw="GUSANA">REPAIR</div><div class="hb-title" data-en="Motor repair" data-rw="Gusana moteri">Motor repair</div><div class="hb-sub" data-en="Fast & reliable" data-rw="Vuba kandi neza">Fast & reliable</div><button class="primary" onclick="showView('categories')" data-en="Shop now →" data-rw="Reba byose →">Shop now →</button></div><div class="hb-img"><img src="hero-repair.webp" alt="Motor repair and rewinding" fetchpriority="high" decoding="async"></div></div><div class="hb-slide"><div class="hb-text"><div class="hb-eyebrow" data-en="WATER PUMPS" data-rw="POMPE Z'AMAZI">WATER PUMPS</div><div class="hb-title" data-en="Water pumps" data-rw="Pompe z'amazi">Water pumps</div><div class="hb-sub" data-en="Ask for the price" data-rw="Baza igiciro">Ask for the price</div><button class="primary" onclick="showView('categories')" data-en="Shop now →" data-rw="Reba byose →">Shop now →</button></div><div class="hb-img contain"><img id="hbPump" src="img-pump.webp" alt="Water pump" loading="lazy" decoding="async"></div></div><div class="hb-slide"><div class="hb-text"><div class="hb-eyebrow" data-en="SERVICE" data-rw="SERIVISI">SERVICE</div><div class="hb-title" data-en="Rewinding" data-rw="Rewinding">Rewinding</div><div class="hb-sub" data-en="We do it for you" data-rw="Turabigukorera">We do it for you</div><button class="primary" onclick="showView('categories')" data-en="Shop now →" data-rw="Reba byose →">Shop now →</button></div><div class="hb-img contain"><img src="img-rewinding.webp" alt="Rewinding service" loading="lazy" decoding="async"></div></div><div class="hb-dots" id="hbDots"></div></div>
+    <h1 class="sr-only" data-en="GD Electric Motors - electric motors, pumps and spare parts in Rwanda" data-rw="GD Electric Motors - moteri, pompe n'ibikoresho mu Rwanda">GD Electric Motors - electric motors, pumps and spare parts in Rwanda</h1><div class="hero-banner" id="heroBanner" aria-roledescription="carousel" aria-label="GD Electric Motors"><div class="hb-slide active" data-bn="repair"><div class="hb-text"><div class="hb-eyebrow" data-en="REPAIR" data-rw="GUSANA">REPAIR</div><div class="hb-title" data-en="Motor repair" data-rw="Gusana moteri">Motor repair</div><div class="hb-sub" data-en="Fast & reliable" data-rw="Vuba kandi neza">Fast & reliable</div><button class="primary" onclick="showView('categories')" data-en="Shop now →" data-rw="Reba byose →">Shop now →</button></div><div class="hb-img"><img src="hero-repair.webp" alt="Motor repair and rewinding" fetchpriority="high" decoding="async"></div></div><div class="hb-slide" data-bn="pump"><div class="hb-text"><div class="hb-eyebrow" data-en="WATER PUMPS" data-rw="POMPE Z'AMAZI">WATER PUMPS</div><div class="hb-title" data-en="Water pumps" data-rw="Pompe z'amazi">Water pumps</div><div class="hb-sub" data-en="Ask for the price" data-rw="Baza igiciro">Ask for the price</div><button class="primary" onclick="showView('categories')" data-en="Shop now →" data-rw="Reba byose →">Shop now →</button></div><div class="hb-img contain"><img id="hbPump" src="img-pump.webp" alt="Water pump" loading="lazy" decoding="async"></div></div><div class="hb-slide" data-bn="rewinding"><div class="hb-text"><div class="hb-eyebrow" data-en="SERVICE" data-rw="SERIVISI">SERVICE</div><div class="hb-title" data-en="Rewinding" data-rw="Rewinding">Rewinding</div><div class="hb-sub" data-en="We do it for you" data-rw="Turabigukorera">We do it for you</div><button class="primary" onclick="showView('categories')" data-en="Shop now →" data-rw="Reba byose →">Shop now →</button></div><div class="hb-img contain"><img src="img-rewinding.webp" alt="Rewinding service" loading="lazy" decoding="async"></div></div><div class="hb-dots" id="hbDots"></div></div>
 
     <section class="section">
       <div class="section-heading"><h2 data-en="Shop by category" data-rw="Gura ukurikije ibyiciro">Shop by category</h2><button class="text-link" onclick="showView('categories')" data-en="All categories →" data-rw="Ibyiciro byose →">All categories →</button></div>
@@ -1299,6 +1384,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
         <button class="admin-shortcut sc sc-svc" type="button" onclick="toggleAdminSection('adminServicesSection')"><span class="sc-ic">🛠️</span><span class="sc-tx"><span class="sc-t">Serivisi dukora</span><span class="sc-s">Ongeramo cyangwa uhindure</span></span><span class="sc-badges"><span class="users-count count-total" id="svcTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut sc sc-stats" type="button" onclick="toggleAdminSection('adminStatsSection')"><span class="sc-ic">📊</span><span class="sc-tx"><span class="sc-t">Abasuye website</span><span class="sc-s">Reba abasuye urubuga</span></span><span class="sc-badges"><span class="users-count count-new" id="statsTodayBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut sc sc-sec" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span class="sc-ic">🧩</span><span class="sc-tx"><span class="sc-t">Ibice bya website</span><span class="sc-s">Slides n'ibice by'urubuga</span></span><span class="sc-badges"></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut sc sc-ban" type="button" onclick="toggleAdminSection('adminBannerSection')"><span class="sc-ic">🎞️</span><span class="sc-tx"><span class="sc-t">Banner (Slides)</span><span class="sc-s">Gucunga slides zo hejuru</span></span><span class="sc-badges"></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut sc sc-shop" type="button" onclick="toggleAdminSection('adminShopsSection')"><span class="sc-ic">🏪</span><span class="sc-tx"><span class="sc-t">Amaduka y'abakiriya</span><span class="sc-s">Emeza cyangwa wange</span></span><span class="sc-badges"><span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut sc sc-add sc-wide" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span class="sc-ic">➕</span><span class="sc-tx"><span class="sc-t">Ongeramo igicuruzwa</span><span class="sc-s">Shyiraho igicuruzwa gishya</span></span><span class="sc-badges"></span><span class="shortcut-arrow">›</span></button>
       </div>
@@ -1438,6 +1524,18 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
         <div id="adminSections"></div>
       </div>
 
+      <div class="info-card admin-section" id="adminBannerSection" hidden>
+        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminBannerSection')"><h2>🎞️ Banner (Slides)</h2><span class="shortcut-arrow">⌃</span></button>
+        <p>Slides zigaragara hejuru ku rupapuro rwa mbere. Hisha cyangwa wongere slide, cyangwa ushyiremo ibicuruzwa bisanzwe ku rubuga.</p>
+        <div class="bn-actions"><button class="primary" type="button" onclick="bnNewSlide()">➕ Slide nshya</button><button class="secondary" type="button" id="bnPickBtn" onclick="bnTogglePicker()">📦 Ongeraho ibicuruzwa</button></div>
+        <div class="bn-picker" id="bnPicker" hidden>
+          <input id="bnQ" type="search" placeholder="🔍 Shakisha igicuruzwa..." oninput="bnRenderPick()">
+          <div id="bnPickList"></div>
+        </div>
+        <div class="bn-cap">🎞️ Slides ziri ku banner</div>
+        <div id="bnList"></div>
+      </div>
+
       <div class="info-card admin-section" id="adminShopsSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminShopsSection')"><h2>🏪 Amaduka y'abakiriya</h2><span class="shortcut-arrow">⌃</span></button>
         <div id="adminShops"></div>
@@ -1539,6 +1637,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
       window.__gdRenderQ = requestAnimationFrame(() => { window.__gdRenderQ = 0; renderHome(); renderCategories(); renderSaved(); renderCart(); });
     }
     if (typeof openFromUrl === "function") openFromUrl();
+    if (window.gdHeroRefresh) window.gdHeroRefresh();
   }
   const money = n => new Intl.NumberFormat("en-US").format(n) + " RWF";
   const t = (en,rw) => language === "rw" ? rw : en;
@@ -1885,12 +1984,13 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
     const entries=entries0.filter(([id])=>cartItem(id));
     const validCart={}; entries0.filter(([id])=>cartItem(id)||(isShopKey(id)&&!window.gdShopsLoaded)).forEach(([id,qty])=>validCart[id]=Number(qty));
     if (JSON.stringify(validCart)!==JSON.stringify(cart)) { cart=validCart; localStorage.setItem("gdCart",JSON.stringify(cart)); }
-    if(!entries.length){el.innerHTML=`<p>${t("Your cart is empty.","Agaseke kawe karimo ubusa.")}</p><button class="primary" onclick="showView('categories')">${t("Browse products","Reba ibicuruzwa")}</button>${renderCartOrderTracking()}`;updateCounts();return;}
+    if(!entries.length){el.innerHTML=`<div class="ct-empty"><div class="ct-empty-ic">🛒</div><h3>${t("Your cart is empty","Agaseke kawe karimo ubusa")}</h3><p>${t("Add products to place an order.","Shyiramo ibicuruzwa kugira ngo utumize.")}</p><button class="primary ct-submit" onclick="showView('categories')">${t("Browse products","Reba ibicuruzwa")} →</button></div>${renderCartOrderTracking()}`;updateCounts();return;}
     let total=0;
-    const rows=entries.map(([id,qty])=>{const p=cartItem(id);total+=p.price*qty;
-      return `<div class="cart-row"><div class="cart-emoji">${p.imageUrl?`<img src="${esc(thumb(p.imageUrl,140))}" alt="" loading="lazy" decoding="async">`:(p.isShop?"🏪":iconOf(p))}</div><div class="cart-details"><strong>${esc(itemName(p))}</strong><small>${money(p.price)} × ${qty}${p.isShop&&p.shopName?" · 🏪 "+esc(p.shopName):""}</small></div><div class="qty"><button onclick="changeQty('${esc(String(p.id))}',-1)">−</button><span>${qty}</span><button onclick="changeQty('${esc(String(p.id))}',1)">+</button></div></div>`;
+    let count=0;
+    const rows=entries.map(([id,qty])=>{const p=cartItem(id);total+=p.price*qty;count+=Number(qty);
+      return `<div class="ct-item"><div class="ct-img">${p.imageUrl?`<img src="${esc(thumb(p.imageUrl,160))}" alt="" loading="lazy" decoding="async">`:(p.isShop?"🏪":iconOf(p))}</div><div class="ct-info"><strong>${esc(itemName(p))}</strong><small>${money(p.price)} × ${qty}${p.isShop&&p.shopName?" · 🏪 "+esc(p.shopName):""}</small><b class="ct-line">${money(p.price*qty)}</b></div><div class="qty ct-qty"><button type="button" aria-label="−" onclick="changeQty('${esc(String(p.id))}',-1)">−</button><span>${qty}</span><button type="button" aria-label="+" onclick="changeQty('${esc(String(p.id))}',1)">+</button></div></div>`;
     }).join("");
-    el.innerHTML=`${rows}<div style="display:flex;justify-content:space-between;gap:12px;margin:20px 0;font-size:1.1rem;font-weight:900"><span>${t("Estimated total","Igiteranyo cy'agateganyo")}</span><span style="color:var(--green)">${money(total)}</span></div><p>${t("Prices and stock should be confirmed with us before payment.","Ibiciro n'ibihari byemezwe natwe mbere yo kwishyura.")}</p><div class="form-row"><input id="orderName" placeholder="${t("Your name","Amazina yawe")}" autocomplete="name" value="${esc(customer.name||(window.gdProfile&&window.gdProfile.name)||"")}" oninput="setCust('name',this.value)"></div><div class="form-row"><input id="orderPhone" placeholder="${t("Phone number (10 digits)","Nimero ya telefoni (imibare 10)")}" inputmode="tel" autocomplete="tel" value="${esc(customer.phone||(window.gdProfile&&window.gdProfile.phone)||"")}" oninput="setCust('phone',this.value)"></div><button class="primary" id="submitOrderBtn" onclick="submitOrder()">${t("Submit order ✓","Ohereza order (Submit) ✓")}</button> <button class="secondary" onclick="clearCart()">${t("Clear cart","Siba ibiri mu gaseke")}</button>${renderCartOrderTracking()}`;
+    el.innerHTML=`<div class="ct-head"><h2>🛍️ ${t("Your items","Ibyo watoranyije")}</h2><span class="ct-chip">${count} ${t("items","ibicuruzwa")}</span></div><div class="ct-list">${rows}</div><div class="ct-sum"><div class="ct-sum-row"><span>${t("Items","Ibicuruzwa")}</span><b>${count}</b></div><div class="ct-total"><span>${t("Estimated total","Igiteranyo cy'agateganyo")}</span><b>${money(total)}</b></div><p class="ct-note">ℹ️ ${t("Prices and stock should be confirmed with us before payment.","Ibiciro n'ibihari byemezwe natwe mbere yo kwishyura.")}</p></div><div class="ct-form"><div class="ct-head"><h2>📝 ${t("Your details","Amakuru yawe")}</h2></div><label class="ct-f"><span>👤 ${t("Your name","Amazina yawe")}</span><input id="orderName" placeholder="${t("Your name","Amazina yawe")}" autocomplete="name" value="${esc(customer.name||(window.gdProfile&&window.gdProfile.name)||"")}" oninput="setCust('name',this.value)"></label><label class="ct-f"><span>📞 ${t("Phone number (10 digits)","Nimero ya telefoni (imibare 10)")}</span><input id="orderPhone" placeholder="07xx xxx xxx" inputmode="tel" autocomplete="tel" value="${esc(customer.phone||(window.gdProfile&&window.gdProfile.phone)||"")}" oninput="setCust('phone',this.value)"></label><button class="primary ct-submit" id="submitOrderBtn" onclick="submitOrder()">${t("Submit order ✓","Ohereza order (Submit) ✓")}</button><button type="button" class="ct-clear" onclick="clearCart()">🗑️ ${t("Clear cart","Siba ibiri mu gaseke")}</button><div class="ct-trust"><span>💬 ${t("We confirm on WhatsApp","Tubyemeza kuri WhatsApp")}</span><span>✅ ${t("No payment before confirmation","Nta kwishyura mbere yo kwemezwa")}</span></div></div>${renderCartOrderTracking()}`;
     updateCounts();
   }
   function renderCartOrderTracking() {
@@ -1903,8 +2003,10 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
       done: t("Completed / delivered.", "Yarangije gutangwa."),
       cancelled: t("Cancelled.", "Yahagaritswe.")
     }[s] || t("Received — we have received your order.", "Byakiriwe — twakiriye komande yawe."));
-    const orders = rows.length ? rows.map((o, idx) => `<div class="info-card ${window.gdNewOrderAt && idx === 0 && (Date.now() - window.gdNewOrderAt) < 600000 ? 'order-new' : ''}" style="margin-top:12px"><strong>🧾 ${t("Order", "Komande")} #${esc(String(o.id || "").slice(-5).toUpperCase())}</strong>${window.gdNewOrderAt && idx === 0 && (Date.now() - window.gdNewOrderAt) < 600000 ? '<span class="order-badge">' + t("NEW","NSHYA") + '</span>' : ''}<p style="margin:6px 0;color:var(--muted)">${new Date(o.createdAt || 0).toLocaleDateString()} · <b>${esc(statusLabel(o.status))}</b></p><p style="margin:6px 0">${(o.items || []).map(i => esc(i.name) + " × " + Number(i.qty)).join("<br>")}</p><p style="margin:6px 0">${statusText(o.status)}</p></div>`).join("") : `<p style="color:var(--muted)">${currentUser ? t("No orders found for your account yet.", "Nta komande urakora iboneka kuri konti yawe.") : t("Sign in or create an account to track orders here. Orders placed without signing in may not appear in your account.", "Injira cyangwa ufungure konti kugira ngo ukurikirane komande hano. Komande zakozwe utinjiye muri konti zishobora kutagaragara.")}</p>`;
-    return `<section class="info-card" id="orderTracking" style="margin-top:20px"><h2>📦 ${t("Track my order", "Kurikirana komande yanjye")}</h2><p>${t("See the latest status of your orders here.", "Reba aho komande zawe zigeze hano.")}</p>${orders}${currentUser ? "" : `<button class="secondary" onclick="showView('account')">${t("Account / Sign in", "Konti / Injira")}</button>`}</section>`;
+    const stepIdx = { new: 0, processing: 1, ready: 2, done: 3 };
+    const stepsHtml = o => o.status === "cancelled" ? "" : `<div class="os-steps">${[t("Received", "Byakiriwe"), t("Preparing", "Irategurwa"), t("Ready", "Byiteguye"), t("Done", "Byarangiye")].map((l, i) => `<span class="${i <= (stepIdx[o.status] ?? 0) ? "on" : ""}"><i></i>${l}</span>`).join("")}</div>`;
+    const orders = rows.length ? rows.map((o, idx) => `<div class="info-card ${window.gdNewOrderAt && idx === 0 && (Date.now() - window.gdNewOrderAt) < 600000 ? 'order-new' : ''}" style="margin-top:12px"><strong>🧾 ${t("Order", "Komande")} #${esc(String(o.id || "").slice(-5).toUpperCase())}</strong>${window.gdNewOrderAt && idx === 0 && (Date.now() - window.gdNewOrderAt) < 600000 ? '<span class="order-badge">' + t("NEW","NSHYA") + '</span>' : ''}<p style="margin:6px 0;color:var(--muted)">${new Date(o.createdAt || 0).toLocaleDateString()} · <b class="os-pill os-${esc(o.status || "new")}">${esc(statusLabel(o.status))}</b></p>${stepsHtml(o)}<p style="margin:6px 0">${(o.items || []).map(i => esc(i.name) + " × " + Number(i.qty)).join("<br>")}</p><p style="margin:6px 0">${statusText(o.status)}</p></div>`).join("") : `<p style="color:var(--muted)">${currentUser ? t("No orders found for your account yet.", "Nta komande urakora iboneka kuri konti yawe.") : t("Sign in or create an account to track orders here. Orders placed without signing in may not appear in your account.", "Injira cyangwa ufungure konti kugira ngo ukurikirane komande hano. Komande zakozwe utinjiye muri konti zishobora kutagaragara.")}</p>`;
+    return `<section class="info-card ct-track" id="orderTracking" style="margin-top:20px"><h2>📦 ${t("Track my order", "Kurikirana komande yanjye")}</h2><p>${t("See the latest status of your orders here.", "Reba aho komande zawe zigeze hano.")}</p>${orders}${currentUser ? "" : `<button class="secondary" onclick="showView('account')">${t("Account / Sign in", "Konti / Injira")}</button>`}</section>`;
   }
   function setCust(k,v){customer[k]=v;localStorage.setItem("gdCustomer",JSON.stringify(customer));}
   function clearCart(){cart={};localStorage.setItem("gdCart",JSON.stringify(cart));renderCart();updateCounts();}
@@ -1974,7 +2076,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
     const el=document.getElementById("orderDone"); if(!el) return;
     if(!window.lastOrderText){el.hidden=true;el.innerHTML="";return;}
     el.hidden=false;
-    el.innerHTML=`<h2>✓ ${t("Order submitted","Order yawe yoherejwe")}</h2><p>${t("Thank you! Now message us on WhatsApp so we can confirm prices and availability.","Murakoze! Ubu twandikire kuri WhatsApp kugira ngo tubyemeze (ibiciro n'ibihari).")}</p><button class="wa-btn" onclick="sendOrderWhatsApp()">${t("Message us on WhatsApp →","Twandikire kuri WhatsApp →")}</button> <button class="secondary" onclick="gdGoTracking()">📦 ${t("Track my order","Kurikirana komande yanjye")}</button> <button class="secondary" onclick="dismissOrderDone()">${t("Close","Funga")}</button>`;
+    el.innerHTML=`<div class="od-ic">✓</div><h2>${t("Order submitted","Order yawe yoherejwe")}</h2><p>${t("Thank you! Now message us on WhatsApp so we can confirm prices and availability.","Murakoze! Ubu twandikire kuri WhatsApp kugira ngo tubyemeze (ibiciro n'ibihari).")}</p><button class="wa-btn" onclick="sendOrderWhatsApp()">${t("Message us on WhatsApp →","Twandikire kuri WhatsApp →")}</button> <button class="secondary" onclick="gdGoTracking()">📦 ${t("Track my order","Kurikirana komande yanjye")}</button> <button class="secondary" onclick="dismissOrderDone()">${t("Close","Funga")}</button>`;
   }
   function sendOrderWhatsApp(){
     if(!window.lastOrderText) return;
@@ -2157,7 +2259,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     $("adminPanel").hidden = !staff;
     { const ah = document.querySelector("#view-admin .admin-title-row .page-title"); if (ah) ah.textContent = isAdminUser(currentUser) ? "👑 Super Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi"); }
     { const sp = $("cartStaffPanel"); if (sp) sp.hidden = !["chats", "orders", "requests", "services", "stats", "sections", "shops", "products"].some(k => perms.has(k)); }
-    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection"], shops: ["adminShopsSection"], stats: ["adminStatsSection"], chats: ["adminChatSection"], ceo: ["adminCeoSection"] };
+    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection", "adminBannerSection"], shops: ["adminShopsSection"], stats: ["adminStatsSection"], chats: ["adminChatSection"], ceo: ["adminCeoSection"] };
     Object.keys(map).forEach(perm => {
       const ok = perms.has(perm);
       map[perm].forEach(id => {
@@ -2481,12 +2583,12 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   // ----- services -----
   const REWIND_IMG = "img-rewinding.webp";
   let services = [], hiddenServiceIds = [];
-  let svcShopItemIds = [];
+  let svcShopItemIds = [], hiddenSlideIds = [];
   async function saveHidden(patch) { await setDoc(doc(db, "settings", "hidden"), patch, { merge: true }); }
   onSnapshot(doc(db, "settings", "hidden"), snap => {
     const d = snap.exists() ? snap.data() : {};
-    hiddenSampleIds = (d.products || []).map(Number); hiddenServiceIds = d.services || []; svcShopItemIds = (d.shopItems || []).map(String);
-    setProducts(dbList); renderServices(); renderAdminShopItems(); renderAdminServices(); renderAdminList();
+    hiddenSampleIds = (d.products || []).map(Number); hiddenServiceIds = d.services || []; svcShopItemIds = (d.shopItems || []).map(String); hiddenSlideIds = (d.slides || []).map(String);
+    setProducts(dbList); renderServices(); renderAdminShopItems(); renderAdminServices(); renderAdminList(); renderHeroSlides(); renderBannerAdmin();
   }, err => console.error("Settings:", err));
   onSnapshot(collection(db, "services"), snap => {
     services = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
@@ -2653,7 +2755,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   let customSections = [], editingSectionId = null, editingSectionImage = "", editingSectionImage2 = "";
   onSnapshot(collection(db, "sections"), snap => {
     customSections = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-    renderCustomSections(); renderAdminSections(); renderHeroSlides(); renderWorks();
+    renderCustomSections(); renderAdminSections(); renderHeroSlides(); renderBannerAdmin(); renderWorks();
   }, err => console.error("Sections:", err));
   function secLink(raw) {
     const v = (raw || "").trim(); if (!v) return "";
@@ -2744,11 +2846,22 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       return `<article class="work-card">${imgs}<div class="work-body"><h3>${esc(v.title)}</h3>${v.body ? `<blockquote>“${esc(v.body)}”</blockquote>` : ""}${v.who ? `<div class="work-who">— ${esc(v.who)}</div>` : ""}</div></article>`;
     }).join("");
   }
+  const BN_BUILTIN = { repair: ["Motor repair", "Gusana moteri"], pump: ["Water pumps", "Pompe z'amazi"], rewinding: ["Rewinding", "Rewinding"] };
+  const bnAttr = (en, rw) => `data-en="${esc(en)}" data-rw="${esc(rw)}"`;
+  const bnProduct = v => v && v.productId != null && v.productId !== "" ? products.find(x => String(x.id) === String(v.productId)) : null;
   function renderHeroSlides() {
     const box = $("heroBanner"); if (!box) return;
+    box.querySelectorAll(".hb-slide[data-bn]").forEach(n => { const off = hiddenSlideIds.includes(n.dataset.bn); n.classList.toggle("hb-off", off); if (off) n.classList.remove("active"); });
     box.querySelectorAll(".hb-dyn").forEach(n => n.remove());
     const dots = $("hbDots");
-    customSections.filter(v => v.kind === "slide").forEach(v => {
+    customSections.filter(v => v.kind === "slide" && !v.off).forEach(v => {
+      const d = document.createElement("div"); d.className = "hb-slide hb-dyn";
+      if (v.productId != null && v.productId !== "") {
+        const pr = bnProduct(v); if (!pr) return;
+        const img = pr.imageUrl ? thumb(pr.imageUrl, 600) : "";
+        d.innerHTML = `<div class="hb-text"><div class="hb-eyebrow" ${bnAttr("PRODUCT", "IGICURUZWA")}>${t("PRODUCT", "IGICURUZWA")}</div><div class="hb-title" ${bnAttr(pr.en || pr.rw, pr.rw || pr.en)}>${esc(t(pr.en || pr.rw, pr.rw || pr.en))}</div>${Number(pr.price) > 0 ? `<div class="hb-sub">${money(pr.price)}</div>` : ""}<button class="primary" type="button" onclick="openProduct(${Number(pr.id)})" ${bnAttr("View product →", "Reba igicuruzwa →")}>${t("View product →", "Reba igicuruzwa →")}</button></div><div class="hb-img contain">${img ? `<img src="${esc(img)}" alt="${esc(pr.en || pr.rw)}" loading="lazy">` : `<div class="hb-emoji">${esc(pr.icon || "📦")}</div>`}</div>`;
+        box.insertBefore(d, dots); return;
+      }
       const shop = v.shopId ? shops.find(x => x.id === v.shopId && shopStatus(x) === "approved") : null;
       if (v.shopId && !shop) return;
       const img = v.imageUrl || (shop && shop.logoUrl) || "";
@@ -2756,12 +2869,65 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       const label = v.btnLabel || (shop ? "Fungura shop" : "");
       const btn = shop ? `<button class="primary" type="button" onclick="openShop('${esc(shop.id)}')">${esc(label)} →</button>`
         : (link && label ? `<a class="primary" href="${esc(link)}" target="_blank" rel="noopener">${esc(label)} →</a>` : "");
-      const d = document.createElement("div"); d.className = "hb-slide hb-dyn";
       d.innerHTML = `<div class="hb-text">${shop ? '<div class="hb-eyebrow">🏪 SHOP</div>' : ""}<div class="hb-title">${esc(v.title)}</div>${v.body ? `<div class="hb-sub">${esc(v.body)}</div>` : ""}${btn}</div><div class="hb-img${shop && !v.imageUrl ? " contain" : ""}">${img ? `<img src="${esc(img)}" alt="${esc(v.title)}" loading="lazy">` : ""}</div>`;
       box.insertBefore(d, dots);
     });
     if (window.gdHeroRebuild) window.gdHeroRebuild();
   }
+  window.gdHeroRefresh = () => { renderHeroSlides(); renderBannerAdmin(); };
+
+  // ----- Banner (slides) manager for the super admin -----
+  const bnThumb = (src, emoji) => `<div class="bn-th">${src ? `<img src="${esc(src)}" alt="" loading="lazy">` : `<i>${esc(emoji || "🎞️")}</i>`}</div>`;
+  function bnRenderList() {
+    const el = $("bnList"); if (!el) return;
+    const rows = [];
+    Object.keys(BN_BUILTIN).forEach(id => {
+      const off = hiddenSlideIds.includes(id), node = document.querySelector(`#heroBanner .hb-slide[data-bn="${id}"] img`);
+      rows.push(`<div class="bn-row${off ? " is-off" : ""}">${bnThumb(node ? node.getAttribute("src") : "", "🔧")}<div class="bn-info"><b>${esc(BN_BUILTIN[id][1])}</b><small>${off ? "🙈 Yahishwe" : "✅ Igaragara"} · Slide y'ibanze</small></div><div class="bn-btns"><button type="button" class="bn-b" onclick="bnToggleBuiltin('${id}')">${off ? "👁️ Garagaza" : "🙈 Hisha"}</button></div></div>`);
+    });
+    customSections.filter(v => v.kind === "slide").forEach(v => {
+      const pr = bnProduct(v), isProd = v.productId != null && v.productId !== "", shop = v.shopId ? shops.find(x => x.id === v.shopId) : null;
+      const title = isProd ? (pr ? (pr.rw || pr.en) : (v.title || "Igicuruzwa") + " (cyahishwe)") : v.title;
+      const img = isProd ? (pr && pr.imageUrl ? thumb(pr.imageUrl, 160) : "") : (v.imageUrl || (shop && shop.logoUrl) || "");
+      const tag = isProd ? "📦 Igicuruzwa" : shop ? "🏪 Shop" : "🎞️ Slide yawe";
+      rows.push(`<div class="bn-row${v.off ? " is-off" : ""}">${bnThumb(img, isProd && pr ? pr.icon : "🎞️")}<div class="bn-info"><b>${esc(title)}</b><small>${v.off ? "🙈 Yahishwe" : "✅ Igaragara"} · ${tag}</small></div><div class="bn-btns"><button type="button" class="bn-b" onclick="bnToggleSlide('${esc(v.id)}')">${v.off ? "👁️ Garagaza" : "🙈 Hisha"}</button>${isProd ? "" : `<button type="button" class="bn-b" onclick="adminEditSection('${esc(v.id)}')">✏️ Hindura</button>`}<button type="button" class="bn-b bn-danger" onclick="adminDeleteSection('${esc(v.id)}')">🗑️</button></div></div>`);
+    });
+    el.innerHTML = rows.join("") || `<p class="muted">Nta slide ziriho.</p>`;
+  }
+  function bnRenderPick() {
+    const el = $("bnPickList"); if (!el) return;
+    const q = (($("bnQ") || {}).value || "").trim().toLowerCase();
+    const added = new Set(customSections.filter(v => v.kind === "slide" && v.productId != null && v.productId !== "").map(v => String(v.productId)));
+    const list = products.filter(p => !q || [p.en, p.rw].join(" ").toLowerCase().includes(q)).slice(0, 80);
+    el.innerHTML = list.map(p => { const on = added.has(String(p.id)); return `<div class="bn-row">${bnThumb(p.imageUrl ? thumb(p.imageUrl, 160) : "", p.icon || "📦")}<div class="bn-info"><b>${esc(p.rw || p.en)}</b><small>${Number(p.price) > 0 ? money(p.price) : "Baza igiciro"}</small></div><div class="bn-btns">${on ? `<button type="button" class="bn-b bn-on" onclick="bnRemoveProduct('${esc(p.id)}')">✓ Yongeweho</button>` : `<button type="button" class="bn-b bn-add" onclick="bnAddProduct('${esc(p.id)}')">➕ Ongeraho</button>`}</div></div>`; }).join("") || `<p class="muted">Nta gicuruzwa kibonetse.</p>`;
+  }
+  function renderBannerAdmin() { bnRenderList(); bnRenderPick(); }
+  window.bnRenderPick = bnRenderPick;
+  window.bnTogglePicker = () => { const pk = $("bnPicker"); if (!pk) return; pk.hidden = !pk.hidden; if (!pk.hidden) bnRenderPick(); };
+  window.bnNewSlide = () => { window.gdOpenPage("adminSectionsSection"); setTimeout(() => { if ($("secKind")) { adminCancelSectionEdit(); $("secKind").value = "slide"; gdSecKindChange(); } }, 80); };
+  window.bnToggleBuiltin = async id => {
+    if (!perms.has("sections")) return;
+    const hide = !hiddenSlideIds.includes(id);
+    try { await saveHidden({ slides: hide ? [...hiddenSlideIds, id] : hiddenSlideIds.filter(x => x !== id) }); }
+    catch (err) { alert("Byanze: " + (err.code || err.message)); }
+  };
+  window.bnToggleSlide = async id => {
+    if (!perms.has("sections")) return;
+    const v = customSections.find(x => x.id === id); if (!v) return;
+    try { await updateDoc(doc(db, "sections", id), { off: !v.off, updatedAt: Date.now() }); }
+    catch (err) { alert("Byanze: " + (err.code || err.message)); }
+  };
+  window.bnAddProduct = async id => {
+    if (!perms.has("sections")) return;
+    const pr = products.find(x => String(x.id) === String(id)); if (!pr) return;
+    try { await addDoc(collection(db, "sections"), { kind: "slide", productId: Number(pr.id), shopId: "", who: "", imageUrl: "", imageUrl2: "", title: pr.en || pr.rw || "", body: "", btnLabel: "", btnLink: "", createdAt: Date.now(), updatedAt: Date.now() }); }
+    catch (err) { alert("Byanze: " + (err.code || err.message)); }
+  };
+  window.bnRemoveProduct = async id => {
+    if (!perms.has("sections")) return;
+    try { for (const v of customSections.filter(x => x.kind === "slide" && String(x.productId) === String(id))) await deleteDoc(doc(db, "sections", v.id)); }
+    catch (err) { alert("Byanze: " + (err.code || err.message)); }
+  };
   window.adminDeleteSection = async id => {
     if (!confirm("Gusiba iki gice?")) return;
     try { await deleteDoc(doc(db, "sections", id)); } catch (err) { alert("Gusiba byanze: " + (err.code || err.message)); }
@@ -3339,6 +3505,7 @@ function gdSavePdf(btn) {
     adminServicesSection: { icon: "🛠️", title: "Serivisi dukora", sub: "Ongeramo, hindura cyangwa ukureho serivisi", c: ["#f97316", "#ef4444"] },
     adminStatsSection: { icon: "📊", title: "Abasuye website", sub: "Reba abantu basuye urubuga", c: ["#0ea5e9", "#2563eb"] },
     adminSectionsSection: { icon: "🧩", title: "Ibice bya website", sub: "Gucunga ibice by'urubuga rwawe", c: ["#8b5cf6", "#ec4899"] },
+    adminBannerSection: { icon: "🎞️", title: "Banner (Slides)", sub: "Gucunga slides zigaragara hejuru", c: ["#f59e0b", "#ef4444"] },
     adminShopsSection: { icon: "🏪", title: "Amaduka y'abakiriya", sub: "Emeza cyangwa wange amaduka", c: ["#10b981", "#14b8a6"] },
     adminListWrap: { icon: "📦", title: "Ibicuruzwa biri ku rubuga", sub: "Shakisha, hindura cyangwa usibe ibicuruzwa byawe", c: ["#2563eb", "#06b6d4"],
       stats: () => { const all = dbProducts.concat(sampleProducts.filter(p => !hiddenSampleIds.includes(p.id))); return ["📦 " + all.length + " " + t("products", "ibicuruzwa"), "✅ " + all.filter(p => p.status !== "out").length + " " + t("available", "biraboneka"), "⭐ " + all.filter(p => p.featured).length + " " + t("featured", "bikunzwe"), "⛔ " + all.filter(p => p.status === "out").length + " " + t("out", "byashize")]; } },
@@ -3549,7 +3716,7 @@ function gdSavePdf(btn) {
   function go(n){if(!slides.length)return;cur=(n+slides.length)%slides.length;slides.forEach(function(s,i){s.classList.toggle("active",i===cur);if(dots[i])dots[i].classList.toggle("on",i===cur);});}
   function restart(){clearInterval(timer);if(slides.length<2)return;if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;timer=setInterval(function(){if(!document.hidden)go(cur+1);},4500);}
   function build(){
-    slides=[].slice.call(box.querySelectorAll(".hb-slide")); dotsBox.innerHTML="";
+    slides=[].slice.call(box.querySelectorAll(".hb-slide:not(.hb-off)")); dotsBox.innerHTML="";
     dots=slides.map(function(_,i){var b=document.createElement("button");b.type="button";b.setAttribute("aria-label","Slide "+(i+1));b.onclick=function(){go(i);restart();};dotsBox.appendChild(b);return b;});
     go(Math.min(cur,slides.length-1));
   }
