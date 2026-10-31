@@ -1120,6 +1120,63 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 .svc-dots{display:flex;justify-content:center;gap:7px;margin:2px 0 4px}
 .svc-dots i{width:8px;height:8px;border-radius:999px;background:rgba(255,255,255,.28);transition:.25s}
 .svc-dots i.on{width:26px;background:linear-gradient(90deg,#f97316,#ec4899)}
+
+/* ===== Our services: more compact (shorter) ===== */
+#servicesSection{padding:12px 12px 8px!important;border-radius:24px!important}
+#servicesSection .svc-head{margin:0 2px 8px}
+#servicesSection .svc-head h2{font-size:1.2rem}
+#servicesSection .svc-sub{font-size:.72rem;margin-top:2px;max-width:200px}
+#servicesSection .svc-swipe{padding:5px 10px;font-size:.7rem;margin-top:0}
+#servicesSection .svc-grid{gap:10px!important;padding:2px 2px 8px!important}
+#servicesSection .svc-card{border-radius:20px!important}
+#servicesSection .svc-pic img{height:clamp(90px,27vw,125px)!important}
+.svc-nopic{height:clamp(90px,27vw,125px)!important;font-size:2.6rem!important}
+.svc-tag{left:8px!important;top:8px!important;padding:3px 9px!important;font-size:.66rem!important}
+.svc-num{font-size:1.4rem!important;right:10px!important;bottom:4px!important}
+#servicesSection .svc-body{padding:9px 9px 12px!important;gap:7px!important}
+#servicesSection .svc-body h3{font-size:.88rem!important;min-height:2.5em!important;line-height:1.25!important}
+#servicesSection .svc-body .primary{padding:9px 10px!important;font-size:.78rem!important;border-radius:14px!important;line-height:1.15;gap:5px!important}
+#servicesSection .svc-go{width:20px!important;height:20px!important;font-size:.75rem!important;flex:0 0 auto}
+#servicesSection .svc-body .secondary{padding:8px 10px!important;font-size:.78rem!important;border-radius:14px!important}
+#servicesSection .svc-desc{padding:9px 11px!important;font-size:.8rem!important;line-height:1.45!important}
+.svc-dots{margin:0 0 2px!important}
+
+/* ===== Receipt / Invoice form: new design ===== */
+#rcModal{background:rgba(4,6,18,.78);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#rcModal .rc-sheet{background:radial-gradient(120% 40% at 0% 0%,rgba(37,99,235,.28),transparent 60%),radial-gradient(90% 40% at 100% 0%,rgba(37,214,160,.14),transparent 60%),#0e1230;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));border-left:1px solid rgba(124,138,255,.18);border-right:1px solid rgba(124,138,255,.18)}
+#rcModal .rc-head{position:sticky;top:0;z-index:3;margin:-14px -14px 12px;padding:14px;background:rgba(14,18,48,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid rgba(124,138,255,.2)}
+#rcModal .rc-title{display:flex;align-items:center;gap:12px}
+#rcModal .rc-ico{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;font-size:1.4rem;background:linear-gradient(135deg,#2563eb,#25d6a0);box-shadow:0 10px 20px -8px rgba(37,99,235,.8)}
+#rcModal .rc-head h2{font-size:1.2rem;line-height:1.15}
+#rcModal .rc-head small{color:#9aa6e8;font-size:.74rem;font-weight:700}
+#rcModal .rc-head button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);width:40px;height:40px}
+#rcModal .rc-card{background:linear-gradient(170deg,rgba(255,255,255,.07),rgba(255,255,255,.03));border:1px solid rgba(124,138,255,.22);border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 14px 28px -18px rgba(0,0,0,.8)}
+#rcModal .rc-cap{font-weight:900;font-size:.95rem;color:#fff;display:flex;align-items:center;gap:8px;margin-bottom:2px}
+#rcModal .rc-cap::after{content:"";flex:1;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(124,138,255,.5),transparent)}
+#rcModal .rc-sheet label,#rcModal label{margin:12px 0 6px;font-size:.82rem;font-weight:800;color:#aeb8e6;letter-spacing:.2px}
+#rcModal input:not([type=checkbox]),#rcModal textarea{padding:13px 14px;border-radius:14px;border:1.5px solid #2f3a7a;background:#080b1c;font-size:1rem;transition:border-color .2s,box-shadow .2s}
+#rcModal input:not([type=checkbox]):focus,#rcModal textarea:focus{outline:0;border-color:#5b8cff;box-shadow:0 0 0 4px rgba(91,140,255,.2)}
+#rcModal textarea{min-height:92px;font-family:inherit;line-height:1.5}
+#rcModal .rc-row{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) 44px;grid-template-areas:"d d d" "q p x";gap:8px;align-items:end;padding:10px;margin:10px 0 0;border-radius:16px;background:rgba(8,11,28,.55);border:1px dashed #36418a}
+#rcModal .rc-row .rc-d{grid-area:d}
+#rcModal .rc-sheet .rc-f{margin:0;display:block}
+#rcModal .rc-sheet .rc-f:nth-of-type(1){grid-area:q}
+#rcModal .rc-sheet .rc-f:nth-of-type(2){grid-area:p}
+#rcModal .rc-f span{display:block;font-size:.68rem;font-weight:800;color:#8e9ae0;margin:0 0 4px 4px;text-transform:uppercase;letter-spacing:.6px}
+#rcModal .rc-x{grid-area:x;height:46px;width:44px;border-radius:14px;background:rgba(239,68,68,.16);color:#ff8a8a;border:1px solid rgba(239,68,68,.45);font-weight:900}
+#rcModal .rc-add{width:100%;margin-top:12px;padding:12px;border-radius:14px;border:1.5px dashed #5b8cff;background:rgba(91,140,255,.1);color:#bcd2ff;font-weight:850}
+#rcModal .rc-total{display:flex;justify-content:space-between;align-items:center;margin:12px 0 0;padding:14px 16px;border-radius:16px;font-size:1rem;color:#d9e0ff;background:linear-gradient(135deg,rgba(37,99,235,.35),rgba(37,214,160,.25));border:1px solid rgba(37,214,160,.4)}
+#rcModal .rc-total b{font-size:1.45rem;color:#4ff0be;letter-spacing:-.3px}
+#rcModal .rc-check{display:flex!important;align-items:center;gap:12px;margin:12px 0 4px!important;padding:12px 14px;border-radius:14px;background:rgba(8,11,28,.55);border:1px solid #2f3a7a;font-size:.9rem!important;color:#e8ecff!important;cursor:pointer}
+#rcModal .rc-check input{position:absolute;opacity:0;width:0!important;height:0!important;pointer-events:none}
+#rcModal .rc-sw{position:relative;flex:0 0 auto;width:46px;height:26px;border-radius:99px;background:#2a3166;transition:background .2s}
+#rcModal .rc-sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.4);transition:transform .2s}
+#rcModal .rc-check input:checked + .rc-sw{background:linear-gradient(135deg,#10b981,#25d6a0)}
+#rcModal .rc-check input:checked + .rc-sw::after{transform:translateX(20px)}
+#rcModal .rc-check input:focus-visible + .rc-sw{box-shadow:0 0 0 4px rgba(91,140,255,.35)}
+#rcModal .rc-foot{position:sticky;bottom:0;margin:0 -14px -14px;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,#0e1230 70%,rgba(14,18,48,0))}
+#rcModal .rc-foot .primary{width:100%;padding:16px;font-size:1.05rem;border-radius:16px;background:linear-gradient(135deg,#2563eb,#25d6a0);box-shadow:0 14px 26px -10px rgba(37,214,160,.55)}
+@media (min-width:600px){#rcModal .rc-sheet{border-radius:0}}
 </style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
@@ -2891,7 +2948,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   // ----- receipts / invoices (orders, service work, or blank) -----
   let payCfg = { payPhone: "", payName: "", momoCode: "" };
   onSnapshot(doc(db, "settings", "payment"), snap => { payCfg = snap.exists() ? snap.data() : { payPhone: "", payName: "", momoCode: "" }; }, () => {});
-  const rcRowHtml = (r = {}) => `<div class="rc-row"><input class="rc-d" placeholder="Icyakozwe cyangwa igicuruzwa" value="${esc(r.d || "")}"><input class="rc-q" type="number" min="0" step="any" inputmode="decimal" value="${r.q ?? 1}" oninput="rcCalc()"><input class="rc-p" type="number" min="0" step="any" inputmode="numeric" placeholder="Igiciro" value="${r.p ?? ""}" oninput="rcCalc()"><button type="button" class="rc-x" onclick="this.parentNode.remove();rcCalc()">✕</button></div>`;
+  const rcRowHtml = (r = {}) => `<div class="rc-row"><input class="rc-d" placeholder="Icyakozwe cyangwa igicuruzwa" value="${esc(r.d || "")}"><label class="rc-f"><span>Qty</span><input class="rc-q" type="number" min="0" step="any" inputmode="decimal" value="${r.q ?? 1}" oninput="rcCalc()"></label><label class="rc-f"><span>Igiciro (RWF)</span><input class="rc-p" type="number" min="0" step="any" inputmode="numeric" placeholder="0" value="${r.p ?? ""}" oninput="rcCalc()"></label><button type="button" class="rc-x" aria-label="Siba" onclick="this.parentNode.remove();rcCalc()">✕</button></div>`;
   window.rcCalc = () => {
     let t = 0; document.querySelectorAll("#rcRows .rc-row").forEach(r => { t += (Number(r.querySelector(".rc-q").value) || 0) * (Number(r.querySelector(".rc-p").value) || 0); });
     $("rcTotal").textContent = money(t);
@@ -2902,24 +2959,34 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     let m = $("rcModal");
     if (!m) { m = document.createElement("div"); m.id = "rcModal"; m.className = "rc-modal"; document.body.appendChild(m); }
     m.innerHTML = `<div class="rc-sheet">
-      <div class="rc-head"><h2>🧾 Receipt / Invoice</h2><button type="button" onclick="rcClose()">✕</button></div>
-      <label>Izina ry'umukiriya</label><input id="rcName" value="${esc(init.name || "")}">
-      <label>Telefoni (WhatsApp)</label><input id="rcPhone" type="tel" value="${esc(init.phone || "")}">
-      <label>Ibyakozwe / ibyaguzwe</label>
-      <div class="rc-rowhead"><span>Icyakozwe</span><span>Qty</span><span>Igiciro</span><span></span></div>
-      <div id="rcRows">${(init.rows && init.rows.length ? init.rows : [{}]).map(rcRowHtml).join("")}</div>
-      <button type="button" class="secondary" onclick="rcAddRow()">+ Ongeramo umurongo</button>
-      <div class="rc-total">Igiteranyo: <b id="rcTotal">0 RWF</b></div>
-      <label>Ibisobanuro by'akazi kakozwe (si ngombwa)</label>
-      <textarea id="rcNote" placeholder="Urugero: Twasubije amashanyarazi muri moteri, dusimbuza bearing...">${esc(init.note || "")}</textarea>
-      <label class="rc-check"><input type="checkbox" id="rcPaid"> Yamaze kwishyura (PAID)</label>
-      <label>Uburyo bwo kwishyura 1: MoMo kuri nimero ya telefoni</label>
-      <input id="rcPayPhone" type="tel" placeholder="Nimero ya MoMo (urugero 0788 xxx xxx)" value="${esc(payCfg.payPhone || "")}">
-      <input id="rcPayName" style="margin-top:6px" placeholder="Izina rigaragara kuri iyo nimero (si ngombwa)" value="${esc(payCfg.payName || "")}">
-      <label>Uburyo bwo kwishyura 2: MoMo Pay code</label>
-      <input id="rcMomo" inputmode="numeric" placeholder="Code yo kwishyura (urugero 123456)" value="${esc(payCfg.momoCode || "")}">
-      <label class="rc-check"><input type="checkbox" id="rcSave" checked> Bika ubu buryo bwo kwishyura nk'ubusanzwe</label>
-      <button type="button" class="primary" style="width:100%;margin-top:10px" onclick="rcGenerate()">Kora receipt</button>
+      <div class="rc-head"><div class="rc-title"><span class="rc-ico">🧾</span><div><h2>Receipt / Invoice</h2><small>GD Electric Motors</small></div></div><button type="button" aria-label="Close" onclick="rcClose()">✕</button></div>
+      <div class="rc-card">
+        <div class="rc-cap">👤 ${t("Customer", "Umukiriya")}</div>
+        <label>Izina ry'umukiriya</label><input id="rcName" value="${esc(init.name || "")}">
+        <label>Telefoni (WhatsApp)</label><input id="rcPhone" type="tel" value="${esc(init.phone || "")}">
+      </div>
+      <div class="rc-card">
+        <div class="rc-cap">🛠️ <span>Ibyakozwe / ibyaguzwe</span></div>
+        <div id="rcRows">${(init.rows && init.rows.length ? init.rows : [{}]).map(rcRowHtml).join("")}</div>
+        <button type="button" class="rc-add" onclick="rcAddRow()">+ Ongeramo umurongo</button>
+        <div class="rc-total"><span>Igiteranyo:</span><b id="rcTotal">0 RWF</b></div>
+      </div>
+      <div class="rc-card">
+        <div class="rc-cap">📝 ${t("Notes", "Ibisobanuro")}</div>
+        <label>Ibisobanuro by'akazi kakozwe (si ngombwa)</label>
+        <textarea id="rcNote" placeholder="Urugero: Twasubije amashanyarazi muri moteri, dusimbuza bearing...">${esc(init.note || "")}</textarea>
+      </div>
+      <div class="rc-card">
+        <div class="rc-cap">💳 ${t("Payment", "Kwishyura")}</div>
+        <label class="rc-check"><input type="checkbox" id="rcPaid"><span class="rc-sw"></span><span>Yamaze kwishyura (PAID)</span></label>
+        <label>Uburyo bwo kwishyura 1: MoMo kuri nimero ya telefoni</label>
+        <input id="rcPayPhone" type="tel" placeholder="Nimero ya MoMo (urugero 0788 xxx xxx)" value="${esc(payCfg.payPhone || "")}">
+        <input id="rcPayName" style="margin-top:8px" placeholder="Izina rigaragara kuri iyo nimero (si ngombwa)" value="${esc(payCfg.payName || "")}">
+        <label>Uburyo bwo kwishyura 2: MoMo Pay code</label>
+        <input id="rcMomo" inputmode="numeric" placeholder="Code yo kwishyura (urugero 123456)" value="${esc(payCfg.momoCode || "")}">
+        <label class="rc-check"><input type="checkbox" id="rcSave" checked><span class="rc-sw"></span><span>Bika ubu buryo bwo kwishyura nk'ubusanzwe</span></label>
+      </div>
+      <div class="rc-foot"><button type="button" class="primary" onclick="rcGenerate()">Kora receipt</button></div>
     </div>`;
     m.hidden = false; m.dataset.id = init.id || ""; rcCalc();
   }
