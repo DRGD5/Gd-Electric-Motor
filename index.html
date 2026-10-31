@@ -722,6 +722,24 @@ var b=document.getElementById("themeToggle");if(b){b.textContent=t==="dark"?"\u2
 window.gdToggleTheme=function(){gdApplyTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark")};
 document.addEventListener("DOMContentLoaded",function(){gdApplyTheme(document.documentElement.getAttribute("data-theme")||"light")});})();</script>
 <style id="gdThemeCss">
+.acc-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.acc-head h2{margin:0 0 2px}
+.acc-head p{margin:0}
+.acc-avatar{position:relative;flex:0 0 auto;width:78px;height:78px;border-radius:50%;display:grid;place-items:center;cursor:pointer;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-size:1.9rem;font-weight:800;border:3px solid var(--line);box-shadow:0 8px 20px rgba(37,99,235,.25)}
+.acc-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.acc-cam{position:absolute;right:-4px;bottom:-2px;width:28px;height:28px;border-radius:50%;background:#fff;color:#000;display:grid;place-items:center;font-size:.8rem;font-style:normal;box-shadow:0 2px 8px rgba(0,0,0,.3);border:1px solid #cbd5e1}
+.u-avatar,.ceo-avatar{overflow:hidden}
+.u-avatar img,.ceo-avatar img{width:100%;height:100%;object-fit:cover}
+#adminUsers .user-card{padding:10px;border-radius:18px}
+#adminUsers .user-card .u-top{display:flex;align-items:center;justify-content:flex-start;gap:8px;margin:0 0 6px}
+#adminUsers .user-card .u-avatar{width:34px;height:34px;font-size:.95rem}
+#adminUsers .user-card .u-id{min-width:0;display:flex;flex-direction:column;gap:3px;align-items:flex-start}
+#adminUsers .user-card .u-id .u-name{max-width:100%;font-size:.88rem}
+#adminUsers .user-card small.u-line{font-size:.7rem;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;word-break:normal}
+#adminUsers .user-card select,#adminUsers .user-card input{padding:7px 8px;font-size:.76rem;margin-top:5px;border-radius:10px}
+#adminUsers .user-card .u-row{display:flex;gap:5px;align-items:center}
+#adminUsers .user-card .u-row input{flex:1;min-width:0;width:auto}
+#adminUsers .user-card .u-row button{width:auto;flex:0 0 auto;margin-top:5px;padding:7px 10px;font-size:.9rem;border-radius:10px}
 #adminUsers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
 #adminUsers .user-card{margin-top:0;padding:12px;border-left:0;border-top:5px solid #64748b;border-radius:20px;display:flex;flex-direction:column;box-shadow:0 8px 20px rgba(0,0,0,.18);animation:gdUp .4s ease both}
 #adminUsers .user-card.role-staff{border-top-color:#2563eb}
@@ -1688,7 +1706,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       const key = x.userId || (x.email || "").toLowerCase() || (ph ? "p" + ph.slice(-9) : "") || (x.name || "").toLowerCase();
       if (!key) return null;
       let c = byKey.get(key);
-      if (!c) { c = { name: "", phone: "", email: "", orders: 0, requests: 0, spent: 0 }; byKey.set(key, c); }
+      if (!c) { c = { uid: x.userId || "", name: "", phone: "", email: "", orders: 0, requests: 0, spent: 0 }; byKey.set(key, c); }
       if (x.name) c.name = x.name; if (x.phone) c.phone = x.phone; if (x.email) c.email = x.email;
       return c;
     };
@@ -1701,7 +1719,8 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const chip = (id, label) => `<button type="button" class="ceo-chip ${ceoSortBy === id ? "on" : ""}" onclick="ceoSort('${id}')">${label}</button>`;
     const rank = i => ["🥇", "🥈", "🥉"][i] || "#" + (i + 1);
     const colors = [["#2563eb", "#7c3aed"], ["#0ea5e9", "#14b8a6"], ["#f97316", "#ef4444"], ["#10b981", "#84cc16"], ["#ec4899", "#8b5cf6"]];
-    const avatar = c => { const nm = c.name || c.email || c.phone || "?"; const h = [...nm].reduce((a, ch) => a + ch.charCodeAt(0), 0) % colors.length; return `<div class="ceo-avatar" style="background:linear-gradient(135deg,${colors[h][0]},${colors[h][1]})">${esc(nm.trim().charAt(0).toUpperCase())}</div>`; };
+    const photoOf = new Map(allUsers.map(u => [u.uid, u.photoURL]));
+    const avatar = c => { const nm = c.name || c.email || c.phone || "?"; const h = [...nm].reduce((a, ch) => a + ch.charCodeAt(0), 0) % colors.length; const ph = photoOf.get(c.uid); return `<div class="ceo-avatar" style="background:linear-gradient(135deg,${colors[h][0]},${colors[h][1]})">${ph ? `<img src="${esc(avUrl(ph, 96))}" alt="" loading="lazy">` : esc(nm.trim().charAt(0).toUpperCase())}</div>`; };
     box.innerHTML = `
       <div class="ceo-hero"><h3>${t("Business at a glance", "Uko ubucuruzi buhagaze")}</h3><div class="ceo-stats">
         <div class="ceo-stat"><b>🛒 ${totOrders}</b><span>${t("Orders", "Komande")}</span></div>
@@ -1850,8 +1869,12 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const ordersHtml = visibleCustomerOrders.length ? visibleCustomerOrders.map(o => `<div class="admin-row" style="align-items:flex-start"><div class="cart-details"><strong>🧾 ${t("Order", "Komande")} #${esc(String(o.id || "").slice(-5).toUpperCase())}</strong><small>${new Date(o.createdAt || 0).toLocaleDateString()} · <b>${esc(statusLabel(o.status))}</b></small><div style="margin-top:6px;color:var(--muted);font-size:.88rem">${(o.items || []).map(i => esc(i.name) + " × " + Number(i.qty)).join("<br>")}</div>${o.status === "cancelled" && o.cancelReason ? `<small>${t("Reason", "Impamvu")}: ${esc(o.cancelReason)}</small>` : ""}${o.status === "done" ? `<button class="primary" style="margin-top:8px" onclick="gdPrintReceipt('${esc(o.id)}')">🧾 ${t("View invoice / Save PDF", "Reba fagitire / Bika PDF")}</button><button class="secondary" style="margin-top:8px" onclick="hideCustomerOrder('${esc(o.id)}')">${t("Remove from my history", "Kuraho mu mateka yanjye")}</button>` : ""}</div></div>`).join("") : `<p style="color:var(--muted)">${t("You have no orders yet.", "Nta commande urakora.")}</p>`;
     const requestsHtml = myServiceRequests.length ? myServiceRequests.map(r => `<div class="admin-row" style="align-items:flex-start"><div class="cart-details"><strong>${esc(r.serviceName || t("Service request", "Ubusabe bwa serivisi"))}</strong><small>${new Date(r.createdAt || 0).toLocaleString()} · <b>${esc(statusLabel(r.status))}</b></small>${r.details ? `<p>${esc(r.details)}</p>` : ""}${r.status === "cancelled" && r.cancelReason ? `<small>${t("Reason", "Impamvu")}: ${esc(r.cancelReason)}</small>` : ""}</div></div>`).join("") : `<p style="color:var(--muted)">${t("You have not requested a service yet.", "Nta serivisi urasaba.")}</p>`;
     el.innerHTML = `<div class="info-card">
-        <h2>${esc(p.name || currentUser.email)}</h2>
-        <p>${esc(currentUser.email)}${p.phone ? "<br>" + esc(p.phone) : ""}</p>
+        <div class="acc-head">
+          <label class="acc-avatar" for="accPhotoInput" title="${t("Change photo", "Hindura ifoto")}">${p.photoURL ? `<img src="${esc(avUrl(p.photoURL, 200))}" alt="">` : `<span>${esc((p.name || currentUser.email || "?").trim().charAt(0).toUpperCase())}</span>`}<i class="acc-cam">📷</i></label>
+          <input id="accPhotoInput" type="file" accept="image/*" hidden onchange="accUploadPhoto(this)">
+          <div><h2>${esc(p.name || currentUser.email)}</h2><p>${esc(currentUser.email)}${p.phone ? "<br>" + esc(p.phone) : ""}</p></div>
+        </div>
+        <div id="accPhotoMsg" class="status-msg"></div>
         <button class="secondary" onclick="accLogout()">${t("Sign out", "Sohoka")}</button>
         ${perms.size ? `<button class="primary" onclick="showView('admin')">${admin ? "Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi")}</button>` : ""}
       </div>
@@ -1860,6 +1883,17 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   window.renderAccount = renderAccount;
   window.accSetMode = m => { accMode = m; renderAccount(); };
   window.accLogout = () => signOut(auth);
+  window.accUploadPhoto = async inp => {
+    const f = inp.files && inp.files[0]; if (!f || !currentUser) return;
+    msg("accPhotoMsg", t("Uploading photo...", "Ndimo kohereza ifoto..."));
+    try {
+      const url = await uploadToCloudinary(f);
+      await updateDoc(doc(db, "users", currentUser.uid), { photoURL: url });
+      if (profile) profile.photoURL = url;
+      renderAccount();
+    } catch (err) { msg("accPhotoMsg", t("Photo not saved: ", "Ifoto ntibitswe: ") + (err.code || err.message), "err"); }
+    inp.value = "";
+  };
 
   window.accLogin = async e => {
     e.preventDefault();
@@ -1967,6 +2001,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   }
 
   const ROLE_OPTIONS = [["customer","Umukiriya"],["staff","Umukozi (Staff)"],["technician","Umutekinisiye"],["sales","Ushinzwe kugurisha"],["manager","Umuyobozi (Manager)"]];
+  function avUrl(u, n) { return String(u || "").replace("/upload/f_auto,q_auto,w_700/", "/upload/f_auto,q_auto,c_fill,g_face,w_" + n + ",h_" + n + "/"); }
   let usersRoleFilter = "all";
   window.setUserRoleFilter = r => { usersRoleFilter = r; renderAdminUsers(); };
   function renderAdminUsers() {
@@ -1982,16 +2017,13 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const chips = $("adminUsersChips");
     if (chips) chips.innerHTML = [["all", "👥 Bose"], ...Object.entries(short)].map(([k, v]) => `<button type="button" class="u-chip ${usersRoleFilter === k ? "on" : ""}" onclick="setUserRoleFilter('${k}')">${v} · ${k === "all" ? allUsers.length : allUsers.filter(u => roleOf(u) === k).length}</button>`).join("");
     el.innerHTML = list.length ? list.map(u => { const r = roleOf(u); return `
-      <div class="user-card role-${esc(r)}">
-        <div class="u-top"><div class="u-avatar">${esc((u.name || u.email || "?").trim().charAt(0).toUpperCase())}</div><span class="role-badge">${esc(label(r))}</span></div>
-        <strong class="u-name">${esc(u.name || "(nta zina)")}</strong>
+      <div class="user-card role-${esc(r)}"${u.createdAt ? ` title="Yafunguye: ${esc(new Date(u.createdAt).toLocaleDateString())}"` : ""}>
+        <div class="u-top"><div class="u-avatar">${u.photoURL ? `<img src="${esc(avUrl(u.photoURL, 96))}" alt="" loading="lazy">` : esc((u.name || u.email || "?").trim().charAt(0).toUpperCase())}</div><div class="u-id"><strong class="u-name">${esc(u.name || "(nta zina)")}</strong><span class="role-badge">${esc(label(r))}</span></div></div>
         <small class="u-line">📧 ${esc(u.email || "—")}</small>
         ${u.phone ? `<small class="u-line">📞 ${esc(u.phone)}</small>` : ""}
-        <small class="u-line">${u.createdAt ? "📅 " + new Date(u.createdAt).toLocaleDateString() : ""}</small>
         <div class="u-actions">
           <select id="role_${esc(u.uid)}">${ROLE_OPTIONS.map(o => `<option value="${o[0]}" ${r === o[0] ? "selected" : ""}>${o[1]}</option>`).join("")}</select>
-          <input id="duty_${esc(u.uid)}" placeholder="Inshingano..." value="${esc(u.duties || "")}">
-          <button onclick="adminSaveUserRole('${esc(u.uid)}')">💾 Bika</button>
+          <div class="u-row"><input id="duty_${esc(u.uid)}" placeholder="Inshingano..." value="${esc(u.duties || "")}"><button onclick="adminSaveUserRole('${esc(u.uid)}')" aria-label="Bika">💾</button></div>
         </div>
       </div>`; }).join("") : '<p style="color:#cbd5e1;grid-column:1/-1">Nta konti zibonetse.</p>';
   }
