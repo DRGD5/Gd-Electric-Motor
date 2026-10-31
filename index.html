@@ -991,6 +991,99 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
 #cartStaffPanel .sc-add .sc-ic{font-size:1.9rem;background:rgba(255,255,255,.3)}
 @media(max-width:480px){#cartStaffPanel .sc-grid{gap:10px}#cartStaffPanel .admin-shortcut.sc{min-height:140px;padding:14px 12px 12px;border-radius:24px}#cartStaffPanel .sc-t{font-size:.92rem}}
 </style>
+<style id="gdShopDesign">
+/* ===== Shop page ===== */
+#view-shop .text-link,#view-shopform .text-link{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;background:rgba(127,127,160,.16);border:1px solid rgba(127,127,160,.3);font-weight:800;text-decoration:none;margin-bottom:6px}
+.sh-card{position:relative;overflow:hidden;padding:0 18px 20px!important;border:0!important;border-radius:30px!important;background:linear-gradient(170deg,#0e3b45 0%,#101b3d 60%,#120f33 100%)!important;box-shadow:0 22px 44px -16px rgba(0,0,0,.65),0 0 0 1.5px rgba(45,212,191,.55);animation:gdUp .5s ease both}
+.sh-cover{position:relative;height:118px;margin:0 -18px;background:linear-gradient(120deg,#0ea5e9,#2dd4bf 45%,#8b5cf6);overflow:hidden}
+.sh-cover span{position:absolute;border-radius:50%;background:rgba(255,255,255,.18)}
+.sh-cover span:nth-child(1){width:150px;height:150px;right:-40px;top:-60px}
+.sh-cover span:nth-child(2){width:90px;height:90px;left:-24px;bottom:-40px;background:rgba(0,0,0,.14)}
+.sh-cover span:nth-child(3){width:46px;height:46px;left:44%;top:18px;background:rgba(255,255,255,.12)}
+.sh-logo-wrap{position:relative;width:112px;height:112px;margin:-58px auto 8px;border-radius:50%;padding:5px;background:linear-gradient(135deg,#2dd4bf,#8b5cf6);box-shadow:0 14px 30px -8px rgba(0,0,0,.6)}
+.sh-logo{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#fff;display:block;border:3px solid #101b3d}
+.sh-logo-ph{display:grid;place-items:center;font-size:3rem;background:#1b2a55}
+.sh-ok{position:absolute;right:0;bottom:4px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:.9rem;border:3px solid #101b3d}
+.sh-card h1{margin:4px 0 8px;font-size:1.6rem;line-height:1.15;color:#fff;overflow-wrap:anywhere}
+.sh-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0 0 12px}
+.sh-chips span{padding:6px 12px;border-radius:999px;font-size:.8rem;font-weight:800;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#e6f6ff}
+.sh-chips .sh-chip-ok{background:rgba(34,197,94,.2);border-color:rgba(34,197,94,.55);color:#86efac}
+.sh-desc{margin:0 0 14px!important;padding:13px 14px;border-radius:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#dbe7ff;line-height:1.55;font-size:.95rem;text-align:left;white-space:pre-wrap}
+.sh-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sh-act{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:13px 6px;border-radius:20px;border:0;color:#fff;font-size:1.35rem;font-weight:900;text-decoration:none;cursor:pointer;transition:transform .15s;box-shadow:0 12px 22px -10px rgba(0,0,0,.6)}
+.sh-act span{font-size:.82rem}
+.sh-act:active{transform:scale(.94)}
+.sh-call{background:linear-gradient(135deg,#2563eb,#38bdf8)}
+.sh-wa{background:linear-gradient(135deg,#16a34a,#22c55e)}
+.sh-share{background:linear-gradient(135deg,#8b5cf6,#ec4899);width:auto;margin:0}
+.sh-owner{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.sh-owner button{width:auto;border-radius:999px;font-weight:800}
+.sh-sec-title{display:flex;align-items:center;justify-content:space-between;margin:22px 2px 4px;font-size:1.2rem;font-weight:900}
+.sh-sec-title i{font-style:normal;min-width:34px;padding:4px 12px;text-align:center;border-radius:999px;font-size:.9rem;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed)}
+#view-shop .shop-prod-grid{gap:12px}
+#view-shop .shop-prod{background:linear-gradient(170deg,#161c3d,#10142c);border:1px solid #2b3160;border-radius:24px;box-shadow:0 14px 26px -14px rgba(0,0,0,.7);animation:gdUp .45s ease both;transition:transform .15s}
+#view-shop .shop-prod:active{transform:scale(.98)}
+.sp-img{position:relative;aspect-ratio:1/1;background:linear-gradient(135deg,#1b2a55,#22305f);display:grid;place-items:center;font-size:3rem;overflow:hidden}
+.sp-img img{width:100%!important;height:100%!important;object-fit:cover}
+.sp-pill{position:absolute;left:8px;bottom:8px;padding:5px 11px;border-radius:999px;font-size:.78rem;font-weight:900;color:#fff;background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 6px 12px -4px rgba(0,0,0,.6)}
+.sp-pill.sp-ask{background:linear-gradient(135deg,#f59e0b,#ea580c)}
+#view-shop .shop-prod .sp-body{padding:11px 11px 12px;gap:7px}
+#view-shop .shop-prod .sp-body strong{font-size:.98rem;line-height:1.25;overflow-wrap:anywhere}
+#view-shop .shop-prod .sp-body p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.82rem}
+.sp-btns{display:flex;gap:8px;align-items:stretch;margin-top:auto}
+.sp-btns .sp-cart{flex:1;width:auto;margin:0;padding:11px 8px;font-size:.82rem;border-radius:14px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff}
+.sp-wa{flex:0 0 46px;display:grid;place-items:center;border-radius:14px;font-size:1.25rem;text-decoration:none;color:#fff;background:linear-gradient(135deg,#16a34a,#22c55e);box-shadow:0 8px 16px -8px rgba(22,163,74,.9)}
+.sp-del{padding:8px;border-radius:12px;font-size:.8rem}
+.sh-empty{grid-column:1/-1;text-align:center;padding:34px 12px;border-radius:24px;border:2px dashed #2b3160;color:#cbd5e1}
+.sh-empty div{font-size:3rem}
+/* ===== Edit your shop form ===== */
+#view-shopform .page-title{background:linear-gradient(90deg,#60a5fa,#c084fc);-webkit-background-clip:text;background-clip:text;color:transparent;margin:6px 0 10px}
+.sf-hero{display:flex;align-items:center;gap:14px;padding:16px;border-radius:26px;color:#fff;background:linear-gradient(135deg,#0ea5e9,#2dd4bf 55%,#8b5cf6);box-shadow:0 18px 36px -14px rgba(14,165,233,.8);position:relative;overflow:hidden;animation:gdUp .45s ease both}
+.sf-hero::after{content:"";position:absolute;right:-36px;top:-36px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.18)}
+.sf-hero-ic{flex:0 0 auto;width:60px;height:60px;border-radius:20px;display:grid;place-items:center;font-size:2rem;background:rgba(255,255,255,.26);border:1px solid rgba(255,255,255,.45);animation:gdFloat 3.2s ease-in-out infinite}
+.sf-hero-tx b{display:block;font-size:1.05rem;line-height:1.2;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.sf-hero-tx small{display:block;margin-top:4px;opacity:.92;font-size:.8rem;line-height:1.3}
+.sf-steps{display:flex;gap:8px;margin:12px 0;overflow-x:auto}
+.sf-steps span{flex:1;text-align:center;padding:9px 6px;border-radius:999px;font-size:.8rem;font-weight:800;background:rgba(127,127,160,.16);border:1px solid rgba(127,127,160,.3);white-space:nowrap}
+.sf-steps i{font-style:normal}
+.sf-box{position:relative;overflow:hidden;padding:20px 16px 18px!important;border-radius:28px!important;border:1px solid rgba(96,165,250,.4)!important;background:linear-gradient(165deg,#12183a,#0b0f26)!important;box-shadow:0 18px 40px -18px rgba(0,0,0,.7)}
+.sf-box::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,#0ea5e9,#2dd4bf,#8b5cf6)}
+.sf-box>p{margin:6px 0 14px;padding:12px 14px;border-radius:16px;border-left:4px solid #2dd4bf;background:rgba(45,212,191,.1);font-size:.88rem;line-height:1.45;color:#e3ecff}
+.sf-box .form-row{margin:12px 0;display:flex;flex-direction:column;gap:8px}
+.sf-box .form-row:has(#shopName)::before,.sf-box .form-row:has(#shopPhone)::before,.sf-box .form-row:has(#shopDesc)::before{display:block;width:fit-content;margin:4px 0 0;padding:6px 14px;border-radius:999px;font-size:.8rem;font-weight:900;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed)}
+.sf-box .form-row:has(#shopName)::before{content:"🏪  Izina rya shop"}
+.sf-box .form-row:has(#shopPhone)::before{content:"📞  Telefoni / WhatsApp"}
+.sf-box .form-row:has(#shopDesc)::before{content:"📝  Ibisobanuro"}
+html[lang="en"] .sf-box .form-row:has(#shopName)::before{content:"🏪  Shop name"}
+html[lang="en"] .sf-box .form-row:has(#shopPhone)::before{content:"📞  Phone / WhatsApp"}
+html[lang="en"] .sf-box .form-row:has(#shopDesc)::before{content:"📝  Description"}
+.sf-box input:not([type=file]),.sf-box textarea{width:100%;box-sizing:border-box;font-family:inherit;font-size:1rem;color:#f7f5ff;background:linear-gradient(180deg,#080b1a,#0d1226);border:1.5px solid #2a3350;border-radius:18px;padding:15px 16px;min-height:54px;box-shadow:inset 0 2px 6px rgba(0,0,0,.4);transition:border-color .2s,box-shadow .2s}
+.sf-box textarea{min-height:120px;line-height:1.5;resize:vertical}
+.sf-box input:focus,.sf-box textarea:focus{outline:0;border-color:#38bdf8;box-shadow:0 0 0 4px rgba(56,189,248,.25),inset 0 2px 6px rgba(0,0,0,.25)}
+.sf-box .form-row>label{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.85rem;color:#e3ecff}
+.sf-box .form-row>label::before{content:"🖼️"}
+.sf-logo{width:104px;height:104px;margin:2px auto 4px;border-radius:50%;padding:4px;background:linear-gradient(135deg,#2dd4bf,#8b5cf6);display:grid;place-items:center;box-shadow:0 12px 26px -8px rgba(0,0,0,.7)}
+.sf-logo img,.sf-logo span{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#1b2a55;display:grid;place-items:center;font-size:2.6rem;border:3px solid #0b0f26;box-sizing:border-box}
+.sf-logo [hidden]{display:none}
+.sf-box input[type=file]{width:100%;box-sizing:border-box;color:#aab6d8;background:rgba(56,189,248,.07);border:2px dashed rgba(56,189,248,.55);border-radius:20px;padding:14px;font-size:.88rem}
+.sf-box input[type=file]::file-selector-button{border:0;border-radius:999px;padding:11px 18px;margin-right:12px;font-weight:900;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 6px 14px -4px rgba(37,99,235,.8)}
+.sf-box .primary{width:100%;margin-top:16px;padding:17px;font-size:1.05rem;border-radius:20px;color:#fff;background:linear-gradient(135deg,#0ea5e9,#2563eb 50%,#7c3aed);box-shadow:0 14px 28px -8px rgba(37,99,235,.8)}
+.sf-box .primary::before{content:"💾 "}
+.sf-box .primary:active{transform:scale(.97)}
+</style>
+<style id="gdFormsDesignEn">
+html[lang="en"] #gdPage .form-row:has(#fNameRw)::before{content:"📝  Product name"}
+html[lang="en"] #gdPage .form-row:has(#fDescRw)::before{content:"📄  Description"}
+html[lang="en"] #gdPage .form-row:has(#fCategory)::before{content:"💰  Category & price"}
+html[lang="en"] #gdPage .form-row:has(#fStatus)::before{content:"📦  Status"}
+html[lang="en"] #gdPage .form-row:has(#fPhoto)::before{content:"🖼️  Photos"}
+html[lang="en"] #gdPage .form-row:has(#svcName)::before{content:"🛠️  Service name"}
+html[lang="en"] #gdPage .form-row:has(#svcDesc)::before{content:"📝  Description"}
+html[lang="en"] #gdPage .form-row:has(#secKind)::before{content:"📍  Where to show"}
+html[lang="en"] #gdPage .form-row:has(#secTitle)::before{content:"✍️  Content"}
+html[lang="en"] #gdPage .form-row:has(#secImage)::before{content:"🖼️  Photos"}
+html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Button (optional)"}
+</style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
 <header class="topbar">
@@ -1118,13 +1211,15 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
   <section id="view-shopform" class="view">
     <button class="text-link" onclick="showView('home')" data-en="← Back to home" data-rw="← Subira ahabanza">← Back to home</button>
     <h1 class="page-title" id="shopFormTitle">Open your shop</h1>
-    <div class="shop-form-box">
+    <div class="sf-hero"><div class="sf-hero-ic">🏪</div><div class="sf-hero-tx"><b data-en="Your own shop on GD Electric Motor" data-rw="Shop yawe kuri GD Electric Motor">Your own shop on GD Electric Motor</b><small data-en="Customers will see it, call you and order on WhatsApp." data-rw="Abakiriya bazayibona, bakuhamagare kandi bagutumeho kuri WhatsApp.">Customers will see it, call you and order on WhatsApp.</small></div></div>
+    <div class="sf-steps"><span>1️⃣ <i data-en="Details" data-rw="Amakuru">Details</i></span><span>2️⃣ <i data-en="Logo" data-rw="Logo">Logo</i></span><span>3️⃣ <i data-en="Save" data-rw="Bika">Save</i></span></div>
+    <div class="shop-form-box sf-box">
       <p data-en="Fill in your shop details. The name you enter is the one shown to visitors; it can be different from this website's name." data-rw="Uzuzamo amakuru ya shop yawe. Izina ushyiramo ni ryo rizagaragara, riratandukanye n'iry'uru rubuga.">Fill in your shop details. The name you enter is the one shown to visitors; it can be different from this website's name.</p>
       <form onsubmit="saveShop(event)">
         <div class="form-row"><input id="shopName" data-placeholder-en="Your shop name" data-placeholder-rw="Izina rya shop yawe" placeholder="Your shop name" maxlength="60" required></div>
         <div class="form-row"><input id="shopPhone" type="tel" data-placeholder-en="Phone / WhatsApp (e.g. 0788xxxxxx)" data-placeholder-rw="Telefoni / WhatsApp (urugero 0788xxxxxx)" placeholder="Phone / WhatsApp (e.g. 0788xxxxxx)" required></div>
         <div class="form-row"><textarea id="shopDesc" data-placeholder-en="Short description of your shop (what you sell, where you are...)" data-placeholder-rw="Ibisobanuro bigufi kuri shop yawe (ibyo ucuruza, aho uherereye...)" placeholder="Short description of your shop (what you sell, where you are...)" maxlength="400"></textarea></div>
-        <div class="form-row"><label data-en="Logo or photo (optional)" data-rw="Logo cyangwa ifoto (si ngombwa)">Logo or photo (optional)</label><input id="shopLogo" type="file" accept="image/*"></div>
+        <div class="form-row"><label data-en="Logo or photo (optional)" data-rw="Logo cyangwa ifoto (si ngombwa)">Logo or photo (optional)</label><div class="sf-logo"><img id="shopLogoPrev" alt="" hidden><span id="shopLogoPh">🏪</span></div><input id="shopLogo" type="file" accept="image/*" onchange="shopLogoPreview(this)"></div>
         <button class="primary" type="submit" id="shopSaveBtn" data-en="Save shop" data-rw="Bika shop">Save shop</button>
         <div id="shopFormMsg" class="status-msg"></div>
       </form>
@@ -2617,7 +2712,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const mine = myShop();
     $("shopFormTitle").textContent = mine ? t("Edit your shop", "Hindura shop yawe") : t("Open your shop", "Fungura shop yawe");
     $("shopName").value = mine ? mine.name || "" : ""; $("shopPhone").value = mine ? mine.phone || "" : (profile && profile.phone) || "";
-    $("shopDesc").value = mine ? mine.desc || "" : ""; $("shopLogo").value = ""; msg("shopFormMsg", "");
+    $("shopDesc").value = mine ? mine.desc || "" : ""; $("shopLogo").value = ""; msg("shopFormMsg", ""); (function(){ const im = $("shopLogoPrev"), ph = $("shopLogoPh"); if (!im) return; if (mine && mine.logoUrl) { im.src = mine.logoUrl; im.hidden = false; ph.hidden = true; } else { im.removeAttribute("src"); im.hidden = true; ph.hidden = false; } })();
     showView("shopform");
   };
   window.saveShop = async e => {
@@ -2632,6 +2727,8 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     } catch (err) { console.error(err); msg("shopFormMsg", t("Failed: ", "Ntibyakunze: ") + (err.code || err.message), "err"); }
     btn.disabled = false;
   };
+  window.shopLogoPreview = inp => { const f = inp.files && inp.files[0], im = $("shopLogoPrev"), ph = $("shopLogoPh"); if (!im) return; if (!f) { return; } const r = new FileReader(); r.onload = () => { im.src = r.result; im.hidden = false; ph.hidden = true; }; r.readAsDataURL(f); };
+  window.shareShop = (name, phone) => { const url = location.href.split("#")[0]; const text = name + " — " + phone; if (navigator.share) { navigator.share({ title: name, text, url }).catch(() => {}); } else if (navigator.clipboard) { navigator.clipboard.writeText(text + " " + url).then(() => alert(t("Link copied", "Link yandukuwe"))).catch(() => {}); } else { prompt(t("Copy this:", "Andukura iyi:"), text + " " + url); } };
   function renderShopPage() {
     const el = $("shopPage"); if (!el) return;
     const x = shops.find(v => v.id === currentShopId);
@@ -2643,11 +2740,15 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       : st === "suspended" ? `<div class="shop-form-box" style="border-color:#ef4444;margin-top:12px">⛔ ${t("This shop has been suspended by the admin.", "Iri duka ryahagaritswe na admin.")}</div>` : "";
     const list = shopProducts.filter(pp => pp.shopId === x.id);
     const wa = "https://wa.me/" + waNumber(x.phone);
-    el.innerHTML = `${banner}<div class="shop-head" style="margin-top:12px">${x.logoUrl ? `<img class="shop-logo" src="${esc(x.logoUrl)}" alt="">` : `<div class="shop-logo-ph">🏪</div>`}
-        <h1>${esc(x.name)}</h1>${x.desc ? `<p style="white-space:pre-wrap">${esc(x.desc)}</p>` : ""}
-        <p>📞 ${esc(x.phone || "")}</p>
-        <a class="primary" style="display:inline-block;text-decoration:none" href="${wa}" target="_blank" rel="noopener">💬 WhatsApp</a>
-        ${mineOwner ? `<div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="secondary" onclick="openShopForm()">✏️ ${t("Edit shop", "Hindura shop")}</button><button class="secondary danger-btn" onclick="deleteMyShop()">🗑️ ${t("Delete shop", "Siba shop")}</button></div>` : ""}</div>
+    const ph = String(x.phone || "");
+    el.innerHTML = `${banner}<div class="shop-head sh-card" style="margin-top:12px">
+        <div class="sh-cover"><span></span><span></span><span></span></div>
+        <div class="sh-logo-wrap">${x.logoUrl ? `<img class="sh-logo" src="${esc(x.logoUrl)}" alt="">` : `<div class="sh-logo sh-logo-ph">🏪</div>`}${st === "approved" ? `<b class="sh-ok" title="${t("Verified shop", "Duka ryemejwe")}">✔</b>` : ""}</div>
+        <h1>${esc(x.name)}</h1>
+        <div class="sh-chips"><span>📦 ${list.length} ${t("products", "ibicuruzwa")}</span>${ph ? `<span>📞 ${esc(ph)}</span>` : ""}${st === "approved" ? `<span class="sh-chip-ok">✅ ${t("Verified", "Ryemejwe")}</span>` : ""}</div>
+        ${x.desc ? `<p class="sh-desc">${esc(x.desc)}</p>` : ""}
+        <div class="sh-actions">${ph ? `<a class="sh-act sh-call" href="tel:${esc(ph.replace(/\s+/g, ""))}">📞 <span>${t("Call", "Hamagara")}</span></a>` : ""}<a class="sh-act sh-wa" href="${wa}" target="_blank" rel="noopener">💬 <span>WhatsApp</span></a><button type="button" class="sh-act sh-share" onclick="shareShop('${esc(x.name).replace(/'/g, "&#39;")}','${esc(ph)}')">🔗 <span>${t("Share", "Sangiza")}</span></button></div>
+        ${mineOwner ? `<div class="sh-owner"><button class="secondary" onclick="openShopForm()">✏️ ${t("Edit shop", "Hindura shop")}</button><button class="secondary danger-btn" onclick="deleteMyShop()">🗑️ ${t("Delete shop", "Siba shop")}</button></div>` : ""}</div>
       ${mineOwner ? `<div class="shop-form-box"><h3 style="margin-top:0">➕ ${t("Add a product", "Ongeramo igicuruzwa")}</h3>
         <form onsubmit="saveShopProduct(event)">
           <div class="form-row"><input id="spName" placeholder="${t("Product name", "Izina ry'igicuruzwa")}" required></div>
@@ -2657,11 +2758,12 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
           <button class="primary" type="submit" id="spBtn">${t("Save product", "Bika igicuruzwa")}</button>
           <div id="spMsg" class="status-msg"></div>
         </form></div>` : ""}
-      <div class="shop-prod-grid">${list.length ? list.map(pp => `<div class="shop-prod">${pp.imageUrl ? `<img src="${esc(thumb(pp.imageUrl, 420))}" alt="${esc(pp.name)}" loading="lazy" decoding="async">` : ""}
-        <div class="sp-body"><strong>${esc(pp.name)}</strong><span class="sp-price">${Number(pp.price) > 0 ? money(pp.price) : t("Ask for price", "Baza igiciro")}</span>${pp.desc ? `<p>${esc(pp.desc)}</p>` : ""}
-        ${Number(pp.price) > 0 ? `<button class="primary" type="button" onclick="addToCart('s_${esc(pp.id)}')">${t("Add to cart", "Shyira mu gaseke")}</button>` : ""}
-        <a class="secondary" style="text-align:center;text-decoration:none" href="${wa}?text=${encodeURIComponent(t("Hello, I am interested in: ", "Muraho, ndifuza: ") + pp.name + " (" + money(pp.price || 0) + ")")}" target="_blank" rel="noopener">${t("Ask on WhatsApp", "Baza kuri WhatsApp")}</a>
-        ${mineOwner || isAdminUser(currentUser) ? `<button class="secondary danger-btn" onclick="deleteShopProduct('${esc(pp.id)}')">${t("Delete", "Siba")}</button>` : ""}</div></div>`).join("") : `<p style="opacity:.75;grid-column:1/-1">${t("No products yet.", "Nta bicuruzwa biraboneka.")}</p>`}</div>`;
+      <div class="sh-sec-title"><span>🛍️ ${t("Products", "Ibicuruzwa")}</span><i>${list.length}</i></div>
+      <div class="shop-prod-grid">${list.length ? list.map(pp => `<div class="shop-prod">${pp.imageUrl ? `<div class="sp-img"><img src="${esc(thumb(pp.imageUrl, 420))}" alt="${esc(pp.name)}" loading="lazy" decoding="async">${Number(pp.price) > 0 ? `<span class="sp-pill">${money(pp.price)}</span>` : `<span class="sp-pill sp-ask">${t("Ask for price", "Baza igiciro")}</span>`}</div>` : `<div class="sp-img sp-noimg">📦${Number(pp.price) > 0 ? `<span class="sp-pill">${money(pp.price)}</span>` : `<span class="sp-pill sp-ask">${t("Ask for price", "Baza igiciro")}</span>`}</div>`}
+        <div class="sp-body"><strong>${esc(pp.name)}</strong>${pp.desc ? `<p>${esc(pp.desc)}</p>` : ""}
+        <div class="sp-btns">${Number(pp.price) > 0 ? `<button class="primary sp-cart" type="button" onclick="addToCart('s_${esc(pp.id)}')">🛒 ${t("Add to cart", "Shyira mu gaseke")}</button>` : ""}
+        <a class="sp-wa" aria-label="WhatsApp" href="${wa}?text=${encodeURIComponent(t("Hello, I am interested in: ", "Muraho, ndifuza: ") + pp.name + " (" + money(pp.price || 0) + ")")}" target="_blank" rel="noopener">💬</a></div>
+        ${mineOwner || isAdminUser(currentUser) ? `<button class="secondary danger-btn sp-del" onclick="deleteShopProduct('${esc(pp.id)}')">🗑️ ${t("Delete", "Siba")}</button>` : ""}</div></div>`).join("") : `<div class="sh-empty"><div>🛍️</div><b>${t("No products yet.", "Nta bicuruzwa biraboneka.")}</b></div>`}</div>`;
   }
   window.saveShopProduct = async e => {
     e.preventDefault(); const x = myShop(); if (!x) return;
