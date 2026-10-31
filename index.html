@@ -722,6 +722,10 @@ var b=document.getElementById("themeToggle");if(b){b.textContent=t==="dark"?"\u2
 window.gdToggleTheme=function(){gdApplyTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark")};
 document.addEventListener("DOMContentLoaded",function(){gdApplyTheme(document.documentElement.getAttribute("data-theme")||"light")});})();</script>
 <style id="gdThemeCss">
+.admin-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.admin-title-row .page-title{margin:0}
+.acc-avatar.sm{width:58px;height:58px;font-size:1.4rem;border-width:2px}
+.acc-avatar.sm .acc-cam{width:22px;height:22px;font-size:.65rem;right:-3px;bottom:-3px}
 .acc-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
 .acc-head h2{margin:0 0 2px}
 .acc-head p{margin:0}
@@ -951,7 +955,7 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
   </section>
 
   <section id="view-admin" class="view">
-    <h1 class="page-title">Admin</h1>
+    <div class="admin-title-row"><h1 class="page-title">Admin</h1><label class="acc-avatar sm" id="adminAvatar" for="adminPhotoInput" hidden></label><input id="adminPhotoInput" type="file" accept="image/*" hidden onchange="accUploadPhoto(this)"></div>
     <div class="info-card" id="adminLogin">
       <h2>Injira nka admin</h2>
       <form onsubmit="adminLogin(event)">
@@ -1842,7 +1846,14 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     cancelled: t("Cancelled", "Byahagaritswe")
   }[s] || t("Received", "Byakiriwe"));
 
+  function renderAdminAvatar() {
+    const el = $("adminAvatar"); if (!el) return;
+    el.hidden = !currentUser; if (!currentUser) return;
+    const p = profile || {};
+    el.innerHTML = (p.photoURL ? `<img src="${esc(avUrl(p.photoURL, 120))}" alt="">` : `<span>${esc((p.name || currentUser.email || "?").trim().charAt(0).toUpperCase())}</span>`) + '<i class="acc-cam">📷</i>';
+  }
   function renderAccount() {
+    renderAdminAvatar();
     const el = $("accountContent"); if (!el) return;
     if (!currentUser) {
       const isLogin = accMode === "login";
@@ -1885,7 +1896,8 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   window.accLogout = () => signOut(auth);
   window.accUploadPhoto = async inp => {
     const f = inp.files && inp.files[0]; if (!f || !currentUser) return;
-    msg("accPhotoMsg", t("Uploading photo...", "Ndimo kohereza ifoto..."));
+    const pm = (tx, c) => { if ($("accPhotoMsg")) msg("accPhotoMsg", tx, c); else if (c === "err") alert(tx); };
+    pm(t("Uploading photo...", "Ndimo kohereza ifoto..."));
     try {
       const url = await uploadToCloudinary(f);
       const ref = doc(db, "users", currentUser.uid);
@@ -1897,7 +1909,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       }
       if (profile) profile.photoURL = url;
       renderAccount();
-    } catch (err) { msg("accPhotoMsg", t("Photo not saved: ", "Ifoto ntibitswe: ") + (err.code || err.message), "err"); }
+    } catch (err) { pm(t("Photo not saved: ", "Ifoto ntibitswe: ") + (err.code || err.message), "err"); }
     inp.value = "";
   };
 
