@@ -1393,6 +1393,16 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 .bn-info{flex:1 1 120px!important}
 .bn-info b{overflow-wrap:break-word!important;word-break:normal!important}
 .bn-btns{max-width:none!important;flex:0 0 auto}
+
+/* ===== Website sections: overview of all home parts ===== */
+#wsOverview{display:grid;gap:10px;margin:0 0 6px}
+.ws-row{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:20px;border:1px solid rgba(124,138,255,.28);background:linear-gradient(170deg,rgba(255,255,255,.08),rgba(255,255,255,.03));box-shadow:0 12px 22px -16px rgba(0,0,0,.8)}
+.ws-ic{flex:0 0 48px;height:48px;display:grid;place-items:center;border-radius:15px;font-size:1.4rem;box-shadow:0 10px 18px -10px rgba(0,0,0,.6)}
+.ws-info{flex:1 1 110px;min-width:0}
+.ws-info b{display:block;color:#fff;font-size:.95rem;line-height:1.25}
+.ws-info small{display:block;margin-top:2px;color:#9aa6e8;font-size:.76rem;font-weight:700}
+.ws-btns{flex:0 0 auto}
+.bn-b.ws-go{padding:9px 14px;background:linear-gradient(135deg,#2563eb,#7c3aed);border:0;font-size:.8rem}
 </style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
@@ -1590,7 +1600,10 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 
       <div class="info-card admin-section" id="adminSectionsSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminSectionsSection')"><h2>🧩 Ibice bya website</h2><span class="shortcut-arrow">⌃</span></button>
-        <p>Kora slide nshya ku banner yo hejuru, cyangwa ushyiremo ibicuruzwa bisanzwe.</p>
+        <p>Ibice byose by'urupapuro rwa mbere ahantu hamwe. Kanda "Gucunga" ku gice ushaka guhindura.</p>
+        <div class="bn-cap">🏠 Ibice by'urupapuro rwa mbere</div>
+        <div id="wsOverview"></div>
+        <div class="bn-cap">⚡ Ibikorwa byihuse</div>
         <div class="bn-actions"><button class="primary" type="button" onclick="wsNew()">➕ Slide nshya</button><button class="secondary" type="button" onclick="wsTogglePicker()">📦 Ongeraho ibicuruzwa</button></div>
         <div class="bn-picker" id="wsPicker" hidden>
           <input id="wsQ" type="search" placeholder="🔍 Shakisha igicuruzwa..." oninput="bnRenderPick()">
@@ -2821,6 +2834,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   };
   let editingServiceId = null, editingServiceImage = "";
   function renderAdminServices() {
+    renderWsOverview();
     const el = $("adminServices"); if (!el) return;
     const defHidden = hiddenServiceIds.includes("default");
     const defRow = `<div class="admin-row"><div class="cart-details"><strong>Gusubiza amashanyarazi muri moteri (Rewinding)</strong><small>Iy'ibanze ${defHidden ? "· yahishwe" : ""}</small></div><div class="btns"><button class="secondary ${defHidden ? "" : "danger-btn"}" onclick="adminToggleDefaultService()">${defHidden ? "Subiza" : "Siba"}</button></div></div>`;
@@ -2887,6 +2901,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     setTimeout(() => { const sec = $("adminSectionsSection"); if (sec && sec.hidden) toggleAdminSection("adminSectionsSection"); else if (sec) sec.scrollIntoView({ behavior: "smooth" }); }, 200);
   };
   function renderAdminSections() {
+    renderWsOverview();
     const el = $("adminSections"); if (!el) return;
     el.innerHTML = customSections.map(v => `<div class="admin-row"><div class="cart-details"><strong>${v.kind === "slide" ? "🎞 " : v.kind === "work" ? "🛠 " : ""}${esc(v.title)}</strong>${v.kind === "slide" ? "<small>Slide yo hejuru</small>" : v.kind === "work" ? "<small>Umurimo warangiye</small>" : ""}</div><div class="btns"><button class="secondary" onclick="adminEditSection('${esc(v.id)}')">Hindura</button><button class="secondary danger-btn" onclick="adminDeleteSection('${esc(v.id)}')">Siba</button></div></div>`).join("");
   }
@@ -2907,10 +2922,10 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     $("secForm").reset(); gdSecKindChange(); $("secBtn").textContent = "Bika igice"; $("secCancelBtn").hidden = true; $("secForm").hidden = true;
     msg("secMsg", "");
   };
-  window.wsNew = () => {
+  window.wsNew = kind => {
     window.adminCancelSectionEdit();
     $("secForm").hidden = false; $("secCancelBtn").hidden = false;
-    $("secKind").value = "slide"; gdSecKindChange();
+    $("secKind").value = (kind === "work" || kind === "section") ? kind : "slide"; gdSecKindChange();
     setTimeout(() => $("secTitle").scrollIntoView({ behavior: "smooth", block: "center" }), 60);
   };
   window.wsTogglePicker = () => { const pk = $("wsPicker"); if (!pk) return; pk.hidden = !pk.hidden; if (!pk.hidden) bnRenderPick(); };
@@ -2994,7 +3009,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     });
     if (window.gdHeroRebuild) window.gdHeroRebuild();
   }
-  window.gdHeroRefresh = () => { renderHeroSlides(); renderBannerAdmin(); };
+  window.gdHeroRefresh = () => { renderHeroSlides(); renderBannerAdmin(); renderWsOverview(); };
 
   // ----- Banner (slides) manager for the super admin -----
   const bnThumb = (src, emoji) => `<div class="bn-th">${src ? `<img src="${esc(src)}" alt="" loading="lazy">` : `<i>${esc(emoji || "🎞️")}</i>`}</div>`;
@@ -3013,6 +3028,23 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       rows.push(`<div class="bn-row${v.off ? " is-off" : ""}">${bnThumb(img, isProd && pr ? pr.icon : "🎞️")}<div class="bn-info"><b>${esc(title)}</b><small>${v.off ? "🙈 Yahishwe" : "✅ Igaragara"} · ${tag}</small></div><div class="bn-btns"><button type="button" class="bn-b" onclick="bnToggleSlide('${esc(v.id)}')">${v.off ? "👁️ Garagaza" : "🙈 Hisha"}</button>${isProd ? "" : `<button type="button" class="bn-b" onclick="adminEditSection('${esc(v.id)}')">✏️ Hindura</button>`}<button type="button" class="bn-b bn-danger" onclick="adminDeleteSection('${esc(v.id)}')">🗑️</button></div></div>`);
     });
     el.innerHTML = rows.join("") || `<p class="muted">Nta slide ziriho.</p>`;
+  }
+  function renderWsOverview() { try { renderWsOverviewInner(); } catch (e) { /* data not ready yet */ } }
+  function renderWsOverviewInner() {
+    const el = $("wsOverview"); if (!el) return;
+    const slidesN = Object.keys(BN_BUILTIN).filter(k => !hiddenSlideIds.includes(k)).length + customSections.filter(v => v.kind === "slide" && !v.off).length;
+    const worksN = customSections.filter(v => v.kind === "work").length;
+    const secN = customSections.filter(v => v.kind !== "slide" && v.kind !== "work").length;
+    const shopsN = shops.filter(x => shopStatus(x) === "approved").length;
+    const rows = [
+      ["🎞️", "Banner (Slides)", slidesN + " slides ziragaragara", "sections", [["Gucunga ›", "gdOpenPage('adminBannerSection')"]], "#f59e0b,#ef4444"],
+      ["🛠️", "Our services (slider)", serviceList().length + " serivisi", "services", [["Gucunga ›", "gdOpenPage('adminServicesSection')"]], "#f97316,#ef4444"],
+      ["📦", "Ibicuruzwa (Recommended)", products.length + " ibicuruzwa", "products", [["Gucunga ›", "gdOpenPage('adminAddProductSection')"]], "#2563eb,#06b6d4"],
+      ["🏪", "Amaduka y'abakiriya", shopsN + " amaduka", "shops", [["Gucunga ›", "gdOpenPage('adminShopsSection')"]], "#10b981,#14b8a6"],
+      ["🏆", "Imirimo yarangiye", worksN + " imirimo", "sections", [["➕ Ongeramo", "wsNew('work')"]], "#8b5cf6,#ec4899"],
+      ["🧩", "Ibice byawe (munsi y'ibicuruzwa)", secN + " ibice", "sections", [["➕ Ongeramo", "wsNew('section')"]], "#6366f1,#8b5cf6"]
+    ].filter(r => perms.has(r[3]));
+    el.innerHTML = rows.map(r => `<div class="ws-row"><span class="ws-ic" style="background:linear-gradient(135deg,${r[5].split(",")[0]},${r[5].split(",")[1]})">${r[0]}</span><div class="ws-info"><b>${esc(r[1])}</b><small>${esc(r[2])}</small></div><div class="ws-btns">${r[4].map(b => `<button type="button" class="bn-b ws-go" onclick="${b[1]}">${b[0]}</button>`).join("")}</div></div>`).join("") || `<p class="muted">Nta bubasha ufite.</p>`;
   }
   function bnRenderPick() {
     const added = new Set(customSections.filter(v => v.kind === "slide" && v.productId != null && v.productId !== "").map(v => String(v.productId)));
@@ -3222,6 +3254,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     try { await deleteDoc(doc(db, "shopProducts", id)); } catch (err) { alert("Gusiba byanze: " + (err.code || err.message)); }
   };
   function renderAdminShops() {
+    renderWsOverview();
     const el = $("adminShops"); const pend = shops.filter(x => shopStatus(x) === "pending").length;
     const bd = $("shopPendingBadge"); if (bd) { bd.textContent = pend; bd.hidden = !pend; }
     if (!el) return;
