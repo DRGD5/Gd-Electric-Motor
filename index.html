@@ -3373,6 +3373,10 @@ body{margin:0;background:#e3e8f4;font:14px/1.5 system-ui,-apple-system,Segoe UI,
 .brand small{display:block;margin-top:2px;font-size:8.5px;letter-spacing:.8px;opacity:.8}
 .contact{text-align:left;font-size:10px;line-height:1.4;flex-shrink:0;border-left:3px solid #4ff0be;padding-left:10px}
 .contact a{color:#fff;text-decoration:underline;font-weight:700}
+.lk{font-style:normal;display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin-left:5px;border-radius:50%;background:#4ff0be;color:#0b1a4a;font-size:10px;font-weight:900;line-height:1;vertical-align:middle;text-decoration:none}
+.logo{position:relative;display:inline-block;flex:0 0 auto}
+.lk-logo{position:absolute;right:-5px;bottom:-5px;margin:0;width:17px;height:17px;border:2px solid #fff;font-size:10px;box-shadow:0 3px 6px rgba(0,0,0,.35)}
+.cap .lk{width:17px;height:17px;font-size:11px}
 .contact b{display:block;font-size:10.5px;letter-spacing:1.2px;margin-bottom:1px;color:#7ff3cf}
 .contact span{display:block;opacity:.92}
 .dtitle{margin-top:10px;font-size:11px;font-weight:900;letter-spacing:3px;text-transform:uppercase;color:#7ff3cf}
@@ -3407,11 +3411,26 @@ body{margin:0;background:#e3e8f4;font:14px/1.5 system-ui,-apple-system,Segoe UI,
 .foot{margin:34px 0 0;background:linear-gradient(90deg,#25408c,#4a7bd0);border-top:4px solid #7ff3cf;color:#fff;text-align:center;font-weight:800;letter-spacing:.5px;padding:14px 12px;font-size:13px}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 0}
 .cap .pb,.cap .payhint{display:none}
-.cap .wrap{width:640px;max-width:none;margin:0;padding:0}
-.cap .sheet{width:640px;min-height:905px;display:flex;flex-direction:column;border-radius:0;box-shadow:none}
+.cap .wrap{width:480px;max-width:none;margin:0;padding:0}
+.cap .sheet{width:480px;min-height:679px;display:flex;flex-direction:column;border-radius:0;box-shadow:none}
 .cap .bottom{margin-top:auto;margin-bottom:34px}
 .cap .foot{margin-top:0}
 .cap .actions{display:none}
+.cap .top{padding:16px 18px 46px}
+.cap .brand h1{font-size:17px}.cap .brand small{font-size:9px}.cap .brand img{height:42px}
+.cap .contact,.cap .contact b{font-size:11.5px}
+.cap .dtitle{font-size:12.5px}
+.cap .info small{font-size:10.5px}.cap .info b{font-size:15px}.cap .info span{font-size:13px}
+.cap .g{grid-template-columns:30px 1fr 76px 36px 88px}
+.cap .thead{font-size:11px;margin:-30px 14px 0}
+.cap .items{margin:10px 14px 0}
+.cap .item{font-size:14px;padding:13px 8px}
+.cap .bottom{flex-direction:column;margin-left:20px;margin-right:20px}
+.cap .box,.cap .sum{flex:none;width:100%}
+.cap .box{font-size:12.5px}.cap .pt{font-size:11px}.cap .pr small{font-size:10px}.cap .pr b{font-size:14.5px}
+.cap .tpill{font-size:1.05rem}.cap .tpill b{font-size:22px}
+.cap .note{font-size:13px}.cap .sign{font-size:12px}.cap .stamp{font-size:14px}
+.cap .foot{font-size:14.5px}
 .actions button,.actions a{flex:1 1 140px;padding:14px 16px;border:0;border-radius:99px;background:linear-gradient(135deg,#173a9a,#2069e8);color:#fff;text-decoration:none;font-weight:800;font-size:15px;text-align:center;cursor:pointer;font-family:inherit;box-shadow:0 12px 20px -10px rgba(32,105,232,.7)}
 .actions .wa{background:#25d366;color:#04210f;box-shadow:0 12px 20px -10px rgba(37,211,102,.7)}
 @media(max-width:480px){.g{grid-template-columns:22px 1fr 58px 28px 70px;gap:2px}.thead{font-size:8.5px;margin:-30px 12px 0;padding:0 6px}.items{margin:8px 12px 0}.item{font-size:11px;padding:11px 6px}.bottom{margin:14px 18px 0}.foot{margin:30px 0 0}.top{padding:12px 14px 44px}.hrow.info{flex-wrap:wrap}.dates{gap:16px}}
@@ -3419,8 +3438,8 @@ body{margin:0;background:#e3e8f4;font:14px/1.5 system-ui,-apple-system,Segoe UI,
 @media print{.sheet{display:flex;flex-direction:column;min-height:297mm}.bottom{margin-top:auto;margin-bottom:34px}.foot{margin-top:0}body{background:#fff}.wrap{max-width:none;padding:0}.sheet{box-shadow:none;border-radius:0}.actions,.pb,.payhint{display:none}}
 </style></head><body><div class="wrap"><div class="sheet" id="sheet">
 <div class="top">
-<div class="hrow"><a class="brand" href="https://drgd5.github.io/Gd-Electric-Motor/" target="_blank" rel="noopener">${logoSrc ? `<img src="${logoSrc}" alt="">` : ""}<div><h1>GD ELECTRIC MOTORS</h1><small>${t("MOTORS, PUMPS & SPARE PARTS", "MOTERI, POMPE N'IBIKORESHO")}</small></div></a>
-<div class="contact"><b>${t("CONTACT", "TUHAMAGARE")}</b><span>Rwanda</span><span>+250 796 022 617</span><span><a id="siteLink" href="https://drgd5.github.io/Gd-Electric-Motor/" target="_blank" rel="noopener">drgd5.github.io</a></span></div></div>
+<div class="hrow"><a class="brand" href="https://drgd5.github.io/Gd-Electric-Motor/" target="_blank" rel="noopener">${logoSrc ? `<span class="logo"><img src="${logoSrc}" alt=""><i class="lk lk-logo">↗</i></span>` : ""}<div><h1>GD ELECTRIC MOTORS</h1><small>${t("MOTORS, PUMPS & SPARE PARTS", "MOTERI, POMPE N'IBIKORESHO")}</small></div></a>
+<div class="contact"><b>${t("CONTACT", "TUHAMAGARE")}</b><span>Rwanda</span><span>+250 796 022 617</span><span><a id="siteLink" href="https://drgd5.github.io/Gd-Electric-Motor/" target="_blank" rel="noopener">drgd5.github.io<i class="lk">↗</i></a></span></div></div>
 <div class="dtitle">${docWord}</div>
 <div class="hrow info"><div><small>${paid ? t("Receipt to", "Inyemezabwishyu ya") : t("Invoice to", "Fagitire ya")}</small><b>${esc(name || "-")}</b>${phoneRaw ? `<span>${esc(phoneRaw)}</span>` : ""}</div>
 <div class="dates"><div><small>${docWord} ${t("Date", "Itariki")}</small><b>${rcLabelDate}</b></div><div><small>No.</small><b>${esc(rid)}</b></div></div></div>
@@ -3452,8 +3471,12 @@ function gdCapture() {
     onclone: function (d) {
       try {
         d.body.classList.add("cap");
-        var s = d.getElementById("sheet").getBoundingClientRect(), a = d.getElementById("siteLink").getBoundingClientRect();
-        if (s.width > 0 && a.width > 0) window.__lk = { x: a.left - s.left, y: a.top - s.top, w: a.width, h: a.height, sw: s.width };
+        var s = d.getElementById("sheet").getBoundingClientRect(), LK = [];
+        [d.getElementById("siteLink"), d.querySelector(".brand")].forEach(function (el) {
+          if (!el) return; var a = el.getBoundingClientRect();
+          if (s.width > 0 && a.width > 0) LK.push({ x: a.left - s.left, y: a.top - s.top, w: a.width, h: a.height, sw: s.width });
+        });
+        window.__lk = LK;
       } catch (e) {}
     }
   });
@@ -3477,8 +3500,7 @@ function gdSavePdf(btn) {
       var W = 210, H = c.height * W / c.width, pageH = Math.max(297, H);
       var pdf = new window.jspdf.jsPDF({ unit: "mm", format: [W, pageH] });
       pdf.addImage(c.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, W, H);
-      var l = window.__lk;
-      if (l) { var k = W / l.sw; pdf.link(l.x * k, l.y * k, l.w * k, l.h * k, { url: SITE_URL }); }
+      (window.__lk || []).forEach(function (l) { var k = W / l.sw; pdf.link(l.x * k, l.y * k, l.w * k, l.h * k, { url: SITE_URL }); });
       pdf.save(FN + ".pdf");
     });
   });
