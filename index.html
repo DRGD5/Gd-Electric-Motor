@@ -1407,6 +1407,24 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 #wsOverview{grid-template-columns:minmax(0,1fr)}
 .ws-row{min-width:0;box-sizing:border-box;max-width:100%}
 .ws-info b{overflow-wrap:break-word}
+
+/* ===== Our services: horizontal swipe row (extra items continue to the right) ===== */
+#servicesSection .svc-grid{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;scroll-snap-type:x mandatory!important;-webkit-overflow-scrolling:touch;align-items:stretch;gap:10px!important;padding:2px 2px 8px!important;grid-template-columns:none!important}
+#servicesSection .svc-card{flex:0 0 calc(50% - 5px)!important;width:calc(50% - 5px)!important;min-width:calc(50% - 5px)!important;max-width:none!important;scroll-snap-align:start!important}
+@media(min-width:700px){#servicesSection .svc-card{flex:0 0 280px!important;width:280px!important;min-width:280px!important}}
+
+/* ===== Request service: compact photo button next to "Your motor" ===== */
+#svcModal .sv-cap{display:flex;align-items:center;gap:8px}
+#svcModal .sv-cap::after{display:none}
+#svcModal .sv-line{flex:1;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(124,138,255,.5),transparent)}
+#svcModal .rc-sheet label.sv-photo{display:inline-flex;align-items:center;gap:6px;margin:0;padding:7px 12px;border-radius:99px;cursor:pointer;color:#fff;font-size:.76rem;font-weight:900;letter-spacing:0;white-space:nowrap;background:linear-gradient(135deg,#f59e0b,#ef4444);box-shadow:0 8px 16px -8px rgba(239,68,68,.8)}
+#svcModal .sv-photo[hidden]{display:none!important}
+#svcModal .sv-photo i{font-style:normal;font-size:.95rem}
+#svcModal .sv-thumb{position:relative;flex:0 0 auto;width:46px;height:46px;border-radius:13px;border:2px solid #f59e0b;box-shadow:0 8px 16px -8px rgba(245,158,11,.8)}
+#svcModal .sv-thumb[hidden]{display:none!important}
+#svcModal .sv-thumb img{display:block;width:100%;height:100%;object-fit:cover;border-radius:11px}
+#svcModal .sv-x{position:absolute;top:-9px;right:-9px;width:22px;height:22px;padding:0;border-radius:50%;border:2px solid #0e1230;background:#ef4444;color:#fff;font-size:.62rem;font-weight:900;line-height:1}
+#svcModal .sv-hint{margin:8px 2px 0;color:#8e9ae0;font-size:.74rem;font-weight:700;line-height:1.4}
 </style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
@@ -2811,22 +2829,23 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
         <p id="svcReqErr" class="sv-err" hidden></p>
       </div>
       <div class="rc-card">
-        <div class="rc-cap">⚙️ ${t("Your motor", "Moteri yawe")}</div>
+        <div class="rc-cap sv-cap">⚙️ <span>${t("Your motor", "Moteri yawe")}</span><span class="sv-line"></span>
+          <label class="sv-photo" for="svcReqImg" id="svcPhotoBtn"><i>📷</i><span>${t("Add photo", "Ongeraho ifoto")}</span></label>
+          <span class="sv-thumb" id="svcThumb" hidden><img id="svcPrev" alt=""><button type="button" class="sv-x" aria-label="${t("Remove photo", "Kuraho ifoto")}" onclick="svcRemovePhoto()">✕</button></span>
+        </div>
         <label>${t("Describe your motor/problem (optional)", "Sobanura moteri cyangwa ikibazo ufite (si ngombwa)")}</label>
         <textarea id="svcReqDetails" placeholder="${t("e.g. It hums but does not turn…", "Urugero: Irahinda ariko ntizunguruka…")}"></textarea>
-        <label>📷 ${t("Show us your motor", "Twereke moteri yawe")} <em>(${t("optional", "si ngombwa")})</em></label>
-        <label class="sv-drop" for="svcReqImg"><img id="svcPrev" alt="" hidden><span class="sv-drop-in" id="svcPrevTxt"><i>📷</i><b>${t("Tap to take or choose a photo", "Kanda ufate cyangwa uhitemo ifoto")}</b><small>${t("A clear photo helps us quote faster", "Ifoto igaragara neza ituma tugusubiza vuba")}</small></span></label>
+        <p class="sv-hint">📷 ${t("Tip: a clear photo of your motor helps us quote faster.", "Inama: ifoto igaragara neza ya moteri ituma tugusubiza vuba.")}</p>
         <input id="svcReqImg" type="file" accept="image/*" hidden onchange="svcPreview(this)">
-        <button type="button" class="sv-rm" id="svcReqRm" hidden onclick="svcRemovePhoto()">✕ ${t("Remove photo", "Kuraho ifoto")}</button>
       </div>
       <div class="rc-foot"><button type="button" class="primary" id="svcReqBtn" onclick="svcSubmit()">${t("Send request", "Ohereza ubusabe")} →</button></div>
     </div>`;
     m.hidden = false;
   };
   window.svcPreview = inp => {
-    const f = inp.files && inp.files[0], im = $("svcPrev"), tx = $("svcPrevTxt"), rm = $("svcReqRm"); if (!im || !tx) return;
-    if (!f) { im.hidden = true; tx.hidden = false; if (rm) rm.hidden = true; return; }
-    const r = new FileReader(); r.onload = () => { im.src = r.result; im.hidden = false; tx.hidden = true; if (rm) rm.hidden = false; }; r.readAsDataURL(f);
+    const f = inp.files && inp.files[0], im = $("svcPrev"), th = $("svcThumb"), bt = $("svcPhotoBtn"); if (!im || !th || !bt) return;
+    if (!f) { th.hidden = true; bt.hidden = false; return; }
+    const r = new FileReader(); r.onload = () => { im.src = r.result; th.hidden = false; bt.hidden = true; }; r.readAsDataURL(f);
   };
   window.svcRemovePhoto = () => { const i = $("svcReqImg"); if (i) { i.value = ""; window.svcPreview(i); } };
   window.svcSubmit = async () => {
