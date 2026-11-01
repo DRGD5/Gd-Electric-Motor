@@ -35,7 +35,8 @@
   {"@context":"https://schema.org","@graph":[
    {"@type":"WebSite","@id":"https://drgd5.github.io/Gd-Electric-Motor/#website","url":"https://drgd5.github.io/Gd-Electric-Motor/","name":"GD Electric Motors","alternateName":["GD Electric Motor","GD Electric"],"inLanguage":["en","rw"]},
    {"@type":"Store","@id":"https://drgd5.github.io/Gd-Electric-Motor/#store","name":"GD Electric Motors","alternateName":"GD Electric Motor","url":"https://drgd5.github.io/Gd-Electric-Motor/","image":"https://drgd5.github.io/Gd-Electric-Motor/assets/og.jpg","telephone":"+250784661800","description":"Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts in Rwanda.","areaServed":{"@type":"Country","name":"Rwanda"},"address":{"@type":"PostalAddress","addressCountry":"RW"},
-    "hasOfferCatalog":{"@type":"OfferCatalog","name":"Services and products","itemListElement":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Motor rewinding","description":"Rewinding of electric motors (Dukora moteri - Rewinding)","areaServed":"RW"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Motor repair","description":"Fast and reliable electric motor repair","areaServed":"RW"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Electric motors"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Fan motors"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Water pumps"}},{"@type":"Offer","itemOffered":{"@type":"Product","name":"Spare parts"}}]}}
+    "hasOfferCatalog":{"@type":"OfferCatalog","name":"Services","itemListElement":[{"@type":"Service","name":"Motor rewinding","description":"Rewinding of electric motors (Dukora moteri - Rewinding)","areaServed":"RW","provider":{"@id":"https://drgd5.github.io/Gd-Electric-Motor/#store"}},{"@type":"Service","name":"Motor repair","description":"Fast and reliable electric motor repair","areaServed":"RW","provider":{"@id":"https://drgd5.github.io/Gd-Electric-Motor/#store"}}]},
+    "knowsAbout":["Electric motors","Fan motors","Water pumps","Spare parts"]}
   ]}
   </script>
   <style>
@@ -1644,8 +1645,8 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
       </div>
 
       <div class="info-card admin-section" id="adminSvcPickSection" hidden>
-        <h3 style="margin:18px 0 6px">🏪 Ibiva mu maduka y'abakiriya</h3>
-        <p class="muted" style="margin:0 0 8px">Hitamo ibicuruzwa byo mu maduka y'abakiriya bigaragara muri "Our services". Ntibyongera kwandikwa bushya.</p>
+        <p class="muted" style="margin:0 0 10px">Hitamo ibicuruzwa byo ku rubuga (Home) cyangwa iby'amaduka y'abakiriya bigaragara muri "Our services". Ntibyongera kwandikwa bushya.</p>
+        <div class="bn-picker"><input id="svcPickQ" type="search" placeholder="🔍 Shakisha igicuruzwa..." oninput="renderAdminShopItems()" style="margin-bottom:0"></div>
         <div id="adminShopItems"></div>
       </div>
 
@@ -2721,7 +2722,18 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   function svcShopCards() {
     try {
       const approved = new Set(shops.filter(x => shopStatus(x) === "approved").map(x => x.id));
-      return svcShopItemIds.map(id => shopProducts.find(pp => String(pp.id) === String(id))).filter(pp => pp && approved.has(pp.shopId)).map(pp => {
+      return svcShopItemIds.map(id => {
+        const sid = String(id);
+        if (sid.startsWith("p:")) {
+          const pr = products.find(x => String(x.id) === sid.slice(2)); if (!pr) return "";
+          const nm = t(pr.en || pr.rw, pr.rw || pr.en);
+          return `<div class="svc-card svc-shop">${pr.imageUrl ? `<img src="${esc(thumb(pr.imageUrl, 420))}" alt="${esc(nm)}" loading="lazy" decoding="async">` : `<div class="shop-logo-ph" style="height:clamp(85px,26vw,115px);display:grid;place-items:center;font-size:2.4rem">${esc(pr.icon || "📦")}</div>`}
+      <div class="svc-body"><h3>${esc(nm)}</h3>
+      ${Number(pr.price) > 0 ? `<strong style="text-align:center;color:#25d6a0">${money(pr.price)}</strong>` : ""}
+      <div class="shop-hint" aria-hidden="true">👇</div>
+      <button class="primary" onclick="event.stopPropagation();openProduct(${Number(pr.id)})">${t("View product", "Reba igicuruzwa")}</button></div></div>`;
+        }
+        const pp = shopProducts.find(x => String(x.id) === sid); if (!pp || !approved.has(pp.shopId)) return "";
         const sh = shops.find(x => x.id === pp.shopId);
         return `<div class="svc-card svc-shop">${pp.imageUrl ? `<img src="${esc(thumb(pp.imageUrl, 420))}" alt="${esc(pp.name)}" loading="lazy" decoding="async">` : `<div class="shop-logo-ph" style="height:clamp(85px,26vw,115px);display:grid;place-items:center;font-size:2.4rem">🏪</div>`}
       <div class="svc-body"><h3>${esc(pp.name)}</h3>
@@ -2736,15 +2748,18 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   function renderAdminShopItems() {
     try {
       const el = $("adminShopItems"); if (!el) return;
+      const q = (($("svcPickQ") || {}).value || "").trim().toLowerCase();
+      const has = k => svcShopItemIds.some(i => String(i) === String(k));
       const approved = new Set(shops.filter(x => shopStatus(x) === "approved").map(x => x.id));
-      const list = shopProducts.filter(pp => approved.has(pp.shopId));
-      el.innerHTML = list.length ? list.map(pp => {
-        const on = svcShopItemIds.some(i => String(i) === String(pp.id));
-        const sh = shops.find(x => x.id === pp.shopId);
-        return `<div class="admin-row"><div class="cart-emoji">${pp.imageUrl ? `<img src="${esc(thumb(pp.imageUrl, 140))}" alt="" loading="lazy">` : "🏪"}</div><div class="cart-details"><strong>${esc(pp.name)}</strong><small>${sh ? esc(sh.name) : ""} ${pp.price ? "· " + money(pp.price) : ""} ${on ? "· ✓ iri muri Our services" : ""}</small></div><div class="btns"><button class="secondary ${on ? "danger-btn" : ""}" onclick="adminToggleShopItem('${esc(pp.id)}')">${on ? "Kuramo" : "Shyiramo"}</button></div></div>`;
-      }).join("") : `<p class="muted">Nta bicuruzwa biri mu maduka y'abakiriya haracyaboneka.</p>`;
+      const row = (img, emoji, name, sub, key) => { const on = has(key); return `<div class="admin-row"><div class="cart-emoji">${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : emoji}</div><div class="cart-details"><strong>${esc(name)}</strong><small>${esc(sub)} ${on ? "· ✓ iri muri Our services" : ""}</small></div><div class="btns"><button class="secondary ${on ? "danger-btn" : ""}" onclick="adminToggleShopItem('${esc(key)}')">${on ? "Kuramo" : "Shyiramo"}</button></div></div>`; };
+      const prods = products.filter(pr => !q || [pr.en, pr.rw].join(" ").toLowerCase().includes(q))
+        .map(pr => row(pr.imageUrl ? thumb(pr.imageUrl, 140) : "", pr.icon || "📦", pr.rw || pr.en, Number(pr.price) > 0 ? money(pr.price) : "Baza igiciro", "p:" + pr.id));
+      const shopList = shopProducts.filter(pp => approved.has(pp.shopId) && (!q || String(pp.name || "").toLowerCase().includes(q)))
+        .map(pp => { const sh = shops.find(x => x.id === pp.shopId); return row(pp.imageUrl ? thumb(pp.imageUrl, 140) : "", "🏪", pp.name, (sh ? sh.name : "") + (pp.price ? " · " + money(pp.price) : ""), pp.id); });
+      el.innerHTML = `<div class="bn-cap">📦 Ibicuruzwa byo ku rubuga (Home)</div>${prods.join("") || `<p class="muted">Nta gicuruzwa kibonetse.</p>`}<div class="bn-cap">🏪 Ibiva mu maduka y'abakiriya</div>${shopList.join("") || `<p class="muted">Nta bicuruzwa biri mu maduka y'abakiriya haracyaboneka.</p>`}`;
     } catch (e) {}
   }
+  window.renderAdminShopItems = renderAdminShopItems;
   window.adminToggleShopItem = async id => {
     const on = svcShopItemIds.some(i => String(i) === String(id));
     const next = on ? svcShopItemIds.filter(i => String(i) !== String(id)) : [...svcShopItemIds, String(id)];
@@ -2864,7 +2879,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   };
   window.adminCancelServiceEdit = () => { window.svcReset(); window.gdBack(); };
   window.svcNew = () => { window.svcReset(); window.gdOpenSub("adminSvcFormSection"); };
-  window.svcPick = () => window.gdOpenSub("adminSvcPickSection");
+  window.svcPick = () => { window.gdOpenSub("adminSvcPickSection"); renderAdminShopItems(); };
   window.adminSaveService = async e => {
     e.preventDefault();
     const btn = $("svcBtn"); btn.disabled = true; msg("svcMsg", "Birabikwa...");
@@ -3019,7 +3034,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     });
     if (window.gdHeroRebuild) window.gdHeroRebuild();
   }
-  window.gdHeroRefresh = () => { renderHeroSlides(); renderBannerAdmin(); renderWsOverview(); };
+  window.gdHeroRefresh = () => { renderHeroSlides(); renderBannerAdmin(); renderWsOverview(); try { renderAdminShopItems(); } catch (e) {} };
 
   // ----- Banner (slides) manager for the super admin -----
   const bnThumb = (src, emoji) => `<div class="bn-th">${src ? `<img src="${esc(src)}" alt="" loading="lazy">` : `<i>${esc(emoji || "🎞️")}</i>`}</div>`;
@@ -3048,7 +3063,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const shopsN = shops.filter(x => shopStatus(x) === "approved").length;
     const rows = [
       ["🎞️", "Banner (Slides)", slidesN + " slides ziragaragara", "sections", [["Gucunga ›", "gdOpenPage('adminBannerSection')"]], "#f59e0b,#ef4444"],
-      ["🛠️", "Our services (slider)", serviceList().length + " serivisi", "services", [["Gucunga ›", "gdOpenPage('adminServicesSection')"]], "#f97316,#ef4444"],
+      ["🛠️", "Our services (slider)", (serviceList().length + svcShopItemIds.length) + " ibintu (serivisi + ibicuruzwa)", "services", [["Gucunga ›", "gdOpenPage('adminServicesSection')"]], "#f97316,#ef4444"],
       ["📦", "Ibicuruzwa (Recommended)", products.length + " ibicuruzwa", "products", [["Gucunga ›", "gdOpenPage('adminAddProductSection')"]], "#2563eb,#06b6d4"],
       ["🏪", "Amaduka y'abakiriya", shopsN + " amaduka", "shops", [["Gucunga ›", "gdOpenPage('adminShopsSection')"]], "#10b981,#14b8a6"],
       ["🏆", "Imirimo yarangiye", worksN + " imirimo", "sections", [["➕ Ongeramo", "wsNew('work')"]], "#8b5cf6,#ec4899"],
@@ -3696,7 +3711,7 @@ function gdSavePdf(btn) {
     adminSlideFormSection: { icon: "➕", title: "Slide / Igice gishya", sub: "Uzuza ifishi hanyuma ubike", c: ["#2563eb", "#8b5cf6"] },
     adminBannerPickSection: { icon: "📦", title: "Ongeraho ibicuruzwa kuri banner", sub: "Hitamo ibicuruzwa bijya ku banner", c: ["#f59e0b", "#ef4444"] },
     adminSvcFormSection: { icon: "🛠️", title: "Serivisi nshya", sub: "Ongeraho cyangwa uhindure serivisi", c: ["#f97316", "#ef4444"] },
-    adminSvcPickSection: { icon: "🏪", title: "Ibiva mu maduka y'abakiriya", sub: "Hitamo ibigaragara muri Our services", c: ["#10b981", "#14b8a6"] },
+    adminSvcPickSection: { icon: "📦", title: "Ongeraho ibicuruzwa muri Our services", sub: "Hitamo ibigaragara muri Our services", c: ["#10b981", "#14b8a6"] },
     adminShopsSection: { icon: "🏪", title: "Amaduka y'abakiriya", sub: "Emeza cyangwa wange amaduka", c: ["#10b981", "#14b8a6"] },
     adminListWrap: { icon: "📦", title: "Ibicuruzwa biri ku rubuga", sub: "Shakisha, hindura cyangwa usibe ibicuruzwa byawe", c: ["#2563eb", "#06b6d4"],
       stats: () => { const all = dbProducts.concat(sampleProducts.filter(p => !hiddenSampleIds.includes(p.id))); return ["📦 " + all.length + " " + t("products", "ibicuruzwa"), "✅ " + all.filter(p => p.status !== "out").length + " " + t("available", "biraboneka"), "⭐ " + all.filter(p => p.featured).length + " " + t("featured", "bikunzwe"), "⛔ " + all.filter(p => p.status === "out").length + " " + t("out", "byashize")]; } },
