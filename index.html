@@ -1386,6 +1386,13 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 .ct-track .info-card{background:rgba(255,255,255,.06)!important;border:1px solid rgba(124,138,255,.25)!important;color:#fff}
 .ct-track .info-card b{color:inherit}
 .ct-track .secondary{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.25)}
+
+#secForm[hidden]{display:none!important}
+#adminSectionsSection .bn-actions{margin:14px 0 12px}
+.bn-row{flex-wrap:wrap}
+.bn-info{flex:1 1 120px!important}
+.bn-info b{overflow-wrap:break-word!important;word-break:normal!important}
+.bn-btns{max-width:none!important;flex:0 0 auto}
 </style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
@@ -1583,8 +1590,13 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 
       <div class="info-card admin-section" id="adminSectionsSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminSectionsSection')"><h2>🧩 Ibice bya website</h2><span class="shortcut-arrow">⌃</span></button>
-        <p>Kora igice gishya kigaragara ku rupapuro rwa mbere (Ahabanza), munsi y'ibicuruzwa, cyangwa slide nshya ku banner yo hejuru.</p>
-        <form id="secForm" onsubmit="adminSaveSection(event)">
+        <p>Kora slide nshya ku banner yo hejuru, cyangwa ushyiremo ibicuruzwa bisanzwe.</p>
+        <div class="bn-actions"><button class="primary" type="button" onclick="wsNew()">➕ Slide nshya</button><button class="secondary" type="button" onclick="wsTogglePicker()">📦 Ongeraho ibicuruzwa</button></div>
+        <div class="bn-picker" id="wsPicker" hidden>
+          <input id="wsQ" type="search" placeholder="🔍 Shakisha igicuruzwa..." oninput="bnRenderPick()">
+          <div id="wsPickList"></div>
+        </div>
+        <form id="secForm" hidden onsubmit="adminSaveSection(event)">
           <div class="form-row"><label>Kigaragara he?</label><select id="secKind" onchange="gdSecKindChange()"><option value="section">Igice cyo hasi (munsi y'ibicuruzwa)</option><option value="slide">Slide yo hejuru (banner igenda)</option><option value="work">Umurimo warangiye (amafoto + igitekerezo cy'umukiriya)</option></select></div>
           <div class="form-row" id="secShopRow" hidden><label>Amamaza shop (si ngombwa)</label><select id="secShop" onchange="gdSecShopPick()"><option value="">— Nta shop —</option></select></div>
           <div class="form-row"><input id="secTitle" placeholder="Umutwe w'igice (urugero: Ibyo dukora)" required></div>
@@ -1596,9 +1608,9 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
           <div class="form-row"><input id="secBtnLabel" placeholder="Izina rya button (si ngombwa, urugero: Reba byinshi)"></div>
           <div class="form-row"><input id="secBtnLink" placeholder="Link ya button (https://... cyangwa nimero ya WhatsApp)"></div>
           <button class="primary" type="submit" id="secBtn">Bika igice</button>
-          <button class="secondary" type="button" id="secCancelBtn" onclick="adminCancelSectionEdit()" hidden>Reka guhindura</button>
-          <div id="secMsg" class="status-msg"></div>
+          <button class="secondary" type="button" id="secCancelBtn" onclick="adminCancelSectionEdit()" hidden>✕ Funga</button>
         </form>
+        <div id="secMsg" class="status-msg"></div>
         <div id="adminSections"></div>
       </div>
 
@@ -2886,14 +2898,22 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     $("secKind").value = (v.kind === "slide" || v.kind === "work") ? v.kind : "section"; gdSecKindChange(); $("secShop").value = v.shopId || "";
     $("secWho").value = v.who || ""; $("secImage2").value = "";
     $("secImage").value = ""; $("secBtn").textContent = "Bika impinduka"; $("secCancelBtn").hidden = false;
+    $("secForm").hidden = false;
     const sec = $("adminSectionsSection"); if (sec && sec.hidden) toggleAdminSection("adminSectionsSection");
     $("secTitle").scrollIntoView({behavior:"smooth",block:"center"});
   };
   window.adminCancelSectionEdit = () => {
     editingSectionId = null; editingSectionImage = ""; editingSectionImage2 = "";
-    $("secForm").reset(); gdSecKindChange(); $("secBtn").textContent = "Bika igice"; $("secCancelBtn").hidden = true;
+    $("secForm").reset(); gdSecKindChange(); $("secBtn").textContent = "Bika igice"; $("secCancelBtn").hidden = true; $("secForm").hidden = true;
     msg("secMsg", "");
   };
+  window.wsNew = () => {
+    window.adminCancelSectionEdit();
+    $("secForm").hidden = false; $("secCancelBtn").hidden = false;
+    $("secKind").value = "slide"; gdSecKindChange();
+    setTimeout(() => $("secTitle").scrollIntoView({ behavior: "smooth", block: "center" }), 60);
+  };
+  window.wsTogglePicker = () => { const pk = $("wsPicker"); if (!pk) return; pk.hidden = !pk.hidden; if (!pk.hidden) bnRenderPick(); };
   window.adminSaveSection = async e => {
     e.preventDefault();
     if (!perms.has("sections")) return;
@@ -2995,16 +3015,18 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     el.innerHTML = rows.join("") || `<p class="muted">Nta slide ziriho.</p>`;
   }
   function bnRenderPick() {
-    const el = $("bnPickList"); if (!el) return;
-    const q = (($("bnQ") || {}).value || "").trim().toLowerCase();
     const added = new Set(customSections.filter(v => v.kind === "slide" && v.productId != null && v.productId !== "").map(v => String(v.productId)));
-    const list = products.filter(p => !q || [p.en, p.rw].join(" ").toLowerCase().includes(q)).slice(0, 80);
-    el.innerHTML = list.map(p => { const on = added.has(String(p.id)); return `<div class="bn-row">${bnThumb(p.imageUrl ? thumb(p.imageUrl, 160) : "", p.icon || "📦")}<div class="bn-info"><b>${esc(p.rw || p.en)}</b><small>${Number(p.price) > 0 ? money(p.price) : "Baza igiciro"}</small></div><div class="bn-btns">${on ? `<button type="button" class="bn-b bn-on" onclick="bnRemoveProduct('${esc(p.id)}')">✓ Yongeweho</button>` : `<button type="button" class="bn-b bn-add" onclick="bnAddProduct('${esc(p.id)}')">➕ Ongeraho</button>`}</div></div>`; }).join("") || `<p class="muted">Nta gicuruzwa kibonetse.</p>`;
+    [["bnPickList", "bnQ"], ["wsPickList", "wsQ"]].forEach(([listId, qId]) => {
+      const el = $(listId); if (!el) return;
+      const q = (($(qId) || {}).value || "").trim().toLowerCase();
+      const list = products.filter(p => !q || [p.en, p.rw].join(" ").toLowerCase().includes(q)).slice(0, 80);
+      el.innerHTML = list.map(p => { const on = added.has(String(p.id)); return `<div class="bn-row">${bnThumb(p.imageUrl ? thumb(p.imageUrl, 160) : "", p.icon || "📦")}<div class="bn-info"><b>${esc(p.rw || p.en)}</b><small>${Number(p.price) > 0 ? money(p.price) : "Baza igiciro"}</small></div><div class="bn-btns">${on ? `<button type="button" class="bn-b bn-on" onclick="bnRemoveProduct('${esc(p.id)}')">✓ Yongeweho</button>` : `<button type="button" class="bn-b bn-add" onclick="bnAddProduct('${esc(p.id)}')">➕ Ongeraho</button>`}</div></div>`; }).join("") || `<p class="muted">Nta gicuruzwa kibonetse.</p>`;
+    });
   }
   function renderBannerAdmin() { bnRenderList(); bnRenderPick(); }
   window.bnRenderPick = bnRenderPick;
   window.bnTogglePicker = () => { const pk = $("bnPicker"); if (!pk) return; pk.hidden = !pk.hidden; if (!pk.hidden) bnRenderPick(); };
-  window.bnNewSlide = () => { window.gdOpenPage("adminSectionsSection"); setTimeout(() => { if ($("secKind")) { adminCancelSectionEdit(); $("secKind").value = "slide"; gdSecKindChange(); } }, 80); };
+  window.bnNewSlide = () => { window.gdOpenPage("adminSectionsSection"); setTimeout(() => window.wsNew(), 80); };
   window.bnToggleBuiltin = async id => {
     if (!perms.has("sections")) return;
     const hide = !hiddenSlideIds.includes(id);
