@@ -1308,6 +1308,60 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 #orderDone h2{margin:6px 0}
 #orderDone .wa-btn{width:100%;margin:8px 0 6px;padding:15px;font-size:1rem}
 #orderDone .secondary{margin:4px 3px;border-radius:99px}
+/* ===== Request service modal: same design ===== */
+#svcModal{background:rgba(4,6,18,.78);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#svcModal .rc-sheet{background:radial-gradient(120% 40% at 0% 0%,rgba(37,99,235,.28),transparent 60%),radial-gradient(90% 40% at 100% 0%,rgba(37,214,160,.14),transparent 60%),#0e1230;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));border-left:1px solid rgba(124,138,255,.18);border-right:1px solid rgba(124,138,255,.18)}
+#svcModal .rc-head{position:sticky;top:0;z-index:3;margin:-14px -14px 12px;padding:14px;background:rgba(14,18,48,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid rgba(124,138,255,.2)}
+#svcModal .rc-title{display:flex;align-items:center;gap:12px}
+#svcModal .rc-ico{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;font-size:1.4rem;background:linear-gradient(135deg,#2563eb,#25d6a0);box-shadow:0 10px 20px -8px rgba(37,99,235,.8)}
+#svcModal .rc-head h2{font-size:1.2rem;line-height:1.15}
+#svcModal .rc-head small{color:#9aa6e8;font-size:.74rem;font-weight:700}
+#svcModal .rc-head button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);width:40px;height:40px}
+#svcModal .rc-card{background:linear-gradient(170deg,rgba(255,255,255,.07),rgba(255,255,255,.03));border:1px solid rgba(124,138,255,.22);border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 14px 28px -18px rgba(0,0,0,.8)}
+#svcModal .rc-cap{font-weight:900;font-size:.95rem;color:#fff;display:flex;align-items:center;gap:8px;margin-bottom:2px}
+#svcModal .rc-cap::after{content:"";flex:1;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(124,138,255,.5),transparent)}
+#svcModal .rc-sheet label,#svcModal label{margin:12px 0 6px;font-size:.82rem;font-weight:800;color:#aeb8e6;letter-spacing:.2px}
+#svcModal input:not([type=checkbox]),#svcModal textarea{padding:13px 14px;border-radius:14px;border:1.5px solid #2f3a7a;background:#080b1c;font-size:1rem;transition:border-color .2s,box-shadow .2s}
+#svcModal input:not([type=checkbox]):focus,#svcModal textarea:focus{outline:0;border-color:#5b8cff;box-shadow:0 0 0 4px rgba(91,140,255,.2)}
+#svcModal textarea{min-height:92px;font-family:inherit;line-height:1.5}
+#svcModal .rc-row{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) 44px;grid-template-areas:"d d d" "q p x";gap:8px;align-items:end;padding:10px;margin:10px 0 0;border-radius:16px;background:rgba(8,11,28,.55);border:1px dashed #36418a}
+#svcModal .rc-row .rc-d{grid-area:d}
+#svcModal .rc-sheet .rc-f{margin:0;display:block}
+#svcModal .rc-sheet .rc-f:nth-of-type(1){grid-area:q}
+#svcModal .rc-sheet .rc-f:nth-of-type(2){grid-area:p}
+#svcModal .rc-f span{display:block;font-size:.68rem;font-weight:800;color:#8e9ae0;margin:0 0 4px 4px;text-transform:uppercase;letter-spacing:.6px}
+#svcModal .rc-x{grid-area:x;height:46px;width:44px;border-radius:14px;background:rgba(239,68,68,.16);color:#ff8a8a;border:1px solid rgba(239,68,68,.45);font-weight:900}
+#svcModal .rc-add{width:100%;margin-top:12px;padding:12px;border-radius:14px;border:1.5px dashed #5b8cff;background:rgba(91,140,255,.1);color:#bcd2ff;font-weight:850}
+#svcModal .rc-total{display:flex;justify-content:space-between;align-items:center;margin:12px 0 0;padding:14px 16px;border-radius:16px;font-size:1rem;color:#d9e0ff;background:linear-gradient(135deg,rgba(37,99,235,.35),rgba(37,214,160,.25));border:1px solid rgba(37,214,160,.4)}
+#svcModal .rc-total b{font-size:1.45rem;color:#4ff0be;letter-spacing:-.3px}
+#svcModal .rc-check{display:flex!important;align-items:center;gap:12px;margin:12px 0 4px!important;padding:12px 14px;border-radius:14px;background:rgba(8,11,28,.55);border:1px solid #2f3a7a;font-size:.9rem!important;color:#e8ecff!important;cursor:pointer}
+#svcModal .rc-check input{position:absolute;opacity:0;width:0!important;height:0!important;pointer-events:none}
+#svcModal .rc-sw{position:relative;flex:0 0 auto;width:46px;height:26px;border-radius:99px;background:#2a3166;transition:background .2s}
+#svcModal .rc-sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.4);transition:transform .2s}
+#svcModal .rc-check input:checked + .rc-sw{background:linear-gradient(135deg,#10b981,#25d6a0)}
+#svcModal .rc-check input:checked + .rc-sw::after{transform:translateX(20px)}
+#svcModal .rc-check input:focus-visible + .rc-sw{box-shadow:0 0 0 4px rgba(91,140,255,.35)}
+#svcModal .rc-foot{position:sticky;bottom:0;margin:0 -14px -14px;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,#0e1230 70%,rgba(14,18,48,0))}
+#svcModal .rc-foot .primary{width:100%;padding:16px;font-size:1.05rem;border-radius:16px;background:linear-gradient(135deg,#2563eb,#25d6a0);box-shadow:0 14px 26px -10px rgba(37,214,160,.55)}
+@media (min-width:600px){#svcModal .rc-sheet{border-radius:0}}
+#svcModal .rc-sheet label.sv-drop{display:block;margin:10px 0 0;padding:0;cursor:pointer;border:2px dashed #4a5fc4;border-radius:22px;background:rgba(91,140,255,.08);overflow:hidden;color:inherit;font-size:inherit}
+#svcModal .sv-drop:active{transform:scale(.985)}
+#svcModal .sv-drop-in{display:flex;flex-direction:column;align-items:center;gap:4px;padding:24px 12px;text-align:center}
+#svcModal .sv-drop-in i{font-style:normal;display:grid;place-items:center;width:56px;height:56px;border-radius:50%;font-size:1.7rem;background:linear-gradient(135deg,#f59e0b,#ef4444);box-shadow:0 12px 22px -10px rgba(239,68,68,.7)}
+#svcModal .sv-drop-in b{color:#fff;font-size:.95rem}
+#svcModal .sv-drop-in small{color:#8e9ae0;font-size:.74rem;font-weight:700}
+#svcModal .sv-drop img{display:block;width:100%;max-height:260px;object-fit:cover}
+#svcModal .sv-rm{display:block;width:100%;margin-top:8px;padding:10px;border-radius:14px;border:1px solid rgba(239,68,68,.45);background:rgba(239,68,68,.08);color:#ff9a9a;font-weight:800;font-size:.85rem}
+#svcModal label em{font-style:normal;color:#7480a6;font-weight:700}
+#svcModal .sv-svc{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:12px 14px;border-radius:16px;background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(239,68,68,.14));border:1px solid rgba(245,158,11,.4)}
+#svcModal .sv-svc span{font-size:1.2rem}
+#svcModal .sv-svc b{color:#fff;font-size:.98rem;line-height:1.25}
+#svcModal .sv-err{color:#ff8a80;font-size:.88rem;margin:8px 2px 0}
+#svcModal .rc-foot .primary{background:linear-gradient(135deg,#f59e0b,#ef4444);box-shadow:0 14px 26px -10px rgba(239,68,68,.55)}
+.req-img{display:block;max-width:200px;width:100%;border-radius:14px;margin:8px 0;border:1px solid var(--line)}
+/* cart: continue shopping */
+.ct-back{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px;padding:9px 16px;border-radius:99px;border:1px solid rgba(124,138,255,.4);background:rgba(124,138,255,.12);color:#cfd6ff;font-weight:850;font-size:.86rem}
+.ct-more{display:block;width:100%;margin:12px 0 0;padding:13px;border-radius:18px;border:2px dashed #4a5fc4;background:rgba(91,140,255,.08);color:#bcd2ff;font-weight:900;font-size:.95rem}
 </style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
@@ -1964,12 +2018,13 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
     return products.find(x => x.id === Number(id)) || null;
   }
   const itemName = p => p.isShop ? p.name : productName(p);
-  function addToCart(id, quantity = 1) {
+  function addToCart(id, quantity = 1, stay = false) {
     const amount = Math.max(1, Number(quantity) || 1);
     const pr = cartItem(id);
     if (pr && pr.status === "out") { alert(t("This product is out of stock. Ask us on WhatsApp.", "Iki gicuruzwa cyashize. Tubaze kuri WhatsApp.")); return; }
     cart[id]=(cart[id]||0)+amount; localStorage.setItem("gdCart",JSON.stringify(cart)); updateCounts();
     gdTrack("add_to_cart", { item_id: String(id), item_name: pr ? itemName(pr) : "", quantity: amount });
+    if(!stay){ showView("cart"); try{ gdToast(t("✅ Added to cart","✅ Byongewe mu gaseke")); }catch(e){} return; }
     const btn=event?.currentTarget;
     if(btn){const old=btn.textContent;btn.textContent=t("Added ✓","Byongewe ✓");setTimeout(()=>btn.textContent=old,1000);}
   }
@@ -1990,7 +2045,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
     const rows=entries.map(([id,qty])=>{const p=cartItem(id);total+=p.price*qty;count+=Number(qty);
       return `<div class="ct-item"><div class="ct-img">${p.imageUrl?`<img src="${esc(thumb(p.imageUrl,160))}" alt="" loading="lazy" decoding="async">`:(p.isShop?"🏪":iconOf(p))}</div><div class="ct-info"><strong>${esc(itemName(p))}</strong><small>${money(p.price)} × ${qty}${p.isShop&&p.shopName?" · 🏪 "+esc(p.shopName):""}</small><b class="ct-line">${money(p.price*qty)}</b></div><div class="qty ct-qty"><button type="button" aria-label="−" onclick="changeQty('${esc(String(p.id))}',-1)">−</button><span>${qty}</span><button type="button" aria-label="+" onclick="changeQty('${esc(String(p.id))}',1)">+</button></div></div>`;
     }).join("");
-    el.innerHTML=`<div class="ct-head"><h2>🛍️ ${t("Your items","Ibyo watoranyije")}</h2><span class="ct-chip">${count} ${t("items","ibicuruzwa")}</span></div><div class="ct-list">${rows}</div><div class="ct-sum"><div class="ct-sum-row"><span>${t("Items","Ibicuruzwa")}</span><b>${count}</b></div><div class="ct-total"><span>${t("Estimated total","Igiteranyo cy'agateganyo")}</span><b>${money(total)}</b></div><p class="ct-note">ℹ️ ${t("Prices and stock should be confirmed with us before payment.","Ibiciro n'ibihari byemezwe natwe mbere yo kwishyura.")}</p></div><div class="ct-form"><div class="ct-head"><h2>📝 ${t("Your details","Amakuru yawe")}</h2></div><label class="ct-f"><span>👤 ${t("Your name","Amazina yawe")}</span><input id="orderName" placeholder="${t("Your name","Amazina yawe")}" autocomplete="name" value="${esc(customer.name||(window.gdProfile&&window.gdProfile.name)||"")}" oninput="setCust('name',this.value)"></label><label class="ct-f"><span>📞 ${t("Phone number (10 digits)","Nimero ya telefoni (imibare 10)")}</span><input id="orderPhone" placeholder="07xx xxx xxx" inputmode="tel" autocomplete="tel" value="${esc(customer.phone||(window.gdProfile&&window.gdProfile.phone)||"")}" oninput="setCust('phone',this.value)"></label><button class="primary ct-submit" id="submitOrderBtn" onclick="submitOrder()">${t("Submit order ✓","Ohereza order (Submit) ✓")}</button><button type="button" class="ct-clear" onclick="clearCart()">🗑️ ${t("Clear cart","Siba ibiri mu gaseke")}</button><div class="ct-trust"><span>💬 ${t("We confirm on WhatsApp","Tubyemeza kuri WhatsApp")}</span><span>✅ ${t("No payment before confirmation","Nta kwishyura mbere yo kwemezwa")}</span></div></div>${renderCartOrderTracking()}`;
+    el.innerHTML=`<button type="button" class="ct-back" onclick="showView('home')">← ${t("Continue shopping","Komeza guhaha")}</button><div class="ct-head"><h2>🛍️ ${t("Your items","Ibyo watoranyije")}</h2><span class="ct-chip">${count} ${t("items","ibicuruzwa")}</span></div><div class="ct-list">${rows}</div><button type="button" class="ct-more" onclick="showView('home')">➕ ${t("Add more products","Ongeraho ibindi bicuruzwa")}</button><div class="ct-sum"><div class="ct-sum-row"><span>${t("Items","Ibicuruzwa")}</span><b>${count}</b></div><div class="ct-total"><span>${t("Estimated total","Igiteranyo cy'agateganyo")}</span><b>${money(total)}</b></div><p class="ct-note">ℹ️ ${t("Prices and stock should be confirmed with us before payment.","Ibiciro n'ibihari byemezwe natwe mbere yo kwishyura.")}</p></div><div class="ct-form"><div class="ct-head"><h2>📝 ${t("Your details","Amakuru yawe")}</h2></div><label class="ct-f"><span>👤 ${t("Your name","Amazina yawe")}</span><input id="orderName" placeholder="${t("Your name","Amazina yawe")}" autocomplete="name" value="${esc(customer.name||(window.gdProfile&&window.gdProfile.name)||"")}" oninput="setCust('name',this.value)"></label><label class="ct-f"><span>📞 ${t("Phone number (10 digits)","Nimero ya telefoni (imibare 10)")}</span><input id="orderPhone" placeholder="07xx xxx xxx" inputmode="tel" autocomplete="tel" value="${esc(customer.phone||(window.gdProfile&&window.gdProfile.phone)||"")}" oninput="setCust('phone',this.value)"></label><button class="primary ct-submit" id="submitOrderBtn" onclick="submitOrder()">${t("Submit order ✓","Ohereza order (Submit) ✓")}</button><button type="button" class="ct-clear" onclick="clearCart()">🗑️ ${t("Clear cart","Siba ibiri mu gaseke")}</button><div class="ct-trust"><span>💬 ${t("We confirm on WhatsApp","Tubyemeza kuri WhatsApp")}</span><span>✅ ${t("No payment before confirmation","Nta kwishyura mbere yo kwemezwa")}</span></div></div>${renderCartOrderTracking()}`;
     updateCounts();
   }
   function renderCartOrderTracking() {
@@ -2387,7 +2442,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const admin = isAdminUser(currentUser);
     const visibleCustomerOrders = myOrders.filter(o => !o.hiddenForCustomer);
     const ordersHtml = visibleCustomerOrders.length ? visibleCustomerOrders.map(o => `<div class="admin-row" style="align-items:flex-start"><div class="cart-details"><strong>🧾 ${t("Order", "Komande")} #${esc(String(o.id || "").slice(-5).toUpperCase())}</strong><small>${new Date(o.createdAt || 0).toLocaleDateString()} · <b>${esc(statusLabel(o.status))}</b></small><div style="margin-top:6px;color:var(--muted);font-size:.88rem">${(o.items || []).map(i => esc(i.name) + " × " + Number(i.qty)).join("<br>")}</div>${o.status === "cancelled" && o.cancelReason ? `<small>${t("Reason", "Impamvu")}: ${esc(o.cancelReason)}</small>` : ""}${o.status === "done" ? `<button class="primary" style="margin-top:8px" onclick="gdPrintReceipt('${esc(o.id)}')">🧾 ${t("View invoice / Save PDF", "Reba fagitire / Bika PDF")}</button><button class="secondary" style="margin-top:8px" onclick="hideCustomerOrder('${esc(o.id)}')">${t("Remove from my history", "Kuraho mu mateka yanjye")}</button>` : ""}</div></div>`).join("") : `<p style="color:var(--muted)">${t("You have no orders yet.", "Nta commande urakora.")}</p>`;
-    const requestsHtml = myServiceRequests.length ? myServiceRequests.map(r => `<div class="admin-row" style="align-items:flex-start"><div class="cart-details"><strong>${esc(r.serviceName || t("Service request", "Ubusabe bwa serivisi"))}</strong><small>${new Date(r.createdAt || 0).toLocaleString()} · <b>${esc(statusLabel(r.status))}</b></small>${r.details ? `<p>${esc(r.details)}</p>` : ""}${r.status === "cancelled" && r.cancelReason ? `<small>${t("Reason", "Impamvu")}: ${esc(r.cancelReason)}</small>` : ""}</div></div>`).join("") : `<p style="color:var(--muted)">${t("You have not requested a service yet.", "Nta serivisi urasaba.")}</p>`;
+    const requestsHtml = myServiceRequests.length ? myServiceRequests.map(r => `<div class="admin-row" style="align-items:flex-start"><div class="cart-details"><strong>${esc(r.serviceName || t("Service request", "Ubusabe bwa serivisi"))}</strong><small>${new Date(r.createdAt || 0).toLocaleString()} · <b>${esc(statusLabel(r.status))}</b></small>${r.details ? `<p>${esc(r.details)}</p>` : ""}${r.imageUrl ? `<img class="req-img" src="${esc(thumb(r.imageUrl, 420))}" alt="" loading="lazy">` : ""}${r.status === "cancelled" && r.cancelReason ? `<small>${t("Reason", "Impamvu")}: ${esc(r.cancelReason)}</small>` : ""}</div></div>`).join("") : `<p style="color:var(--muted)">${t("You have not requested a service yet.", "Nta serivisi urasaba.")}</p>`;
     el.innerHTML = `<div class="info-card">
         <div class="acc-head">
           <label class="acc-avatar" for="accPhotoInput" title="${t("Change photo", "Hindura ifoto")}">${p.photoURL ? `<img src="${esc(avUrl(p.photoURL, 200))}" alt="">` : `<span>${esc((p.name || currentUser.email || "?").trim().charAt(0).toUpperCase())}</span>`}<i class="acc-cam">📷</i></label>
@@ -2571,6 +2626,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
         <div class="cart-details"><strong>${esc(r.serviceName || "Service")}</strong>
           <small>${esc(r.name || "")} · ${esc(r.phone || "")} · ${esc(r.email || "")} · ${new Date(r.createdAt || 0).toLocaleString()}</small>
           ${r.details ? `<p>${esc(r.details)}</p>` : ""}
+          ${r.imageUrl ? `<a href="${esc(r.imageUrl)}" target="_blank" rel="noopener"><img class="req-img" src="${esc(thumb(r.imageUrl, 420))}" alt="Moteri" loading="lazy"></a>` : ""}
           <div style="font-weight:900"><span class="st-pill st-${esc(r.status || "new")}">${esc(statusLabel(r.status))}</span></div>
           ${r.status !== "cancelled" ? `<div class="btns" style="margin-top:8px"><button class="primary" onclick="gdPrintServiceReceipt('${esc(r.id)}')">🧾 Receipt / Invoice</button>${isAdminUser(currentUser) ? `<button class="secondary danger-btn" onclick="adminDeleteServiceRequest(\'${esc(r.id)}\')">🗑️ Siba</button>` : ""}</div>` : ""}
           ${r.cancelReason ? `<small>Impamvu: ${esc(r.cancelReason)}</small>` : ""}
@@ -2670,19 +2726,35 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const prePhone = saved.phone || (profile && profile.phone) || "";
     m.dataset.svc = name;
     m.innerHTML = `<div class="rc-sheet">
-      <div class="rc-head"><h2>🛠️ ${t("Request service", "Saba serivisi")}</h2><button type="button" onclick="svcClose()">✕</button></div>
-      <p style="margin:10px 0 0;color:#cfd2ff"><b>${esc(name)}</b></p>
-      <label>${t("Your name", "Amazina yawe")}</label>
-      <input id="svcReqName" autocomplete="name" value="${esc(preName)}">
-      <label>${t("Phone number (10 digits)", "Nimero ya telefoni (imibare 10)")}</label>
-      <input id="svcReqPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="07XXXXXXXX" value="${esc(prePhone)}" oninput="svcPhoneHint()">
-      <p id="svcReqErr" style="color:#ff8a80;font-size:.9rem;margin:8px 0 0" hidden></p>
-      <label>${t("Describe your motor/problem (optional)", "Sobanura moteri cyangwa ikibazo ufite (si ngombwa)")}</label>
-      <textarea id="svcReqDetails"></textarea>
-      <button type="button" class="primary" id="svcReqBtn" style="width:100%;margin-top:14px" onclick="svcSubmit()">${t("Send request", "Ohereza ubusabe")}</button>
+      <div class="rc-head"><div class="rc-title"><span class="rc-ico">🛠️</span><div><h2>${t("Request service", "Saba serivisi")}</h2><small>GD Electric Motors</small></div></div><button type="button" aria-label="Close" onclick="svcClose()">✕</button></div>
+      <div class="sv-svc"><span>🔧</span><b>${esc(name)}</b></div>
+      <div class="rc-card">
+        <div class="rc-cap">👤 ${t("Your details", "Amakuru yawe")}</div>
+        <label>${t("Your name", "Amazina yawe")}</label>
+        <input id="svcReqName" autocomplete="name" value="${esc(preName)}">
+        <label>${t("Phone number (10 digits)", "Nimero ya telefoni (imibare 10)")}</label>
+        <input id="svcReqPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="07XXXXXXXX" value="${esc(prePhone)}" oninput="svcPhoneHint()">
+        <p id="svcReqErr" class="sv-err" hidden></p>
+      </div>
+      <div class="rc-card">
+        <div class="rc-cap">⚙️ ${t("Your motor", "Moteri yawe")}</div>
+        <label>${t("Describe your motor/problem (optional)", "Sobanura moteri cyangwa ikibazo ufite (si ngombwa)")}</label>
+        <textarea id="svcReqDetails" placeholder="${t("e.g. It hums but does not turn…", "Urugero: Irahinda ariko ntizunguruka…")}"></textarea>
+        <label>📷 ${t("Show us your motor", "Twereke moteri yawe")} <em>(${t("optional", "si ngombwa")})</em></label>
+        <label class="sv-drop" for="svcReqImg"><img id="svcPrev" alt="" hidden><span class="sv-drop-in" id="svcPrevTxt"><i>📷</i><b>${t("Tap to take or choose a photo", "Kanda ufate cyangwa uhitemo ifoto")}</b><small>${t("A clear photo helps us quote faster", "Ifoto igaragara neza ituma tugusubiza vuba")}</small></span></label>
+        <input id="svcReqImg" type="file" accept="image/*" hidden onchange="svcPreview(this)">
+        <button type="button" class="sv-rm" id="svcReqRm" hidden onclick="svcRemovePhoto()">✕ ${t("Remove photo", "Kuraho ifoto")}</button>
+      </div>
+      <div class="rc-foot"><button type="button" class="primary" id="svcReqBtn" onclick="svcSubmit()">${t("Send request", "Ohereza ubusabe")} →</button></div>
     </div>`;
     m.hidden = false;
   };
+  window.svcPreview = inp => {
+    const f = inp.files && inp.files[0], im = $("svcPrev"), tx = $("svcPrevTxt"), rm = $("svcReqRm"); if (!im || !tx) return;
+    if (!f) { im.hidden = true; tx.hidden = false; if (rm) rm.hidden = true; return; }
+    const r = new FileReader(); r.onload = () => { im.src = r.result; im.hidden = false; tx.hidden = true; if (rm) rm.hidden = false; }; r.readAsDataURL(f);
+  };
+  window.svcRemovePhoto = () => { const i = $("svcReqImg"); if (i) { i.value = ""; window.svcPreview(i); } };
   window.svcSubmit = async () => {
     const m = $("svcModal"), err = $("svcReqErr"), btn = $("svcReqBtn");
     const nm = $("svcReqName").value.trim(), phRaw = $("svcReqPhone").value, dt = $("svcReqDetails").value.trim();
@@ -2691,16 +2763,20 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const ph = phRaw.replace(/\D/g, "");
     btn.disabled = true; btn.textContent = t("Sending...", "Birohereza...");
     try {
+      const file = $("svcReqImg") && $("svcReqImg").files && $("svcReqImg").files[0];
+      let imageUrl = "";
+      if (file) { btn.textContent = t("Uploading photo...", "Ifoto irimo koherezwa..."); imageUrl = await uploadToCloudinary(file); btn.textContent = t("Sending...", "Birohereza..."); }
       const d = { name: nm, phone: ph, serviceName: m.dataset.svc, details: dt, status: "new", createdAt: Date.now() };
+      if (imageUrl) d.imageUrl = imageUrl;
       if (currentUser) { d.userId = currentUser.uid; d.email = currentUser.email || ""; }
       await addDoc(collection(db, "serviceRequests"), d);
       try { localStorage.setItem("gdCustomer", JSON.stringify({ name: nm, phone: ph })); } catch (e) {}
       if (window.gdTrack) gdTrack("service_request", { service_name: m.dataset.svc });
       m.innerHTML = `<div class="rc-sheet" style="text-align:center;padding-top:60px">
-        <div style="font-size:56px">✅</div>
+        <div class="od-ic">✓</div>
         <h2>${t("Request received", "Ubusabe bwakiriwe")}</h2>
         <p style="font-size:1.05rem;line-height:1.6">${t("Thank you, " + esc(nm) + "! You will be helped as soon as possible. We will contact you on " + esc(ph) + ".", "Murakoze, " + esc(nm) + "! Muzahabwa ubufasha vuba bishoboka. Tuzabahamagara kuri " + esc(ph) + ".")}</p>
-        <button type="button" class="primary" style="width:100%;margin-top:18px" onclick="svcClose()">${t("OK", "Sawa")}</button>
+        <button type="button" class="primary" style="width:100%;margin-top:18px;padding:15px;border-radius:16px;background:linear-gradient(135deg,#2563eb,#25d6a0)" onclick="svcClose()">${t("OK", "Sawa")}</button>
       </div>`;
     } catch (e) {
       console.error(e); btn.disabled = false; btn.textContent = t("Send request", "Ohereza ubusabe");
