@@ -1387,7 +1387,6 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 .ct-track .info-card b{color:inherit}
 .ct-track .secondary{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.25)}
 
-#secForm[hidden]{display:none!important}
 #adminSectionsSection .bn-actions{margin:14px 0 12px}
 .bn-row{flex-wrap:wrap}
 .bn-info{flex:1 1 120px!important}
@@ -1588,18 +1587,8 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 
       <div class="info-card admin-section" id="adminServicesSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminServicesSection')"><h2>🛠️ Serivisi dukora</h2><span class="shortcut-arrow">⌃</span></button>
-        <form id="svcForm" onsubmit="adminSaveService(event)">
-          <div class="form-row"><input id="svcName" placeholder="Izina rya serivisi (urugero: Rewinding)" required></div>
-          <div class="form-row"><textarea id="svcDesc" placeholder="Ibisobanuro bigufi"></textarea></div>
-          <div class="form-row"><label>Ifoto (si ngombwa)</label><input id="svcImage" type="file" accept="image/*"></div>
-          <button class="primary" type="submit" id="svcBtn">Bika serivisi</button>
-          <button class="secondary" type="button" id="svcCancelBtn" onclick="adminCancelServiceEdit()" hidden>Reka guhindura</button>
-          <div id="svcMsg" class="status-msg"></div>
-        </form>
+        <div class="bn-actions"><button class="primary" type="button" onclick="svcNew()">➕ Serivisi nshya</button><button class="secondary" type="button" onclick="svcPick()">📦 Ongeraho ibicuruzwa</button></div>
         <div id="adminServices"></div>
-        <h3 style="margin:18px 0 6px">🏪 Ibiva mu maduka y'abakiriya</h3>
-        <p class="muted" style="margin:0 0 8px">Hitamo ibicuruzwa byo mu maduka y'abakiriya bigaragara muri "Our services". Ntibyongera kwandikwa bushya.</p>
-        <div id="adminShopItems"></div>
       </div>
 
       <div class="info-card admin-section" id="adminSectionsSection" hidden>
@@ -1607,7 +1596,19 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
         <p>Ibice byose by'urupapuro rwa mbere ahantu hamwe. Kanda "Gucunga" ku gice ushaka guhindura.</p>
         <div class="bn-cap">🏠 Ibice by'urupapuro rwa mbere</div>
         <div id="wsOverview"></div>
-        <form id="secForm" hidden onsubmit="adminSaveSection(event)">
+        <div id="adminSections"></div>
+      </div>
+
+      <div class="info-card admin-section" id="adminBannerSection" hidden>
+        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminBannerSection')"><h2>🎞️ Banner (Slides)</h2><span class="shortcut-arrow">⌃</span></button>
+        <p>Slides zigaragara hejuru ku rupapuro rwa mbere. Hisha cyangwa wongere slide, cyangwa ushyiremo ibicuruzwa bisanzwe ku rubuga.</p>
+        <div class="bn-actions"><button class="primary" type="button" onclick="bnNewSlide()">➕ Slide nshya</button><button class="secondary" type="button" id="bnPickBtn" onclick="bnTogglePicker()">📦 Ongeraho ibicuruzwa</button></div>
+        <div class="bn-cap">🎞️ Slides ziri ku banner</div>
+        <div id="bnList"></div>
+      </div>
+
+      <div class="info-card admin-section" id="adminSlideFormSection" hidden>
+        <form id="secForm" onsubmit="adminSaveSection(event)">
           <div class="form-row"><label>Kigaragara he?</label><select id="secKind" onchange="gdSecKindChange()"><option value="section">Igice cyo hasi (munsi y'ibicuruzwa)</option><option value="slide">Slide yo hejuru (banner igenda)</option><option value="work">Umurimo warangiye (amafoto + igitekerezo cy'umukiriya)</option></select></div>
           <div class="form-row" id="secShopRow" hidden><label>Amamaza shop (si ngombwa)</label><select id="secShop" onchange="gdSecShopPick()"><option value="">— Nta shop —</option></select></div>
           <div class="form-row"><input id="secTitle" placeholder="Umutwe w'igice (urugero: Ibyo dukora)" required></div>
@@ -1622,19 +1623,30 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
           <button class="secondary" type="button" id="secCancelBtn" onclick="adminCancelSectionEdit()" hidden>✕ Funga</button>
         </form>
         <div id="secMsg" class="status-msg"></div>
-        <div id="adminSections"></div>
       </div>
 
-      <div class="info-card admin-section" id="adminBannerSection" hidden>
-        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminBannerSection')"><h2>🎞️ Banner (Slides)</h2><span class="shortcut-arrow">⌃</span></button>
-        <p>Slides zigaragara hejuru ku rupapuro rwa mbere. Hisha cyangwa wongere slide, cyangwa ushyiremo ibicuruzwa bisanzwe ku rubuga.</p>
-        <div class="bn-actions"><button class="primary" type="button" onclick="bnNewSlide()">➕ Slide nshya</button><button class="secondary" type="button" id="bnPickBtn" onclick="bnTogglePicker()">📦 Ongeraho ibicuruzwa</button></div>
-        <div class="bn-picker" id="bnPicker" hidden>
+      <div class="info-card admin-section" id="adminBannerPickSection" hidden>
+        <div class="bn-picker" id="bnPicker">
           <input id="bnQ" type="search" placeholder="🔍 Shakisha igicuruzwa..." oninput="bnRenderPick()">
           <div id="bnPickList"></div>
         </div>
-        <div class="bn-cap">🎞️ Slides ziri ku banner</div>
-        <div id="bnList"></div>
+      </div>
+
+      <div class="info-card admin-section" id="adminSvcFormSection" hidden>
+        <form id="svcForm" onsubmit="adminSaveService(event)">
+          <div class="form-row"><input id="svcName" placeholder="Izina rya serivisi (urugero: Rewinding)" required></div>
+          <div class="form-row"><textarea id="svcDesc" placeholder="Ibisobanuro bigufi"></textarea></div>
+          <div class="form-row"><label>Ifoto (si ngombwa)</label><input id="svcImage" type="file" accept="image/*"></div>
+          <button class="primary" type="submit" id="svcBtn">Bika serivisi</button>
+          <button class="secondary" type="button" id="svcCancelBtn" onclick="adminCancelServiceEdit()" hidden>Reka guhindura</button>
+          <div id="svcMsg" class="status-msg"></div>
+        </form>
+      </div>
+
+      <div class="info-card admin-section" id="adminSvcPickSection" hidden>
+        <h3 style="margin:18px 0 6px">🏪 Ibiva mu maduka y'abakiriya</h3>
+        <p class="muted" style="margin:0 0 8px">Hitamo ibicuruzwa byo mu maduka y'abakiriya bigaragara muri "Our services". Ntibyongera kwandikwa bushya.</p>
+        <div id="adminShopItems"></div>
       </div>
 
       <div class="info-card admin-section" id="adminShopsSection" hidden>
@@ -2843,13 +2855,16 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     editingServiceId = id; editingServiceImage = v.imageUrl || "";
     $("svcName").value = v.name || ""; $("svcDesc").value = v.desc || ""; $("svcImage").value = "";
     $("svcBtn").textContent = "Bika impinduka"; $("svcCancelBtn").hidden = false;
-    $("svcName").scrollIntoView({behavior:"smooth",block:"center"});
+    window.gdOpenSub("adminSvcFormSection");
   };
-  window.adminCancelServiceEdit = () => {
+  window.svcReset = () => {
     editingServiceId = null; editingServiceImage = "";
     $("svcForm").reset(); $("svcBtn").textContent = "Bika serivisi"; $("svcCancelBtn").hidden = true;
     msg("svcMsg", "");
   };
+  window.adminCancelServiceEdit = () => { window.svcReset(); window.gdBack(); };
+  window.svcNew = () => { window.svcReset(); window.gdOpenSub("adminSvcFormSection"); };
+  window.svcPick = () => window.gdOpenSub("adminSvcPickSection");
   window.adminSaveService = async e => {
     e.preventDefault();
     const btn = $("svcBtn"); btn.disabled = true; msg("svcMsg", "Birabikwa...");
@@ -2861,7 +2876,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       const wasEditing = !!editingServiceId;
       if (editingServiceId) await updateDoc(doc(db, "services", editingServiceId), data);
       else await addDoc(collection(db, "services"), { ...data, createdAt: Date.now() });
-      window.adminCancelServiceEdit(); msg("svcMsg", wasEditing ? "Impinduka zabitswe." : "Serivisi yabitswe.", "ok");
+      window.svcReset(); try { gdToast("✅ " + (wasEditing ? "Impinduka zabitswe." : "Serivisi yabitswe.")); } catch (e) {} window.gdBack();
     } catch (err) { console.error(err); msg("svcMsg", "Ntibyakunze: " + (err.code || err.message), "err"); }
     btn.disabled = false;
   };
@@ -2896,7 +2911,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   }
   window.gdOpenSectionForm = () => {
     showView("admin");
-    setTimeout(() => { const sec = $("adminSectionsSection"); if (sec && sec.hidden) toggleAdminSection("adminSectionsSection"); else if (sec) sec.scrollIntoView({ behavior: "smooth" }); }, 200);
+    setTimeout(() => window.wsNew("section"), 200);
   };
   function renderAdminSections() {
     renderWsOverview();
@@ -2911,22 +2926,19 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     $("secKind").value = (v.kind === "slide" || v.kind === "work") ? v.kind : "section"; gdSecKindChange(); $("secShop").value = v.shopId || "";
     $("secWho").value = v.who || ""; $("secImage2").value = "";
     $("secImage").value = ""; $("secBtn").textContent = "Bika impinduka"; $("secCancelBtn").hidden = false;
-    $("secForm").hidden = false;
-    const sec = $("adminSectionsSection"); if (sec && sec.hidden) toggleAdminSection("adminSectionsSection");
-    $("secTitle").scrollIntoView({behavior:"smooth",block:"center"});
+    window.gdOpenSub("adminSlideFormSection");
   };
-  window.adminCancelSectionEdit = () => {
+  window.secReset = () => {
     editingSectionId = null; editingSectionImage = ""; editingSectionImage2 = "";
-    $("secForm").reset(); gdSecKindChange(); $("secBtn").textContent = "Bika igice"; $("secCancelBtn").hidden = true; $("secForm").hidden = true;
+    $("secForm").reset(); gdSecKindChange(); $("secBtn").textContent = "Bika igice"; $("secCancelBtn").hidden = true;
     msg("secMsg", "");
   };
+  window.adminCancelSectionEdit = () => { window.secReset(); window.gdBack(); };
   window.wsNew = kind => {
-    window.adminCancelSectionEdit();
-    $("secForm").hidden = false; $("secCancelBtn").hidden = false;
+    window.secReset(); $("secCancelBtn").hidden = false;
     $("secKind").value = (kind === "work" || kind === "section") ? kind : "slide"; gdSecKindChange();
-    setTimeout(() => $("secTitle").scrollIntoView({ behavior: "smooth", block: "center" }), 60);
+    window.gdOpenSub("adminSlideFormSection");
   };
-  window.wsTogglePicker = () => { const pk = $("wsPicker"); if (!pk) return; pk.hidden = !pk.hidden; if (!pk.hidden) bnRenderPick(); };
   window.adminSaveSection = async e => {
     e.preventDefault();
     if (!perms.has("sections")) return;
@@ -2945,7 +2957,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       const wasEditing = !!editingSectionId;
       if (editingSectionId) await updateDoc(doc(db, "sections", editingSectionId), data);
       else await addDoc(collection(db, "sections"), { ...data, createdAt: Date.now() });
-      window.adminCancelSectionEdit(); msg("secMsg", wasEditing ? "Impinduka zabitswe." : (kind === "slide" ? "Slide yabitswe. Reba ku banner yo hejuru." : kind === "work" ? "Umurimo wabitswe. Reba ku rupapuro rwa mbere." : "Igice cyabitswe. Reba ku rupapuro rwa mbere."), "ok");
+      { const okMsg = wasEditing ? "Impinduka zabitswe." : (kind === "slide" ? "Slide yabitswe. Reba ku banner yo hejuru." : kind === "work" ? "Umurimo wabitswe. Reba ku rupapuro rwa mbere." : "Igice cyabitswe. Reba ku rupapuro rwa mbere."); window.secReset(); try { gdToast("✅ " + okMsg); } catch (e) {} window.gdBack(); }
     } catch (err) { console.error(err); msg("secMsg", "Ntibyakunze: " + (err.code || err.message), "err"); }
     btn.disabled = false;
   };
@@ -3055,8 +3067,8 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   }
   function renderBannerAdmin() { bnRenderList(); bnRenderPick(); }
   window.bnRenderPick = bnRenderPick;
-  window.bnTogglePicker = () => { const pk = $("bnPicker"); if (!pk) return; pk.hidden = !pk.hidden; if (!pk.hidden) bnRenderPick(); };
-  window.bnNewSlide = () => { window.gdOpenPage("adminSectionsSection"); setTimeout(() => window.wsNew(), 80); };
+  window.bnTogglePicker = () => { window.gdOpenSub("adminBannerPickSection"); bnRenderPick(); };
+  window.bnNewSlide = () => window.wsNew();
   window.bnToggleBuiltin = async id => {
     if (!perms.has("sections")) return;
     const hide = !hiddenSlideIds.includes(id);
@@ -3681,6 +3693,10 @@ function gdSavePdf(btn) {
     adminStatsSection: { icon: "📊", title: "Abasuye website", sub: "Reba abantu basuye urubuga", c: ["#0ea5e9", "#2563eb"] },
     adminSectionsSection: { icon: "🧩", title: "Ibice bya website", sub: "Gucunga ibice by'urubuga rwawe", c: ["#8b5cf6", "#ec4899"] },
     adminBannerSection: { icon: "🎞️", title: "Banner (Slides)", sub: "Gucunga slides zigaragara hejuru", c: ["#f59e0b", "#ef4444"] },
+    adminSlideFormSection: { icon: "➕", title: "Slide / Igice gishya", sub: "Uzuza ifishi hanyuma ubike", c: ["#2563eb", "#8b5cf6"] },
+    adminBannerPickSection: { icon: "📦", title: "Ongeraho ibicuruzwa kuri banner", sub: "Hitamo ibicuruzwa bijya ku banner", c: ["#f59e0b", "#ef4444"] },
+    adminSvcFormSection: { icon: "🛠️", title: "Serivisi nshya", sub: "Ongeraho cyangwa uhindure serivisi", c: ["#f97316", "#ef4444"] },
+    adminSvcPickSection: { icon: "🏪", title: "Ibiva mu maduka y'abakiriya", sub: "Hitamo ibigaragara muri Our services", c: ["#10b981", "#14b8a6"] },
     adminShopsSection: { icon: "🏪", title: "Amaduka y'abakiriya", sub: "Emeza cyangwa wange amaduka", c: ["#10b981", "#14b8a6"] },
     adminListWrap: { icon: "📦", title: "Ibicuruzwa biri ku rubuga", sub: "Shakisha, hindura cyangwa usibe ibicuruzwa byawe", c: ["#2563eb", "#06b6d4"],
       stats: () => { const all = dbProducts.concat(sampleProducts.filter(p => !hiddenSampleIds.includes(p.id))); return ["📦 " + all.length + " " + t("products", "ibicuruzwa"), "✅ " + all.filter(p => p.status !== "out").length + " " + t("available", "biraboneka"), "⭐ " + all.filter(p => p.featured).length + " " + t("featured", "bikunzwe"), "⛔ " + all.filter(p => p.status === "out").length + " " + t("out", "byashize")]; } },
@@ -3698,7 +3714,7 @@ function gdSavePdf(btn) {
   function gdPageShell() {
     let p = $("gdPage"); if (p) return p;
     p = document.createElement("div"); p.id = "gdPage"; p.className = "ceo-page"; p.hidden = true;
-    p.innerHTML = `<div class="ceo-top"><button type="button" class="ceo-back" onclick="gdClosePage()" aria-label="Back">←</button><div><h2 id="gdPageTitle"></h2><small id="gdPageSub"></small></div></div>
+    p.innerHTML = `<div class="ceo-top"><button type="button" class="ceo-back" onclick="gdBack()" aria-label="Back">←</button><div><h2 id="gdPageTitle"></h2><small id="gdPageSub"></small></div></div>
       <div class="ceo-wrap"><div class="gd-hero" id="gdPageHero"><div class="gd-hero-ic" id="gdPageIcon"></div><div class="gd-hero-tx"><b id="gdPageHTitle"></b><span id="gdPageHSub"></span><div class="gd-chips" id="gdPageChips"></div></div></div><div id="gdPageBody" class="gd-body"></div></div>`;
     document.body.appendChild(p); return p;
   }
@@ -3734,6 +3750,9 @@ function gdSavePdf(btn) {
     p.hidden = true; document.body.style.overflow = ""; gdRestore();
     if (fromPop !== true) { try { if (history.state && history.state.gdPage) history.back(); } catch (e) {} }
   };
+  const gdSubParent = {};
+  window.gdOpenSub = id => { const cur = gdPageCur && gdPageCur.id; if (cur && cur !== id) gdSubParent[id] = cur; else if (!cur) delete gdSubParent[id]; window.gdOpenPage(id); };
+  window.gdBack = () => { const cur = gdPageCur && gdPageCur.id, par = cur && gdSubParent[cur]; if (par) { delete gdSubParent[cur]; window.gdOpenPage(par); } else window.gdClosePage(); };
   window.addEventListener("popstate", () => { const p = $("gdPage"); if (p && !p.hidden) window.gdClosePage(true); });
   window.toggleAdminSection = id => {
     if (GD_PAGES[id]) return window.gdOpenPage(id);
