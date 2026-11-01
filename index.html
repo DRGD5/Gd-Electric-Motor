@@ -1403,6 +1403,10 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 .ws-info small{display:block;margin-top:2px;color:#9aa6e8;font-size:.76rem;font-weight:700}
 .ws-btns{flex:0 0 auto}
 .bn-b.ws-go{padding:9px 14px;background:linear-gradient(135deg,#2563eb,#7c3aed);border:0;font-size:.8rem}
+
+#wsOverview{grid-template-columns:minmax(0,1fr)}
+.ws-row{min-width:0;box-sizing:border-box;max-width:100%}
+.ws-info b{overflow-wrap:break-word}
 </style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
@@ -1603,12 +1607,6 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
         <p>Ibice byose by'urupapuro rwa mbere ahantu hamwe. Kanda "Gucunga" ku gice ushaka guhindura.</p>
         <div class="bn-cap">🏠 Ibice by'urupapuro rwa mbere</div>
         <div id="wsOverview"></div>
-        <div class="bn-cap">⚡ Ibikorwa byihuse</div>
-        <div class="bn-actions"><button class="primary" type="button" onclick="wsNew()">➕ Slide nshya</button><button class="secondary" type="button" onclick="wsTogglePicker()">📦 Ongeraho ibicuruzwa</button></div>
-        <div class="bn-picker" id="wsPicker" hidden>
-          <input id="wsQ" type="search" placeholder="🔍 Shakisha igicuruzwa..." oninput="bnRenderPick()">
-          <div id="wsPickList"></div>
-        </div>
         <form id="secForm" hidden onsubmit="adminSaveSection(event)">
           <div class="form-row"><label>Kigaragara he?</label><select id="secKind" onchange="gdSecKindChange()"><option value="section">Igice cyo hasi (munsi y'ibicuruzwa)</option><option value="slide">Slide yo hejuru (banner igenda)</option><option value="work">Umurimo warangiye (amafoto + igitekerezo cy'umukiriya)</option></select></div>
           <div class="form-row" id="secShopRow" hidden><label>Amamaza shop (si ngombwa)</label><select id="secShop" onchange="gdSecShopPick()"><option value="">— Nta shop —</option></select></div>
