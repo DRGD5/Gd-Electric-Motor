@@ -1425,6 +1425,45 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 #svcModal .sv-thumb img{display:block;width:100%;height:100%;object-fit:cover;border-radius:11px}
 #svcModal .sv-x{position:absolute;top:-9px;right:-9px;width:22px;height:22px;padding:0;border-radius:50%;border:2px solid #0e1230;background:#ef4444;color:#fff;font-size:.62rem;font-weight:900;line-height:1}
 #svcModal .sv-hint{margin:8px 2px 0;color:#8e9ae0;font-size:.74rem;font-weight:700;line-height:1.4}
+
+/* ===== Service request: photo pointer ===== */
+@keyframes svPulse{0%{box-shadow:0 0 0 0 rgba(245,158,11,.75)}70%{box-shadow:0 0 0 12px rgba(245,158,11,0)}100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}}
+@keyframes svBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+#svcModal .rc-sheet label.sv-photo{animation:svPulse 1.8s infinite;padding:9px 14px;font-size:.8rem}
+#svcModal .sv-ptr{position:relative;width:max-content;max-width:100%;margin:10px 0 4px auto;padding:7px 12px;border-radius:12px;background:#fff4dc;color:#9a3412;font-size:.76rem;font-weight:900;box-shadow:0 8px 16px -10px rgba(245,158,11,.9);animation:svBob 1.6s ease-in-out infinite}
+#svcModal .sv-ptr::before{content:"";position:absolute;top:-6px;right:30px;border:6px solid transparent;border-top:0;border-bottom-color:#fff4dc}
+#svcModal .sv-ptr[hidden]{display:none!important}
+
+/* ===== Admin orders: new card design ===== */
+.od-card{--ac:#ef4444;position:relative;margin:0 0 14px;padding:14px;border-radius:24px;border:1px solid rgba(124,138,255,.25);background:linear-gradient(170deg,#161c3d,#0e1230);box-shadow:0 16px 28px -18px rgba(0,0,0,.85);overflow:hidden;color:#fff}
+.od-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--ac)}
+.od-card[data-st="processing"]{--ac:#3b82f6}.od-card[data-st="ready"]{--ac:#8b5cf6}.od-card[data-st="done"]{--ac:#10b981}.od-card[data-st="cancelled"]{--ac:#94a3b8;opacity:.8}
+.od-top{display:flex;align-items:flex-start;gap:12px;padding-left:6px}
+.od-av{flex:0 0 46px;height:46px;display:grid;place-items:center;border-radius:15px;font-size:1.25rem;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--ac),#2563eb);box-shadow:0 10px 18px -10px rgba(0,0,0,.7)}
+.od-who{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.od-who strong{font-size:1.05rem;color:#fff;overflow-wrap:anywhere}
+.od-tel{color:#7dd3fc;font-weight:800;font-size:.9rem;text-decoration:none}
+.od-who small{color:#8e9ae0;font-size:.74rem}
+.od-card .st-pill{flex:0 0 auto;font-size:.72rem;padding:5px 10px;background:var(--ac)}
+.od-items{margin:12px 0 0 6px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.05);display:grid;gap:6px}
+.od-it{display:flex;justify-content:space-between;gap:10px;font-size:.92rem;color:#dfe5ff}
+.od-it b{color:#fff;white-space:nowrap}
+.od-total{display:flex;justify-content:space-between;align-items:center;margin:10px 0 0 6px;padding:12px 14px;border-radius:16px;background:linear-gradient(135deg,rgba(37,99,235,.35),rgba(16,185,129,.25));border:1px solid rgba(16,185,129,.4)}
+.od-total span{font-weight:800;color:#d9e0ff}
+.od-total b{font-size:1.3rem;color:#4ff0be;white-space:nowrap}
+.od-reason{margin:10px 0 0 6px;padding:10px 12px;border-radius:14px;font-size:.84rem;color:#fecaca;background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.4)}
+.od-cap{margin:14px 0 8px 6px;font-size:.74rem;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:#8e9ae0}
+.od-steps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-left:6px}
+.od-chip{padding:11px 8px;border-radius:14px;border:1.5px solid #2f3a7a;background:#0a0d1f;color:#e8ecff;font-weight:800;font-size:.8rem;line-height:1.2;cursor:pointer}
+.od-chip:last-child{grid-column:1/-1}
+.od-chip.od-cancelled{border-color:rgba(239,68,68,.5);color:#ff9a9a}
+.od-chip.is-cur{border-color:transparent;color:#fff;opacity:1;box-shadow:0 10px 18px -10px rgba(0,0,0,.8)}
+.od-chip.od-new.is-cur{background:#ef4444}.od-chip.od-processing.is-cur{background:#3b82f6}.od-chip.od-ready.is-cur{background:#8b5cf6}.od-chip.od-done.is-cur{background:#10b981}.od-chip.od-cancelled.is-cur{background:#64748b}
+.od-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 0 6px}
+.od-act{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 8px;border-radius:14px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:#fff;font-weight:800;font-size:.82rem;text-decoration:none;cursor:pointer}
+.od-act.od-main{grid-column:1/-1;border:0;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 12px 20px -10px rgba(37,99,235,.8);font-size:.92rem;padding:14px}
+.od-act.od-wa{background:rgba(37,211,102,.16);border-color:rgba(37,211,102,.55);color:#86efac}
+.od-act.od-del{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.5);color:#ff9a9a}
 </style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
@@ -2520,7 +2559,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const admin = isAdminUser(currentUser);
     const visibleCustomerOrders = myOrders.filter(o => !o.hiddenForCustomer);
     const ordersHtml = visibleCustomerOrders.length ? visibleCustomerOrders.map(o => `<div class="admin-row" style="align-items:flex-start"><div class="cart-details"><strong>🧾 ${t("Order", "Komande")} #${esc(String(o.id || "").slice(-5).toUpperCase())}</strong><small>${new Date(o.createdAt || 0).toLocaleDateString()} · <b>${esc(statusLabel(o.status))}</b></small><div style="margin-top:6px;color:var(--muted);font-size:.88rem">${(o.items || []).map(i => esc(i.name) + " × " + Number(i.qty)).join("<br>")}</div>${o.status === "cancelled" && o.cancelReason ? `<small>${t("Reason", "Impamvu")}: ${esc(o.cancelReason)}</small>` : ""}${o.status === "done" ? `<button class="primary" style="margin-top:8px" onclick="gdPrintReceipt('${esc(o.id)}')">🧾 ${t("View invoice / Save PDF", "Reba fagitire / Bika PDF")}</button><button class="secondary" style="margin-top:8px" onclick="hideCustomerOrder('${esc(o.id)}')">${t("Remove from my history", "Kuraho mu mateka yanjye")}</button>` : ""}</div></div>`).join("") : `<p style="color:var(--muted)">${t("You have no orders yet.", "Nta commande urakora.")}</p>`;
-    const requestsHtml = myServiceRequests.length ? myServiceRequests.map(r => `<div class="admin-row" style="align-items:flex-start"><div class="cart-details"><strong>${esc(r.serviceName || t("Service request", "Ubusabe bwa serivisi"))}</strong><small>${new Date(r.createdAt || 0).toLocaleString()} · <b>${esc(statusLabel(r.status))}</b></small>${r.details ? `<p>${esc(r.details)}</p>` : ""}${r.imageUrl ? `<img class="req-img" src="${esc(thumb(r.imageUrl, 420))}" alt="" loading="lazy">` : ""}${r.status === "cancelled" && r.cancelReason ? `<small>${t("Reason", "Impamvu")}: ${esc(r.cancelReason)}</small>` : ""}</div></div>`).join("") : `<p style="color:var(--muted)">${t("You have not requested a service yet.", "Nta serivisi urasaba.")}</p>`;
+    const requestsHtml = myServiceRequests.length ? myServiceRequests.map(r => `<div class="admin-row" style="align-items:flex-start"><div class="cart-details"><strong>${esc(r.serviceName || t("Service request", "Ubusabe bwa serivisi"))}</strong><small>${new Date(r.createdAt || 0).toLocaleString()} · <b>${esc(statusLabel(r.status))}</b></small>${reqText(r) ? `<p>${esc(reqText(r))}</p>` : ""}${reqPhoto(r) ? `<img class="req-img" src="${esc(thumb(reqPhoto(r), 420))}" alt="" loading="lazy">` : ""}${r.status === "cancelled" && r.cancelReason ? `<small>${t("Reason", "Impamvu")}: ${esc(r.cancelReason)}</small>` : ""}</div></div>`).join("") : `<p style="color:var(--muted)">${t("You have not requested a service yet.", "Nta serivisi urasaba.")}</p>`;
     el.innerHTML = `<div class="info-card">
         <div class="acc-head">
           <label class="acc-avatar" for="accPhotoInput" title="${t("Change photo", "Hindura ifoto")}">${p.photoURL ? `<img src="${esc(avUrl(p.photoURL, 200))}" alt="">` : `<span>${esc((p.name || currentUser.email || "?").trim().charAt(0).toUpperCase())}</span>`}<i class="acc-cam">📷</i></label>
@@ -2644,20 +2683,25 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     updateAdminBadges(); if (window.gdPageRefresh) window.gdPageRefresh();
     const el = $("adminOrders"); if (!el) return;
     const statuses = ["new", "processing", "ready", "done", "cancelled"];
-    el.innerHTML = allOrders.length ? allOrders.map(o => `
-      <div class="admin-row" data-st="${esc(o.status || "new")}" style="align-items:flex-start;flex-wrap:wrap">
-        <div class="cart-details">
-          <strong>${esc(o.name || "")} · ${esc(o.phone || "")}</strong>
-          <small>${esc(o.email || "Guest order")} · ${new Date(o.createdAt || 0).toLocaleString()}</small>
-          <div style="margin-top:6px;color:var(--muted);font-size:.88rem">${(o.items || []).map(i => esc(i.name) + " × " + Number(i.qty)).join("<br>")}</div>
-          <div style="margin-top:6px;font-weight:900"><span style="color:var(--green)">${money(o.total || 0)}</span> · <span class="st-pill st-${esc(o.status || "new")}">${esc(statusLabel(o.status))}</span></div>
-          <div class="btns" style="margin-top:8px"><button class="secondary" onclick="adminEditOrderPrice('${esc(o.id)}')">✏️ Hindura igiciro</button>${o.status !== "cancelled" ? `<button class="primary" onclick="gdPrintReceipt('${esc(o.id)}')">🧾 Receipt / Invoice</button>` : ""}${isAdminUser(currentUser) ? `<button class="secondary danger-btn" onclick="adminDeleteOrder('${esc(o.id)}')">🗑️ Siba</button>` : ""}</div>
-          ${o.cancelReason ? `<small>${t("Cancellation reason", "Impamvu yo guhagarika")}: ${esc(o.cancelReason)}</small>` : ""}
-        </div>
-        <div class="btns" style="flex-wrap:wrap">
-          ${statuses.map(st => `<button class="secondary ${st === "cancelled" ? "danger-btn" : ""}" onclick="adminOrderStatus('${esc(o.id)}','${st}')" ${o.status === st ? "disabled" : ""}>${esc(statusLabel(st))}</button>`).join("")}
-        </div>
-      </div>`).join("") : '<p style="color:var(--muted)">Nta order irahagera.</p>';
+    const ico = { new: "🆕", processing: "⚙️", ready: "📦", done: "✅", cancelled: "✖️" };
+    const waNum = ph => { let d = String(ph || "").replace(/\D/g, ""); if (d.startsWith("0")) d = "250" + d.slice(1); return d; };
+    el.innerHTML = allOrders.length ? allOrders.map(o => {
+      const st = o.status || "new", nm = String(o.name || "?").trim() || "?", id = esc(o.id);
+      return `<div class="od-card" data-st="${esc(st)}">
+        <div class="od-top"><div class="od-av">${esc(nm.charAt(0).toUpperCase())}</div>
+          <div class="od-who"><strong>${esc(nm)}</strong>${o.phone ? `<a class="od-tel" href="tel:${esc(o.phone)}">📞 ${esc(o.phone)}</a>` : ""}<small>${esc(o.email || "Guest order")} · ${new Date(o.createdAt || 0).toLocaleString()}</small></div>
+          <span class="st-pill st-${esc(st)}">${ico[st] || ""} ${esc(statusLabel(st))}</span></div>
+        <div class="od-items">${(o.items || []).map(i => `<div class="od-it"><span>${esc(i.name)}</span><b>× ${Number(i.qty)}</b></div>`).join("")}</div>
+        <div class="od-total"><span>${t("Total", "Igiteranyo")}</span><b>${money(o.total || 0)}</b></div>
+        ${o.cancelReason ? `<div class="od-reason">${t("Cancellation reason", "Impamvu yo guhagarika")}: ${esc(o.cancelReason)}</div>` : ""}
+        <div class="od-cap">${t("Order status", "Uko order igeze")}</div>
+        <div class="od-steps">${statuses.map(s2 => `<button type="button" class="od-chip od-${s2}${st === s2 ? " is-cur" : ""}" onclick="adminOrderStatus('${id}','${s2}')" ${st === s2 ? "disabled" : ""}>${ico[s2]} ${esc(statusLabel(s2))}</button>`).join("")}</div>
+        <div class="od-acts">
+          <button type="button" class="od-act" onclick="adminEditOrderPrice('${id}')">✏️ ${t("Edit price", "Hindura igiciro")}</button>
+          ${st !== "cancelled" ? `<button type="button" class="od-act od-main" onclick="gdPrintReceipt('${id}')">🧾 Receipt / Invoice</button>` : ""}
+          ${o.phone ? `<a class="od-act od-wa" href="https://wa.me/${waNum(o.phone)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : ""}
+          ${isAdminUser(currentUser) ? `<button type="button" class="od-act od-del" onclick="adminDeleteOrder('${id}')">🗑️ ${t("Delete", "Siba")}</button>` : ""}
+        </div></div>`; }).join("") : '<p style="color:var(--muted)">Nta order irahagera.</p>';
   }
 
   const ROLE_OPTIONS = [["customer","Umukiriya"],["staff","Umukozi (Staff)"],["technician","Umutekinisiye"],["sales","Ushinzwe kugurisha"],["manager","Umuyobozi (Manager)"]];
@@ -2703,8 +2747,8 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       <div class="admin-row" data-st="${esc(r.status || "new")}" style="align-items:flex-start;flex-wrap:wrap">
         <div class="cart-details"><strong>${esc(r.serviceName || "Service")}</strong>
           <small>${esc(r.name || "")} · ${esc(r.phone || "")} · ${esc(r.email || "")} · ${new Date(r.createdAt || 0).toLocaleString()}</small>
-          ${r.details ? `<p>${esc(r.details)}</p>` : ""}
-          ${r.imageUrl ? `<a href="${esc(r.imageUrl)}" target="_blank" rel="noopener"><img class="req-img" src="${esc(thumb(r.imageUrl, 420))}" alt="Moteri" loading="lazy"></a>` : ""}
+          ${reqText(r) ? `<p>${esc(reqText(r))}</p>` : ""}
+          ${reqPhoto(r) ? `<a href="${esc(reqPhoto(r))}" target="_blank" rel="noopener"><img class="req-img" src="${esc(thumb(reqPhoto(r), 420))}" alt="Moteri" loading="lazy"></a>` : ""}
           <div style="font-weight:900"><span class="st-pill st-${esc(r.status || "new")}">${esc(statusLabel(r.status))}</span></div>
           ${r.status !== "cancelled" ? `<div class="btns" style="margin-top:8px"><button class="primary" onclick="gdPrintServiceReceipt('${esc(r.id)}')">🧾 Receipt / Invoice</button>${isAdminUser(currentUser) ? `<button class="secondary danger-btn" onclick="adminDeleteServiceRequest(\'${esc(r.id)}\')">🗑️ Siba</button>` : ""}</div>` : ""}
           ${r.cancelReason ? `<small>Impamvu: ${esc(r.cancelReason)}</small>` : ""}
@@ -2833,9 +2877,9 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
           <label class="sv-photo" for="svcReqImg" id="svcPhotoBtn"><i>📷</i><span>${t("Add photo", "Ongeraho ifoto")}</span></label>
           <span class="sv-thumb" id="svcThumb" hidden><img id="svcPrev" alt=""><button type="button" class="sv-x" aria-label="${t("Remove photo", "Kuraho ifoto")}" onclick="svcRemovePhoto()">✕</button></span>
         </div>
+        <div class="sv-ptr" id="svcPtr"><span>${t("Add a photo of your motor here", "Shyiraho ifoto ya moteri yawe hano")}</span> 👆</div>
         <label>${t("Describe your motor/problem (optional)", "Sobanura moteri cyangwa ikibazo ufite (si ngombwa)")}</label>
         <textarea id="svcReqDetails" placeholder="${t("e.g. It hums but does not turn…", "Urugero: Irahinda ariko ntizunguruka…")}"></textarea>
-        <p class="sv-hint">📷 ${t("Tip: a clear photo of your motor helps us quote faster.", "Inama: ifoto igaragara neza ya moteri ituma tugusubiza vuba.")}</p>
         <input id="svcReqImg" type="file" accept="image/*" hidden onchange="svcPreview(this)">
       </div>
       <div class="rc-foot"><button type="button" class="primary" id="svcReqBtn" onclick="svcSubmit()">${t("Send request", "Ohereza ubusabe")} →</button></div>
@@ -2843,11 +2887,14 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     m.hidden = false;
   };
   window.svcPreview = inp => {
-    const f = inp.files && inp.files[0], im = $("svcPrev"), th = $("svcThumb"), bt = $("svcPhotoBtn"); if (!im || !th || !bt) return;
-    if (!f) { th.hidden = true; bt.hidden = false; return; }
-    const r = new FileReader(); r.onload = () => { im.src = r.result; th.hidden = false; bt.hidden = true; }; r.readAsDataURL(f);
+    const f = inp.files && inp.files[0], im = $("svcPrev"), th = $("svcThumb"), bt = $("svcPhotoBtn"), pt = $("svcPtr"); if (!im || !th || !bt) return;
+    if (!f) { th.hidden = true; bt.hidden = false; if (pt) pt.hidden = false; return; }
+    const r = new FileReader(); r.onload = () => { im.src = r.result; th.hidden = false; bt.hidden = true; if (pt) pt.hidden = true; }; r.readAsDataURL(f);
   };
   window.svcRemovePhoto = () => { const i = $("svcReqImg"); if (i) { i.value = ""; window.svcPreview(i); } };
+  const svcPhotoRe = /\n?📷 Ifoto: (https?:\/\/\S+)/;
+  const reqPhoto = r => r.imageUrl || ((String(r.details || "").match(svcPhotoRe) || [])[1] || "");
+  const reqText = r => String(r.details || "").replace(svcPhotoRe, "").trim();
   window.svcSubmit = async () => {
     const m = $("svcModal"), err = $("svcReqErr"), btn = $("svcReqBtn");
     const nm = $("svcReqName").value.trim(), phRaw = $("svcReqPhone").value, dt = $("svcReqDetails").value.trim();
@@ -2858,11 +2905,20 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     try {
       const file = $("svcReqImg") && $("svcReqImg").files && $("svcReqImg").files[0];
       let imageUrl = "";
-      if (file) { btn.textContent = t("Uploading photo...", "Ifoto irimo koherezwa..."); imageUrl = await uploadToCloudinary(file); btn.textContent = t("Sending...", "Birohereza..."); }
+      if (file) {
+        btn.textContent = t("Uploading photo...", "Ifoto irimo koherezwa...");
+        try { imageUrl = await uploadToCloudinary(file); } catch (upErr) { console.warn("Photo upload failed, sending without photo", upErr); }
+        btn.textContent = t("Sending...", "Birohereza...");
+      }
       const d = { name: nm, phone: ph, serviceName: m.dataset.svc, details: dt, status: "new", createdAt: Date.now() };
-      if (imageUrl) d.imageUrl = imageUrl;
       if (currentUser) { d.userId = currentUser.uid; d.email = currentUser.email || ""; }
-      await addDoc(collection(db, "serviceRequests"), d);
+      try {
+        await addDoc(collection(db, "serviceRequests"), imageUrl ? Object.assign({}, d, { imageUrl }) : d);
+      } catch (firstErr) {
+        if (!imageUrl) throw firstErr;
+        console.warn("Retrying without imageUrl field", firstErr);
+        await addDoc(collection(db, "serviceRequests"), Object.assign({}, d, { details: (dt ? dt + "\n" : "") + "📷 Ifoto: " + imageUrl }));
+      }
       try { localStorage.setItem("gdCustomer", JSON.stringify({ name: nm, phone: ph })); } catch (e) {}
       if (window.gdTrack) gdTrack("service_request", { service_name: m.dataset.svc });
       m.innerHTML = `<div class="rc-sheet" style="text-align:center;padding-top:60px">
@@ -2873,7 +2929,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       </div>`;
     } catch (e) {
       console.error(e); btn.disabled = false; btn.textContent = t("Send request", "Ohereza ubusabe");
-      err.textContent = t("Could not send the request. Check your internet connection and try again.", "Ntibyashobotse kohereza ubusabe. Reba internet wongere ugerageze."); err.hidden = false;
+      err.textContent = t("Could not send the request. Check your internet connection and try again.", "Ntibyashobotse kohereza ubusabe. Reba internet wongere ugerageze.") + (e && e.code ? " (" + e.code + ")" : ""); err.hidden = false;
     }
   };
   let editingServiceId = null, editingServiceImage = "";
@@ -3611,7 +3667,7 @@ function gdSavePdf(btn) {
   };
   window.gdPrintServiceReceipt = id => {
     const r = allServiceRequests.find(x => x.id === id); if (!r) return alert("Ubusabe ntibwabonetse.");
-    rcOpen({ id: r.id, name: r.name, phone: r.phone, rows: [{ d: r.serviceName || "Serivisi", q: 1, p: "" }], note: r.details || "" });
+    rcOpen({ id: r.id, name: r.name, phone: r.phone, rows: [{ d: r.serviceName || "Serivisi", q: 1, p: "" }], note: reqText(r) });
   };
   window.gdReceiptNew = () => rcOpen({ rows: [{}] });
 
