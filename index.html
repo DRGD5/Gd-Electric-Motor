@@ -1464,6 +1464,30 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 .od-act.od-main{grid-column:1/-1;border:0;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 12px 20px -10px rgba(37,99,235,.8);font-size:.92rem;padding:14px}
 .od-act.od-wa{background:rgba(37,211,102,.16);border-color:rgba(37,211,102,.55);color:#86efac}
 .od-act.od-del{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.5);color:#ff9a9a}
+
+/* ===== Request sent: clear action buttons ===== */
+#svcModal .sv-done{text-align:center;padding-top:36px}
+#svcModal .sv-done h2{margin:6px 0 4px;font-size:1.4rem}
+#svcModal .sv-done-p{margin:0 0 14px;color:#cfd6ff;line-height:1.55}
+#svcModal .sv-sum{display:grid;gap:8px;margin:0 0 14px;padding:14px;border-radius:20px;text-align:left;border:1px solid rgba(124,138,255,.3);background:linear-gradient(170deg,rgba(255,255,255,.08),rgba(255,255,255,.03))}
+#svcModal .sv-sum div{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding-bottom:8px;border-bottom:1px dashed #36418a}
+#svcModal .sv-sum small{color:#8e9ae0;font-weight:800;text-transform:uppercase;font-size:.68rem;letter-spacing:.6px}
+#svcModal .sv-sum b{color:#fff;text-align:right;overflow-wrap:anywhere}
+#svcModal .sv-sum img{width:100%;max-height:170px;object-fit:cover;border-radius:14px;border:1px solid #36418a}
+#svcModal .sv-next{margin:6px 2px 10px;font-weight:800;font-size:.9rem;color:#dfe5ff}
+#svcModal .sv-btns{display:grid;gap:10px}
+#svcModal .sv-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px 14px;border-radius:18px;border:0;font:inherit;font-size:1rem;font-weight:900;color:#fff;text-decoration:none;cursor:pointer;box-sizing:border-box}
+#svcModal .sv-btn.sv-wa{background:linear-gradient(135deg,#16a34a,#25d366);box-shadow:0 14px 24px -12px rgba(37,211,102,.8);color:#04210f}
+#svcModal .sv-btn.sv-call{background:linear-gradient(135deg,#2563eb,#06b6d4);box-shadow:0 14px 24px -12px rgba(37,99,235,.8)}
+#svcModal .sv-btn.sv-track{background:rgba(124,138,255,.16);border:1.5px solid rgba(124,138,255,.55);color:#dfe5ff}
+#svcModal .sv-btn.sv-ok{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.25)}
+
+/* ===== Admin service requests: card details ===== */
+.od-svc{display:flex;align-items:center;gap:8px;margin:12px 0 0 6px;padding:11px 14px;border-radius:16px;background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(239,68,68,.16));border:1px solid rgba(245,158,11,.45);color:#fff;font-size:.98rem}
+.od-note{margin:10px 0 0 6px;padding:11px 14px;border-radius:16px;background:rgba(255,255,255,.06);color:#dfe5ff;font-size:.92rem;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.od-photo{position:relative;display:block;margin:10px 0 0 6px;border-radius:18px;overflow:hidden;border:1px solid rgba(124,138,255,.35)}
+.od-photo img{display:block;width:100%;max-height:300px;object-fit:cover}
+.od-photo span{position:absolute;right:10px;bottom:10px;padding:6px 12px;border-radius:99px;background:rgba(0,0,0,.65);color:#fff;font-size:.76rem;font-weight:800}
 </style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
@@ -2743,18 +2767,25 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     updateAdminBadges(); if (window.gdPageRefresh) window.gdPageRefresh();
     const el = $("adminServiceRequests"); if (!el) return;
     const statuses = ["new", "processing", "ready", "done", "cancelled"];
-    el.innerHTML = allServiceRequests.length ? allServiceRequests.map(r => `
-      <div class="admin-row" data-st="${esc(r.status || "new")}" style="align-items:flex-start;flex-wrap:wrap">
-        <div class="cart-details"><strong>${esc(r.serviceName || "Service")}</strong>
-          <small>${esc(r.name || "")} · ${esc(r.phone || "")} · ${esc(r.email || "")} · ${new Date(r.createdAt || 0).toLocaleString()}</small>
-          ${reqText(r) ? `<p>${esc(reqText(r))}</p>` : ""}
-          ${reqPhoto(r) ? `<a href="${esc(reqPhoto(r))}" target="_blank" rel="noopener"><img class="req-img" src="${esc(thumb(reqPhoto(r), 420))}" alt="Moteri" loading="lazy"></a>` : ""}
-          <div style="font-weight:900"><span class="st-pill st-${esc(r.status || "new")}">${esc(statusLabel(r.status))}</span></div>
-          ${r.status !== "cancelled" ? `<div class="btns" style="margin-top:8px"><button class="primary" onclick="gdPrintServiceReceipt('${esc(r.id)}')">🧾 Receipt / Invoice</button>${isAdminUser(currentUser) ? `<button class="secondary danger-btn" onclick="adminDeleteServiceRequest(\'${esc(r.id)}\')">🗑️ Siba</button>` : ""}</div>` : ""}
-          ${r.cancelReason ? `<small>Impamvu: ${esc(r.cancelReason)}</small>` : ""}
-        </div>
-        <div class="btns" style="flex-wrap:wrap">${statuses.map(st => `<button class="secondary ${st === "cancelled" ? "danger-btn" : ""}" onclick="adminServiceRequestStatus('${esc(r.id)}','${st}')" ${r.status === st ? "disabled" : ""}>${esc(statusLabel(st))}</button>`).join("")}</div>
-      </div>`).join("") : '<p style="color:var(--muted)">Nta busabe bwa serivisi burahagera.</p>';
+    const ico = { new: "🆕", processing: "⚙️", ready: "📦", done: "✅", cancelled: "✖️" };
+    const waNum = ph => { let d = String(ph || "").replace(/\D/g, ""); if (d.startsWith("0")) d = "250" + d.slice(1); return d; };
+    el.innerHTML = allServiceRequests.length ? allServiceRequests.map(r => {
+      const st = r.status || "new", nm = String(r.name || "?").trim() || "?", id = esc(r.id), photo = reqPhoto(r);
+      return `<div class="od-card" data-st="${esc(st)}">
+        <div class="od-top"><div class="od-av">${esc(nm.charAt(0).toUpperCase())}</div>
+          <div class="od-who"><strong>${esc(nm)}</strong>${r.phone ? `<a class="od-tel" href="tel:${esc(r.phone)}">📞 ${esc(r.phone)}</a>` : ""}<small>${esc(r.email || "Guest")} · ${new Date(r.createdAt || 0).toLocaleString()}</small></div>
+          <span class="st-pill st-${esc(st)}">${ico[st] || ""} ${esc(statusLabel(st))}</span></div>
+        <div class="od-svc">🛠️ <b>${esc(r.serviceName || "Service")}</b></div>
+        ${reqText(r) ? `<div class="od-note">${esc(reqText(r))}</div>` : ""}
+        ${photo ? `<a class="od-photo" href="${esc(photo)}" target="_blank" rel="noopener"><img src="${esc(thumb(photo, 600))}" alt="Moteri" loading="lazy"><span>🔍 ${t("Open photo", "Fungura ifoto")}</span></a>` : ""}
+        ${r.cancelReason ? `<div class="od-reason">Impamvu: ${esc(r.cancelReason)}</div>` : ""}
+        <div class="od-cap">${t("Request status", "Uko ubusabe bugeze")}</div>
+        <div class="od-steps">${statuses.map(s2 => `<button type="button" class="od-chip od-${s2}${st === s2 ? " is-cur" : ""}" onclick="adminServiceRequestStatus('${id}','${s2}')" ${st === s2 ? "disabled" : ""}>${ico[s2]} ${esc(statusLabel(s2))}</button>`).join("")}</div>
+        <div class="od-acts">
+          ${st !== "cancelled" ? `<button type="button" class="od-act od-main" onclick="gdPrintServiceReceipt('${id}')">🧾 Receipt / Invoice</button>` : ""}
+          ${r.phone ? `<a class="od-act od-wa" href="https://wa.me/${waNum(r.phone)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : ""}
+          ${isAdminUser(currentUser) ? `<button type="button" class="od-act od-del" onclick="adminDeleteServiceRequest('${id}')">🗑️ ${t("Delete", "Siba")}</button>` : ""}
+        </div></div>`; }).join("") : '<p style="color:var(--muted)">Nta busabe bwa serivisi burahagera.</p>';
   }
 
 
@@ -2921,11 +2952,26 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       }
       try { localStorage.setItem("gdCustomer", JSON.stringify({ name: nm, phone: ph })); } catch (e) {}
       if (window.gdTrack) gdTrack("service_request", { service_name: m.dataset.svc });
-      m.innerHTML = `<div class="rc-sheet" style="text-align:center;padding-top:60px">
+      const prevSrc = ($("svcPrev") && $("svcThumb") && !$("svcThumb").hidden) ? $("svcPrev").src : "";
+      const rw = language === "rw", svcName = m.dataset.svc || "";
+      const waText = (rw ? "Muraho, nasabye serivisi: " : "Hello, I requested a service: ") + svcName + "\n" + (rw ? "Izina: " : "Name: ") + nm + "\n" + (rw ? "Telefoni: " : "Phone: ") + ph + (imageUrl ? "\n📷 " + imageUrl : "");
+      m.innerHTML = `<div class="rc-sheet sv-done">
         <div class="od-ic">✓</div>
         <h2>${t("Request received", "Ubusabe bwakiriwe")}</h2>
-        <p style="font-size:1.05rem;line-height:1.6">${t("Thank you, " + esc(nm) + "! You will be helped as soon as possible. We will contact you on " + esc(ph) + ".", "Murakoze, " + esc(nm) + "! Muzahabwa ubufasha vuba bishoboka. Tuzabahamagara kuri " + esc(ph) + ".")}</p>
-        <button type="button" class="primary" style="width:100%;margin-top:18px;padding:15px;border-radius:16px;background:linear-gradient(135deg,#2563eb,#25d6a0)" onclick="svcClose()">${t("OK", "Sawa")}</button>
+        <p class="sv-done-p">${t("Thank you, " + esc(nm) + "! You will be helped as soon as possible.", "Murakoze, " + esc(nm) + "! Muzahabwa ubufasha vuba bishoboka.")}</p>
+        <div class="sv-sum">
+          <div><small>${t("Service", "Serivisi")}</small><b>${esc(svcName)}</b></div>
+          <div><small>${t("Name", "Izina")}</small><b>${esc(nm)}</b></div>
+          <div><small>${t("Phone", "Telefoni")}</small><b>${esc(ph)}</b></div>
+          ${prevSrc ? `<img src="${esc(prevSrc)}" alt="">` : ""}
+        </div>
+        <div class="sv-next">${t("What next? Contact us now to be served faster:", "Ubutaha? Tuvugishe ubu kugira ngo ufashwe vuba:")}</div>
+        <div class="sv-btns">
+          <a class="sv-btn sv-wa" href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waText)}" target="_blank" rel="noopener">💬 ${t("Chat with us on WhatsApp", "Tuvugane kuri WhatsApp")}</a>
+          <a class="sv-btn sv-call" href="tel:+${WHATSAPP_NUMBER}">📞 ${t("Call us now", "Duhamagare ubu")}</a>
+          ${currentUser ? `<button type="button" class="sv-btn sv-track" onclick="svcClose();showView('account')">📋 ${t("View my requests", "Reba ubusabe bwanjye")}</button>` : ""}
+          <button type="button" class="sv-btn sv-ok" onclick="svcClose()">✓ ${t("OK, done", "Sawa, narangije")}</button>
+        </div>
       </div>`;
     } catch (e) {
       console.error(e); btn.disabled = false; btn.textContent = t("Send request", "Ohereza ubusabe");
