@@ -2945,6 +2945,12 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     catch (err) { alert("Byanze: " + (err.code || err.message)); }
   };
 
+  window.gdOpenReqs = window.gdOpenReqs || new Set();
+  window.gdToggleReq = id => {
+    const S = window.gdOpenReqs; const c = document.querySelector('#adminServiceRequests [data-rid="' + id + '"]');
+    if (S.has(id)) S.delete(id); else S.add(id);
+    if (c) c.classList.toggle("od-fold", !S.has(id));
+  };
   function renderAdminServiceRequests() {
     updateAdminBadges(); if (window.gdPageRefresh) window.gdPageRefresh();
     const el = $("adminServiceRequests"); if (!el) return;
@@ -2953,9 +2959,11 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const waNum = ph => { let d = String(ph || "").replace(/\D/g, ""); if (d.startsWith("0")) d = "250" + d.slice(1); return d; };
     el.innerHTML = allServiceRequests.length ? allServiceRequests.map(r => {
       const st = r.status || "new", nm = String(r.name || "?").trim() || "?", id = esc(r.id), photo = reqPhoto(r);
-      return `<div class="od-card" data-st="${esc(st)}">
-        <div class="od-top"><div class="od-av">${esc(nm.charAt(0).toUpperCase())}</div>
-          <div class="od-who"><strong>${esc(nm)}</strong>${r.phone ? `<a class="od-tel" href="tel:${esc(r.phone)}">📞 ${esc(r.phone)}</a>` : ""}<small>${esc(r.email || "Guest")} · ${new Date(r.createdAt || 0).toLocaleString()}</small></div>
+      const folded = !(window.gdOpenReqs && window.gdOpenReqs.has(r.id));
+      return `<div class="od-card${folded ? " od-fold" : ""}" data-st="${esc(st)}" data-rid="${id}">
+        <div class="od-top" onclick="gdToggleReq('${id}')"><div class="od-av">${esc(nm.charAt(0).toUpperCase())}</div>
+          <div class="od-who"><strong>${esc(nm)}</strong>${r.phone ? `<a class="od-tel" href="tel:${esc(r.phone)}" onclick="event.stopPropagation()">📞 ${esc(r.phone)}</a>` : ""}<small>${esc(r.email || "Guest")} · ${new Date(r.createdAt || 0).toLocaleString()}</small></div>
+          <div class="od-side"><span class="st-pill st-${esc(st)}">${ico[st] || ""} ${esc(statusLabel(st))}</span><span class="od-chev" aria-hidden="true">▾</span></div>
           </div>
         <div class="od-svc">🛠️ <b>${esc(r.serviceName || "Service")}</b></div>
         ${reqText(r) ? `<div class="od-note">${esc(reqText(r))}</div>` : ""}
@@ -4394,6 +4402,20 @@ function gdSavePdf(btn) {
 .gx-move button{flex:1;width:auto;margin:0;padding:9px 6px;border-radius:999px;border:1px solid color-mix(in srgb,var(--rc) 60%,transparent);background:rgba(255,255,255,.08);color:#fff;font-weight:900;font-size:.76rem}
 .gx-move button:first-child,.gx-move button:last-child{flex:1.7}
 .gx-move button:active{transform:scale(.95)}
+/* service requests: folded by default, tap name/number to open */
+#adminServiceRequests .od-top{cursor:pointer;-webkit-tap-highlight-color:transparent}
+#adminServiceRequests .od-side{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+#adminServiceRequests .od-chev{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:1rem;transition:transform .25s}
+#adminServiceRequests .od-card:not(.od-fold) .od-chev{transform:rotate(180deg);background:linear-gradient(135deg,#2563eb,#7c3aed)}
+#adminServiceRequests .od-card:not(.od-fold) .od-side .st-pill{display:none}
+#adminServiceRequests .od-card.od-fold .od-svc,#adminServiceRequests .od-card.od-fold .od-note,#adminServiceRequests .od-card.od-fold .od-photo,#adminServiceRequests .od-card.od-fold .od-reason,#adminServiceRequests .od-card.od-fold .od-cap,#adminServiceRequests .od-card.od-fold .od-steps,#adminServiceRequests .od-card.od-fold .od-acts{display:none}
+#adminServiceRequests .od-card.od-fold{padding-bottom:12px}
+/* service cards: tag + number above the photo so the photo is clean */
+.svc-pic:not(.svc-nopic){display:grid!important;grid-template-columns:1fr auto;align-items:center;background:#fff}
+.svc-pic:not(.svc-nopic)::after{display:none!important}
+.svc-pic:not(.svc-nopic) img{grid-column:1/-1;grid-row:2}
+.svc-pic:not(.svc-nopic) .svc-tag{position:static!important;grid-row:1;grid-column:1;justify-self:start;margin:8px 0 8px 10px}
+.svc-pic:not(.svc-nopic) .svc-num{position:static!important;grid-row:1;grid-column:2;margin:0 12px 0 0;color:var(--c1)!important;text-shadow:none!important;font-size:1.45rem!important}
 </style>
 </body>
 </html>
