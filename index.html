@@ -427,9 +427,10 @@
     .st-bar span { font-size:.78rem; margin-top:4px; opacity:.8; }
     .st-bar em { font-style:normal; font-size:.8rem; font-weight:800; margin-bottom:2px; }
     /* floating chat + phone buttons: stacked (no overlap) and only on the Home page */
-    #gdChatOpenBtn { bottom:205px !important; right:18px !important; }
     body[data-view]:not([data-view="home"]) .whatsapp-float,
-    body[data-view]:not([data-view="home"]) #gdChatOpenBtn { display:none !important; }
+    body[data-view]:not([data-view="home"]) #gdChatOpenBtn,
+    body[data-view]:not([data-view="home"]) .gd-dock,
+    body[data-view]:not([data-view="home"]) .gd-hint { display:none !important; }
     /* ---- open-your-shop card (Account page) ---- */
     .sp-hero { position:relative; overflow:hidden; margin:18px 0; padding:22px 18px; border-radius:26px; color:#fff; background:radial-gradient(120% 120% at 100% 0%,#4d8eff 0%,#1f57b8 45%,#0f2a4a 100%); border:1px solid rgba(255,255,255,.18); box-shadow:0 14px 36px rgba(47,112,224,.4); }
     .sp-hero::after { content:"🏪"; position:absolute; right:-6px; top:-14px; font-size:6.5rem; opacity:.12; }
@@ -453,11 +454,6 @@
     .sp-del { width:100%; margin-top:12px; padding:12px; border-radius:14px; border:1.5px solid #ef4444; background:rgba(239,68,68,.12); color:#fecaca; font-weight:800; }
     .sp-pill { display:inline-block; padding:3px 12px; border-radius:99px; font-size:.8rem; font-weight:900; }
     .sp-pill.ok { background:#16a34a; } .sp-pill.wait { background:#f59e0b; color:#1f1300; } .sp-pill.bad { background:#dc2626; }
-    /* ---- floating chat/phone buttons: only a small "head" peeks out; tap once to slide out ---- */
-    .whatsapp-float, #gdChatOpenBtn { width:50px !important; height:50px !important; font-size:1.4rem !important; right:0 !important; transform:translateX(58%) !important; opacity:.8; transition:transform .25s ease, opacity .25s ease; }
-    #gdChatOpenBtn { bottom:196px !important; }
-    .whatsapp-float { bottom:136px !important; }
-    .whatsapp-float.fab-open, #gdChatOpenBtn.fab-open { transform:translateX(-14px) !important; opacity:1; }
     /* ---- shorter hero on phones ---- */
     @media (max-width:650px) {
       .hero { margin:8px 10px 12px !important; }
@@ -1514,6 +1510,30 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 .od-photo{margin-top:8px}
 .od-photo img{max-height:140px}
 .od-reason{margin-top:8px;padding:8px 12px}
+
+/* ===== Help dock: clear labeled Chat + WhatsApp buttons with a guiding hint ===== */
+.gd-dock{position:fixed;right:10px;bottom:calc(150px + env(safe-area-inset-bottom,0px));z-index:10040;display:flex;flex-direction:column;align-items:center;gap:12px;animation:gdDockIn .6s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes gdDockIn{from{transform:translateX(90px);opacity:0}to{transform:none;opacity:1}}
+.gd-dock .gd-fab{position:relative!important;right:auto!important;bottom:auto!important;transform:none!important;opacity:1!important;width:66px!important;height:auto!important;border-radius:0!important;background:none!important;box-shadow:none!important;border:0;padding:0;display:flex!important;flex-direction:column;align-items:center;gap:4px;color:#fff;text-decoration:none;cursor:pointer;font-size:1rem!important;-webkit-tap-highlight-color:transparent}
+.gd-fab .ic{position:relative;display:grid;place-items:center;width:56px;height:56px;border-radius:50%;font-size:1.6rem;transition:transform .18s;box-shadow:0 12px 24px -8px rgba(32,102,223,.85),inset 0 0 0 2px rgba(255,255,255,.28)}
+.gd-fab:active .ic{transform:scale(.92)}
+.gd-fab .ic svg{width:26px;height:26px;fill:#fff}
+.gd-fab .lb{padding:3px 10px;border-radius:99px;background:rgba(9,12,32,.9);color:#fff;font-size:.68rem;font-weight:900;letter-spacing:.2px;white-space:nowrap;box-shadow:0 6px 12px -6px rgba(0,0,0,.6)}
+.gd-chat .ic{background:linear-gradient(135deg,#2563eb,#7c3aed)}
+.gd-wa .ic{background:linear-gradient(135deg,#16a34a,#25d366);box-shadow:0 12px 24px -8px rgba(37,211,102,.85),inset 0 0 0 2px rgba(255,255,255,.28)}
+.gd-fab .ic::before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid currentColor;opacity:0;animation:gdRing 2.4s ease-out infinite}
+.gd-chat .ic::before{color:#7c9bff}.gd-wa .ic::before{color:#4ade80;animation-delay:1.2s}
+@keyframes gdRing{0%{transform:scale(1);opacity:.75}100%{transform:scale(1.6);opacity:0}}
+.gd-online{position:absolute;right:0;top:0;width:13px;height:13px;border-radius:50%;background:#4ade80;border:2px solid #0b0f26}
+.gd-chat #gdChatDot{top:-2px;left:4px}
+.gd-hint{position:fixed;right:84px;bottom:calc(250px + env(safe-area-inset-bottom,0px));z-index:10041;max-width:min(240px,calc(100vw - 110px));padding:12px 34px 12px 14px;border-radius:18px 18px 4px 18px;background:#fff;color:#14214d;box-shadow:0 18px 40px -12px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:2px;cursor:pointer;animation:gdHintIn .45s cubic-bezier(.2,.9,.3,1.3) both}
+.gd-hint[hidden]{display:none}
+.gd-hint::after{content:"";position:absolute;right:-8px;bottom:18px;border:8px solid transparent;border-left-color:#fff;border-right:0}
+.gd-hint b{font-size:.92rem}.gd-hint span{font-size:.78rem;color:#4b5a8a;line-height:1.35}
+.gd-hint button{position:absolute;top:6px;right:8px;border:0;background:rgba(20,33,77,.08);color:#14214d;width:22px;height:22px;border-radius:50%;font-size:.65rem;font-weight:900;padding:0;cursor:pointer}
+@keyframes gdHintIn{from{transform:translateX(16px) scale(.9);opacity:0}to{transform:none;opacity:1}}
+.gd-chat-open .gd-dock,.gd-chat-open .gd-hint{display:none!important}
+@media (prefers-reduced-motion:reduce){.gd-fab .ic::before,.gd-dock,.gd-hint{animation:none}}
 </style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
@@ -1846,7 +1866,11 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 .gc-th-act button{padding:9px 12px;border:0;border-radius:99px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-weight:900;font-size:.78rem;white-space:nowrap;cursor:pointer}
 @media(max-width:480px){#gdChatPanel{right:8px;left:8px;width:auto;bottom:74px;height:calc(100dvh - 96px);border-radius:22px}}
 </style>
-<button type="button" id="gdChatOpenBtn" aria-label="Chat with GD Electric Motors" onclick="gdOpenChat()" style="position:fixed;right:18px;bottom:155px;z-index:10040;border:0;border-radius:50%;width:58px;height:58px;background:#2066df;color:white;font-size:25px;box-shadow:0 8px 24px #5420df66">💬<span id="gdChatDot" hidden></span></button>
+<div class="gd-dock" id="gdDock">
+  <button type="button" id="gdChatOpenBtn" class="gd-fab gd-chat" aria-label="Chat with GD Electric Motors" onclick="gdOpenChat()"><span class="ic">💬<i class="gd-online"></i></span><span class="lb">Chat</span><span id="gdChatDot" hidden></span></button>
+  <a href="#" class="whatsapp-float gd-fab gd-wa" aria-label="Twandikire kuri WhatsApp" onclick="contactWhatsApp();return false;"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/></svg></span><span class="lb">WhatsApp</span></a>
+</div>
+<div class="gd-hint" id="gdHint" hidden onclick="gdHintGo()"><b data-en="Need help? 👋" data-rw="Mukeneye ubufasha? 👋">Mukeneye ubufasha? 👋</b><span data-en="Chat with us or message us on WhatsApp. We reply fast!" data-rw="Tuganire cyangwa twandikire kuri WhatsApp. Tugusubiza vuba!">Tuganire cyangwa twandikire kuri WhatsApp. Tugusubiza vuba!</span><button type="button" aria-label="Funga" onclick="gdHintClose(event)">✕</button></div>
 <section id="gdChatPanel" hidden aria-label="Customer chat">
   <div id="gdChatHead"><div class="gc-av" id="gdChatAv">GD</div><div class="gc-who"><b id="gdChatTitle">GD Electric Motors</b><small id="gdChatSub"><i class="gc-on"></i> Dusubiza vuba bishoboka</small></div><button type="button" class="gc-x" onclick="gdCloseChat()" aria-label="Funga">✕</button></div>
   <div id="gdChatMessages"></div>
@@ -1858,7 +1882,6 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
   </form>
 </section>
 
-<a href="#" class="whatsapp-float" aria-label="Twandikire kuri WhatsApp" onclick="contactWhatsApp();return false;">☏</a>
 
 <nav class="bottom-nav" aria-label="Ibice by’ingenzi bya website">
   <button class="nav-item active" data-view="home" onclick="showView('home')"><span class="nav-icon">⌂</span><span data-en="Home" data-rw="Ahabanza">Home</span></button>
@@ -4167,19 +4190,22 @@ function gdSavePdf(btn) {
 
 <script>
 (function () {
-  var timer = null;
-  function fabs() { return document.querySelectorAll("#gdChatOpenBtn, .whatsapp-float"); }
-  function closeAll() { fabs().forEach(function (b) { b.classList.remove("fab-open"); }); }
-  document.addEventListener("click", function (e) {
-    var b = e.target.closest && e.target.closest("#gdChatOpenBtn, .whatsapp-float");
-    if (!b) { closeAll(); return; }
-    if (!b.classList.contains("fab-open")) {
-      e.preventDefault(); e.stopImmediatePropagation();
-      fabs().forEach(function (x) { x.classList.add("fab-open"); });
-      clearTimeout(timer); timer = setTimeout(closeAll, 4500);
-    } else { clearTimeout(timer); timer = setTimeout(closeAll, 800); }
-  }, true);
-  window.addEventListener("scroll", function () { if (document.querySelector(".fab-open")) closeAll(); }, { passive: true });
+  var hint = document.getElementById("gdHint"), shown = 0, interacted = false, t2;
+  function onHome() { var v = document.body.dataset.view; return !v || v === "home"; }
+  function panel() { return document.getElementById("gdChatPanel"); }
+  function hide() { if (hint) hint.hidden = true; }
+  function show() {
+    var p = panel();
+    if (!hint || interacted || shown >= 3 || !onHome() || (p && !p.hidden)) return;
+    hint.hidden = false; shown++; clearTimeout(t2); t2 = setTimeout(hide, 8000);
+  }
+  window.gdHintClose = function (e) { if (e && e.stopPropagation) e.stopPropagation(); interacted = true; hide(); try { sessionStorage.setItem("gdHintOff", "1"); } catch (x) {} };
+  window.gdHintGo = function () { interacted = true; hide(); if (window.gdOpenChat) window.gdOpenChat(); };
+  try { if (sessionStorage.getItem("gdHintOff")) interacted = true; } catch (x) {}
+  setTimeout(show, 4000); setTimeout(show, 45000); setTimeout(show, 100000);
+  document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest(".gd-dock")) { interacted = true; hide(); } }, true);
+  var p = panel();
+  if (p && window.MutationObserver) new MutationObserver(function () { document.body.classList.toggle("gd-chat-open", !p.hidden); if (!p.hidden) hide(); }).observe(p, { attributes: true, attributeFilter: ["hidden"] });
 })();
 </script>
 <dialog id="privDlg" style="max-width:640px;width:92%;background:#111526;color:#f7f5ff;border:1px solid #303a4b;border-radius:18px;padding:20px;line-height:1.6;max-height:85vh;overflow:auto">
