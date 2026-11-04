@@ -1799,7 +1799,13 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
           <div class="form-row"><label>Name (English)</label><input id="fNameEn" placeholder="Example: Water Pump"></div>
           <div class="form-row"><label>Ibisobanuro (Kinyarwanda)</label><textarea id="fDescRw"></textarea></div>
           <div class="form-row"><label>Description (English)</label><textarea id="fDescEn"></textarea></div>
-          <div class="form-row"><label>Icyiciro</label><select id="fCategory"></select></div>
+          <div class="form-row"><label>Icyiciro</label><select id="fCategory"></select>
+            <button type="button" class="secondary cat-add-toggle" onclick="gdToggleCatAdd()">➕ Ongeramo icyiciro gishya</button>
+            <div id="catAddBox" class="cat-add-box" hidden>
+              <div class="cat-add-row"><input id="newCatIcon" maxlength="4" placeholder="🔧" aria-label="Emoji"><input id="newCatName" maxlength="40" placeholder="Izina ry'icyiciro..." aria-label="Category name"></div>
+              <button type="button" class="primary" onclick="gdAddCategory()">💾 Bika icyiciro</button>
+              <div id="catCustomList" class="cat-custom-list"></div>
+            </div></div>
           <div class="form-row"><label>Igiciro (RWF)</label><input id="fPrice" type="number" min="0" inputmode="numeric" required></div>
           <div class="form-row"><label>Igiciro cya kera (RWF), si ngombwa</label><input id="fOldPrice" type="number" min="0" inputmode="numeric"></div>
           <div class="form-row"><label>Uko bimeze</label><select id="fStatus"><option value="available">Birahari</option><option value="out">Byashize</option></select></div>
@@ -2885,6 +2891,12 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     window.gdChatAutosize = auto;
   })();
 
+  window.gdOpenOrders = window.gdOpenOrders || new Set();
+  window.gdToggleOrder = id => {
+    const S = window.gdOpenOrders; const c = document.querySelector('#adminOrders [data-oid="' + id + '"]');
+    if (S.has(id)) S.delete(id); else S.add(id);
+    if (c) c.classList.toggle("od-fold", !S.has(id));
+  };
   function renderAdminOrders() {
     updateAdminBadges(); if (window.gdPageRefresh) window.gdPageRefresh();
     const el = $("adminOrders"); if (!el) return;
@@ -2893,9 +2905,11 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const waNum = ph => { let d = String(ph || "").replace(/\D/g, ""); if (d.startsWith("0")) d = "250" + d.slice(1); return d; };
     el.innerHTML = allOrders.length ? allOrders.map(o => {
       const st = o.status || "new", nm = String(o.name || "?").trim() || "?", id = esc(o.id);
-      return `<div class="od-card" data-st="${esc(st)}">
-        <div class="od-top"><div class="od-av">${esc(nm.charAt(0).toUpperCase())}</div>
-          <div class="od-who"><strong>${esc(nm)}</strong>${o.phone ? `<a class="od-tel" href="tel:${esc(o.phone)}">📞 ${esc(o.phone)}</a>` : ""}<small>${esc(o.email || "Guest order")} · ${new Date(o.createdAt || 0).toLocaleString()}</small></div>
+      const folded = !(window.gdOpenOrders && window.gdOpenOrders.has(o.id));
+      return `<div class="od-card${folded ? " od-fold" : ""}" data-st="${esc(st)}" data-oid="${id}">
+        <div class="od-top" onclick="gdToggleOrder('${id}')"><div class="od-av">${esc(nm.charAt(0).toUpperCase())}</div>
+          <div class="od-who"><strong>${esc(nm)}</strong>${o.phone ? `<a class="od-tel" href="tel:${esc(o.phone)}" onclick="event.stopPropagation()">📞 ${esc(o.phone)}</a>` : ""}<small>${esc(o.email || "Guest order")} · ${new Date(o.createdAt || 0).toLocaleString()}</small></div>
+          <div class="od-side"><span class="st-pill st-${esc(st)}">${ico[st] || ""} ${esc(statusLabel(st))}</span><span class="od-chev" aria-hidden="true">▾</span></div>
           </div>
         <div class="od-items">${(o.items || []).map(i => `<div class="od-it"><span>${esc(i.name)}</span><b>× ${Number(i.qty)}</b></div>`).join("")}</div>
         <div class="od-total"><span>${t("Total", "Igiteranyo")}</span><b>${money(o.total || 0)}</b></div>
@@ -3234,8 +3248,16 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   };
   // ----- custom website sections -----
   let customSections = [], editingSectionId = null, editingSectionImage = "", editingSectionImage2 = "";
+  let customCats = [], wantCat = null;
+  const BASE_CATS_N = 4;
   onSnapshot(collection(db, "sections"), snap => {
-    customSections = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+    const allSecs = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+    customCats = allSecs.filter(v => v.kind === "category");
+    customSections = allSecs.filter(v => v.kind !== "category");
+    categories.splice(BASE_CATS_N);
+    customCats.forEach(c => categories.push({ id: "c_" + c.id, en: c.name || "", rw: c.name || "", icon: c.icon || "📦", custom: true, docId: c.id }));
+    try { fillCategories(); } catch (e) {}
+    try { renderHome(); renderCategories(); } catch (e) {}
     renderCustomSections(); renderAdminSections(); renderHeroSlides(); renderBannerAdmin(); renderWorks();
   }, err => console.error("Sections:", err));
   function secLink(raw) {
@@ -3938,9 +3960,33 @@ function gdSavePdf(btn) {
 
   // ----- admin form -----
   function fillCategories() {
-    $("fCategory").innerHTML = categories.map(c => `<option value="${c.id}">${c.icon} ${esc(c.rw)}</option>`).join("");
+    const sel = $("fCategory"); if (!sel) return;
+    const cur = wantCat || sel.value;
+    sel.innerHTML = categories.map(c => `<option value="${esc(c.id)}">${c.icon} ${esc(c.rw)}</option>`).join("");
+    if (cur && categories.some(c => c.id === cur)) { sel.value = cur; if (cur === wantCat) wantCat = null; }
+    const box = $("catCustomList");
+    if (box) box.innerHTML = categories.filter(c => c.custom).map(c => `<span class="cat-chip">${c.icon} ${esc(c.rw)} <button type="button" aria-label="Siba" onclick="gdDeleteCategory('${esc(c.docId)}')">✕</button></span>`).join("");
   }
   fillCategories();
+  window.gdToggleCatAdd = () => { const b = $("catAddBox"); if (b) { b.hidden = !b.hidden; if (!b.hidden) { const i = $("newCatName"); if (i) i.focus(); } } };
+  window.gdAddCategory = async () => {
+    const name = ($("newCatName").value || "").trim(), icon = ($("newCatIcon").value || "").trim() || "📦";
+    if (!name) { alert(t("Type the category name.", "Andika izina ry'icyiciro.")); return; }
+    if (categories.some(c => [c.en, c.rw].some(x => String(x).toLowerCase() === name.toLowerCase()))) { alert(t("This category already exists.", "Iki cyiciro gisanzwe gihari.")); return; }
+    try {
+      const ref = doc(collection(db, "sections"));
+      wantCat = "c_" + ref.id;
+      await setDoc(ref, { kind: "category", name, icon, createdAt: Date.now() });
+      $("newCatName").value = ""; $("newCatIcon").value = "";
+      const b = $("catAddBox"); if (b) b.hidden = true;
+    } catch (err) { wantCat = null; alert(t("Failed: ", "Byanze: ") + (err.code || err.message)); }
+  };
+  window.gdDeleteCategory = async docId => {
+    const id = "c_" + docId;
+    if (products.some(p => p.category === id)) { alert(t("Some products use this category. Move them first.", "Hari ibicuruzwa bikoresha iki cyiciro. Babanze ubihindurire.")); return; }
+    if (!confirm(t("Delete this category?", "Wifuza gusiba iki cyiciro?"))) return;
+    try { await deleteDoc(doc(db, "sections", docId)); } catch (err) { alert(t("Failed: ", "Byanze: ") + (err.code || err.message)); }
+  };
 
   function renderGalleryEditor() {
     const box = $("fGalleryList"); if (!box) return;
@@ -4416,6 +4462,22 @@ function gdSavePdf(btn) {
 .svc-pic:not(.svc-nopic) img{grid-column:1/-1;grid-row:2}
 .svc-pic:not(.svc-nopic) .svc-tag{position:static!important;grid-row:1;grid-column:1;justify-self:start;margin:8px 0 8px 10px}
 .svc-pic:not(.svc-nopic) .svc-num{position:static!important;grid-row:1;grid-column:2;margin:0 12px 0 0;color:var(--c1)!important;text-shadow:none!important;font-size:1.45rem!important}
+
+/* orders: folded by default, tap name/number to open */
+#adminOrders .od-top{cursor:pointer;-webkit-tap-highlight-color:transparent}
+#adminOrders .od-side{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+#adminOrders .od-chev{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:1rem;transition:transform .25s}
+#adminOrders .od-card:not(.od-fold) .od-chev{transform:rotate(180deg);background:linear-gradient(135deg,#2563eb,#7c3aed)}
+#adminOrders .od-card:not(.od-fold) .od-side .st-pill{display:none}
+#adminOrders .od-card.od-fold .od-items,#adminOrders .od-card.od-fold .od-total,#adminOrders .od-card.od-fold .od-reason,#adminOrders .od-card.od-fold .od-cap,#adminOrders .od-card.od-fold .od-steps,#adminOrders .od-card.od-fold .od-acts{display:none}
+#adminOrders .od-card.od-fold{padding-bottom:12px}
+/* add category */
+.cat-add-toggle{margin-top:10px;width:100%}
+.cat-add-box{margin-top:10px;display:grid;gap:10px}
+.cat-add-row{display:grid;grid-template-columns:70px 1fr;gap:8px}
+.cat-custom-list{display:flex;flex-wrap:wrap;gap:8px}
+.cat-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 6px 6px 12px;border-radius:999px;background:rgba(20,184,166,.18);border:1px solid rgba(20,184,166,.55);font-weight:800;font-size:.85rem}
+.cat-chip button{width:24px;height:24px;border-radius:50%;border:0;background:rgba(255,255,255,.18);color:inherit;font-size:.75rem;line-height:1;padding:0}
 </style>
 </body>
 </html>
