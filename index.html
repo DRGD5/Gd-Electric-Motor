@@ -2973,12 +2973,12 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
 
   // ----- services -----
   const REWIND_IMG = "img-rewinding.webp";
-  let services = [], hiddenServiceIds = [];
+  let services = [], hiddenServiceIds = [], svcOrder = [];
   let svcShopItemIds = [], hiddenSlideIds = [];
   async function saveHidden(patch) { await setDoc(doc(db, "settings", "hidden"), patch, { merge: true }); }
   onSnapshot(doc(db, "settings", "hidden"), snap => {
     const d = snap.exists() ? snap.data() : {};
-    hiddenSampleIds = (d.products || []).map(Number); hiddenServiceIds = d.services || []; svcShopItemIds = (d.shopItems || []).map(String); hiddenSlideIds = (d.slides || []).map(String);
+    hiddenSampleIds = (d.products || []).map(Number); hiddenServiceIds = d.services || []; svcOrder = (d.svcOrder || []).map(String); svcShopItemIds = (d.shopItems || []).map(String); hiddenSlideIds = (d.slides || []).map(String);
     setProducts(dbList); renderServices(); renderAdminShopItems(); renderAdminServices(); renderAdminList(); renderHeroSlides(); renderBannerAdmin();
   }, err => console.error("Settings:", err));
   onSnapshot(collection(db, "services"), snap => {
@@ -2987,11 +2987,16 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     window.gdSvcLoaded = true;
     renderServices(); renderAdminServices();
   }, err => { console.error("Services:", err); window.gdSvcLoaded = true; renderServices(); });
+  function svcOrdered(list) {
+    if (!svcOrder.length) return list;
+    const pos = id => { const k = svcOrder.indexOf(String(id)); return k < 0 ? 1e6 : k; };
+    return list.map((v, i) => [v, i]).sort((a, b) => (pos(a[0].id) - pos(b[0].id)) || (a[1] - b[1])).map(x => x[0]);
+  }
   function serviceList() {
     const base = hiddenServiceIds.includes("default") ? [] : [{ id: "default", img: REWIND_IMG,
       name: t("Motor rewinding", "Gusubiza amashanyarazi muri moteri (Rewinding)"),
       desc: t("We rewind burnt or faulty electric motors. Bring your motor or message us on WhatsApp.", "Dusubiza amashanyarazi (rewinding) muri moteri zahiye cyangwa zitagikora. Twandikire kuri WhatsApp cyangwa utuzanire moteri yawe.") }];
-    return [...base, ...services];
+    return svcOrdered([...base, ...services]);
   }
   // Items the admin chose (from customer shops) are shown inside "Our services" - no need to add them again.
   function svcShopCards() {
@@ -3165,9 +3170,20 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     renderWsOverview();
     const el = $("adminServices"); if (!el) return;
     const defHidden = hiddenServiceIds.includes("default");
-    const defRow = `<div class="admin-row gx-row" style="--rc:#10b981;--rc2:#14b8a6"><div class="gx-th">⚙️</div><div class="gx-info"><strong>Gusubiza amashanyarazi muri moteri (Rewinding)</strong><span class="gx-tag">${defHidden ? "Yahishwe" : "Iy'ibanze"}</span></div><div class="gx-btns"><button type="button" class="${defHidden ? "gx-rest" : "gx-del"}" onclick="adminToggleDefaultService()">${defHidden ? "↩️ Subiza" : "🗑️ Siba"}</button></div></div>`;
-    el.innerHTML = defRow + services.map(v => `<div class="admin-row gx-row" style="--rc:#f97316;--rc2:#ef4444"><div class="gx-th">${v.imageUrl ? `<img src="${esc(thumb(v.imageUrl, 160))}" alt="" loading="lazy">` : "🛠️"}</div><div class="gx-info"><strong>${esc(v.name)}</strong>${v.desc ? `<small>${esc(v.desc)}</small>` : ""}</div><div class="gx-btns"><button type="button" class="gx-edit" onclick="adminEditService('${esc(v.id)}')">✏️ Hindura</button><button type="button" class="gx-del" onclick="adminDeleteService('${esc(v.id)}')">🗑️ Siba</button></div></div>`).join("");
+    const mv = id => `<div class="gx-move"><button type="button" onclick="adminMoveService('${id}','first')">⏫ Mbere</button><button type="button" onclick="adminMoveService('${id}','up')">⬆️</button><button type="button" onclick="adminMoveService('${id}','down')">⬇️</button><button type="button" onclick="adminMoveService('${id}','last')">⏬ Inyuma</button></div>`;
+    const defRow = `<div class="admin-row gx-row" style="--rc:#10b981;--rc2:#14b8a6"><div class="gx-th">⚙️</div><div class="gx-info"><strong>Gusubiza amashanyarazi muri moteri (Rewinding)</strong><span class="gx-tag">${defHidden ? "Yahishwe" : "Iy'ibanze"}</span></div><div class="gx-btns"><button type="button" class="${defHidden ? "gx-rest" : "gx-del"}" onclick="adminToggleDefaultService()">${defHidden ? "↩️ Subiza" : "🗑️ Siba"}</button></div>${mv("default")}</div>`;
+    const rowOf = v => v.id === "default" ? defRow : `<div class="admin-row gx-row" style="--rc:#f97316;--rc2:#ef4444"><div class="gx-th">${v.imageUrl ? `<img src="${esc(thumb(v.imageUrl, 160))}" alt="" loading="lazy">` : "🛠️"}</div><div class="gx-info"><strong>${esc(v.name)}</strong>${v.desc ? `<small>${esc(v.desc)}</small>` : ""}</div><div class="gx-btns"><button type="button" class="gx-edit" onclick="adminEditService('${esc(v.id)}')">✏️ Hindura</button><button type="button" class="gx-del" onclick="adminDeleteService('${esc(v.id)}')">🗑️ Siba</button></div>${mv(esc(v.id))}</div>`;
+    el.innerHTML = svcOrdered([{ id: "default" }, ...services]).map(rowOf).join("");
   }
+  window.adminMoveService = async (id, where) => {
+    const ids = svcOrdered([{ id: "default" }, ...services]).map(v => String(v.id));
+    const i = ids.indexOf(String(id)); if (i < 0) return;
+    ids.splice(i, 1);
+    const j = where === "first" ? 0 : where === "last" ? ids.length : where === "up" ? Math.max(0, i - 1) : Math.min(ids.length, i + 1);
+    ids.splice(j, 0, String(id));
+    try { await saveHidden({ svcOrder: ids }); try { gdToast("✅ Serivisi yimuwe."); } catch (e) {} }
+    catch (err) { alert("Byanze: " + (err.code || err.message)); }
+  };
   window.adminEditService = id => {
     const v = services.find(x => x.id === id); if (!v) return;
     editingServiceId = id; editingServiceImage = v.imageUrl || "";
@@ -4374,6 +4390,10 @@ function gdSavePdf(btn) {
 .work-ba figure{background:#fff}
 .hb-img img{background:#fff!important}
 .pd-img img{background:#fff}
+.gx-move{flex:1 1 100%;display:flex;gap:6px}
+.gx-move button{flex:1;width:auto;margin:0;padding:9px 6px;border-radius:999px;border:1px solid color-mix(in srgb,var(--rc) 60%,transparent);background:rgba(255,255,255,.08);color:#fff;font-weight:900;font-size:.76rem}
+.gx-move button:first-child,.gx-move button:last-child{flex:1.7}
+.gx-move button:active{transform:scale(.95)}
 </style>
 </body>
 </html>
