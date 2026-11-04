@@ -1797,15 +1797,66 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 </main>
 
 <style>
-#gdChatPanel{position:fixed;right:14px;bottom:88px;width:min(360px,calc(100vw - 28px));height:min(480px,65vh);z-index:10050;background:#111426;color:#f4f4ff;border:1px solid #333d4e;border-radius:18px;box-shadow:0 12px 40px #0006;display:flex;flex-direction:column;overflow:hidden}
-#gdChatPanel[hidden]{display:none}#gdChatHead{padding:13px;background:#2066df;display:flex;justify-content:space-between;align-items:center;font-weight:800}
-#gdChatMessages{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
-.gd-chat-msg{padding:9px 11px;border-radius:12px;background:#22253a;max-width:88%;overflow-wrap:anywhere;align-self:flex-start}.gd-chat-msg.mine{align-self:flex-end;background:#2066df}.gd-chat-msg small{display:block;opacity:.7;font-size:10px;margin-top:4px}
-#gdChatForm{display:flex;gap:6px;padding:9px;border-top:1px solid #33364b}#gdChatInput{flex:1;min-width:0;background:#090b17;color:white;border:1px solid #333d4e;border-radius:10px;padding:10px}#gdChatForm button{background:#2066df;color:white;border:0;border-radius:10px;padding:10px;font-weight:bold}
-.gd-chat-thread{padding:10px;border-bottom:1px solid #33364b;display:flex;justify-content:space-between;gap:10px;align-items:center}.gd-chat-thread button{background:#2066df;color:white;border:0;border-radius:9px;padding:8px}
+#gdChatPanel{position:fixed;right:12px;bottom:84px;width:min(380px,calc(100vw - 24px));height:min(580px,calc(100dvh - 110px));z-index:10050;background:#0e1230;color:#f4f4ff;border:1px solid rgba(124,138,255,.3);border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.55);display:flex;flex-direction:column;overflow:hidden}
+#gdChatPanel[hidden]{display:none}
+#gdChatHead{display:flex;align-items:center;gap:11px;padding:12px 14px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);color:#fff}
+.gc-av{flex:0 0 42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:.95rem;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.5)}
+.gc-who{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
+.gc-who b{font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gc-who small{font-size:.74rem;opacity:.92;font-weight:700;display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gc-on{display:inline-block;flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,.3)}
+.gc-x{background:rgba(255,255,255,.18);border:0;color:#fff;width:34px;height:34px;border-radius:50%;font-size:1rem;cursor:pointer}
+#gdChatMessages{flex:1;overflow:auto;padding:14px 12px;display:flex;flex-direction:column;gap:6px;background:radial-gradient(120% 60% at 100% 0%,rgba(124,58,237,.14),transparent 60%),#0b0f26}
+.gc-day{text-align:center;margin:6px 0}.gc-day span{display:inline-block;padding:3px 12px;border-radius:99px;background:rgba(255,255,255,.08);color:#9aa6e8;font-size:.7rem;font-weight:800}
+.gc-row{display:flex}.gc-row.mine{justify-content:flex-end}
+.gc-msg{max-width:82%;padding:8px 11px 5px;border-radius:18px 18px 18px 5px;background:#1c2250;color:#eef1ff;overflow-wrap:anywhere;box-shadow:0 6px 12px -8px rgba(0,0,0,.7)}
+.gc-msg.mine{border-radius:18px 18px 5px 18px;background:linear-gradient(135deg,#2563eb,#6d4aff);color:#fff}
+.gc-name{display:block;font-size:.7rem;color:#8fb4ff;margin-bottom:2px}.gc-msg.mine .gc-name{color:#d6e0ff}
+.gc-t{white-space:pre-wrap;line-height:1.4;font-size:.94rem}.gc-t a{color:#7dd3fc;text-decoration:underline}.gc-msg.mine .gc-t a{color:#fff}
+.gc-img{display:block;max-width:100%;width:230px;max-height:240px;object-fit:cover;border-radius:12px;margin:2px 0 4px}
+.gc-time{display:block;text-align:right;font-size:.64rem;opacity:.7;margin-top:2px}
+.gc-empty{margin:auto;text-align:center;padding:20px;max-width:260px}
+.gc-empty-av{width:64px;height:64px;margin:0 auto 8px;display:grid;place-items:center;border-radius:50%;font-weight:900;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 14px 26px -10px rgba(37,99,235,.8)}
+.gc-empty b{font-size:1.15rem}.gc-empty p{margin:6px 0 0;color:#9aa6e8;font-size:.88rem;line-height:1.45}
+.gc-login{margin:auto;text-align:center;padding:18px;display:grid;gap:10px;max-width:280px}.gc-login-ic{font-size:2.6rem}.gc-login p{margin:0;color:#9aa6e8;font-size:.86rem;line-height:1.45}
+.gc-btn{padding:13px 14px;border:0;border-radius:16px;font-weight:900;font-size:.92rem;color:#fff;cursor:pointer;background:linear-gradient(135deg,#2563eb,#7c3aed)}.gc-btn.gc-wa{background:linear-gradient(135deg,#16a34a,#25d366);color:#04210f}
+#gdChatQuick{display:flex;gap:6px;overflow-x:auto;padding:8px 10px 2px;background:#0b0f26;scrollbar-width:none}#gdChatQuick::-webkit-scrollbar{display:none}
+#gdChatQuick button{flex:0 0 auto;padding:7px 12px;border-radius:99px;border:1px solid rgba(124,138,255,.45);background:rgba(124,138,255,.12);color:#dfe5ff;font-weight:800;font-size:.76rem;white-space:nowrap;cursor:pointer}
+#gdChatForm{display:flex;align-items:flex-end;gap:8px;padding:10px;background:#0b0f26;border-top:1px solid rgba(124,138,255,.2)}
+.gc-attach{flex:0 0 40px;height:40px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.08);font-size:1.1rem;cursor:pointer}
+.gc-field{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+#gdChatPrevWrap{position:relative;width:64px}#gdChatPrevWrap[hidden]{display:none}
+#gdChatPrevWrap img{display:block;width:64px;height:64px;object-fit:cover;border-radius:12px;border:2px solid #f59e0b}
+#gdChatPrevWrap button{position:absolute;top:-7px;right:-7px;width:22px;height:22px;border-radius:50%;border:0;background:#ef4444;color:#fff;font-size:.62rem;font-weight:900;padding:0}
+#gdChatInput{width:100%;box-sizing:border-box;resize:none;max-height:110px;min-height:40px;background:#050817;color:#fff;border:1.5px solid #2f3a7a;border-radius:20px;padding:10px 14px;font:inherit;font-size:.95rem;line-height:1.35}
+#gdChatInput:focus{outline:0;border-color:#5b8cff;box-shadow:0 0 0 3px rgba(91,140,255,.2)}
+.gc-send{flex:0 0 42px;height:42px;border:0;border-radius:50%;background:linear-gradient(135deg,#2563eb,#25d6a0);color:#fff;font-size:1.05rem;cursor:pointer;box-shadow:0 10px 18px -8px rgba(37,214,160,.7)}.gc-send:disabled{opacity:.6}
+#gdChatPanel.gc-locked #gdChatForm,#gdChatPanel.gc-locked #gdChatQuick{display:none}
+#gdChatDot{position:absolute;top:-2px;left:-2px;width:16px;height:16px;border-radius:50%;background:#ef4444;border:2px solid #fff;animation:gcPulse 1.6s infinite}#gdChatDot[hidden]{display:none}
+@keyframes gcPulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,.7)}70%{box-shadow:0 0 0 10px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+.gc-th{display:flex;align-items:center;gap:12px;padding:12px;margin:0 0 10px;border-radius:20px;border:1px solid rgba(124,138,255,.25);background:linear-gradient(170deg,#161c3d,#0e1230);color:#fff}
+.gc-th.unread{border-color:rgba(59,130,246,.8);box-shadow:0 0 0 1px rgba(59,130,246,.4),0 14px 24px -16px rgba(37,99,235,.8)}
+.gc-th-av{flex:0 0 44px;height:44px;border-radius:15px;display:grid;place-items:center;font-weight:900;font-size:1.15rem;background:linear-gradient(135deg,#2563eb,#7c3aed)}
+.gc-th-info{flex:1;min-width:0}.gc-th-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.gc-th-top strong{font-size:.98rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gc-th-top small{color:#8e9ae0;font-size:.7rem;white-space:nowrap}
+.gc-th-sub{color:#7dd3fc;font-size:.76rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gc-th-last{color:#c9d2ff;font-size:.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}.gc-th.unread .gc-th-last{color:#fff;font-weight:800}
+.gc-th-act{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.gc-new{padding:2px 9px;border-radius:99px;background:#3b82f6;color:#fff;font-size:.66rem;font-weight:900}
+.gc-th-act button{padding:9px 12px;border:0;border-radius:99px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;font-weight:900;font-size:.78rem;white-space:nowrap;cursor:pointer}
+@media(max-width:480px){#gdChatPanel{right:8px;left:8px;width:auto;bottom:74px;height:calc(100dvh - 96px);border-radius:22px}}
 </style>
-<button type="button" id="gdChatOpenBtn" aria-label="Chat with GD Electric Motors" onclick="gdOpenChat()" style="position:fixed;right:18px;bottom:155px;z-index:10040;border:0;border-radius:50%;width:58px;height:58px;background:#2066df;color:white;font-size:25px;box-shadow:0 8px 24px #5420df66">💬</button>
-<section id="gdChatPanel" hidden aria-label="Customer chat"><div id="gdChatHead"><span id="gdChatTitle">Chat na GD Electric Motors</span><button type="button" onclick="gdCloseChat()" style="background:transparent;color:white;border:0;font-size:22px">×</button></div><div id="gdChatMessages"><p>Muraho! Andika ubutumwa bwawe hano.</p></div><form id="gdChatForm" onsubmit="gdSendChat(event)"><input id="gdChatInput" maxlength="1500" placeholder="Andika ubutumwa..." required><button type="submit">Ohereza</button></form></section>
+<button type="button" id="gdChatOpenBtn" aria-label="Chat with GD Electric Motors" onclick="gdOpenChat()" style="position:fixed;right:18px;bottom:155px;z-index:10040;border:0;border-radius:50%;width:58px;height:58px;background:#2066df;color:white;font-size:25px;box-shadow:0 8px 24px #5420df66">💬<span id="gdChatDot" hidden></span></button>
+<section id="gdChatPanel" hidden aria-label="Customer chat">
+  <div id="gdChatHead"><div class="gc-av" id="gdChatAv">GD</div><div class="gc-who"><b id="gdChatTitle">GD Electric Motors</b><small id="gdChatSub"><i class="gc-on"></i> Dusubiza vuba bishoboka</small></div><button type="button" class="gc-x" onclick="gdCloseChat()" aria-label="Funga">✕</button></div>
+  <div id="gdChatMessages"></div>
+  <div id="gdChatQuick"></div>
+  <form id="gdChatForm" onsubmit="gdSendChat(event)">
+    <label class="gc-attach" for="gdChatFile" title="Ohereza ifoto">📎</label><input id="gdChatFile" type="file" accept="image/*" hidden onchange="gdChatPick(this)">
+    <div class="gc-field"><div id="gdChatPrevWrap" hidden><img id="gdChatPrev" alt=""><button type="button" onclick="gdChatClearPhoto()" aria-label="Kuraho ifoto">✕</button></div><textarea id="gdChatInput" rows="1" maxlength="1500" placeholder="Andika ubutumwa..."></textarea></div>
+    <button type="submit" class="gc-send" id="gdChatSend" aria-label="Ohereza">➤</button>
+  </form>
+</section>
 
 <a href="#" class="whatsapp-float" aria-label="Twandikire kuri WhatsApp" onclick="contactWhatsApp();return false;">☏</a>
 
@@ -2686,48 +2737,130 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   }
   window.updateAdminBadges = updateAdminBadges;
   // ----- customer / admin live chat -----
-  let activeChatId = null, activeChatAdmin = false, unsubChatMessages = null, chatThreads = [];
+  let activeChatId = null, activeChatAdmin = false, unsubChatMessages = null, chatThreads = [], chatPhoto = null, unsubChatUnread = null;
+  const CHAT_QUICK_CUSTOMER = [["💰 Igiciro", "Muraho, ndashaka kumenya igiciro cya "], ["🔧 Gusana moteri", "Muraho, ndashaka gusana moteri yanjye. "], ["🌀 Rewinding", "Muraho, ndashaka rewinding ya moteri. "], ["📍 Aho muherereye", "Muraho, mukorera he? "], ["🛒 Gutumiza", "Muraho, ndashaka gutumiza igicuruzwa. "]];
+  const CHAT_QUICK_ADMIN = [["🙏 Murakoze", "Murakoze kutwandikira! Tugiye kubisuzuma tukubwire."], ["📷 Ifoto", "Mwatwoherereza ifoto ya moteri cyangwa y'igicuruzwa?"], ["💰 Igiciro", "Igiciro ni  RWF."], ["✅ Yiteguye", "Moteri yawe yiteguye, mwaza kuyifata."], ["📞 Duhamagare", "Mwaduhamagara kuri +" + WHATSAPP_NUMBER + " tukavugana."]];
+  const CHAT_IMG_RE = /\n?📷 (https?:\/\/\S+)/;
+  const chatLinkify = txt => esc(txt).replace(/(https?:\/\/[^\s<]+)/g, u => `<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
+  const chatTime = ts => ts ? new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
+  const chatDayLabel = ts => { const d = new Date(ts || 0), n = new Date(), y = new Date(n.getTime() - 864e5); return d.toDateString() === n.toDateString() ? t("Today", "Uyu munsi") : d.toDateString() === y.toDateString() ? t("Yesterday", "Ejo") : d.toLocaleDateString(); };
+  const chatSeenGet = k => { try { return Number(localStorage.getItem(k)) || 0; } catch (e) { return 0; } };
+  const chatSeenSet = k => { try { localStorage.setItem(k, String(Date.now())); } catch (e) { /* ignore */ } };
+  const chatAgo = ts => { if (!ts) return ""; const m = Math.floor((Date.now() - ts) / 60000); if (m < 1) return t("now", "ubu"); if (m < 60) return m + " min"; const h = Math.floor(m / 60); return h < 24 ? h + " h" : new Date(ts).toLocaleDateString(); };
+  const chatUnreadAdmin = c => c.lastSenderRole === "customer" && (c.updatedAt || 0) > chatSeenGet("gdChatSeenA:" + c.id);
   function stopChatMessages() { if (unsubChatMessages) { unsubChatMessages(); unsubChatMessages = null; } }
+  function renderChatQuick() {
+    const el = $("gdChatQuick"); if (!el) return;
+    const arr = activeChatAdmin ? CHAT_QUICK_ADMIN : CHAT_QUICK_CUSTOMER;
+    el.innerHTML = arr.map((q, i) => `<button type="button" onclick="gdChatFill(${i})">${esc(q[0])}</button>`).join("");
+  }
+  window.gdChatFill = i => {
+    const arr = activeChatAdmin ? CHAT_QUICK_ADMIN : CHAT_QUICK_CUSTOMER, inp = $("gdChatInput"); if (!inp || !arr[i]) return;
+    inp.value = arr[i][1]; if (window.gdChatAutosize) window.gdChatAutosize(); inp.focus();
+  };
   function renderChatMessages(list) {
     const box = $("gdChatMessages"); if (!box) return;
-    box.innerHTML = list.length ? list.map(m => `<div class="gd-chat-msg ${(activeChatAdmin ? m.senderRole === "admin" : m.senderId === (currentUser && currentUser.uid)) ? "mine" : ""}">${esc(m.text || "")}<small>${esc(m.senderName || (m.senderRole === "admin" ? "GD Electric Motors" : "Umukiriya"))}${activeChatAdmin && m.staffName ? " (" + esc(m.staffName) + ")" : ""} · ${m.createdAt ? new Date(m.createdAt).toLocaleString() : ""}</small></div>`).join("") : "<p>Ubutumwa bwawe buzagaragara hano.</p>";
-    box.scrollTop = box.scrollHeight;
+    if (!list.length) {
+      box.innerHTML = `<div class="gc-empty"><div class="gc-empty-av">GD</div><b>${t("Hello! 👋", "Muraho! 👋")}</b><p>${activeChatAdmin ? t("No messages yet.", "Nta butumwa burahari.") : t("Tell us how we can help. We reply as soon as possible.", "Tubwire icyo dushobora kugufasha. Tugusubiza vuba bishoboka.")}</p></div>`; return;
+    }
+    const me = currentUser && currentUser.uid; let day = "", html = "";
+    list.forEach(m => {
+      const mine = activeChatAdmin ? m.senderRole === "admin" : m.senderId === me;
+      const dl = chatDayLabel(m.createdAt); if (dl !== day) { html += `<div class="gc-day"><span>${esc(dl)}</span></div>`; day = dl; }
+      const raw = String(m.text || ""), im = m.imageUrl || (raw.match(CHAT_IMG_RE) || [])[1] || "", txt = raw.replace(CHAT_IMG_RE, "").trim();
+      const who = activeChatAdmin ? (mine ? (m.staffName || "GD Electric Motors") : (m.senderName || "Umukiriya")) : (mine ? "" : "GD Electric Motors");
+      html += `<div class="gc-row${mine ? " mine" : ""}"><div class="gc-msg${mine ? " mine" : ""}">${who ? `<b class="gc-name">${esc(who)}</b>` : ""}${im ? `<a href="${esc(im)}" target="_blank" rel="noopener"><img class="gc-img" src="${esc(thumb(im, 520))}" alt="" loading="lazy"></a>` : ""}${txt ? `<div class="gc-t">${chatLinkify(txt)}</div>` : ""}<span class="gc-time">${chatTime(m.createdAt)}${mine ? " ✓" : ""}</span></div></div>`;
+    });
+    box.innerHTML = html; box.scrollTop = box.scrollHeight;
+  }
+  function markChatSeen() {
+    if (!activeChatId) return;
+    if (activeChatAdmin) { chatSeenSet("gdChatSeenA:" + activeChatId); renderAdminChatThreads(); }
+    else { chatSeenSet("gdChatSeenC:" + activeChatId); const d = $("gdChatDot"); if (d) d.hidden = true; }
   }
   function watchChatMessages(uid, adminMode) {
     stopChatMessages(); activeChatId = uid; activeChatAdmin = adminMode;
-    $("gdChatTitle").textContent = adminMode ? "Chat: " + (chatThreads.find(c => c.id === uid)?.name || uid) : "Chat na GD Electric Motors";
+    const th = chatThreads.find(c => c.id === uid);
+    $("gdChatTitle").textContent = adminMode ? (th && th.name || uid) : "GD Electric Motors";
+    $("gdChatSub").innerHTML = adminMode ? esc((th && (th.phone || th.email)) || "") : `<i class="gc-on"></i> ${t("We reply as soon as possible", "Dusubiza vuba bishoboka")}`;
+    $("gdChatAv").textContent = adminMode ? (String(th && th.name || "?").trim().charAt(0).toUpperCase() || "?") : "GD";
+    $("gdChatPanel").classList.remove("gc-locked");
+    renderChatQuick();
     unsubChatMessages = onSnapshot(collection(db, "chats", uid, "messages"), snap => {
       const list = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
-      renderChatMessages(list);
-    }, err => { console.error("Chat messages:", err); $("gdChatMessages").innerHTML = "<p>Ntibishobotse gusoma ubutumwa. Reba amategeko ya Firebase (Firestore Rules).</p>"; });
+      renderChatMessages(list); markChatSeen();
+    }, err => { console.error("Chat messages:", err); $("gdChatMessages").innerHTML = "<p style='padding:14px'>Ntibishobotse gusoma ubutumwa. Reba amategeko ya Firebase (Firestore Rules).</p>"; });
+  }
+  function renderChatLocked() {
+    $("gdChatPanel").classList.add("gc-locked");
+    $("gdChatTitle").textContent = "GD Electric Motors"; $("gdChatAv").textContent = "GD";
+    $("gdChatSub").innerHTML = `<i class="gc-on"></i> ${t("We reply as soon as possible", "Dusubiza vuba bishoboka")}`;
+    $("gdChatMessages").innerHTML = `<div class="gc-login"><div class="gc-login-ic">💬</div><b>${t("Sign in to chat with us", "Injira kugira ngo muganire")}</b><p>${t("Create a free account or sign in, then you can message us and see our replies here.", "Injira muri konti yawe (cyangwa ufungure nshya ku buntu), maze utwandikire ubone n'ibisubizo hano.")}</p><button type="button" class="gc-btn" onclick="gdCloseChat();showView('account')">🔑 ${t("Sign in / Create account", "Injira / Fungura konti")}</button><button type="button" class="gc-btn gc-wa" onclick="contactWhatsApp()">💬 ${t("Chat on WhatsApp instead", "Cyangwa twandikire kuri WhatsApp")}</button></div>`;
   }
   window.gdOpenChat = async () => {
-    if (!currentUser) { alert("Banza winjire muri konti kugira ngo wandikire GD Electric Motors."); showView("account"); return; }
     $("gdChatPanel").hidden = false;
+    if (!currentUser) { stopChatMessages(); activeChatId = null; renderChatLocked(); return; }
     try {
       await setDoc(doc(db, "chats", currentUser.uid), { userId: currentUser.uid, name: (profile && profile.name) || currentUser.displayName || "Umukiriya", email: currentUser.email || "", phone: (profile && profile.phone) || "", updatedAt: Date.now() }, { merge: true });
       watchChatMessages(currentUser.uid, false);
-    } catch (err) { console.error(err); $("gdChatMessages").innerHTML = "<p>Chat ntiyafungutse. Reba internet cyangwa Firestore Rules.</p>"; }
+    } catch (err) { console.error(err); $("gdChatMessages").innerHTML = "<p style='padding:14px'>Chat ntiyafungutse. Reba internet cyangwa Firestore Rules.</p>"; }
   };
-  window.gdCloseChat = () => { $("gdChatPanel").hidden = true; stopChatMessages(); };
+  window.gdCloseChat = () => { $("gdChatPanel").hidden = true; stopChatMessages(); activeChatId = null; if (window.gdChatClearPhoto) window.gdChatClearPhoto(); };
   window.gdAdminOpenChat = uid => { $("gdChatPanel").hidden = false; watchChatMessages(uid, true); };
+  window.gdChatPick = inp => {
+    const f = inp.files && inp.files[0]; chatPhoto = f || null; const w = $("gdChatPrevWrap"), im = $("gdChatPrev"); if (!w || !im) return;
+    if (!f) { w.hidden = true; return; }
+    const r = new FileReader(); r.onload = () => { im.src = r.result; w.hidden = false; }; r.readAsDataURL(f);
+  };
+  window.gdChatClearPhoto = () => { chatPhoto = null; const f = $("gdChatFile"); if (f) f.value = ""; const w = $("gdChatPrevWrap"); if (w) w.hidden = true; };
   window.gdSendChat = async e => {
     e.preventDefault(); if (!currentUser || !activeChatId) return;
-    const input = $("gdChatInput"), textValue = input.value.trim(); if (!textValue) return;
-    const uid = activeChatId, adminMode = activeChatAdmin;
-    input.disabled = true;
+    const input = $("gdChatInput"), send = $("gdChatSend");
+    let textValue = input.value.trim(); if (!textValue && !chatPhoto) return;
+    const uid = activeChatId, adminMode = activeChatAdmin, oldLabel = send.textContent;
+    input.disabled = true; send.disabled = true; send.textContent = "…";
     try {
+      if (chatPhoto) { const url = await uploadToCloudinary(chatPhoto); textValue = (textValue ? textValue + "\n" : "") + "📷 " + url; }
       await addDoc(collection(db, "chats", uid, "messages"), { text: textValue, senderId: currentUser.uid, senderRole: adminMode ? "admin" : "customer", senderName: adminMode ? "GD Electric Motors" : ((profile && profile.name) || currentUser.displayName || "Umukiriya"), ...(adminMode ? { staffName: (profile && profile.name) || currentUser.displayName || currentUser.email || "" } : {}), createdAt: Date.now() });
-      await setDoc(doc(db, "chats", uid), { userId: uid, lastMessage: textValue, updatedAt: Date.now(), lastSenderRole: adminMode ? "admin" : "customer" }, { merge: true });
-      input.value = "";
-    } catch (err) { alert("Ubutumwa ntibwoherejwe: " + (err.code || err.message) + ". Reba Firestore Rules."); }
-    input.disabled = false; input.focus();
+      await setDoc(doc(db, "chats", uid), { userId: uid, lastMessage: textValue.replace(CHAT_IMG_RE, "").trim() || "📷 Ifoto", updatedAt: Date.now(), lastSenderRole: adminMode ? "admin" : "customer" }, { merge: true });
+      input.value = ""; if (window.gdChatAutosize) window.gdChatAutosize(); window.gdChatClearPhoto();
+    } catch (err) { alert("Ubutumwa ntibwoherejwe: " + (err.code || err.message) + ". Reba internet cyangwa Firestore Rules."); }
+    input.disabled = false; send.disabled = false; send.textContent = oldLabel;
+    if (window.matchMedia && matchMedia("(pointer:fine)").matches) input.focus();
   };
   function renderAdminChatThreads() {
     const el = $("adminChatThreads"); if (!el) return;
     const b = $("chatTotalBadge"); if (b) { b.textContent = String(chatThreads.length); b.hidden = !chatThreads.length; }
-    el.innerHTML = chatThreads.length ? chatThreads.map(c => `<div class="gd-chat-thread"><div><strong>${esc(c.name || "Umukiriya")}</strong><br><small>${esc(c.phone || c.email || c.id)}</small><br><small>${esc(c.lastMessage || "Nta butumwa burandikwa")}</small></div><button onclick="gdAdminOpenChat('${esc(c.id)}')">Subiza</button></div>`).join("") : "<p>Nta biganiro birahari. Ubutumwa bw'abakiriya buzagaragara hano.</p>";
+    el.innerHTML = chatThreads.length ? chatThreads.map(c => {
+      const un = chatUnreadAdmin(c), nm = String(c.name || "Umukiriya"), prev = String(c.lastMessage || "").replace(CHAT_IMG_RE, "📷 Ifoto");
+      return `<div class="gc-th${un ? " unread" : ""}"><div class="gc-th-av">${esc(nm.trim().charAt(0).toUpperCase() || "?")}</div><div class="gc-th-info"><div class="gc-th-top"><strong>${esc(nm)}</strong><small>${esc(chatAgo(c.updatedAt))}</small></div><div class="gc-th-sub">${esc(c.phone || c.email || "")}</div><div class="gc-th-last">${c.lastSenderRole === "admin" ? "↩ " : ""}${esc(prev || "Nta butumwa burandikwa")}</div></div><div class="gc-th-act">${un ? `<span class="gc-new">${t("New", "Gishya")}</span>` : ""}<button type="button" onclick="gdAdminOpenChat('${esc(c.id)}')">💬 ${t("Reply", "Subiza")}</button></div></div>`;
+    }).join("") : "<p>Nta biganiro birahari. Ubutumwa bw'abakiriya buzagaragara hano.</p>";
   }
+  // unread dot on the chat button for customers (new reply from GD Electric Motors)
+  function watchChatUnread(user) {
+    if (unsubChatUnread) { unsubChatUnread(); unsubChatUnread = null; }
+    const dot = $("gdChatDot"); if (dot) dot.hidden = true;
+    if (!user) return;
+    try {
+      unsubChatUnread = onSnapshot(doc(db, "chats", user.uid), snap => {
+        const d = snap.exists() ? snap.data() : null, panel = $("gdChatPanel"), open = panel && !panel.hidden && !activeChatAdmin;
+        const unread = !!d && d.lastSenderRole === "admin" && (d.updatedAt || 0) > chatSeenGet("gdChatSeenC:" + user.uid) && !open;
+        if (dot) dot.hidden = !unread;
+      }, () => {});
+    } catch (e) { /* ignore */ }
+  }
+  onAuthStateChanged(auth, user => watchChatUnread(user));
+  (function initChatInput() {
+    const inp = $("gdChatInput"); if (!inp) return;
+    const auto = () => { inp.style.height = "auto"; inp.style.height = Math.min(inp.scrollHeight, 110) + "px"; };
+    inp.addEventListener("input", auto);
+    inp.addEventListener("keydown", e => {
+      if (e.key === "Enter" && !e.shiftKey && window.matchMedia && matchMedia("(pointer:fine)").matches) {
+        e.preventDefault(); const f = $("gdChatForm"); if (f.requestSubmit) f.requestSubmit(); else f.dispatchEvent(new Event("submit", { cancelable: true }));
+      }
+    });
+    window.gdChatAutosize = auto;
+  })();
 
   function renderAdminOrders() {
     updateAdminBadges(); if (window.gdPageRefresh) window.gdPageRefresh();
