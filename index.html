@@ -1586,11 +1586,13 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 
   <section id="view-categories" class="view">
     <h1 class="page-title" data-en="Categories" data-rw="Ibyiciro">Categories</h1>
-    <div class="categories" id="allCategories"></div>
-    <section class="section">
-      <div class="section-heading"><h2 id="categoryProductsTitle" data-en="All products" data-rw="Ibicuruzwa byose">All products</h2><button class="text-link" onclick="clearCategory()" data-en="Clear filter" data-rw="Kuraho akayunguruzo">Clear filter</button></div>
-      <div class="products" id="categoryProducts"></div>
-    </section>
+    <div class="cat-layout">
+      <nav class="cat-side" id="allCategories" aria-label="Categories"></nav>
+      <section class="section cat-main">
+        <div class="section-heading"><h2 id="categoryProductsTitle" data-en="All products" data-rw="Ibicuruzwa byose">All products</h2><button class="text-link" onclick="clearCategory()" data-en="Clear filter" data-rw="Kuraho akayunguruzo">Clear filter</button></div>
+        <div class="products" id="categoryProducts"></div>
+      </section>
+    </div>
   </section>
 
   <section id="view-saved" class="view">
@@ -2227,7 +2229,12 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
     updateCounts();
   }
   function renderCategories() {
-    document.getElementById("allCategories").innerHTML=categories.map(categoryCard).join("")+shopCategoryCards();
+    const sideEl=document.getElementById("allCategories");
+    const csItem=(icon,label,count,active,act)=>`<button type="button" class="cs-item${active?" active":""}" onclick="${act}"><span class="cs-ic">${icon}</span><b>${label}</b>${count==null?"":`<small>${count}</small>`}</button>`;
+    sideEl.innerHTML=csItem("🗂️",esc(t("All","Byose")),products.length,!activeCategory,"selectCategory(null)")
+      +categories.map(c=>csItem(c.icon,esc(categoryName(c)),products.filter(p=>p.category===c.id).length,activeCategory===c.id,`selectCategory('${esc(c.id)}')`)).join("")
+      +(window.gdApprovedShops||[]).map(x=>csItem(x.logoUrl?`<img src="${esc(x.logoUrl)}" alt="" loading="lazy">`:"🏪",esc(x.name),(window.gdShopProducts||[]).filter(pp=>pp.shopId===x.id).length,false,`openShop('${esc(x.id)}')`)).join("");
+    { const a=sideEl.querySelector(".cs-item.active"); if(a&&sideEl.scrollHeight>sideEl.clientHeight) sideEl.scrollTop=Math.max(0,a.offsetTop-sideEl.offsetTop-40); }
     let list=products.filter(p=>{
       const catOK=!activeCategory||p.category===activeCategory;
       const text=[p.en,p.rw,p.descEn,p.descRw,categories.find(c=>c.id===p.category)?.en||""].join(" ").toLowerCase();
@@ -2235,7 +2242,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
     });
     const cat=categories.find(c=>c.id===activeCategory);
     document.getElementById("categoryProductsTitle").textContent=cat?categoryName(cat):t("All products","Ibicuruzwa byose");
-    document.getElementById("categoryProducts").innerHTML=list.length?list.map(productCard).join(""):`<div class="empty">${t("No products found. Try another search.","Nta bicuruzwa bibonetse. Gerageza gushakisha ukundi.")}</div>`;
+    document.getElementById("categoryProducts").innerHTML=list.length?list.map(p=>productCard(p,true)).join(""):`<div class="empty">${t("No products found. Try another search.","Nta bicuruzwa bibonetse. Gerageza gushakisha ukundi.")}</div>`;
     updateCounts();
   }
   function selectCategory(id) { activeCategory=id; showView("categories"); renderCategories(); }
@@ -4478,6 +4485,27 @@ function gdSavePdf(btn) {
 .cat-custom-list{display:flex;flex-wrap:wrap;gap:8px}
 .cat-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 6px 6px 12px;border-radius:999px;background:rgba(20,184,166,.18);border:1px solid rgba(20,184,166,.55);font-weight:800;font-size:.85rem}
 .cat-chip button{width:24px;height:24px;border-radius:50%;border:0;background:rgba(255,255,255,.18);color:inherit;font-size:.75rem;line-height:1;padding:0}
+
+/* Categories page: left sidebar + products (Home categories unchanged) */
+#view-categories .cat-layout{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;align-items:start}
+#view-categories .cat-side{position:sticky;top:108px;max-height:calc(100vh - 190px);max-height:calc(100dvh - 190px);overflow-y:auto;overscroll-behavior:contain;border:1px solid rgba(128,128,128,.25);border-radius:16px;background:rgba(128,128,128,.07);scrollbar-width:thin}
+#view-categories .cs-item{display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;padding:10px 4px;border:0;border-left:4px solid transparent;border-bottom:1px solid rgba(128,128,128,.2);background:transparent;color:var(--text);text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#view-categories .cs-item:last-child{border-bottom:0}
+#view-categories .cs-ic{font-size:1.45rem;line-height:1;display:grid;place-items:center;width:34px;height:34px}
+#view-categories .cs-ic img{width:34px;height:34px;border-radius:50%;object-fit:cover}
+#view-categories .cs-item b{font-size:.74rem;line-height:1.2;font-weight:800;word-break:break-word}
+#view-categories .cs-item small{font-size:.7rem;opacity:.65;font-weight:700}
+#view-categories .cs-item.active{background:rgba(59,130,246,.18);border-left-color:#3b82f6;color:#2563eb}
+#view-categories .cs-item.active small{opacity:1}
+#view-categories .cat-main{margin-top:0;min-width:0}
+#view-categories .cat-main .section-heading{margin-top:0}
+#view-categories .cat-main .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (min-width:651px){
+  #view-categories .cat-layout{grid-template-columns:190px minmax(0,1fr)}
+  #view-categories .cs-item{flex-direction:row;text-align:left;gap:10px;padding:10px 12px}
+  #view-categories .cs-item b{flex:1}
+  #view-categories .cat-main .products{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+}
 </style>
 </body>
 </html>
