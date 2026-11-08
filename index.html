@@ -3591,11 +3591,10 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const wa = "https://wa.me/" + waNumber(x.phone);
     const ph = String(x.phone || "");
     el.innerHTML = `${banner}<div class="shc">
-        <h1>🏪 ${esc(x.name)}${st === "approved" ? ` <i class="shc-ok" title="${t("Verified shop", "Duka ryemejwe")}">✔</i>` : ""}</h1>
-        <p class="shc-meta">${list.length} ${t("products", "ibicuruzwa")} · ${t("sold and delivered by", "bicuruzwa kandi bitangwa na")} ${esc(x.name)}</p>
-        ${ph ? `<p class="shc-meta">📞 <a href="tel:${esc(ph.replace(/\s+/g, ""))}">${esc(ph)}</a></p>` : ""}
-        ${x.desc ? `<p class="shc-desc">${esc(x.desc)}</p>` : ""}
-        <div class="shc-acts"><a class="shc-wa" href="${wa}" target="_blank" rel="noopener">💬 WhatsApp</a><button type="button" class="shc-share" onclick="shareShop('${esc(x.name).replace(/'/g, "&#39;")}','${esc(ph)}')">📤 ${t("Share this shop", "Sangiza iri duka")}</button></div>
+        <h1><span>🏪 ${esc(x.name)}</span>${st === "approved" ? `<i class="shc-ok" title="${t("Verified shop", "Duka ryemejwe")}">✔</i>` : ""}</h1>
+        <p class="shc-meta">📦 ${list.length} ${list.length === 1 ? t("product", "igicuruzwa") : t("products", "ibicuruzwa")}${ph ? ` · 📞 <a href="tel:${esc(ph.replace(/\s+/g, ""))}">${esc(ph)}</a>` : ""}</p>
+        ${x.desc ? `<p class="shc-desc" onclick="this.classList.toggle('open')">${esc(x.desc)}</p>` : ""}
+        <div class="shc-acts"><a class="shc-wa" href="${wa}" target="_blank" rel="noopener">💬 WhatsApp</a><button type="button" class="shc-share" onclick="shareShop('${esc(x.name).replace(/'/g, "&#39;")}','${esc(ph)}')">📤 ${t("Share", "Sangiza")}</button></div>
         ${mineOwner ? `<div class="sh-owner"><button type="button" class="sh-edit" onclick="openShopForm()"><span class="sh-oi">✏️</span><span>${t("Edit shop", "Hindura shop")}</span></button><button type="button" class="sh-del" onclick="deleteMyShop()"><span class="sh-oi">🗑️</span><span>${t("Delete shop", "Siba shop")}</span></button></div>` : ""}</div>
       ${mineOwner ? `<details class="shc-add"><summary>➕ ${t("Add a product", "Ongeramo igicuruzwa")}</summary><div class="shop-form-box ap-box">
         <div class="ap-head"><span class="ap-ic">➕</span><div><h3>${t("Add a product", "Ongeramo igicuruzwa")}</h3><small>${t("Fill in the details and add a photo", "Uzuza amakuru hanyuma ushyireho ifoto")}</small></div></div>
@@ -4523,6 +4522,18 @@ function gdSavePdf(btn) {
 .shc-add{margin:0 0 14px}
 .shc-add summary{cursor:pointer;padding:12px 16px;border:1px dashed var(--line);border-radius:14px;font-weight:800;color:var(--text);list-style:none}
 .shc-add[open] summary{margin-bottom:10px}
+
+/* shorter shop header */
+.shc{margin:8px 0 12px;padding:12px 14px}
+.shc h1{display:flex;align-items:center;gap:8px;font-size:1.2rem;margin:0 0 4px}
+.shc h1 span{min-width:0}
+.shc-ok{flex:0 0 auto}
+.shc-meta{margin:2px 0;font-size:.88rem}
+.shc-desc{margin:6px 0 0;font-size:.88rem;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.shc-desc.open{display:block;-webkit-line-clamp:unset;overflow:visible}
+.shc-acts{flex-wrap:nowrap;margin-top:10px;gap:8px}
+.shc-wa,.shc-share{flex:1 1 0;padding:9px 10px;font-size:.9rem;white-space:nowrap}
+.shc .sh-owner{margin-top:8px}
 </style>
 </body>
 </html>
