@@ -3590,15 +3590,14 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const list = shopProducts.filter(pp => pp.shopId === x.id);
     const wa = "https://wa.me/" + waNumber(x.phone);
     const ph = String(x.phone || "");
-    el.innerHTML = `${banner}<div class="shop-head sh-card" style="margin-top:12px">
-        <div class="sh-cover"><span></span><span></span><span></span></div>
-        <div class="sh-logo-wrap">${x.logoUrl ? `<img class="sh-logo" src="${esc(x.logoUrl)}" alt="">` : `<div class="sh-logo sh-logo-ph">🏪</div>`}${st === "approved" ? `<b class="sh-ok" title="${t("Verified shop", "Duka ryemejwe")}">✔</b>` : ""}</div>
-        <h1>${esc(x.name)}</h1>
-        <div class="sh-chips"><span>📦 ${list.length} ${t("products", "ibicuruzwa")}</span>${ph ? `<span>📞 ${esc(ph)}</span>` : ""}${st === "approved" ? `<span class="sh-chip-ok">✅ ${t("Verified", "Ryemejwe")}</span>` : ""}</div>
-        ${x.desc ? `<p class="sh-desc">${esc(x.desc)}</p>` : ""}
-        <div class="sh-actions">${ph ? `<a class="sh-act sh-call" href="tel:${esc(ph.replace(/\s+/g, ""))}">📞 <span>${t("Call", "Hamagara")}</span></a>` : ""}<a class="sh-act sh-wa" href="${wa}" target="_blank" rel="noopener">💬 <span>WhatsApp</span></a><button type="button" class="sh-act sh-share" onclick="shareShop('${esc(x.name).replace(/'/g, "&#39;")}','${esc(ph)}')">🔗 <span>${t("Share", "Sangiza")}</span></button></div>
+    el.innerHTML = `${banner}<div class="shc">
+        <h1>🏪 ${esc(x.name)}${st === "approved" ? ` <i class="shc-ok" title="${t("Verified shop", "Duka ryemejwe")}">✔</i>` : ""}</h1>
+        <p class="shc-meta">${list.length} ${t("products", "ibicuruzwa")} · ${t("sold and delivered by", "bicuruzwa kandi bitangwa na")} ${esc(x.name)}</p>
+        ${ph ? `<p class="shc-meta">📞 <a href="tel:${esc(ph.replace(/\s+/g, ""))}">${esc(ph)}</a></p>` : ""}
+        ${x.desc ? `<p class="shc-desc">${esc(x.desc)}</p>` : ""}
+        <div class="shc-acts"><a class="shc-wa" href="${wa}" target="_blank" rel="noopener">💬 WhatsApp</a><button type="button" class="shc-share" onclick="shareShop('${esc(x.name).replace(/'/g, "&#39;")}','${esc(ph)}')">📤 ${t("Share this shop", "Sangiza iri duka")}</button></div>
         ${mineOwner ? `<div class="sh-owner"><button type="button" class="sh-edit" onclick="openShopForm()"><span class="sh-oi">✏️</span><span>${t("Edit shop", "Hindura shop")}</span></button><button type="button" class="sh-del" onclick="deleteMyShop()"><span class="sh-oi">🗑️</span><span>${t("Delete shop", "Siba shop")}</span></button></div>` : ""}</div>
-      ${mineOwner ? `<div class="shop-form-box ap-box">
+      ${mineOwner ? `<details class="shc-add"><summary>➕ ${t("Add a product", "Ongeramo igicuruzwa")}</summary><div class="shop-form-box ap-box">
         <div class="ap-head"><span class="ap-ic">➕</span><div><h3>${t("Add a product", "Ongeramo igicuruzwa")}</h3><small>${t("Fill in the details and add a photo", "Uzuza amakuru hanyuma ushyireho ifoto")}</small></div></div>
         <form onsubmit="saveShopProduct(event)">
           <div class="ap-field"><label for="spName"><b>🏷️</b> ${t("Product name", "Izina ry'igicuruzwa")}</label><input id="spName" placeholder="${t("e.g. 2HP electric motor", "Urugero: Moteri ya 2HP")}" required></div>
@@ -3609,8 +3608,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
             <input id="spImage" type="file" accept="image/*" onchange="spPreview(this)" hidden></div>
           <button class="primary ap-save" type="submit" id="spBtn">💾 ${t("Save product", "Bika igicuruzwa")}</button>
           <div id="spMsg" class="status-msg"></div>
-        </form></div>` : ""}
-      <div class="sh-sec-title"><span>🛍️ ${t("Products", "Ibicuruzwa")}</span><i>${list.length}</i></div>
+        </form></div></details>` : ""}
       <div class="shop-prod-grid">${list.length ? list.map(pp => `<div class="shop-prod">${pp.imageUrl ? `<div class="sp-img"><img src="${esc(thumb(pp.imageUrl, 420))}" alt="${esc(pp.name)}" loading="lazy" decoding="async">${Number(pp.price) > 0 ? `<span class="sp-pill">${money(pp.price)}</span>` : `<span class="sp-pill sp-ask">${t("Ask for price", "Baza igiciro")}</span>`}</div>` : `<div class="sp-img sp-noimg">📦${Number(pp.price) > 0 ? `<span class="sp-pill">${money(pp.price)}</span>` : `<span class="sp-pill sp-ask">${t("Ask for price", "Baza igiciro")}</span>`}</div>`}
         <div class="sp-body"><strong>${esc(pp.name)}</strong>${pp.desc ? `<p>${esc(pp.desc)}</p>` : ""}
         <div class="sp-btns"><button class="primary sp-cart" type="button" onclick="addToCart('s_${esc(pp.id)}')">${Number(pp.price) > 0 ? "🛒 " + t("Add to cart", "Shyira mu gaseke") : "📩 " + t("Request / Order", "Saba / Tumiza")}</button>
@@ -4506,6 +4504,25 @@ function gdSavePdf(btn) {
   #view-categories .cs-item b{flex:1}
   #view-categories .cat-main .products{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 }
+
+/* Shop page: compact light header, products visible straight away */
+.shc{margin:12px 0 14px;padding:16px;border:1px solid var(--line);border-radius:18px;background:var(--panel);color:var(--text)}
+.shc h1{margin:0 0 6px;font-size:1.5rem;line-height:1.2;color:var(--text);overflow-wrap:anywhere}
+.shc-ok{font-style:normal;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#22c55e;color:#fff;font-size:.7rem;vertical-align:middle}
+.shc-meta{margin:4px 0;color:var(--muted);font-size:.95rem}
+.shc-meta a{color:var(--muted);font-weight:700;text-decoration:none}
+.shc-desc{margin:10px 0 0;color:var(--text);line-height:1.45}
+.shc-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.shc-wa,.shc-share{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:auto;padding:12px 18px;border-radius:999px;font-weight:800;font-size:.95rem;text-decoration:none;cursor:pointer}
+.shc-wa{background:#22c55e;color:#fff;border:1px solid #22c55e}
+.shc-share{background:transparent;color:var(--text);border:1px solid var(--line)}
+.shc .sh-owner{display:flex!important;gap:8px;margin-top:12px}
+.shc .sh-owner button{width:auto!important;padding:8px 14px;box-shadow:none;border:1px solid var(--line);background:transparent;color:var(--text);font-size:.85rem}
+.shc .sh-owner .sh-del{color:#ef4444;border-color:rgba(239,68,68,.5)}
+.shc .sh-owner .sh-oi{width:22px;height:22px;background:transparent}
+.shc-add{margin:0 0 14px}
+.shc-add summary{cursor:pointer;padding:12px 16px;border:1px dashed var(--line);border-radius:14px;font-weight:800;color:var(--text);list-style:none}
+.shc-add[open] summary{margin-bottom:10px}
 </style>
 </body>
 </html>
