@@ -2783,6 +2783,14 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   const chatSeenGet = k => { try { return Number(localStorage.getItem(k)) || 0; } catch (e) { return 0; } };
   const chatSeenSet = k => { try { localStorage.setItem(k, String(Date.now())); } catch (e) { /* ignore */ } };
   const chatAgo = ts => { if (!ts) return ""; const m = Math.floor((Date.now() - ts) / 60000); if (m < 1) return t("now", "ubu"); if (m < 60) return m + " min"; const h = Math.floor(m / 60); return h < 24 ? h + " h" : new Date(ts).toLocaleDateString(); };
+  const CHAT_ONLINE_MS = 120000;
+  const chatIsOnline = c => !!c && (Date.now() - (c.lastSeen || 0)) < CHAT_ONLINE_MS;
+  const chatPresence = c => chatIsOnline(c) ? `<span class="gc-pres on">🟢 ${t("Online now", "Ari online ubu")}</span>` : (c && c.lastSeen ? `<span class="gc-pres">⚪ ${t("Last seen", "Yagaragaye")} ${esc(chatAgo(c.lastSeen))}${/^\d/.test(chatAgo(c.lastSeen)) ? " " + t("ago", "ishize") : ""}</span>` : "");
+  function gdRefreshChatHeader() {
+    if (!activeChatAdmin || !activeChatId) return; const p = $("gdChatPanel"); if (!p || p.hidden) return;
+    const th = chatThreads.find(c => c.id === activeChatId); const sub = $("gdChatSub"); if (!th || !sub) return;
+    sub.innerHTML = chatPresence(th) + (th.phone || th.email ? " · " + esc(th.phone || th.email) : "");
+  }
   const chatUnreadAdmin = c => c.lastSenderRole === "customer" && (c.updatedAt || 0) > chatSeenGet("gdChatSeenA:" + c.id);
   function stopChatMessages() { if (unsubChatMessages) { unsubChatMessages(); unsubChatMessages = null; } }
   function renderChatQuick() {
@@ -2818,7 +2826,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     stopChatMessages(); activeChatId = uid; activeChatAdmin = adminMode;
     const th = chatThreads.find(c => c.id === uid);
     $("gdChatTitle").textContent = adminMode ? (th && th.name || uid) : "GD Electric Motors";
-    $("gdChatSub").innerHTML = adminMode ? esc((th && (th.phone || th.email)) || "") : `<i class="gc-on"></i> ${t("We reply as soon as possible", "Dusubiza vuba bishoboka")}`;
+    $("gdChatSub").innerHTML = adminMode ? (chatPresence(th) + (th && (th.phone || th.email) ? " · " + esc(th.phone || th.email) : "")) : `<i class="gc-on"></i> ${t("We reply as soon as possible", "Dusubiza vuba bishoboka")}`;
     $("gdChatAv").textContent = adminMode ? (String(th && th.name || "?").trim().charAt(0).toUpperCase() || "?") : "GD";
     $("gdChatPanel").classList.remove("gc-locked");
     renderChatQuick();
@@ -2858,7 +2866,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     try {
       if (chatPhoto) { const url = await uploadToCloudinary(chatPhoto); textValue = (textValue ? textValue + "\n" : "") + "📷 " + url; }
       await addDoc(collection(db, "chats", uid, "messages"), { text: textValue, senderId: currentUser.uid, senderRole: adminMode ? "admin" : "customer", senderName: adminMode ? "GD Electric Motors" : ((profile && profile.name) || currentUser.displayName || "Umukiriya"), ...(adminMode ? { staffName: (profile && profile.name) || currentUser.displayName || currentUser.email || "" } : {}), createdAt: Date.now() });
-      await setDoc(doc(db, "chats", uid), { userId: uid, lastMessage: textValue.replace(CHAT_IMG_RE, "").trim() || "📷 Ifoto", updatedAt: Date.now(), lastSenderRole: adminMode ? "admin" : "customer" }, { merge: true });
+      await setDoc(doc(db, "chats", uid), { userId: uid, lastMessage: textValue.replace(CHAT_IMG_RE, "").trim() || "📷 Ifoto", updatedAt: Date.now(), lastSenderRole: adminMode ? "admin" : "customer", ...(adminMode ? {} : { lastSeen: Date.now() }) }, { merge: true });
       input.value = ""; if (window.gdChatAutosize) window.gdChatAutosize(); window.gdChatClearPhoto();
     } catch (err) { alert("Ubutumwa ntibwoherejwe: " + (err.code || err.message) + ". Reba internet cyangwa Firestore Rules."); }
     input.disabled = false; send.disabled = false; send.textContent = oldLabel;
@@ -2869,9 +2877,11 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const b = $("chatTotalBadge"); if (b) { b.textContent = String(chatThreads.length); b.hidden = !chatThreads.length; }
     el.innerHTML = chatThreads.length ? chatThreads.map(c => {
       const un = chatUnreadAdmin(c), nm = String(c.name || "Umukiriya"), prev = String(c.lastMessage || "").replace(CHAT_IMG_RE, "📷 Ifoto");
-      return `<div class="gc-th${un ? " unread" : ""}"><div class="gc-th-av">${esc(nm.trim().charAt(0).toUpperCase() || "?")}</div><div class="gc-th-info"><div class="gc-th-top"><strong>${esc(nm)}</strong><small>${esc(chatAgo(c.updatedAt))}</small></div><div class="gc-th-sub">${esc(c.phone || c.email || "")}</div><div class="gc-th-last">${c.lastSenderRole === "admin" ? "↩ " : ""}${esc(prev || "Nta butumwa burandikwa")}</div></div><div class="gc-th-act">${un ? `<span class="gc-new">${t("New", "Gishya")}</span>` : ""}<button type="button" onclick="gdAdminOpenChat('${esc(c.id)}')">💬 ${t("Reply", "Subiza")}</button></div></div>`;
+      return `<div class="gc-th${un ? " unread" : ""}"><div class="gc-th-av">${esc(nm.trim().charAt(0).toUpperCase() || "?")}${chatIsOnline(c) ? '<i class="gc-dot" title="Online"></i>' : ""}</div><div class="gc-th-info"><div class="gc-th-top"><strong>${esc(nm)}</strong><small>${esc(chatAgo(c.updatedAt))}</small></div><div class="gc-th-sub">${esc(c.phone || c.email || "")}</div><div class="gc-th-pres">${chatPresence(c)}</div><div class="gc-th-last">${c.lastSenderRole === "admin" ? "↩ " : ""}${esc(prev || "Nta butumwa burandikwa")}</div></div><div class="gc-th-act">${un ? `<span class="gc-new">${t("New", "Gishya")}</span>` : ""}<button type="button" onclick="gdAdminOpenChat('${esc(c.id)}')">💬 ${t("Reply", "Subiza")}</button></div></div>`;
     }).join("") : "<p>Nta biganiro birahari. Ubutumwa bw'abakiriya buzagaragara hano.</p>";
+    gdRefreshChatHeader();
   }
+  setInterval(() => { try { if ($("adminChatThreads") && chatThreads.length) renderAdminChatThreads(); } catch (e) {} }, 30000);
   // unread dot on the chat button for customers (new reply from GD Electric Motors)
   function watchChatUnread(user) {
     if (unsubChatUnread) { unsubChatUnread(); unsubChatUnread = null; }
@@ -2879,13 +2889,23 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     if (!user) return;
     try {
       unsubChatUnread = onSnapshot(doc(db, "chats", user.uid), snap => {
+        const firstSeen = !window.gdMyChatExists && snap.exists(); window.gdMyChatExists = snap.exists(); if (firstSeen) gdPingPresence();
         const d = snap.exists() ? snap.data() : null, panel = $("gdChatPanel"), open = panel && !panel.hidden && !activeChatAdmin;
         const unread = !!d && d.lastSenderRole === "admin" && (d.updatedAt || 0) > chatSeenGet("gdChatSeenC:" + user.uid) && !open;
         if (dot) dot.hidden = !unread;
       }, () => {});
     } catch (e) { /* ignore */ }
   }
-  onAuthStateChanged(auth, user => watchChatUnread(user));
+  onAuthStateChanged(auth, user => { window.gdMyChatExists = false; watchChatUnread(user); });
+  // Presence: while a signed-in customer who has a chat has the site open, stamp lastSeen on their own chat doc.
+  // Online = lastSeen within the last 2 minutes. Only writes when the tab is visible.
+  async function gdPingPresence() {
+    if (!currentUser || document.hidden || !window.gdMyChatExists) return;
+    try { await setDoc(doc(db, "chats", currentUser.uid), { lastSeen: Date.now() }, { merge: true }); } catch (e) { /* rules may block: ignore */ }
+  }
+  setInterval(gdPingPresence, 45000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) gdPingPresence(); });
+  window.addEventListener("online", gdPingPresence);
   (function initChatInput() {
     const inp = $("gdChatInput"); if (!inp) return;
     const auto = () => { inp.style.height = "auto"; inp.style.height = Math.min(inp.scrollHeight, 110) + "px"; };
@@ -4534,6 +4554,14 @@ function gdSavePdf(btn) {
 .shc-acts{flex-wrap:nowrap;margin-top:10px;gap:8px}
 .shc-wa,.shc-share{flex:1 1 0;padding:9px 10px;font-size:.9rem;white-space:nowrap}
 .shc .sh-owner{margin-top:8px}
+
+/* online presence in customer chat */
+.gc-th-av{position:relative}
+.gc-dot{position:absolute;right:-2px;bottom:-2px;width:14px;height:14px;border-radius:50%;background:#22c55e;border:2px solid #fff;box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:gcOnPulse 1.8s infinite}
+@keyframes gcOnPulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 7px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.gc-pres{font-size:.78rem;font-weight:700;opacity:.85}
+.gc-pres.on{color:#22c55e;opacity:1}
+.gc-th-pres{margin-top:2px}
 </style>
 </body>
 </html>
