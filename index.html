@@ -4000,7 +4000,7 @@ function gdSavePdf(btn) {
     sel.innerHTML = categories.map(c => `<option value="${esc(c.id)}">${c.icon} ${esc(c.rw)}</option>`).join("");
     if (cur && categories.some(c => c.id === cur)) { sel.value = cur; if (cur === wantCat) wantCat = null; }
     const box = $("catCustomList");
-    if (box) box.innerHTML = categories.map(c => `<div class="cat-row"><span class="cat-thumb">${c.imageUrl ? `<img src="${esc(thumb(c.imageUrl, 120))}" alt="">` : c.icon}</span><b>${esc(c.rw)}</b><label class="cat-ph-btn" title="Ifoto">📷<input type="file" accept="image/*" hidden onchange="gdCatPhoto('${esc(c.id)}',this)"></label>${c.imageUrl ? `<button type="button" title="Kuraho ifoto" onclick="gdCatPhotoRemove('${esc(c.id)}')">🧹</button>` : ""}${c.custom ? `<button type="button" title="Siba icyiciro" onclick="gdDeleteCategory('${esc(c.docId)}')">✕</button>` : ""}</div>`).join("");
+    if (box) box.innerHTML = categories.map(c => `<div class="cat-wrap"><div class="cat-row"><span class="cat-thumb">${c.imageUrl ? `<img src="${esc(thumb(c.imageUrl, 120))}" alt="">` : c.icon}</span><b>${esc(c.rw)}</b><button type="button" title="Hitamo ifoto y'igicuruzwa" onclick="gdCatPick('${esc(c.id)}')">🖼️</button><label class="cat-ph-btn" title="Shyiraho ifoto yawe">📷<input type="file" accept="image/*" hidden onchange="gdCatPhoto('${esc(c.id)}',this)"></label>${c.imageUrl ? `<button type="button" title="Kuraho ifoto" onclick="gdCatPhotoRemove('${esc(c.id)}')">🧹</button>` : ""}${c.custom ? `<button type="button" title="Siba icyiciro" onclick="gdDeleteCategory('${esc(c.docId)}')">✕</button>` : ""}</div><div class="cat-pick" id="catPick_${esc(c.id)}" hidden></div></div>`).join("");
   }
   fillCategories();
   window.gdToggleCatAdd = () => { const b = $("catAddBox"); if (b) { b.hidden = !b.hidden; if (!b.hidden) { const i = $("newCatName"); if (i) i.focus(); } } };
@@ -4018,14 +4018,31 @@ function gdSavePdf(btn) {
       const b = $("catAddBox"); if (b) b.hidden = true;
     } catch (err) { wantCat = null; alert(t("Failed: ", "Byanze: ") + (err.code || err.message)); }
   };
+  async function gdCatSave(id, url) {
+    const c = categories.find(x => x.id === id);
+    if (c && c.custom) await updateDoc(doc(db, "sections", c.docId), { imageUrl: url });
+    else await setDoc(doc(db, "sections", "catimg_" + id), { kind: "categoryImage", catId: id, imageUrl: url, createdAt: Date.now() });
+  }
   window.gdCatPhoto = async (id, inp) => {
     const f = inp.files && inp.files[0]; if (!f) return;
-    try {
-      const url = await uploadToCloudinary(f); const c = categories.find(x => x.id === id);
-      if (c && c.custom) await updateDoc(doc(db, "sections", c.docId), { imageUrl: url });
-      else await setDoc(doc(db, "sections", "catimg_" + id), { kind: "categoryImage", catId: id, imageUrl: url, createdAt: Date.now() });
-    } catch (err) { alert(t("Failed: ", "Byanze: ") + (err.code || err.message)); }
+    try { await gdCatSave(id, await uploadToCloudinary(f)); }
+    catch (err) { alert(t("Failed: ", "Byanze: ") + (err.code || err.message)); }
     inp.value = "";
+  };
+  window.gdCatPick = id => {
+    const box = $("catPick_" + id); if (!box) return;
+    if (!box.hidden) { box.hidden = true; return; }
+    document.querySelectorAll(".cat-pick").forEach(b => { if (b !== box) b.hidden = true; });
+    let list = products.filter(p => p.imageUrl && p.category === id);
+    const other = !list.length; if (other) list = products.filter(p => p.imageUrl);
+    box.innerHTML = (other ? `<p class="cat-pick-note">${t("No product with a photo in this category yet. Pick from all products:", "Nta gicuruzwa gifite ifoto muri iki cyiciro. Hitamo mu bicuruzwa byose:")}</p>` : `<p class="cat-pick-note">${t("Tap a product photo to use it:", "Kanda ku ifoto y'igicuruzwa ushaka gukoresha:")}</p>`)
+      + `<div class="cat-pick-grid">${list.map(p => `<button type="button" title="${esc(p.rw || p.en || "")}" onclick="gdCatUse('${esc(id)}','${esc(String(p.id))}')"><img src="${esc(thumb(p.imageUrl, 160))}" alt="" loading="lazy"></button>`).join("")}</div>`;
+    box.hidden = false;
+  };
+  window.gdCatUse = async (id, pid) => {
+    const p = products.find(x => String(x.id) === String(pid)); if (!p || !p.imageUrl) return;
+    try { await gdCatSave(id, p.imageUrl); const b = $("catPick_" + id); if (b) b.hidden = true; }
+    catch (err) { alert(t("Failed: ", "Byanze: ") + (err.code || err.message)); }
   };
   window.gdCatPhotoRemove = async id => {
     try {
@@ -4603,6 +4620,14 @@ function gdSavePdf(btn) {
 .cat-photo-pick input{margin-top:6px;width:100%}
 .gc-th-av img,.gc-av img{width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block}
 .gc-th-av{overflow:visible}
+
+.cat-wrap{display:grid;gap:6px}
+.cat-pick{padding:8px;border:1px dashed rgba(128,128,128,.4);border-radius:12px}
+.cat-pick-note{margin:0 0 8px;font-size:.8rem;opacity:.8}
+.cat-pick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:230px;overflow-y:auto}
+.cat-pick-grid button{padding:0;border:2px solid transparent;border-radius:12px;overflow:hidden;aspect-ratio:1;background:rgba(128,128,128,.15);cursor:pointer}
+.cat-pick-grid button:active{border-color:#3b82f6}
+.cat-pick-grid img{width:100%;height:100%;object-fit:cover;display:block}
 </style>
 </body>
 </html>
