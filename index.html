@@ -1611,16 +1611,13 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
     <h1 class="page-title" data-en="Your cart 🛒" data-rw="Agaseke kawe 🛒">Your cart 🛒</h1>
     <div id="cartStaffPanel" hidden>
       <div class="sc-head"><span class="sc-head-ic">⚙️</span><div><b>Ibikorwa by'akazi</b><small>Hitamo icyo ushaka gukora</small></div></div>
+      <div class="sc-styles" id="scStyles" aria-label="Design"><span>🎨</span><button type="button" data-sd="grad">Gradient</button><button type="button" data-sd="glass">Glass</button><button type="button" data-sd="flat">Flat</button><button type="button" data-sd="neon">Neon</button><button type="button" data-sd="light">Light</button></div>
       <div class="admin-shortcuts sc-grid" aria-label="Staff menu">
         <button class="admin-shortcut sc sc-chat sc-wide" type="button" onclick="toggleAdminSection('adminChatSection')"><span class="sc-ic">💬</span><span class="sc-tx"><span class="sc-t">Chat n'abakiriya</span><span class="sc-s">Soma ubutumwa usubize</span></span><span class="sc-badges"><span class="users-count count-total" id="chatTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut sc sc-orders" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span class="sc-ic">📦</span><span class="sc-tx"><span class="sc-t">Ibyatumijwe (Orders)</span><span class="sc-s">Komande z'abakiriya</span></span><span class="sc-badges"><span class="users-count count-new" id="ordersNewBadge" hidden>0</span><span class="users-count count-total" id="ordersTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut sc sc-req" type="button" onclick="toggleAdminSection('adminRequestsSection')"><span class="sc-ic">🛒</span><span class="sc-tx"><span class="sc-t">Ubusabe bwa serivisi</span><span class="sc-s">Kurikirana ubusabe</span></span><span class="sc-badges"><span class="users-count count-new" id="reqNewBadge" hidden>0</span><span class="users-count count-total" id="reqTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut sc sc-svc" type="button" onclick="toggleAdminSection('adminServicesSection')"><span class="sc-ic">🛠️</span><span class="sc-tx"><span class="sc-t">Serivisi dukora</span><span class="sc-s">Ongeramo cyangwa uhindure</span></span><span class="sc-badges"><span class="users-count count-total" id="svcTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut sc sc-stats" type="button" onclick="toggleAdminSection('adminStatsSection')"><span class="sc-ic">📊</span><span class="sc-tx"><span class="sc-t">Abasuye website</span><span class="sc-s">Reba abasuye urubuga</span></span><span class="sc-badges"><span class="users-count count-new" id="statsTodayBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut sc sc-sec" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span class="sc-ic">🧩</span><span class="sc-tx"><span class="sc-t">Ibice bya website</span><span class="sc-s">Slides n'ibice by'urubuga</span></span><span class="sc-badges"></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut sc sc-ban" type="button" onclick="toggleAdminSection('adminBannerSection')"><span class="sc-ic">🎞️</span><span class="sc-tx"><span class="sc-t">Banner (Slides)</span><span class="sc-s">Gucunga slides zo hejuru</span></span><span class="sc-badges"></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut sc sc-shop" type="button" onclick="toggleAdminSection('adminShopsSection')"><span class="sc-ic">🏪</span><span class="sc-tx"><span class="sc-t">Amaduka y'abakiriya</span><span class="sc-s">Emeza cyangwa wange</span></span><span class="sc-badges"><span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
-        <button class="admin-shortcut sc sc-add sc-wide" type="button" onclick="toggleAdminSection('adminAddProductSection')"><span class="sc-ic">➕</span><span class="sc-tx"><span class="sc-t">Ongeramo igicuruzwa</span><span class="sc-s">Shyiraho igicuruzwa gishya</span></span><span class="sc-badges"></span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut sc sc-sec" type="button" onclick="toggleAdminSection('adminSectionsSection')"><span class="sc-ic">🧩</span><span class="sc-tx"><span class="sc-t">Ibice bya website</span><span class="sc-s">Slides, serivisi, amaduka, ibicuruzwa</span></span><span class="sc-badges"><span class="users-count" id="shopPendingBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
       </div>
       <div class="info-card admin-section pl-entry" id="adminProductListSection">
         <div class="admin-products-heading"><h2>Ibicuruzwa biri ku rubuga</h2><div class="btns"><button class="secondary" type="button" onclick="gdOpenPage('adminListWrap')">👁️ Reba ibicuruzwa</button><button class="primary" type="button" onclick="openAddProductForm()">＋ Ongeramo igicuruzwa</button></div></div>
@@ -1979,7 +1976,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 
   // Site-wide bilingual text for labels that were previously hard-coded in Kinyarwanda.
   const RW_EN = {
-    "Ibikorwa by'akazi":"Work tools", "Hitamo icyo ushaka gukora":"Choose what you want to do", "Soma ubutumwa usubize":"Read and reply to messages", "Komande z'abakiriya":"Customer orders", "Kurikirana ubusabe":"Track requests", "Ongeramo cyangwa uhindure":"Add or edit", "Reba abasuye urubuga":"See who visited", "Slides n'ibice by'urubuga":"Slides and page sections", "Emeza cyangwa wange":"Approve or reject", "Shyiraho igicuruzwa gishya":"Post a new product",
+    "Ibikorwa by'akazi":"Work tools", "Hitamo icyo ushaka gukora":"Choose what you want to do", "Soma ubutumwa usubize":"Read and reply to messages", "Slides, serivisi, amaduka, ibicuruzwa":"Slides, services, shops, products", "Komande z'abakiriya":"Customer orders", "Kurikirana ubusabe":"Track requests", "Ongeramo cyangwa uhindure":"Add or edit", "Reba abasuye urubuga":"See who visited", "Slides n'ibice by'urubuga":"Slides and page sections", "Emeza cyangwa wange":"Approve or reject", "Shyiraho igicuruzwa gishya":"Post a new product",
 
     "Ahabanza":"Home", "Ibicuruzwa":"Products", "Konti":"Account", "Byabitswe":"Saved", "Agaseke":"Cart", "Admin":"Admin",
     "Ibicuruzwa wabikije":"Saved products", "Ibicuruzwa wabikije ♡":"Saved products ♡", "Nta burenganzira":"Access denied",
@@ -2610,6 +2607,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
         document.querySelectorAll(`.admin-shortcut[onclick*="${id}"], .users-open-btn[onclick*="${id}"]`).forEach(btn => { btn.hidden = !ok; });
       });
     });
+    { const okAll = ["sections", "services", "shops", "products"].some(k => perms.has(k)); document.querySelectorAll('.admin-shortcut[onclick*="adminSectionsSection"]').forEach(btn => { btn.hidden = !okAll; }); }
   }
 
   function startListeners() {
@@ -2737,6 +2735,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
           <div><h2>${esc(p.name || currentUser.email)}</h2><p>${esc(currentUser.email)}${p.phone ? "<br>" + esc(p.phone) : ""}</p>${admin ? '<span class="role-badge" style="margin:6px 0 0;background:linear-gradient(135deg,#f59e0b,#ef4444)">👑 Super Admin</span>' : ""}</div>
         </div>
         <div id="accPhotoMsg" class="status-msg"></div>
+        ${p.photoURL ? `<div class="acc-photo-acts"><button type="button" class="secondary" onclick="gdOpenPhoto('${esc(p.photoURL)}')">👁️ ${t("View photo", "Reba ifoto")}</button><button type="button" class="secondary acc-del" onclick="accRemovePhoto()">🗑️ ${t("Remove photo", "Siba ifoto")}</button></div>` : ""}
         <button class="secondary" onclick="accLogout()">${t("Sign out", "Sohoka")}</button>
         ${perms.size ? `<button class="primary" onclick="showView('admin')">${admin ? "👑 Super Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi")}</button>` : ""}
       </div>
@@ -2745,6 +2744,18 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   window.renderAccount = renderAccount;
   window.accSetMode = m => { accMode = m; renderAccount(); };
   window.accLogout = () => signOut(auth);
+  window.accRemovePhoto = async () => {
+    if (!currentUser || !profile || !profile.photoURL) return;
+    if (!confirm(t("Remove your profile photo?", "Wifuza gusiba ifoto yawe?"))) return;
+    const pm = (tx, c) => { if ($("accPhotoMsg")) msg("accPhotoMsg", tx, c); else if (c === "err") alert(tx); };
+    try {
+      await updateDoc(doc(db, "users", currentUser.uid), { photoURL: "" });
+      if (isAdminUser(currentUser)) { try { await setDoc(doc(db, "sections", "chat_avatar"), { kind: "chatAvatar", imageUrl: "", createdAt: Date.now() }); } catch (e) {} }
+      profile.photoURL = ""; window.__gdAvTried = null;
+      renderAccount(); try { renderAdminAvatar(); } catch (e) {}
+      pm(t("Photo removed.", "Ifoto yasibwe."), "ok");
+    } catch (err) { pm(t("Could not remove: ", "Ntibyakunze gusiba: ") + (err.code || err.message), "err"); }
+  };
   window.accUploadPhoto = async inp => {
     const f = inp.files && inp.files[0]; if (!f || !currentUser) return;
     const pm = (tx, c) => { if ($("accPhotoMsg")) msg("accPhotoMsg", tx, c); else if (c === "err") alert(tx); };
@@ -4694,7 +4705,63 @@ function gdSavePdf(btn) {
 .gd-photo-box.open{display:flex}
 .gd-photo-box img{max-width:100%;max-height:86vh;max-height:86dvh;object-fit:contain;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
 .gd-photo-box button{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.18);color:#fff;font-size:1.2rem;cursor:pointer}
+
+.acc-photo-acts{display:flex;gap:8px;margin:6px 0 10px}
+.acc-photo-acts button{flex:1;width:auto;padding:10px 12px;font-size:.9rem}
+.acc-photo-acts .acc-del{color:#ef4444;border-color:rgba(239,68,68,.5)}
+
+/* ===== Staff menu: compact tiles + choosable designs ===== */
+#cartStaffPanel .sc-grid{gap:8px;margin:0 0 12px}
+#cartStaffPanel .admin-shortcut.sc{flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;min-height:64px;padding:9px 44px 9px 10px;border-radius:18px;box-shadow:0 8px 16px -10px color-mix(in srgb,var(--c1) 85%,transparent),inset 0 1px 0 rgba(255,255,255,.3)}
+#cartStaffPanel .admin-shortcut.sc::before{width:80px;height:80px;right:-26px;top:-30px}
+#cartStaffPanel .admin-shortcut.sc::after{width:70px;height:70px;left:-20px;bottom:-34px}
+#cartStaffPanel .sc-ic{width:38px;height:38px;border-radius:12px;font-size:1.2rem;box-shadow:0 4px 10px -4px rgba(0,0,0,.35)}
+#cartStaffPanel .sc-t{font-size:.85rem}
+#cartStaffPanel .sc-s{font-size:.66rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#cartStaffPanel .sc-badges{position:static;flex-direction:row;margin:0}
+#cartStaffPanel .sc-badges .users-count{font-size:.7rem;padding:1px 7px;border-width:1.5px}
+#cartStaffPanel .sc .shortcut-arrow{top:50%;bottom:auto;right:8px;width:24px;height:24px;font-size:1rem;transform:translateY(-50%)}
+#cartStaffPanel .sc:active .shortcut-arrow{transform:translateY(-50%) translateX(3px)}
+#cartStaffPanel .sc.sc-wide{min-height:58px;padding:9px 44px 9px 10px}
+#cartStaffPanel .sc-ic{animation:none}
+@media(max-width:480px){#cartStaffPanel .sc-grid{gap:8px}#cartStaffPanel .admin-shortcut.sc{min-height:62px;padding:8px 40px 8px 9px;border-radius:16px}#cartStaffPanel .sc-t{font-size:.8rem}}
+#cartStaffPanel .sc-styles{display:flex;align-items:center;gap:6px;overflow-x:auto;margin:0 0 10px;padding:2px 0;scrollbar-width:none}
+#cartStaffPanel .sc-styles::-webkit-scrollbar{display:none}
+#cartStaffPanel .sc-styles span{flex:0 0 auto;font-size:1rem}
+#cartStaffPanel .sc-styles button{flex:0 0 auto;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--text);font-size:.78rem;font-weight:800}
+#cartStaffPanel .sc-styles button.on{background:#2563eb;border-color:#2563eb;color:#fff}
+/* glass */
+#cartStaffPanel[data-sd="glass"] .admin-shortcut.sc{background:rgba(255,255,255,.08);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.22);border-left:4px solid var(--c1);color:var(--text);box-shadow:0 6px 18px -10px rgba(0,0,0,.5)}
+#cartStaffPanel[data-sd="glass"] .admin-shortcut.sc::before,#cartStaffPanel[data-sd="glass"] .admin-shortcut.sc::after{display:none}
+#cartStaffPanel[data-sd="glass"] .sc-ic{background:linear-gradient(145deg,var(--c1),var(--c2));border:0}
+#cartStaffPanel[data-sd="glass"] .sc-t{text-shadow:none}
+#cartStaffPanel[data-sd="glass"] .sc .shortcut-arrow{background:rgba(128,128,128,.2);border-color:rgba(128,128,128,.35)}
+/* flat */
+#cartStaffPanel[data-sd="flat"] .admin-shortcut.sc{background:var(--c1);border:0;box-shadow:none;border-radius:12px}
+#cartStaffPanel[data-sd="flat"] .admin-shortcut.sc::before,#cartStaffPanel[data-sd="flat"] .admin-shortcut.sc::after{display:none}
+#cartStaffPanel[data-sd="flat"] .sc-ic{background:rgba(255,255,255,.2);border:0;box-shadow:none;border-radius:10px}
+/* neon outline */
+#cartStaffPanel[data-sd="neon"] .admin-shortcut.sc{background:#05070f;border:2px solid var(--c1);color:#fff;box-shadow:0 0 12px -2px var(--c1),inset 0 0 10px -6px var(--c1);border-radius:14px}
+#cartStaffPanel[data-sd="neon"] .admin-shortcut.sc::before,#cartStaffPanel[data-sd="neon"] .admin-shortcut.sc::after{display:none}
+#cartStaffPanel[data-sd="neon"] .sc-ic{background:transparent;border:1.5px solid var(--c2);box-shadow:0 0 8px -1px var(--c2)}
+#cartStaffPanel[data-sd="neon"] .sc-t{text-shadow:0 0 8px var(--c1)}
+#cartStaffPanel[data-sd="neon"] .sc .shortcut-arrow{background:transparent;border-color:var(--c2)}
+/* light card */
+#cartStaffPanel[data-sd="light"] .admin-shortcut.sc{background:var(--panel);color:var(--text);border:1px solid var(--line);border-bottom:3px solid var(--c1);box-shadow:0 4px 10px -8px rgba(0,0,0,.4);border-radius:14px}
+#cartStaffPanel[data-sd="light"] .admin-shortcut.sc::before,#cartStaffPanel[data-sd="light"] .admin-shortcut.sc::after{display:none}
+#cartStaffPanel[data-sd="light"] .sc-ic{background:linear-gradient(145deg,var(--c1),var(--c2));border:0;color:#fff}
+#cartStaffPanel[data-sd="light"] .sc-t{text-shadow:none}
+#cartStaffPanel[data-sd="light"] .sc .shortcut-arrow{background:rgba(128,128,128,.16);border-color:rgba(128,128,128,.3)}
 </style>
+<script>
+(function(){
+  var p=document.getElementById("cartStaffPanel"),bar=document.getElementById("scStyles"); if(!p||!bar) return;
+  function set(n,save){ p.setAttribute("data-sd",n); bar.querySelectorAll("button").forEach(function(b){ b.classList.toggle("on",b.getAttribute("data-sd")===n); }); if(save){ try{ localStorage.setItem("gdStaffDesign",n); }catch(e){} } }
+  var cur="grad"; try{ cur=localStorage.getItem("gdStaffDesign")||"grad"; }catch(e){}
+  set(cur,false);
+  bar.addEventListener("click",function(e){ var b=e.target.closest("button[data-sd]"); if(b) set(b.getAttribute("data-sd"),true); });
+})();
+</script>
 </body>
 </html>
 
