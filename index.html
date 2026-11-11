@@ -1611,7 +1611,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
     <h1 class="page-title" data-en="Your cart 🛒" data-rw="Agaseke kawe 🛒">Your cart 🛒</h1>
     <div id="cartStaffPanel" hidden>
       <div class="sc-head"><span class="sc-head-ic">⚙️</span><div><b>Ibikorwa by'akazi</b><small>Hitamo icyo ushaka gukora</small></div></div>
-      <div class="sc-styles" id="scStyles" aria-label="Design"><span>🎨</span><button type="button" data-sd="grad">Gradient</button><button type="button" data-sd="glass">Glass</button><button type="button" data-sd="flat">Flat</button><button type="button" data-sd="neon">Neon</button><button type="button" data-sd="light">Light</button></div>
+      <div class="sc-styles" id="scStyles" aria-label="Design"><span>🎨</span><button type="button" data-sd="grad">Gradient</button><button type="button" data-sd="glass">Glass</button><button type="button" data-sd="flat">Flat</button><button type="button" data-sd="neon">Neon</button><button type="button" data-sd="light">Light</button><button type="button" data-sd="aurora">Aurora</button><button type="button" data-sd="candy">Candy</button><button type="button" data-sd="dark">Dark</button><button type="button" data-sd="soft">Soft</button></div>
       <div class="admin-shortcuts sc-grid" aria-label="Staff menu">
         <button class="admin-shortcut sc sc-chat sc-wide" type="button" onclick="toggleAdminSection('adminChatSection')"><span class="sc-ic">💬</span><span class="sc-tx"><span class="sc-t">Chat n'abakiriya</span><span class="sc-s">Soma ubutumwa usubize</span></span><span class="sc-badges"><span class="users-count count-total" id="chatTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut sc sc-orders" type="button" onclick="toggleAdminSection('adminOrdersSection')"><span class="sc-ic">📦</span><span class="sc-tx"><span class="sc-t">Ibyatumijwe (Orders)</span><span class="sc-s">Komande z'abakiriya</span></span><span class="sc-badges"><span class="users-count count-new" id="ordersNewBadge" hidden>0</span><span class="users-count count-total" id="ordersTotalBadge" hidden>0</span></span><span class="shortcut-arrow">›</span></button>
@@ -4767,6 +4767,31 @@ function gdSavePdf(btn) {
 #adminProductListSection.pl-entry h2{margin:0;font-size:.95rem;color:var(--text)}
 #adminProductListSection.pl-entry .btns{flex-wrap:nowrap;gap:6px}
 #adminProductListSection.pl-entry .btns button{flex:1 1 0;min-width:0;padding:8px 6px;font-size:.8rem;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ===== more designs ===== */
+#cartStaffPanel[data-sd="aurora"] .admin-shortcut.sc{background:radial-gradient(circle at 12% 0%,color-mix(in srgb,var(--c2) 70%,transparent),transparent 60%),linear-gradient(160deg,var(--c1),color-mix(in srgb,var(--c1) 45%,#000));border:1px solid rgba(255,255,255,.35);border-radius:20px;box-shadow:0 10px 22px -10px var(--c1),inset 0 1px 0 rgba(255,255,255,.5)}
+#cartStaffPanel[data-sd="aurora"] .admin-shortcut.sc::before{inset:0;width:auto;height:auto;border-radius:inherit;background:linear-gradient(120deg,rgba(255,255,255,.3),transparent 45%)}
+#cartStaffPanel[data-sd="aurora"] .admin-shortcut.sc::after{display:none}
+#cartStaffPanel[data-sd="aurora"] .sc-ic{background:#fff;border:0;border-radius:50%;box-shadow:0 0 0 4px rgba(255,255,255,.22),0 6px 12px -4px rgba(0,0,0,.4)}
+#cartStaffPanel[data-sd="candy"] .admin-shortcut.sc{background:color-mix(in srgb,var(--c1) 13%,var(--panel));color:var(--text);border:2px solid color-mix(in srgb,var(--c1) 45%,transparent);border-radius:24px;box-shadow:0 6px 0 -2px color-mix(in srgb,var(--c1) 35%,transparent)}
+#cartStaffPanel[data-sd="candy"] .admin-shortcut.sc::before,#cartStaffPanel[data-sd="candy"] .admin-shortcut.sc::after{display:none}
+#cartStaffPanel[data-sd="candy"] .sc-ic{background:linear-gradient(145deg,var(--c1),var(--c2));border:0;border-radius:50%;box-shadow:0 6px 12px -4px var(--c1)}
+#cartStaffPanel[data-sd="candy"] .sc-t{text-shadow:none}
+#cartStaffPanel[data-sd="candy"] .sc .shortcut-arrow{background:var(--c1);border:0;color:#fff}
+#cartStaffPanel[data-sd="dark"] .admin-shortcut.sc{background:linear-gradient(145deg,#161c33,#0a0e1d);color:#fff;border:1px solid rgba(255,255,255,.08);border-radius:16px;box-shadow:inset 0 3px 0 var(--c1),0 10px 20px -12px #000}
+#cartStaffPanel[data-sd="dark"] .admin-shortcut.sc::before{width:90px;height:90px;right:-30px;top:-34px;background:radial-gradient(circle,color-mix(in srgb,var(--c1) 45%,transparent),transparent 70%)}
+#cartStaffPanel[data-sd="dark"] .admin-shortcut.sc::after{display:none}
+#cartStaffPanel[data-sd="dark"] .sc-ic{background:linear-gradient(145deg,var(--c1),var(--c2));border:0;border-radius:12px}
+#cartStaffPanel[data-sd="dark"] .sc .shortcut-arrow{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
+#cartStaffPanel[data-sd="soft"] .admin-shortcut.sc{background:var(--panel);color:var(--text);border:0;border-radius:22px;box-shadow:7px 7px 16px rgba(0,0,0,.2),-5px -5px 12px rgba(255,255,255,.14)}
+#cartStaffPanel[data-sd="soft"] .admin-shortcut.sc::before,#cartStaffPanel[data-sd="soft"] .admin-shortcut.sc::after{display:none}
+#cartStaffPanel[data-sd="soft"] .sc-ic{background:var(--panel);border:0;border-radius:16px;box-shadow:inset 3px 3px 7px rgba(0,0,0,.2),inset -3px -3px 7px rgba(255,255,255,.14)}
+#cartStaffPanel[data-sd="soft"] .sc-t{text-shadow:none}
+#cartStaffPanel[data-sd="soft"] .sc .shortcut-arrow{background:linear-gradient(145deg,var(--c1),var(--c2));border:0;color:#fff;box-shadow:0 4px 10px -3px var(--c1)}
+/* products card buttons */
+#adminProductListSection.pl-entry h2{color:var(--text)!important;text-shadow:none!important}
+#adminProductListSection.pl-entry .btns button.secondary{background:linear-gradient(135deg,#1e293b,#475569)!important;color:#fff!important;border:0!important;box-shadow:0 6px 14px -8px #000}
+#adminProductListSection.pl-entry .btns button.primary{background:linear-gradient(135deg,#2563eb,#06b6d4)!important;color:#fff!important;border:0!important;box-shadow:0 6px 14px -6px #2563eb}
 </style>
 <script>
 (function(){
