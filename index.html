@@ -2658,7 +2658,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     // Live profile: when the owner changes this person's role, access updates immediately.
     unsubProfile = onSnapshot(doc(db, "users", user.uid), snap => {
       if (snap.exists()) { profile = snap.data(); window.gdProfile = profile; }
-      startListeners(); renderAccount();
+      startListeners(); renderAccount(); try { gdSyncAdminAvatar(); } catch (e) {}
     }, err => { console.error("Profile:", err); startListeners(); });
     startListeners();
   });
@@ -2759,7 +2759,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
         await setDoc(ref, { name: (profile && profile.name) || currentUser.displayName || "", phone: (profile && profile.phone) || "", email: currentUser.email || "", role: "customer", createdAt: Date.now(), photoURL: url });
       }
       if (profile) profile.photoURL = url;
-      renderAccount();
+      renderAccount(); try { gdSyncAdminAvatar(); } catch (e) {}
     } catch (err) { pm(t("Photo not saved: ", "Ifoto ntibitswe: ") + (err.code || err.message), "err"); }
     inp.value = "";
   };
@@ -2817,6 +2817,34 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   const chatSeenSet = k => { try { localStorage.setItem(k, String(Date.now())); } catch (e) { /* ignore */ } };
   const chatAgo = ts => { if (!ts) return ""; const m = Math.floor((Date.now() - ts) / 60000); if (m < 1) return t("now", "ubu"); if (m < 60) return m + " min"; const h = Math.floor(m / 60); return h < 24 ? h + " h" : new Date(ts).toLocaleDateString(); };
   const CHAT_ONLINE_MS = 120000;
+  const chatAvImg = () => chatAvatarUrl ? `<img src="${esc(avUrl(chatAvatarUrl, 96))}" alt="">` : "";
+  function gdApplyChatAvatar() {
+    const av = $("gdChatAv"); if (!av || activeChatAdmin) return;
+    if (chatAvatarUrl) av.innerHTML = chatAvImg(); else if (av.querySelector("img")) av.textContent = "GD";
+  }
+  // The super admin's profile photo is published (public "sections" doc) so customers can see it in the chat header.
+  function gdSyncAdminAvatar() {
+    if (!isAdminUser(currentUser) || !profile || !profile.photoURL || profile.photoURL === chatAvatarUrl || window.__gdAvTried === profile.photoURL) return;
+    window.__gdAvTried = profile.photoURL;
+    setDoc(doc(db, "sections", "chat_avatar"), { kind: "chatAvatar", imageUrl: profile.photoURL, createdAt: Date.now() }).catch(e => console.warn("chat avatar:", e));
+  }
+  window.gdOpenPhoto = url => {
+    if (!url) return;
+    let o = document.getElementById("gdPhotoBox");
+    if (!o) {
+      o = document.createElement("div"); o.id = "gdPhotoBox"; o.className = "gd-photo-box";
+      o.innerHTML = '<button type="button" aria-label="Close">✕</button><img alt="">';
+      o.addEventListener("click", () => o.classList.remove("open"));
+      document.addEventListener("keydown", ev => { if (ev.key === "Escape") o.classList.remove("open"); });
+      document.body.appendChild(o);
+    }
+    o.querySelector("img").src = url; o.classList.add("open");
+  };
+  (() => { const av = document.getElementById("gdChatAv"); if (av) av.addEventListener("click", () => {
+    const im = av.querySelector("img"); if (!im) return;
+    if (activeChatAdmin) { const th = chatThreads.find(c => c.id === activeChatId); const u = th && allUsers.find(x => x.uid === (th.id || th.userId)); gdOpenPhoto((u && u.photoURL) || im.src); }
+    else gdOpenPhoto(chatAvatarUrl || im.src);
+  }); })();
   const chatPhotoOf = c => { const u = c && allUsers.find(x => x.uid === (c.id || c.userId)); return u && u.photoURL ? avUrl(u.photoURL, 96) : ""; };
   const chatIsOnline = c => !!c && (Date.now() - (c.lastSeen || 0)) < CHAT_ONLINE_MS;
   const chatPresence = c => chatIsOnline(c) ? `<span class="gc-pres on">🟢 ${t("Online now", "Ari online ubu")}</span>` : (c && c.lastSeen ? `<span class="gc-pres">⚪ ${t("Last seen", "Yagaragaye")} ${esc(chatAgo(c.lastSeen))}${/^\d/.test(chatAgo(c.lastSeen)) ? " " + t("ago", "ishize") : ""}</span>` : "");
@@ -2862,7 +2890,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const th = chatThreads.find(c => c.id === uid);
     $("gdChatTitle").textContent = adminMode ? (th && th.name || uid) : "GD Electric Motors";
     $("gdChatSub").innerHTML = adminMode ? (chatPresence(th) + (th && (th.phone || th.email) ? " · " + esc(th.phone || th.email) : "")) : `<i class="gc-on"></i> ${t("We reply as soon as possible", "Dusubiza vuba bishoboka")}`;
-    { const av = $("gdChatAv"), ph = adminMode ? chatPhotoOf(th) : ""; if (ph) av.innerHTML = `<img src="${esc(ph)}" alt="">`; else av.textContent = adminMode ? (String(th && th.name || "?").trim().charAt(0).toUpperCase() || "?") : "GD"; }
+    { const av = $("gdChatAv"), ph = adminMode ? chatPhotoOf(th) : ""; if (ph) av.innerHTML = `<img src="${esc(ph)}" alt="">`; else if (!adminMode && chatAvatarUrl) av.innerHTML = chatAvImg(); else av.textContent = adminMode ? (String(th && th.name || "?").trim().charAt(0).toUpperCase() || "?") : "GD"; }
     $("gdChatPanel").classList.remove("gc-locked");
     renderChatQuick();
     unsubChatMessages = onSnapshot(collection(db, "chats", uid, "messages"), snap => {
@@ -2872,7 +2900,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   }
   function renderChatLocked() {
     $("gdChatPanel").classList.add("gc-locked");
-    $("gdChatTitle").textContent = "GD Electric Motors"; $("gdChatAv").textContent = "GD";
+    $("gdChatTitle").textContent = "GD Electric Motors"; if (chatAvatarUrl) $("gdChatAv").innerHTML = chatAvImg(); else $("gdChatAv").textContent = "GD";
     $("gdChatSub").innerHTML = `<i class="gc-on"></i> ${t("We reply as soon as possible", "Dusubiza vuba bishoboka")}`;
     $("gdChatMessages").innerHTML = `<div class="gc-login"><div class="gc-login-ic">💬</div><b>${t("Sign in to chat with us", "Injira kugira ngo muganire")}</b><p>${t("Create a free account or sign in, then you can message us and see our replies here.", "Injira muri konti yawe (cyangwa ufungure nshya ku buntu), maze utwandikire ubone n'ibisubizo hano.")}</p><button type="button" class="gc-btn" onclick="gdCloseChat();showView('account')">🔑 ${t("Sign in / Create account", "Injira / Fungura konti")}</button><button type="button" class="gc-btn gc-wa" onclick="contactWhatsApp()">💬 ${t("Chat on WhatsApp instead", "Cyangwa twandikire kuri WhatsApp")}</button></div>`;
   }
@@ -3311,11 +3339,13 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   // ----- custom website sections -----
   let customSections = [], editingSectionId = null, editingSectionImage = "", editingSectionImage2 = "";
   let customCats = [], wantCat = null;
+  let chatAvatarUrl = ""; try { chatAvatarUrl = localStorage.getItem("gdChatAv") || ""; } catch (e) {}
   const BASE_CATS_N = 4;
   onSnapshot(collection(db, "sections"), snap => {
     const allSecs = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
     customCats = allSecs.filter(v => v.kind === "category");
-    customSections = allSecs.filter(v => v.kind !== "category" && v.kind !== "categoryImage");
+    customSections = allSecs.filter(v => v.kind !== "category" && v.kind !== "categoryImage" && v.kind !== "chatAvatar");
+    { const ca = allSecs.find(v => v.kind === "chatAvatar"); chatAvatarUrl = (ca && ca.imageUrl) || ""; try { localStorage.setItem("gdChatAv", chatAvatarUrl); } catch (e) {} try { gdApplyChatAvatar(); gdSyncAdminAvatar(); } catch (e) {} }
     const catImgs = {}; allSecs.filter(v => v.kind === "categoryImage").forEach(v => { if (v.catId && v.imageUrl) catImgs[v.catId] = v.imageUrl; });
     categories.splice(BASE_CATS_N);
     categories.forEach(c => { c.imageUrl = catImgs[c.id] || ""; });
@@ -4657,6 +4687,13 @@ function gdSavePdf(btn) {
 .cat-pick-grid button{padding:0;border:2px solid transparent;border-radius:12px;overflow:hidden;aspect-ratio:1;background:rgba(128,128,128,.15);cursor:pointer}
 .cat-pick-grid button:active{border-color:#3b82f6}
 .cat-pick-grid img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* chat avatar full view */
+#gdChatAv{cursor:pointer}
+.gd-photo-box{position:fixed;inset:0;z-index:2147483000;background:rgba(0,0,0,.93);display:none;align-items:center;justify-content:center;padding:16px}
+.gd-photo-box.open{display:flex}
+.gd-photo-box img{max-width:100%;max-height:86vh;max-height:86dvh;object-fit:contain;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.gd-photo-box button{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.18);color:#fff;font-size:1.2rem;cursor:pointer}
 </style>
 </body>
 </html>
