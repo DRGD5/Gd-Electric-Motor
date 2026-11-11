@@ -1937,6 +1937,21 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const thumb = (u, w) => String(u || "").replace("/upload/f_auto,q_auto,w_700/", "/upload/f_auto,q_auto,w_" + w + "/");
+  // Rotation: every visit (page load, or coming back after 10+ min away) the last items move to the front
+  let gdVisit = 0;
+  try { gdVisit = (parseInt(localStorage.getItem("gdVisit") || "0", 10) || 0) + 1; localStorage.setItem("gdVisit", String(gdVisit)); } catch (e) {}
+  const gdRot = (arr, step) => { const n = arr.length; if (n < 2) return arr; const k = (((gdVisit * step) % n) + n) % n; return k ? arr.slice(-k).concat(arr.slice(0, -k)) : arr; };
+  (() => {
+    let hiddenAt = 0;
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) { hiddenAt = Date.now(); return; }
+      if (hiddenAt && Date.now() - hiddenAt > 600000) {
+        gdVisit++; try { localStorage.setItem("gdVisit", String(gdVisit)); } catch (e) {}
+        if (window.scrollY < 150) { try { setProducts(dbList); } catch (e) {} }
+      }
+      hiddenAt = 0;
+    });
+  })();
   // Category photos: remember them on this device so they show at once on the next visit
   const preloadCatImgs = () => { try { categories.forEach(c => { if (c.imageUrl) { new Image().src = thumb(c.imageUrl, 420); new Image().src = thumb(c.imageUrl, 140); } }); } catch (e) {} };
   try {
@@ -1951,7 +1966,8 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
   function setProducts(list) {
     dbList = list || [];
     // Added products first (newest), the original sample products stay unless the admin hides them.
-    products = [...dbList, ...sampleProducts.filter(p => !hiddenSampleIds.includes(p.id))].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+    const allP = [...dbList, ...sampleProducts.filter(p => !hiddenSampleIds.includes(p.id))];
+    products = [...gdRot(allP.filter(p => p.featured), 1), ...gdRot(allP.filter(p => !p.featured), 4)];
     if (!window.__gdRenderQ) {
       window.__gdRenderQ = requestAnimationFrame(() => { window.__gdRenderQ = 0; renderHome(); renderCategories(); renderSaved(); renderCart(); });
     }
@@ -2115,7 +2131,8 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
   }
   function renderHomeCategories() {
     const el=document.getElementById("homeCategories"); if(!el) return;
-    el.innerHTML=categories.map(categoryCard).join("")+shopCategoryCards();
+    const shopCards=(window.gdApprovedShops||[]).map(x=>`<button class="category" onclick="openShop('${esc(x.id)}')"><span class="category-art">${x.logoUrl?`<img src="${esc(x.logoUrl)}" alt="" loading="lazy">`:"🏪"}</span><strong>${esc(x.name)}</strong></button>`);
+    el.innerHTML=gdRot([...categories.map(categoryCard),...shopCards],1).join("");
   }
   function categoryCard(c) {
     return `<button class="category ${activeCategory===c.id?'selected':''}" onclick="selectCategory('${c.id}')">
@@ -3549,7 +3566,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     if (typeof renderCategories === "function") renderCategories();
     if (typeof renderHomeCategories === "function") renderHomeCategories();
     const el = $("shopsHome");
-    const homeItems = shopProducts.map(pp => ({ pp, sh: approved.find(x => x.id === pp.shopId) })).filter(o => o.sh);
+    const homeItems = gdRot(shopProducts.map(pp => ({ pp, sh: approved.find(x => x.id === pp.shopId) })).filter(o => o.sh), 2);
     if (el) el.innerHTML = homeItems.length ? `<h2>🏪 ${t("From new shops", "Ibiva mu maduka mashya")}</h2>
       <div class="shop-block-row">${homeItems.map(({ pp, sh }) => `<div class="shop-mini" onclick="openShop('${esc(sh.id)}')">${pp.imageUrl ? `<img src="${esc(thumb(pp.imageUrl, 420))}" alt="${esc(pp.name)}" loading="lazy" decoding="async">` : `<div class="shop-mini-ph">🏪</div>`}<span class="shop-badge">🏪 ${esc(sh.name)}</span><div class="shop-mini-body"><span>${esc(pp.name)}</span><b>${Number(pp.price) > 0 ? money(pp.price) : t("Ask for price", "Baza igiciro")}</b><button type="button" class="primary" onclick="event.stopPropagation();addToCart('s_${esc(pp.id)}')">${Number(pp.price) > 0 ? t("Add to cart", "Shyira mu gaseke") : "📩 " + t("Request / Order", "Saba / Tumiza")}</button></div></div>`).join("")}</div>` : "";
     renderShopPromo();
