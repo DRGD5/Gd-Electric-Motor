@@ -1937,6 +1937,15 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const thumb = (u, w) => String(u || "").replace("/upload/f_auto,q_auto,w_700/", "/upload/f_auto,q_auto,w_" + w + "/");
+  // Category photos: remember them on this device so they show at once on the next visit
+  const preloadCatImgs = () => { try { categories.forEach(c => { if (c.imageUrl) { new Image().src = thumb(c.imageUrl, 420); new Image().src = thumb(c.imageUrl, 140); } }); } catch (e) {} };
+  try {
+    JSON.parse(localStorage.getItem("gdCats") || "[]").forEach(x => {
+      const b = categories.find(c => c.id === x.id);
+      if (b) b.imageUrl = x.imageUrl || ""; else if (x.custom && x.id) categories.push(x);
+    });
+    preloadCatImgs();
+  } catch (e) {}
   const iconOf = p => p.icon || categories.find(c=>c.id===p.category)?.icon || "⚙️";
   let hiddenSampleIds = [], dbList = [];
   function setProducts(list) {
@@ -2110,7 +2119,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
   }
   function categoryCard(c) {
     return `<button class="category ${activeCategory===c.id?'selected':''}" onclick="selectCategory('${c.id}')">
-      <span class="category-art">${c.imageUrl?`<img src="${esc(thumb(c.imageUrl,240))}" alt="" loading="lazy">`:c.icon}</span><strong>${categoryName(c)}</strong></button>`;
+      <span class="category-art">${c.imageUrl?`<img src="${esc(thumb(c.imageUrl,420))}" alt="" decoding="async" fetchpriority="high">`:c.icon}</span><strong>${categoryName(c)}</strong></button>`;
   }
   function productCard(p, compact) {
     const isSaved=saved.includes(p.id);
@@ -2239,7 +2248,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
     const sideEl=document.getElementById("allCategories");
     const csItem=(icon,label,count,active,act)=>`<button type="button" class="cs-item${active?" active":""}" onclick="${act}"><span class="cs-ic">${icon}</span><b>${label}</b>${count==null?"":`<small>${count}</small>`}</button>`;
     sideEl.innerHTML=csItem("🗂️",esc(t("All","Byose")),products.length,!activeCategory,"selectCategory(null)")
-      +categories.map(c=>csItem(c.imageUrl?`<img src="${esc(thumb(c.imageUrl,120))}" alt="" loading="lazy">`:c.icon,esc(categoryName(c)),products.filter(p=>p.category===c.id).length,activeCategory===c.id,`selectCategory('${esc(c.id)}')`)).join("")
+      +categories.map(c=>csItem(c.imageUrl?`<img src="${esc(thumb(c.imageUrl,140))}" alt="" decoding="async">`:c.icon,esc(categoryName(c)),products.filter(p=>p.category===c.id).length,activeCategory===c.id,`selectCategory('${esc(c.id)}')`)).join("")
       +(window.gdApprovedShops||[]).map(x=>csItem(x.logoUrl?`<img src="${esc(x.logoUrl)}" alt="" loading="lazy">`:"🏪",esc(x.name),(window.gdShopProducts||[]).filter(pp=>pp.shopId===x.id).length,false,`openShop('${esc(x.id)}')`)).join("");
     { const a=sideEl.querySelector(".cs-item.active"); if(a&&sideEl.scrollHeight>sideEl.clientHeight) sideEl.scrollTop=Math.max(0,a.offsetTop-sideEl.offsetTop-40); }
     let list=products.filter(p=>{
@@ -3294,6 +3303,8 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     categories.splice(BASE_CATS_N);
     categories.forEach(c => { c.imageUrl = catImgs[c.id] || ""; });
     customCats.forEach(c => categories.push({ id: "c_" + c.id, en: c.name || "", rw: c.name || "", icon: c.icon || "📦", imageUrl: c.imageUrl || "", custom: true, docId: c.id }));
+    try { localStorage.setItem("gdCats", JSON.stringify(categories)); } catch (e) {}
+    try { preloadCatImgs(); } catch (e) {}
     try { fillCategories(); } catch (e) {}
     try { renderHome(); renderCategories(); } catch (e) {}
     renderCustomSections(); renderAdminSections(); renderHeroSlides(); renderBannerAdmin(); renderWorks();
@@ -4019,6 +4030,7 @@ function gdSavePdf(btn) {
     } catch (err) { wantCat = null; alert(t("Failed: ", "Byanze: ") + (err.code || err.message)); }
   };
   async function gdCatSave(id, url) {
+    try { [140, 420].forEach(w => { new Image().src = thumb(url, w); }); } catch (e) {}
     const c = categories.find(x => x.id === id);
     if (c && c.custom) await updateDoc(doc(db, "sections", c.docId), { imageUrl: url });
     else await setDoc(doc(db, "sections", "catimg_" + id), { kind: "categoryImage", catId: id, imageUrl: url, createdAt: Date.now() });
