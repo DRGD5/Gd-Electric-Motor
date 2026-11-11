@@ -1808,9 +1808,10 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
           <div class="form-row"><label>Ibisobanuro (Kinyarwanda)</label><textarea id="fDescRw"></textarea></div>
           <div class="form-row"><label>Description (English)</label><textarea id="fDescEn"></textarea></div>
           <div class="form-row"><label>Icyiciro</label><select id="fCategory"></select>
-            <button type="button" class="secondary cat-add-toggle" onclick="gdToggleCatAdd()">➕ Ongeramo icyiciro gishya</button>
+            <button type="button" class="secondary cat-add-toggle" onclick="gdToggleCatAdd()">🗂️ Ibyiciro: ongeramo / shyiraho ifoto</button>
             <div id="catAddBox" class="cat-add-box" hidden>
               <div class="cat-add-row"><input id="newCatIcon" maxlength="4" placeholder="🔧" aria-label="Emoji"><input id="newCatName" maxlength="40" placeholder="Izina ry'icyiciro..." aria-label="Category name"></div>
+              <label class="cat-photo-pick">📷 Ifoto y'icyiciro (si ngombwa) <input id="newCatPhoto" type="file" accept="image/*"></label>
               <button type="button" class="primary" onclick="gdAddCategory()">💾 Bika icyiciro</button>
               <div id="catCustomList" class="cat-custom-list"></div>
             </div></div>
@@ -2109,7 +2110,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
   }
   function categoryCard(c) {
     return `<button class="category ${activeCategory===c.id?'selected':''}" onclick="selectCategory('${c.id}')">
-      <span class="category-art">${c.icon}</span><strong>${categoryName(c)}</strong></button>`;
+      <span class="category-art">${c.imageUrl?`<img src="${esc(thumb(c.imageUrl,240))}" alt="" loading="lazy">`:c.icon}</span><strong>${categoryName(c)}</strong></button>`;
   }
   function productCard(p, compact) {
     const isSaved=saved.includes(p.id);
@@ -2238,7 +2239,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
     const sideEl=document.getElementById("allCategories");
     const csItem=(icon,label,count,active,act)=>`<button type="button" class="cs-item${active?" active":""}" onclick="${act}"><span class="cs-ic">${icon}</span><b>${label}</b>${count==null?"":`<small>${count}</small>`}</button>`;
     sideEl.innerHTML=csItem("🗂️",esc(t("All","Byose")),products.length,!activeCategory,"selectCategory(null)")
-      +categories.map(c=>csItem(c.icon,esc(categoryName(c)),products.filter(p=>p.category===c.id).length,activeCategory===c.id,`selectCategory('${esc(c.id)}')`)).join("")
+      +categories.map(c=>csItem(c.imageUrl?`<img src="${esc(thumb(c.imageUrl,120))}" alt="" loading="lazy">`:c.icon,esc(categoryName(c)),products.filter(p=>p.category===c.id).length,activeCategory===c.id,`selectCategory('${esc(c.id)}')`)).join("")
       +(window.gdApprovedShops||[]).map(x=>csItem(x.logoUrl?`<img src="${esc(x.logoUrl)}" alt="" loading="lazy">`:"🏪",esc(x.name),(window.gdShopProducts||[]).filter(pp=>pp.shopId===x.id).length,false,`openShop('${esc(x.id)}')`)).join("");
     { const a=sideEl.querySelector(".cs-item.active"); if(a&&sideEl.scrollHeight>sideEl.clientHeight) sideEl.scrollTop=Math.max(0,a.offsetTop-sideEl.offsetTop-40); }
     let list=products.filter(p=>{
@@ -2790,12 +2791,14 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   const chatSeenSet = k => { try { localStorage.setItem(k, String(Date.now())); } catch (e) { /* ignore */ } };
   const chatAgo = ts => { if (!ts) return ""; const m = Math.floor((Date.now() - ts) / 60000); if (m < 1) return t("now", "ubu"); if (m < 60) return m + " min"; const h = Math.floor(m / 60); return h < 24 ? h + " h" : new Date(ts).toLocaleDateString(); };
   const CHAT_ONLINE_MS = 120000;
+  const chatPhotoOf = c => { const u = c && allUsers.find(x => x.uid === (c.id || c.userId)); return u && u.photoURL ? avUrl(u.photoURL, 96) : ""; };
   const chatIsOnline = c => !!c && (Date.now() - (c.lastSeen || 0)) < CHAT_ONLINE_MS;
   const chatPresence = c => chatIsOnline(c) ? `<span class="gc-pres on">🟢 ${t("Online now", "Ari online ubu")}</span>` : (c && c.lastSeen ? `<span class="gc-pres">⚪ ${t("Last seen", "Yagaragaye")} ${esc(chatAgo(c.lastSeen))}${/^\d/.test(chatAgo(c.lastSeen)) ? " " + t("ago", "ishize") : ""}</span>` : "");
   function gdRefreshChatHeader() {
     if (!activeChatAdmin || !activeChatId) return; const p = $("gdChatPanel"); if (!p || p.hidden) return;
     const th = chatThreads.find(c => c.id === activeChatId); const sub = $("gdChatSub"); if (!th || !sub) return;
     sub.innerHTML = chatPresence(th) + (th.phone || th.email ? " · " + esc(th.phone || th.email) : "");
+    const av = $("gdChatAv"), ph = chatPhotoOf(th); if (av && ph && !av.querySelector("img")) av.innerHTML = `<img src="${esc(ph)}" alt="">`;
   }
   const chatUnreadAdmin = c => c.lastSenderRole === "customer" && (c.updatedAt || 0) > chatSeenGet("gdChatSeenA:" + c.id);
   function stopChatMessages() { if (unsubChatMessages) { unsubChatMessages(); unsubChatMessages = null; } }
@@ -2833,7 +2836,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const th = chatThreads.find(c => c.id === uid);
     $("gdChatTitle").textContent = adminMode ? (th && th.name || uid) : "GD Electric Motors";
     $("gdChatSub").innerHTML = adminMode ? (chatPresence(th) + (th && (th.phone || th.email) ? " · " + esc(th.phone || th.email) : "")) : `<i class="gc-on"></i> ${t("We reply as soon as possible", "Dusubiza vuba bishoboka")}`;
-    $("gdChatAv").textContent = adminMode ? (String(th && th.name || "?").trim().charAt(0).toUpperCase() || "?") : "GD";
+    { const av = $("gdChatAv"), ph = adminMode ? chatPhotoOf(th) : ""; if (ph) av.innerHTML = `<img src="${esc(ph)}" alt="">`; else av.textContent = adminMode ? (String(th && th.name || "?").trim().charAt(0).toUpperCase() || "?") : "GD"; }
     $("gdChatPanel").classList.remove("gc-locked");
     renderChatQuick();
     unsubChatMessages = onSnapshot(collection(db, "chats", uid, "messages"), snap => {
@@ -2883,7 +2886,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const b = $("chatTotalBadge"); if (b) { b.textContent = String(chatThreads.length); b.hidden = !chatThreads.length; }
     el.innerHTML = chatThreads.length ? chatThreads.map(c => {
       const un = chatUnreadAdmin(c), nm = String(c.name || "Umukiriya"), prev = String(c.lastMessage || "").replace(CHAT_IMG_RE, "📷 Ifoto");
-      return `<div class="gc-th${un ? " unread" : ""}"><div class="gc-th-av">${esc(nm.trim().charAt(0).toUpperCase() || "?")}${chatIsOnline(c) ? '<i class="gc-dot" title="Online"></i>' : ""}</div><div class="gc-th-info"><div class="gc-th-top"><strong>${esc(nm)}</strong><small>${esc(chatAgo(c.updatedAt))}</small></div><div class="gc-th-sub">${esc(c.phone || c.email || "")}</div><div class="gc-th-pres">${chatPresence(c)}</div><div class="gc-th-last">${c.lastSenderRole === "admin" ? "↩ " : ""}${esc(prev || "Nta butumwa burandikwa")}</div></div><div class="gc-th-act">${un ? `<span class="gc-new">${t("New", "Gishya")}</span>` : ""}<button type="button" onclick="gdAdminOpenChat('${esc(c.id)}')">💬 ${t("Reply", "Subiza")}</button></div></div>`;
+      return `<div class="gc-th${un ? " unread" : ""}"><div class="gc-th-av">${chatPhotoOf(c) ? `<img src="${esc(chatPhotoOf(c))}" alt="" loading="lazy">` : esc(nm.trim().charAt(0).toUpperCase() || "?")}${chatIsOnline(c) ? '<i class="gc-dot" title="Online"></i>' : ""}</div><div class="gc-th-info"><div class="gc-th-top"><strong>${esc(nm)}</strong><small>${esc(chatAgo(c.updatedAt))}</small></div><div class="gc-th-sub">${esc(c.phone || c.email || "")}</div><div class="gc-th-pres">${chatPresence(c)}</div><div class="gc-th-last">${c.lastSenderRole === "admin" ? "↩ " : ""}${esc(prev || "Nta butumwa burandikwa")}</div></div><div class="gc-th-act">${un ? `<span class="gc-new">${t("New", "Gishya")}</span>` : ""}<button type="button" onclick="gdAdminOpenChat('${esc(c.id)}')">💬 ${t("Reply", "Subiza")}</button></div></div>`;
     }).join("") : "<p>Nta biganiro birahari. Ubutumwa bw'abakiriya buzagaragara hano.</p>";
     gdRefreshChatHeader();
   }
@@ -3286,9 +3289,11 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   onSnapshot(collection(db, "sections"), snap => {
     const allSecs = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
     customCats = allSecs.filter(v => v.kind === "category");
-    customSections = allSecs.filter(v => v.kind !== "category");
+    customSections = allSecs.filter(v => v.kind !== "category" && v.kind !== "categoryImage");
+    const catImgs = {}; allSecs.filter(v => v.kind === "categoryImage").forEach(v => { if (v.catId && v.imageUrl) catImgs[v.catId] = v.imageUrl; });
     categories.splice(BASE_CATS_N);
-    customCats.forEach(c => categories.push({ id: "c_" + c.id, en: c.name || "", rw: c.name || "", icon: c.icon || "📦", custom: true, docId: c.id }));
+    categories.forEach(c => { c.imageUrl = catImgs[c.id] || ""; });
+    customCats.forEach(c => categories.push({ id: "c_" + c.id, en: c.name || "", rw: c.name || "", icon: c.icon || "📦", imageUrl: c.imageUrl || "", custom: true, docId: c.id }));
     try { fillCategories(); } catch (e) {}
     try { renderHome(); renderCategories(); } catch (e) {}
     renderCustomSections(); renderAdminSections(); renderHeroSlides(); renderBannerAdmin(); renderWorks();
@@ -3995,7 +4000,7 @@ function gdSavePdf(btn) {
     sel.innerHTML = categories.map(c => `<option value="${esc(c.id)}">${c.icon} ${esc(c.rw)}</option>`).join("");
     if (cur && categories.some(c => c.id === cur)) { sel.value = cur; if (cur === wantCat) wantCat = null; }
     const box = $("catCustomList");
-    if (box) box.innerHTML = categories.filter(c => c.custom).map(c => `<span class="cat-chip">${c.icon} ${esc(c.rw)} <button type="button" aria-label="Siba" onclick="gdDeleteCategory('${esc(c.docId)}')">✕</button></span>`).join("");
+    if (box) box.innerHTML = categories.map(c => `<div class="cat-row"><span class="cat-thumb">${c.imageUrl ? `<img src="${esc(thumb(c.imageUrl, 120))}" alt="">` : c.icon}</span><b>${esc(c.rw)}</b><label class="cat-ph-btn" title="Ifoto">📷<input type="file" accept="image/*" hidden onchange="gdCatPhoto('${esc(c.id)}',this)"></label>${c.imageUrl ? `<button type="button" title="Kuraho ifoto" onclick="gdCatPhotoRemove('${esc(c.id)}')">🧹</button>` : ""}${c.custom ? `<button type="button" title="Siba icyiciro" onclick="gdDeleteCategory('${esc(c.docId)}')">✕</button>` : ""}</div>`).join("");
   }
   fillCategories();
   window.gdToggleCatAdd = () => { const b = $("catAddBox"); if (b) { b.hidden = !b.hidden; if (!b.hidden) { const i = $("newCatName"); if (i) i.focus(); } } };
@@ -4006,10 +4011,28 @@ function gdSavePdf(btn) {
     try {
       const ref = doc(collection(db, "sections"));
       wantCat = "c_" + ref.id;
-      await setDoc(ref, { kind: "category", name, icon, createdAt: Date.now() });
-      $("newCatName").value = ""; $("newCatIcon").value = "";
+      let imageUrl = ""; const pf = $("newCatPhoto") && $("newCatPhoto").files[0];
+      if (pf) imageUrl = await uploadToCloudinary(pf);
+      await setDoc(ref, { kind: "category", name, icon, imageUrl, createdAt: Date.now() });
+      $("newCatName").value = ""; $("newCatIcon").value = ""; if ($("newCatPhoto")) $("newCatPhoto").value = "";
       const b = $("catAddBox"); if (b) b.hidden = true;
     } catch (err) { wantCat = null; alert(t("Failed: ", "Byanze: ") + (err.code || err.message)); }
+  };
+  window.gdCatPhoto = async (id, inp) => {
+    const f = inp.files && inp.files[0]; if (!f) return;
+    try {
+      const url = await uploadToCloudinary(f); const c = categories.find(x => x.id === id);
+      if (c && c.custom) await updateDoc(doc(db, "sections", c.docId), { imageUrl: url });
+      else await setDoc(doc(db, "sections", "catimg_" + id), { kind: "categoryImage", catId: id, imageUrl: url, createdAt: Date.now() });
+    } catch (err) { alert(t("Failed: ", "Byanze: ") + (err.code || err.message)); }
+    inp.value = "";
+  };
+  window.gdCatPhotoRemove = async id => {
+    try {
+      const c = categories.find(x => x.id === id);
+      if (c && c.custom) await updateDoc(doc(db, "sections", c.docId), { imageUrl: "" });
+      else await deleteDoc(doc(db, "sections", "catimg_" + id));
+    } catch (err) { alert(t("Failed: ", "Byanze: ") + (err.code || err.message)); }
   };
   window.gdDeleteCategory = async docId => {
     const id = "c_" + docId;
@@ -4568,6 +4591,18 @@ function gdSavePdf(btn) {
 .gc-pres{font-size:.78rem;font-weight:700;opacity:.85}
 .gc-pres.on{color:#22c55e;opacity:1}
 .gc-th-pres{margin-top:2px}
+
+/* category photos + chat avatars */
+.cat-row{display:flex;align-items:center;gap:8px;width:100%;padding:6px 8px;border:1px solid rgba(128,128,128,.3);border-radius:14px;background:rgba(128,128,128,.08)}
+.cat-row b{flex:1;min-width:0;font-size:.9rem;overflow-wrap:anywhere}
+.cat-thumb{flex:0 0 38px;height:38px;border-radius:50%;overflow:hidden;display:grid;place-items:center;font-size:1.3rem;background:rgba(128,128,128,.2)}
+.cat-thumb img{width:100%;height:100%;object-fit:cover}
+.cat-row button,.cat-ph-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(128,128,128,.35);background:transparent;color:inherit;display:grid;place-items:center;font-size:1rem;cursor:pointer;padding:0}
+.cat-custom-list{display:grid!important;gap:8px}
+.cat-photo-pick{display:block;font-size:.85rem;font-weight:700}
+.cat-photo-pick input{margin-top:6px;width:100%}
+.gc-th-av img,.gc-av img{width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block}
+.gc-th-av{overflow:visible}
 </style>
 </body>
 </html>
