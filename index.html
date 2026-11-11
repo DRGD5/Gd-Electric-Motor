@@ -4752,6 +4752,21 @@ function gdSavePdf(btn) {
 #cartStaffPanel[data-sd="light"] .sc-ic{background:linear-gradient(145deg,var(--c1),var(--c2));border:0;color:#fff}
 #cartStaffPanel[data-sd="light"] .sc-t{text-shadow:none}
 #cartStaffPanel[data-sd="light"] .sc .shortcut-arrow{background:rgba(128,128,128,.16);border-color:rgba(128,128,128,.3)}
+
+/* staff menu: whole words, no mid-word breaks */
+#cartStaffPanel .sc-t,#cartStaffPanel .sc-s{overflow-wrap:normal;word-break:normal;hyphens:none}
+#cartStaffPanel .sc-t{font-size:.8rem;line-height:1.15}
+#cartStaffPanel .sc-s{font-size:.64rem}
+#cartStaffPanel .sc:not(.sc-wide){padding-right:8px;gap:8px}
+#cartStaffPanel .sc:not(.sc-wide) .shortcut-arrow{display:none}
+#cartStaffPanel .sc:not(.sc-wide) .sc-ic{width:34px;height:34px;font-size:1.1rem;border-radius:11px}
+#cartStaffPanel .sc:not(.sc-wide) .sc-badges{position:absolute;top:5px;right:6px}
+/* compact "Products on the website" card */
+#adminProductListSection.pl-entry{padding:10px 12px;margin:8px 0 10px;border-radius:16px}
+#adminProductListSection .admin-products-heading{flex-direction:column;align-items:stretch;gap:8px;flex-wrap:nowrap}
+#adminProductListSection.pl-entry h2{margin:0;font-size:.95rem;color:var(--text)}
+#adminProductListSection.pl-entry .btns{flex-wrap:nowrap;gap:6px}
+#adminProductListSection.pl-entry .btns button{flex:1 1 0;min-width:0;padding:8px 6px;font-size:.8rem;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 <script>
 (function(){
