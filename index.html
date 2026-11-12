@@ -2186,7 +2186,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
         <button class="save-btn ${isSaved?'saved':''}" aria-label="Bika igicuruzwa" onclick="event.stopPropagation();toggleSaved(${p.id})">${isSaved?'♥':'♡'}</button>
       </div>
       <div class="product-info"><h3 class="product-link">${esc(productName(p))}</h3>
-        <div class="price-row pr-flex"><span class="price">${new Intl.NumberFormat("en-US").format(p.price)} <small>RWF</small></span>${discount?`<span class="old-price">${money(p.oldPrice)}</span>`:""}${out?"":`<button type="button" class="card-cart" aria-label="${t("Add to cart","Shyira mu gaseke")}" onclick="event.stopPropagation();addToCart(${p.id},1,true)">🛒</button>`}</div>
+        <div class="price-row pr-flex"><span class="price">${new Intl.NumberFormat("en-US").format(p.price)} <small>RWF</small></span>${discount?`<span class="old-price">${money(p.oldPrice)}</span>`:""}${out?"":`<button type="button" class="card-cart" aria-label="${t("Add to cart","Shyira mu gaseke")}" onclick="event.stopPropagation();addToCart(${p.id},1)">🛒</button>`}</div>
       </div></article>`;
     }
     return `<article class="product ${out?'out':''}">
