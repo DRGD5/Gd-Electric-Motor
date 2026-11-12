@@ -1545,6 +1545,16 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 .gd-chat-open .gd-dock,.gd-chat-open .gd-hint{display:none!important}
 @media (prefers-reduced-motion:reduce){.gd-fab .ic::before,.gd-dock,.gd-hint{animation:none}}
 </style>
+<style>
+/* Buy button at the right of the price on each product card (scales with card size) */
+.product.compact .price-row.pr-flex{display:flex;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:6px;width:100%;min-width:0}
+.product.compact .price-row.pr-flex .price{min-width:0;font-size:clamp(.9rem,4vw,1.15rem)!important;white-space:nowrap}
+.product.compact .price-row.pr-flex .old-price{display:none}
+.card-cart{flex:0 0 auto;margin-left:auto;width:clamp(32px,10vw,44px);height:clamp(32px,10vw,44px);border-radius:50%;border:0;padding:0;display:inline-flex;align-items:center;justify-content:center;font-size:clamp(.95rem,4.5vw,1.25rem);line-height:1;cursor:pointer;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed);box-shadow:0 4px 10px rgba(37,99,235,.35);animation:ccPulse 2.4s ease-in-out infinite;-webkit-tap-highlight-color:transparent}
+.card-cart:active{transform:scale(.9)}
+@keyframes ccPulse{0%,100%{box-shadow:0 4px 10px rgba(37,99,235,.35)}50%{box-shadow:0 0 0 6px rgba(37,99,235,.15),0 4px 10px rgba(37,99,235,.35)}}
+@media(prefers-reduced-motion:reduce){.card-cart{animation:none}}
+</style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
 <header class="topbar">
@@ -2176,7 +2186,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
         <button class="save-btn ${isSaved?'saved':''}" aria-label="Bika igicuruzwa" onclick="event.stopPropagation();toggleSaved(${p.id})">${isSaved?'♥':'♡'}</button>
       </div>
       <div class="product-info"><h3 class="product-link">${esc(productName(p))}</h3>
-        <div class="price-row"><span class="price">${new Intl.NumberFormat("en-US").format(p.price)} <small>RWF</small></span>${discount?`<span class="old-price">${money(p.oldPrice)}</span>`:""}</div>
+        <div class="price-row pr-flex"><span class="price">${new Intl.NumberFormat("en-US").format(p.price)} <small>RWF</small></span>${discount?`<span class="old-price">${money(p.oldPrice)}</span>`:""}${out?"":`<button type="button" class="card-cart" aria-label="${t("Add to cart","Shyira mu gaseke")}" onclick="event.stopPropagation();addToCart(${p.id},1,true)">🛒</button>`}</div>
       </div></article>`;
     }
     return `<article class="product ${out?'out':''}">
