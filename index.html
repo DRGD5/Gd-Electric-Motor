@@ -1799,6 +1799,13 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
       <div class="info-card admin-section" id="adminTickerSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminTickerSection')"><h2>📢 Umurongo uzenguruka (Ticker)</h2><span class="shortcut-arrow">⌃</span></button>
         <p>Amagambo azenguruka munsi ya search ku rupapuro rwa mbere. Andika mu Kinyarwanda no mu Cyongereza. Nimero ya telefone (urugero 0784661800) ihita iba link yo guhamagara.</p>
+        <div class="admin-row" style="display:block">
+          <div class="form-row"><label>⚡ Umuvuduko wo kuzenguruka</label><select id="tkSpeed" onchange="tkCfgSet('speed',this.value)"><option value="25">🐢 Buhoro</option><option value="45">🚶 Busanzwe</option><option value="80">🐇 Bwihuta</option></select></div>
+          <div class="form-row"><label>🎨 Ibara ry'inyandiko</label><input type="color" id="tkColor" style="width:100%;height:44px;padding:2px" oninput="tkCfgSet('color',this.value)"></div>
+          <div class="form-row"><label>📞 Ibara rya nimero ya telefone (link)</label><input type="color" id="tkLink" style="width:100%;height:44px;padding:2px" oninput="tkCfgSet('link',this.value)"></div>
+          <div class="form-row"><label>🖌️ Ibara ry'inyuma (background)</label><input type="color" id="tkBg" style="width:100%;height:44px;padding:2px" oninput="tkCfgSet('bg',this.value)"></div>
+          <button type="button" class="secondary" onclick="tkCfgReset()">↩️ Amabara n'umuvuduko bisanzwe</button>
+        </div>
         <div id="tickerEditList"></div>
         <div class="bn-actions"><button class="secondary" type="button" onclick="tkAdd()">➕ Ongeraho umurongo</button></div>
         <div class="bn-actions"><button class="primary" type="button" id="tickerSaveBtn" onclick="tkSave()">💾 Bika impinduka</button><button class="secondary" type="button" onclick="tkReset()">↩️ Subiza ibisanzwe</button></div>
@@ -3124,8 +3131,20 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     { rw: "📞 Niba udushaka duhamagare kuri 0784661800", en: "📞 Need us? Call 0784661800" }
   ];
   let tickerItems = null, tkDraft = [], tkDirty = false, tkRendered = false;
-  try { const c = JSON.parse(localStorage.getItem("gdTicker") || "null"); if (Array.isArray(c)) tickerItems = c; } catch (e) {}
+  const hexOk = v => /^#[0-9a-f]{6}$/i.test(v || "") ? v : "";
+  const tkClean = d => ({ speed: Number(d && d.speed) > 0 ? Number(d.speed) : 45, color: hexOk(d && d.color), link: hexOk(d && d.link), bg: hexOk(d && d.bg) });
+  let tickerCfg = tkClean({}), tkCfg = tkClean({});
+  try { const c = JSON.parse(localStorage.getItem("gdTicker") || "null"); if (Array.isArray(c)) tickerItems = c; else if (c && Array.isArray(c.items)) { tickerItems = c.items; tickerCfg = tkClean(c); } } catch (e) {}
   const tkHtml = txt => esc(txt).replace(/(\+?250[\s-]?7\d{8}|07\d{8})/g, m => { const d = m.replace(/[\s-]/g, ""); const tel = d.startsWith("+") ? d : (d.startsWith("250") ? "+" + d : "+250" + d.slice(1)); return '<a href="tel:' + tel + '">' + m + '</a>'; });
+  function applyTickerCfg(cfg) {
+    const track = $("tickerTrack"); if (!track) return;
+    const bar = track.closest(".ticker"); if (!bar) return;
+    const set = (k, v) => { if (v) bar.style.setProperty(k, v); else bar.style.removeProperty(k); };
+    set("--purple-light", cfg.color); set("--green", cfg.link);
+    bar.style.background = cfg.bg || "";
+    const w = track.firstElementChild ? track.firstElementChild.offsetWidth : 0;
+    if (w > 0) track.style.animationDuration = Math.max(8, Math.round(w / (cfg.speed || 45))) + "s";
+  }
   function renderTicker() {
     const track = $("tickerTrack"); if (!track) return;
     const bar = track.closest(".ticker");
@@ -3137,19 +3156,23 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const build = n => { const g = '<div class="ticker-group">' + itemsHtml.repeat(n) + '</div>'; track.innerHTML = g + g; };
     let k = 1; build(k);
     while (k < 8 && track.firstElementChild.offsetWidth > 0 && track.firstElementChild.offsetWidth < window.innerWidth * 1.2) build(++k);
-    const w = track.firstElementChild.offsetWidth;
-    if (w > 0) track.style.animationDuration = Math.max(12, Math.round(w / 45)) + "s";
+    applyTickerCfg(tickerCfg);
     tkRendered = true;
   }
   renderTicker();
   onSnapshot(doc(db, "settings", "ticker"), snap => {
     const d = snap.exists() ? snap.data() : null;
     tickerItems = d && Array.isArray(d.items) ? d.items : null;
-    try { if (tickerItems) localStorage.setItem("gdTicker", JSON.stringify(tickerItems)); else localStorage.removeItem("gdTicker"); } catch (e) {}
+    tickerCfg = tkClean(d || {});
+    try { if (tickerItems) localStorage.setItem("gdTicker", JSON.stringify(Object.assign({ items: tickerItems }, tickerCfg))); else localStorage.removeItem("gdTicker"); } catch (e) {}
     if (tickerItems || tkRendered) renderTicker();
     tkLoadDraft(); renderWsOverview();
   }, err => console.error("Ticker:", err));
-  function tkLoadDraft() { if (tkDirty) return; tkDraft = (tickerItems || TK_DEFAULT).map(x => ({ rw: x.rw || "", en: x.en || "", off: !!x.off })); renderTkEditor(); }
+  function renderTkSettings() {
+    const set = (id, v, def) => { const e = $(id); if (e) e.value = v || def; };
+    set("tkSpeed", String(tkCfg.speed), "45"); set("tkColor", tkCfg.color, "#8cb6ff"); set("tkLink", tkCfg.link, "#25d6a0"); set("tkBg", tkCfg.bg, "#000000");
+  }
+  function tkLoadDraft() { if (tkDirty) return; tkCfg = Object.assign({}, tickerCfg); renderTkSettings(); tkDraft = (tickerItems || TK_DEFAULT).map(x => ({ rw: x.rw || "", en: x.en || "", off: !!x.off })); renderTkEditor(); }
   function renderTkEditor() {
     const el = $("tickerEditList"); if (!el) return;
     el.innerHTML = tkDraft.map((x, i) => `<div class="admin-row" style="display:block;opacity:${x.off ? ".55" : "1"}">
@@ -3163,6 +3186,8 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       </div></div>`).join("") || '<p class="muted">Nta murongo uhari. Kanda "Ongeraho umurongo".</p>';
   }
   const tkMsg = txt => { const m = $("tickerMsg"); if (m) m.textContent = txt || ""; };
+  window.tkCfgSet = (k, v) => { tkCfg[k] = k === "speed" ? Number(v) : v; tkDirty = true; tkMsg(""); applyTickerCfg(tkCfg); };
+  window.tkCfgReset = () => { tkCfg = tkClean({}); tkDirty = true; tkMsg(""); renderTkSettings(); applyTickerCfg(tkCfg); };
   window.tkSet = (i, k, v) => { if (tkDraft[i]) { tkDraft[i][k] = v; tkDirty = true; tkMsg(""); } };
   window.tkAdd = () => { tkDraft.push({ rw: "", en: "", off: false }); tkDirty = true; renderTkEditor(); };
   window.tkDel = i => { tkDraft.splice(i, 1); tkDirty = true; renderTkEditor(); };
@@ -3173,7 +3198,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const items = tkDraft.map(x => ({ rw: x.rw.trim(), en: x.en.trim(), off: !!x.off })).filter(x => x.rw || x.en);
     if (!items.filter(x => !x.off).length && !confirm("Nta murongo ugaragaza. Umurongo wose uzahishwa ku rubuga. Komeza?")) return;
     const b = $("tickerSaveBtn"); if (b) b.disabled = true; tkMsg("⏳ Birabikwa...");
-    try { await setDoc(doc(db, "settings", "ticker"), { items, updatedAt: Date.now() }); tkDirty = false; tkMsg("✅ Byabitswe. Abasura urubuga bahita babibona."); }
+    try { await setDoc(doc(db, "settings", "ticker"), { items, ...tkClean(tkCfg), updatedAt: Date.now() }); tkDirty = false; tkMsg("✅ Byabitswe. Abasura urubuga bahita babibona."); }
     catch (err) { tkMsg("❌ Kubika byanze: " + (err.code || err.message)); }
     if (b) b.disabled = false;
   };
@@ -3881,7 +3906,8 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     } catch (err) { alert("Guhindura igiciro byanze: " + (err.code || err.message)); }
   };
   // ----- receipts / invoices (orders, service work, or blank) -----
-  let payCfg = { payPhone: "", payName: "", momoCode: "" };
+  const RC_CONTACT_DEFAULT = "+250 796 022 617";
+  let payCfg = { payPhone: "", payName: "", momoCode: "", contactPhone: "" };
   onSnapshot(doc(db, "settings", "payment"), snap => { payCfg = snap.exists() ? snap.data() : { payPhone: "", payName: "", momoCode: "" }; }, () => {});
   const rcRowHtml = (r = {}) => `<div class="rc-row"><input class="rc-d" placeholder="Icyakozwe cyangwa igicuruzwa" value="${esc(r.d || "")}"><label class="rc-f"><span>Qty</span><input class="rc-q" type="number" min="0" step="any" inputmode="decimal" value="${r.q ?? 1}" oninput="rcCalc()"></label><label class="rc-f"><span>Igiciro (RWF)</span><input class="rc-p" type="number" min="0" step="any" inputmode="numeric" placeholder="0" value="${r.p ?? ""}" oninput="rcCalc()"></label><button type="button" class="rc-x" aria-label="Siba" onclick="this.parentNode.remove();rcCalc()">✕</button></div>`;
   window.rcCalc = () => {
@@ -3919,7 +3945,9 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
         <input id="rcPayName" style="margin-top:8px" placeholder="Izina rigaragara kuri iyo nimero (si ngombwa)" value="${esc(payCfg.payName || "")}">
         <label>Uburyo bwo kwishyura 2: MoMo Pay code</label>
         <input id="rcMomo" inputmode="numeric" placeholder="Code yo kwishyura (urugero 123456)" value="${esc(payCfg.momoCode || "")}">
-        <label class="rc-check"><input type="checkbox" id="rcSave" checked><span class="rc-sw"></span><span>Bika ubu buryo bwo kwishyura nk'ubusanzwe</span></label>
+        <label>📞 Nimero igaragara muri CONTACT ku mutwe wa fagitire</label>
+        <input id="rcContact" type="tel" placeholder="Urugero +250 796 022 617" value="${esc(payCfg.contactPhone || RC_CONTACT_DEFAULT)}">
+        <label class="rc-check"><input type="checkbox" id="rcSave" checked><span class="rc-sw"></span><span>Bika ubu buryo bwo kwishyura na nimero ya CONTACT nk'ubusanzwe</span></label>
       </div>
       <div class="rc-foot"><button type="button" class="primary" onclick="rcGenerate()">Kora receipt</button></div>
     </div>`;
@@ -3929,6 +3957,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const rows = [...document.querySelectorAll("#rcRows .rc-row")].map(r => ({ d: r.querySelector(".rc-d").value.trim(), q: Number(r.querySelector(".rc-q").value) || 0, p: Number(r.querySelector(".rc-p").value) || 0 })).filter(r => r.d);
     if (!rows.length) return alert("Andika nibura umurongo umwe (icyakozwe cyangwa igicuruzwa).");
     const name = $("rcName").value.trim(), phoneRaw = $("rcPhone").value.trim(), note = $("rcNote").value.trim();
+    const contact = ($("rcContact") ? $("rcContact").value.trim() : "") || RC_CONTACT_DEFAULT;
     const paid = $("rcPaid").checked, momo = $("rcMomo").value.replace(/[^0-9]/g, ""), payPhone = $("rcPayPhone").value.trim(), payName = $("rcPayName").value.trim();
     const payText = [payPhone ? `${t("1) MoMo (phone): ", "1) MoMo (telefoni): ")}${payPhone}${payName ? " - " + payName : ""}` : "", momo ? `${t("2) MoMo Pay code: ", "2) MoMo Pay code: ")}${momo}` : ""].filter(Boolean).join("\n");
     const total = rows.reduce((a, r) => a + r.q * r.p, 0);
@@ -4032,7 +4061,7 @@ body{margin:0;background:#e3e8f4;font:14px/1.5 system-ui,-apple-system,Segoe UI,
 </style></head><body><div class="wrap"><div class="sheet" id="sheet">
 <div class="top">
 <div class="hrow"><a class="brand" href="https://gdelectricmotors.pages.dev/" target="_blank" rel="noopener">${logoSrc ? `<span class="logo"><img src="${logoSrc}" alt=""><i class="lk lk-logo">↗</i></span>` : ""}<div><h1>GD ELECTRIC MOTORS</h1><small>${t("MOTORS, PUMPS & SPARE PARTS", "MOTERI, POMPE N'IBIKORESHO")}</small></div></a>
-<div class="contact"><b>${t("CONTACT", "TUHAMAGARE")}</b><span>Rwanda</span><span>+250 796 022 617</span><span><a id="siteLink" href="https://gdelectricmotors.pages.dev/" target="_blank" rel="noopener">gdelectricmotors.pages.dev<i class="lk">↗</i></a></span></div></div>
+<div class="contact"><b>${t("CONTACT", "TUHAMAGARE")}</b><span>Rwanda</span><span>${esc(contact)}</span><span><a id="siteLink" href="https://gdelectricmotors.pages.dev/" target="_blank" rel="noopener">gdelectricmotors.pages.dev<i class="lk">↗</i></a></span></div></div>
 <div class="dtitle">${docWord}</div>
 <div class="hrow info"><div><small>${paid ? t("Receipt to", "Inyemezabwishyu ya") : t("Invoice to", "Fagitire ya")}</small><b>${esc(name || "-")}</b>${phoneRaw ? `<span>${esc(phoneRaw)}</span>` : ""}</div>
 <div class="dates"><div><small>${docWord} ${t("Date", "Itariki")}</small><b>${rcLabelDate}</b></div><div><small>No.</small><b>${esc(rid)}</b></div></div></div>
@@ -4103,8 +4132,8 @@ function gdSavePdf(btn) {
     // Open synchronously (inside the tap) as a real blob page so the phone shows it full width.
     const w = window.open(URL.createObjectURL(new Blob([html], { type: "text/html;charset=utf-8" })), "_blank");
     if (!w) return alert("Browser yabujije gufungura receipt. Emerera pop-ups hanyuma wongere ugerageze.");
-    if (!opts.customer && $("rcSave").checked && (payPhone !== (payCfg.payPhone || "") || payName !== (payCfg.payName || "") || momo !== (payCfg.momoCode || ""))) {
-      setDoc(doc(db, "settings", "payment"), { payPhone, payName, momoCode: momo, updatedAt: Date.now() }, { merge: true }).catch(err => console.warn("Payment settings:", err));
+    if (!opts.customer && $("rcSave").checked && (payPhone !== (payCfg.payPhone || "") || payName !== (payCfg.payName || "") || momo !== (payCfg.momoCode || "") || contact !== (payCfg.contactPhone || RC_CONTACT_DEFAULT))) {
+      setDoc(doc(db, "settings", "payment"), { payPhone, payName, momoCode: momo, contactPhone: contact, updatedAt: Date.now() }, { merge: true }).catch(err => console.warn("Payment settings:", err));
     }
     rcClose();
   };
