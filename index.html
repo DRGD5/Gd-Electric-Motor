@@ -4247,7 +4247,7 @@ function gdSavePdf(btn) {
     let p = $("gdPage"); if (p) return p;
     p = document.createElement("div"); p.id = "gdPage"; p.className = "ceo-page"; p.hidden = true;
     p.innerHTML = `<div class="ceo-top"><button type="button" class="ceo-back" onclick="gdBack()" aria-label="Back">←</button><div><h2 id="gdPageTitle"></h2><small id="gdPageSub"></small></div></div>
-      <div class="ceo-wrap"><div class="gd-hero" id="gdPageHero"><div class="gd-hero-ic" id="gdPageIcon"></div><div class="gd-hero-tx"><b id="gdPageHTitle"></b><span id="gdPageHSub"></span><div class="gd-chips" id="gdPageChips"></div></div></div><div id="gdPageBody" class="gd-body"></div></div>`;
+      <div class="ceo-wrap">${typeof window.gdSdBar === "function" ? window.gdSdBar() : ""}<div class="gd-hero" id="gdPageHero"><div class="gd-hero-ic" id="gdPageIcon"></div><div class="gd-hero-tx"><b id="gdPageHTitle"></b><span id="gdPageHSub"></span><div class="gd-chips" id="gdPageChips"></div></div></div><div id="gdPageBody" class="gd-body"></div></div>`;
     document.body.appendChild(p); return p;
   }
   function gdRestore() {
@@ -4792,14 +4792,77 @@ function gdSavePdf(btn) {
 #adminProductListSection.pl-entry h2{color:var(--text)!important;text-shadow:none!important}
 #adminProductListSection.pl-entry .btns button.secondary{background:linear-gradient(135deg,#1e293b,#475569)!important;color:#fff!important;border:0!important;box-shadow:0 6px 14px -8px #000}
 #adminProductListSection.pl-entry .btns button.primary{background:linear-gradient(135deg,#2563eb,#06b6d4)!important;color:#fff!important;border:0!important;box-shadow:0 6px 14px -6px #2563eb}
+
+/* chips (also inside opened pages) */
+.sc-styles{display:flex;align-items:center;gap:6px;overflow-x:auto;margin:0 0 10px;padding:2px 0;scrollbar-width:none}
+.sc-styles::-webkit-scrollbar{display:none}
+.sc-styles span{flex:0 0 auto;font-size:1rem}
+.sc-styles button{flex:0 0 auto;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--text);font-size:.78rem;font-weight:800}
+.sc-styles button.on{background:#2563eb;border-color:#2563eb;color:#fff}
+#gdPage .sc-styles{margin:0 0 12px}
+/* ===== inner pages: designs ===== */
+/* glass */
+html[data-sd="glass"] #gdPage .gd-hero{background:linear-gradient(135deg,color-mix(in srgb,var(--ac1) 60%,transparent),color-mix(in srgb,var(--ac2) 60%,transparent));backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.4);box-shadow:0 12px 30px -14px rgba(0,0,0,.5)}
+html[data-sd="glass"] #gdPage .gd-body>.info-card,html[data-sd="glass"] #gdPage .gd-body .info-card.in-page{background:rgba(15,23,42,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.22);border-radius:26px}
+html[data-sd="glass"] #gdPage .gd-body .admin-row,html[data-sd="glass"] #gdPage .gd-body .bn-row,html[data-sd="glass"] #gdPage .gd-body .ws-row{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-left:4px solid var(--ac1);border-radius:16px;box-shadow:none}
+html[data-sd="glass"] #gdPage .gd-body .bn-b,html[data-sd="glass"] #gdPage .gd-body .ws-go,html[data-sd="glass"] #gdPage .gd-body .admin-row .btns button{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);color:#fff}
+/* flat */
+html[data-sd="flat"] #gdPage .gd-hero{background:var(--ac1);border-radius:16px;box-shadow:none}
+html[data-sd="flat"] #gdPage .gd-hero::before,html[data-sd="flat"] #gdPage .gd-hero::after{display:none}
+html[data-sd="flat"] #gdPage .gd-body>.info-card,html[data-sd="flat"] #gdPage .gd-body .info-card.in-page{background:#1e293b;border:0;border-radius:16px;box-shadow:none}
+html[data-sd="flat"] #gdPage .gd-body>.info-card::before,html[data-sd="flat"] #gdPage .gd-body>.info-card::after{display:none}
+html[data-sd="flat"] #gdPage .gd-body .admin-row,html[data-sd="flat"] #gdPage .gd-body .bn-row,html[data-sd="flat"] #gdPage .gd-body .ws-row{background:#0f172a;border:0;border-left:4px solid var(--ac1);border-radius:10px;box-shadow:none}
+html[data-sd="flat"] #gdPage .gd-body .bn-b,html[data-sd="flat"] #gdPage .gd-body .ws-go,html[data-sd="flat"] #gdPage .gd-body .admin-row .btns button{background:var(--ac1);border:0;color:#fff;border-radius:8px}
+/* neon */
+html[data-sd="neon"] #gdPage .gd-hero{background:#05070f;border:2px solid var(--ac1);box-shadow:0 0 24px -4px var(--ac1);text-shadow:0 0 10px var(--ac1)}
+html[data-sd="neon"] #gdPage .gd-hero::before,html[data-sd="neon"] #gdPage .gd-hero::after{display:none}
+html[data-sd="neon"] #gdPage .gd-body>.info-card,html[data-sd="neon"] #gdPage .gd-body .info-card.in-page{background:#05070f;border:2px solid var(--ac1);border-radius:22px;box-shadow:0 0 26px -6px var(--ac1)}
+html[data-sd="neon"] #gdPage .gd-body>.info-card::before,html[data-sd="neon"] #gdPage .gd-body>.info-card::after{display:none}
+html[data-sd="neon"] #gdPage .gd-body .admin-row,html[data-sd="neon"] #gdPage .gd-body .bn-row,html[data-sd="neon"] #gdPage .gd-body .ws-row{background:#070a16;border:1.5px solid var(--ac2);border-left:1.5px solid var(--ac2);border-radius:16px;box-shadow:0 0 14px -5px var(--ac2)}
+html[data-sd="neon"] #gdPage .gd-body .bn-b,html[data-sd="neon"] #gdPage .gd-body .ws-go,html[data-sd="neon"] #gdPage .gd-body .admin-row .btns button{background:transparent;border:1.5px solid var(--ac1);color:#fff;box-shadow:0 0 10px -3px var(--ac1)}
+/* light */
+html[data-sd="light"] #gdPage .gd-body>.info-card,html[data-sd="light"] #gdPage .gd-body .info-card.in-page{--text:#0f172a;--muted:#64748b;color:#0f172a;background:#ffffff;border:1px solid #e2e8f0;border-radius:24px;box-shadow:0 14px 30px -18px rgba(15,23,42,.35)}
+html[data-sd="light"] #gdPage .gd-body>.info-card::before{opacity:.9}
+html[data-sd="light"] #gdPage .gd-body>.info-card::after{display:none}
+html[data-sd="light"] #gdPage .gd-body .admin-row,html[data-sd="light"] #gdPage .gd-body .bn-row,html[data-sd="light"] #gdPage .gd-body .ws-row{background:#f8fafc;color:#0f172a;border:1px solid #e2e8f0;border-left:5px solid var(--ac1);border-radius:16px;box-shadow:0 4px 10px -8px rgba(15,23,42,.4)}
+html[data-sd="light"] #gdPage .gd-body .bn-info b,html[data-sd="light"] #gdPage .gd-body .ws-info b,html[data-sd="light"] #gdPage .gd-body .admin-row strong,html[data-sd="light"] #gdPage .gd-body .cart-details strong,html[data-sd="light"] #gdPage .gd-body .bn-cap,html[data-sd="light"] #gdPage .gd-body h3,html[data-sd="light"] #gdPage .gd-body h2{color:#0f172a}
+html[data-sd="light"] #gdPage .gd-body .bn-b,html[data-sd="light"] #gdPage .gd-body .ws-go,html[data-sd="light"] #gdPage .gd-body .admin-row .btns button{background:color-mix(in srgb,var(--ac1) 12%,#fff);border:1px solid color-mix(in srgb,var(--ac1) 35%,#fff);color:var(--ac1)}
+/* aurora */
+html[data-sd="aurora"] #gdPage .gd-hero{background:radial-gradient(circle at 15% 0%,color-mix(in srgb,var(--ac2) 80%,#fff),transparent 60%),linear-gradient(160deg,var(--ac1),color-mix(in srgb,var(--ac1) 40%,#000));border:1px solid rgba(255,255,255,.4)}
+html[data-sd="aurora"] #gdPage .gd-body>.info-card,html[data-sd="aurora"] #gdPage .gd-body .info-card.in-page{background:radial-gradient(circle at 0 0,color-mix(in srgb,var(--ac1) 38%,transparent),transparent 55%),radial-gradient(circle at 100% 100%,color-mix(in srgb,var(--ac2) 32%,transparent),transparent 55%),#0b1020;border:1px solid rgba(255,255,255,.16);border-radius:30px}
+html[data-sd="aurora"] #gdPage .gd-body .admin-row,html[data-sd="aurora"] #gdPage .gd-body .bn-row,html[data-sd="aurora"] #gdPage .gd-body .ws-row{background:linear-gradient(135deg,color-mix(in srgb,var(--ac1) 26%,transparent),color-mix(in srgb,var(--ac2) 10%,transparent));border:1px solid color-mix(in srgb,var(--ac1) 45%,transparent);border-left:1px solid color-mix(in srgb,var(--ac1) 45%,transparent);border-radius:22px;box-shadow:0 10px 22px -14px var(--ac1)}
+html[data-sd="aurora"] #gdPage .gd-body .bn-b,html[data-sd="aurora"] #gdPage .gd-body .ws-go,html[data-sd="aurora"] #gdPage .gd-body .admin-row .btns button{background:linear-gradient(135deg,var(--ac1),var(--ac2));border:0;color:#fff;box-shadow:0 6px 14px -6px var(--ac1)}
+/* candy */
+html[data-sd="candy"] #gdPage .gd-hero{border:4px solid #fff;border-radius:34px;box-shadow:0 10px 0 -4px color-mix(in srgb,var(--ac1) 40%,transparent)}
+html[data-sd="candy"] #gdPage .gd-body>.info-card,html[data-sd="candy"] #gdPage .gd-body .info-card.in-page{--text:#1e1b3a;--muted:#6b6a86;color:#1e1b3a;background:color-mix(in srgb,var(--ac1) 9%,#fff);border:3px solid color-mix(in srgb,var(--ac1) 40%,#fff);border-radius:34px;box-shadow:0 8px 0 -3px color-mix(in srgb,var(--ac1) 30%,transparent)}
+html[data-sd="candy"] #gdPage .gd-body>.info-card::before,html[data-sd="candy"] #gdPage .gd-body>.info-card::after{display:none}
+html[data-sd="candy"] #gdPage .gd-body .admin-row,html[data-sd="candy"] #gdPage .gd-body .bn-row,html[data-sd="candy"] #gdPage .gd-body .ws-row{background:#fff;color:#1e1b3a;border:2px solid color-mix(in srgb,var(--ac1) 35%,#fff);border-left:2px solid color-mix(in srgb,var(--ac1) 35%,#fff);border-radius:26px;box-shadow:0 5px 0 -1px color-mix(in srgb,var(--ac1) 30%,transparent)}
+html[data-sd="candy"] #gdPage .gd-body .bn-info b,html[data-sd="candy"] #gdPage .gd-body .ws-info b,html[data-sd="candy"] #gdPage .gd-body .admin-row strong,html[data-sd="candy"] #gdPage .gd-body .cart-details strong,html[data-sd="candy"] #gdPage .gd-body .bn-cap,html[data-sd="candy"] #gdPage .gd-body h3,html[data-sd="candy"] #gdPage .gd-body h2{color:#1e1b3a}
+html[data-sd="candy"] #gdPage .gd-body .bn-b,html[data-sd="candy"] #gdPage .gd-body .ws-go,html[data-sd="candy"] #gdPage .gd-body .admin-row .btns button{background:var(--ac1);border:0;color:#fff;box-shadow:0 4px 0 color-mix(in srgb,var(--ac1) 55%,#000)}
+/* dark */
+html[data-sd="dark"] #gdPage .gd-hero{background:linear-gradient(135deg,#0a0e1d,color-mix(in srgb,var(--ac1) 45%,#0a0e1d));border:1px solid color-mix(in srgb,var(--ac1) 60%,transparent)}
+html[data-sd="dark"] #gdPage .gd-body>.info-card,html[data-sd="dark"] #gdPage .gd-body .info-card.in-page{background:#0a0e1d;border:1px solid rgba(255,255,255,.07);border-radius:20px}
+html[data-sd="dark"] #gdPage .gd-body .admin-row,html[data-sd="dark"] #gdPage .gd-body .bn-row,html[data-sd="dark"] #gdPage .gd-body .ws-row{background:#121830;border:1px solid rgba(255,255,255,.06);border-left:1px solid rgba(255,255,255,.06);border-top:3px solid var(--ac1);border-radius:14px;box-shadow:0 10px 20px -14px #000}
+html[data-sd="dark"] #gdPage .gd-body .bn-b,html[data-sd="dark"] #gdPage .gd-body .ws-go,html[data-sd="dark"] #gdPage .gd-body .admin-row .btns button{background:#1c2342;border:1px solid color-mix(in srgb,var(--ac1) 50%,transparent);color:#fff}
+/* soft */
+html[data-sd="soft"] #gdPage .gd-hero{background:#1a1f33;box-shadow:8px 8px 18px rgba(0,0,0,.35),-6px -6px 14px rgba(255,255,255,.07)}
+html[data-sd="soft"] #gdPage .gd-hero::before,html[data-sd="soft"] #gdPage .gd-hero::after{display:none}
+html[data-sd="soft"] #gdPage .gd-body>.info-card,html[data-sd="soft"] #gdPage .gd-body .info-card.in-page{background:#1a1f33;border:0;border-radius:28px;box-shadow:9px 9px 20px rgba(0,0,0,.4),-6px -6px 15px rgba(255,255,255,.06)}
+html[data-sd="soft"] #gdPage .gd-body>.info-card::before,html[data-sd="soft"] #gdPage .gd-body>.info-card::after{display:none}
+html[data-sd="soft"] #gdPage .gd-body .admin-row,html[data-sd="soft"] #gdPage .gd-body .bn-row,html[data-sd="soft"] #gdPage .gd-body .ws-row{background:#1a1f33;border:0;border-left:0;border-radius:20px;box-shadow:inset 4px 4px 9px rgba(0,0,0,.4),inset -3px -3px 8px rgba(255,255,255,.06)}
+html[data-sd="soft"] #gdPage .gd-body .bn-b,html[data-sd="soft"] #gdPage .gd-body .ws-go,html[data-sd="soft"] #gdPage .gd-body .admin-row .btns button{background:#1a1f33;border:0;color:#fff;box-shadow:4px 4px 9px rgba(0,0,0,.4),-3px -3px 7px rgba(255,255,255,.07)}
 </style>
 <script>
 (function(){
-  var p=document.getElementById("cartStaffPanel"),bar=document.getElementById("scStyles"); if(!p||!bar) return;
-  function set(n,save){ p.setAttribute("data-sd",n); bar.querySelectorAll("button").forEach(function(b){ b.classList.toggle("on",b.getAttribute("data-sd")===n); }); if(save){ try{ localStorage.setItem("gdStaffDesign",n); }catch(e){} } }
+  var names=[["grad","Gradient"],["glass","Glass"],["flat","Flat"],["neon","Neon"],["light","Light"],["aurora","Aurora"],["candy","Candy"],["dark","Dark"],["soft","Soft"]];
+  window.gdSdBar=function(){ return '<div class="sc-styles"><span>\uD83C\uDFA8</span>'+names.map(function(n){ return '<button type="button" data-sd="'+n[0]+'">'+n[1]+'</button>'; }).join("")+'</div>'; };
   var cur="grad"; try{ cur=localStorage.getItem("gdStaffDesign")||"grad"; }catch(e){}
+  function mark(){ document.querySelectorAll(".sc-styles button[data-sd]").forEach(function(b){ b.classList.toggle("on",b.getAttribute("data-sd")===cur); }); }
+  function set(n,save){ cur=n; document.documentElement.setAttribute("data-sd",n); var p=document.getElementById("cartStaffPanel"); if(p) p.setAttribute("data-sd",n); mark(); if(save){ try{ localStorage.setItem("gdStaffDesign",n); }catch(e){} } }
+  window.gdSetSd=set;
+  document.addEventListener("click",function(e){ var b=e.target.closest&&e.target.closest(".sc-styles button[data-sd]"); if(b) set(b.getAttribute("data-sd"),true); });
+  new MutationObserver(mark).observe(document.body,{childList:true});
   set(cur,false);
-  bar.addEventListener("click",function(e){ var b=e.target.closest("button[data-sd]"); if(b) set(b.getAttribute("data-sd"),true); });
 })();
 </script>
 </body>
