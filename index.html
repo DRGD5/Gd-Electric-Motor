@@ -1560,7 +1560,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
   </div>
 </header>
 <div class="ticker" aria-label="Services">
-  <div class="ticker-track"><div class="ticker-group"><span class="ticker-item" data-en="🔧 We repair &amp; rewind electric motors" data-rw="🔧 Dukora moteri (Rewinding)">🔧 Dukora moteri (Rewinding)</span><span class="ticker-item" data-en="⚡ We sell electric motors" data-rw="⚡ Tugurisha moteri z'amashanyarazi">⚡ Tugurisha moteri z'amashanyarazi</span><span class="ticker-item" data-en="📞 Need us? Call <a href='tel:+250784661800'>0784661800</a>" data-rw="📞 Niba udushaka duhamagare kuri <a href='tel:+250784661800'>0784661800</a>">📞 Niba udushaka duhamagare kuri <a href='tel:+250784661800'>0784661800</a></span></div><div class="ticker-group"><span class="ticker-item" data-en="🔧 We repair &amp; rewind electric motors" data-rw="🔧 Dukora moteri (Rewinding)">🔧 Dukora moteri (Rewinding)</span><span class="ticker-item" data-en="⚡ We sell electric motors" data-rw="⚡ Tugurisha moteri z'amashanyarazi">⚡ Tugurisha moteri z'amashanyarazi</span><span class="ticker-item" data-en="📞 Need us? Call <a href='tel:+250784661800'>0784661800</a>" data-rw="📞 Niba udushaka duhamagare kuri <a href='tel:+250784661800'>0784661800</a>">📞 Niba udushaka duhamagare kuri <a href='tel:+250784661800'>0784661800</a></span></div></div>
+  <div class="ticker-track" id="tickerTrack"><div class="ticker-group"><span class="ticker-item" data-en="🔧 We repair &amp; rewind electric motors" data-rw="🔧 Dukora moteri (Rewinding)">🔧 Dukora moteri (Rewinding)</span><span class="ticker-item" data-en="⚡ We sell electric motors" data-rw="⚡ Tugurisha moteri z'amashanyarazi">⚡ Tugurisha moteri z'amashanyarazi</span><span class="ticker-item" data-en="📞 Need us? Call <a href='tel:+250784661800'>0784661800</a>" data-rw="📞 Niba udushaka duhamagare kuri <a href='tel:+250784661800'>0784661800</a>">📞 Niba udushaka duhamagare kuri <a href='tel:+250784661800'>0784661800</a></span></div><div class="ticker-group"><span class="ticker-item" data-en="🔧 We repair &amp; rewind electric motors" data-rw="🔧 Dukora moteri (Rewinding)">🔧 Dukora moteri (Rewinding)</span><span class="ticker-item" data-en="⚡ We sell electric motors" data-rw="⚡ Tugurisha moteri z'amashanyarazi">⚡ Tugurisha moteri z'amashanyarazi</span><span class="ticker-item" data-en="📞 Need us? Call <a href='tel:+250784661800'>0784661800</a>" data-rw="📞 Niba udushaka duhamagare kuri <a href='tel:+250784661800'>0784661800</a>">📞 Niba udushaka duhamagare kuri <a href='tel:+250784661800'>0784661800</a></span></div></div>
 </div>
 
 
@@ -1794,6 +1794,15 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
       <div class="ceo-page" id="adminCeoSection" hidden>
         <div class="ceo-top"><button type="button" class="ceo-back" onclick="closeCeoPage()" aria-label="Back">←</button><div><h2>👑 CEO</h2><small>Abakiriya ba mbere</small></div></div>
         <div class="ceo-wrap" id="adminCeo"></div>
+      </div>
+
+      <div class="info-card admin-section" id="adminTickerSection" hidden>
+        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminTickerSection')"><h2>📢 Umurongo uzenguruka (Ticker)</h2><span class="shortcut-arrow">⌃</span></button>
+        <p>Amagambo azenguruka munsi ya search ku rupapuro rwa mbere. Andika mu Kinyarwanda no mu Cyongereza. Nimero ya telefone (urugero 0784661800) ihita iba link yo guhamagara.</p>
+        <div id="tickerEditList"></div>
+        <div class="bn-actions"><button class="secondary" type="button" onclick="tkAdd()">➕ Ongeraho umurongo</button></div>
+        <div class="bn-actions"><button class="primary" type="button" id="tickerSaveBtn" onclick="tkSave()">💾 Bika impinduka</button><button class="secondary" type="button" onclick="tkReset()">↩️ Subiza ibisanzwe</button></div>
+        <p id="tickerMsg" class="muted" aria-live="polite"></p>
       </div>
 
       <div class="info-card admin-section" id="adminStatsSection" hidden>
@@ -2602,7 +2611,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     $("adminPanel").hidden = !staff;
     { const ah = document.querySelector("#view-admin .admin-title-row .page-title"); if (ah) ah.textContent = isAdminUser(currentUser) ? "👑 Super Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi"); }
     { const sp = $("cartStaffPanel"); if (sp) sp.hidden = !["chats", "orders", "requests", "services", "stats", "sections", "shops", "products"].some(k => perms.has(k)); }
-    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection", "adminBannerSection"], shops: ["adminShopsSection"], stats: ["adminStatsSection"], chats: ["adminChatSection"], ceo: ["adminCeoSection"] };
+    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection", "adminBannerSection", "adminTickerSection"], shops: ["adminShopsSection"], stats: ["adminStatsSection"], chats: ["adminChatSection"], ceo: ["adminCeoSection"] };
     Object.keys(map).forEach(perm => {
       const ok = perms.has(perm);
       map[perm].forEach(id => {
@@ -3108,6 +3117,71 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     hiddenSampleIds = (d.products || []).map(Number); hiddenServiceIds = d.services || []; svcOrder = (d.svcOrder || []).map(String); svcShopItemIds = (d.shopItems || []).map(String); hiddenSlideIds = (d.slides || []).map(String);
     setProducts(dbList); renderServices(); renderAdminShopItems(); renderAdminServices(); renderAdminList(); renderHeroSlides(); renderBannerAdmin();
   }, err => console.error("Settings:", err));
+  /* ---- Ticker (umurongo uzenguruka): admin ashobora kuwuhindura; ibikwa muri settings/ticker ---- */
+  const TK_DEFAULT = [
+    { rw: "🔧 Dukora moteri (Rewinding)", en: "🔧 We repair & rewind electric motors" },
+    { rw: "⚡ Tugurisha moteri z'amashanyarazi", en: "⚡ We sell electric motors" },
+    { rw: "📞 Niba udushaka duhamagare kuri 0784661800", en: "📞 Need us? Call 0784661800" }
+  ];
+  let tickerItems = null, tkDraft = [], tkDirty = false, tkRendered = false;
+  try { const c = JSON.parse(localStorage.getItem("gdTicker") || "null"); if (Array.isArray(c)) tickerItems = c; } catch (e) {}
+  const tkHtml = txt => esc(txt).replace(/(\+?250[\s-]?7\d{8}|07\d{8})/g, m => { const d = m.replace(/[\s-]/g, ""); const tel = d.startsWith("+") ? d : (d.startsWith("250") ? "+" + d : "+250" + d.slice(1)); return '<a href="tel:' + tel + '">' + m + '</a>'; });
+  function renderTicker() {
+    const track = $("tickerTrack"); if (!track) return;
+    const bar = track.closest(".ticker");
+    const list = (tickerItems || TK_DEFAULT).filter(x => x && (x.rw || x.en) && !x.off);
+    if (!list.length) { if (bar) bar.style.display = "none"; return; }
+    if (bar) bar.style.display = "";
+    const isEn = document.documentElement.lang === "en";
+    const itemsHtml = list.map(x => { const hr = tkHtml(x.rw || x.en), he = tkHtml(x.en || x.rw); return '<span class="ticker-item" data-en="' + esc(he) + '" data-rw="' + esc(hr) + '">' + (isEn ? he : hr) + '</span>'; }).join("");
+    const build = n => { const g = '<div class="ticker-group">' + itemsHtml.repeat(n) + '</div>'; track.innerHTML = g + g; };
+    let k = 1; build(k);
+    while (k < 8 && track.firstElementChild.offsetWidth > 0 && track.firstElementChild.offsetWidth < window.innerWidth * 1.2) build(++k);
+    const w = track.firstElementChild.offsetWidth;
+    if (w > 0) track.style.animationDuration = Math.max(12, Math.round(w / 45)) + "s";
+    tkRendered = true;
+  }
+  renderTicker();
+  onSnapshot(doc(db, "settings", "ticker"), snap => {
+    const d = snap.exists() ? snap.data() : null;
+    tickerItems = d && Array.isArray(d.items) ? d.items : null;
+    try { if (tickerItems) localStorage.setItem("gdTicker", JSON.stringify(tickerItems)); else localStorage.removeItem("gdTicker"); } catch (e) {}
+    if (tickerItems || tkRendered) renderTicker();
+    tkLoadDraft(); renderWsOverview();
+  }, err => console.error("Ticker:", err));
+  function tkLoadDraft() { if (tkDirty) return; tkDraft = (tickerItems || TK_DEFAULT).map(x => ({ rw: x.rw || "", en: x.en || "", off: !!x.off })); renderTkEditor(); }
+  function renderTkEditor() {
+    const el = $("tickerEditList"); if (!el) return;
+    el.innerHTML = tkDraft.map((x, i) => `<div class="admin-row" style="display:block;opacity:${x.off ? ".55" : "1"}">
+      <div class="form-row"><label>🇷🇼 Kinyarwanda</label><input value="${esc(x.rw)}" oninput="tkSet(${i},'rw',this.value)" placeholder="Urugero: 🔧 Dukora moteri (Rewinding)"></div>
+      <div class="form-row"><label>🇬🇧 English</label><input value="${esc(x.en)}" oninput="tkSet(${i},'en',this.value)" placeholder="Example: 🔧 We repair &amp; rewind electric motors"></div>
+      <div class="btns" style="display:flex;gap:6px;flex-wrap:wrap">
+        <button type="button" onclick="tkMove(${i},-1)" ${i === 0 ? "disabled" : ""}>⬆️</button>
+        <button type="button" onclick="tkMove(${i},1)" ${i === tkDraft.length - 1 ? "disabled" : ""}>⬇️</button>
+        <button type="button" onclick="tkToggle(${i})">${x.off ? "👁️ Garagaza" : "🙈 Hisha"}</button>
+        <button type="button" onclick="tkDel(${i})">🗑️ Siba</button>
+      </div></div>`).join("") || '<p class="muted">Nta murongo uhari. Kanda "Ongeraho umurongo".</p>';
+  }
+  const tkMsg = txt => { const m = $("tickerMsg"); if (m) m.textContent = txt || ""; };
+  window.tkSet = (i, k, v) => { if (tkDraft[i]) { tkDraft[i][k] = v; tkDirty = true; tkMsg(""); } };
+  window.tkAdd = () => { tkDraft.push({ rw: "", en: "", off: false }); tkDirty = true; renderTkEditor(); };
+  window.tkDel = i => { tkDraft.splice(i, 1); tkDirty = true; renderTkEditor(); };
+  window.tkToggle = i => { if (tkDraft[i]) { tkDraft[i].off = !tkDraft[i].off; tkDirty = true; renderTkEditor(); } };
+  window.tkMove = (i, d) => { const j = i + d; if (j < 0 || j >= tkDraft.length) return; [tkDraft[i], tkDraft[j]] = [tkDraft[j], tkDraft[i]]; tkDirty = true; renderTkEditor(); };
+  window.tkSave = async () => {
+    if (!perms.has("sections")) { tkMsg("⛔ Nta bubasha ufite."); return; }
+    const items = tkDraft.map(x => ({ rw: x.rw.trim(), en: x.en.trim(), off: !!x.off })).filter(x => x.rw || x.en);
+    if (!items.filter(x => !x.off).length && !confirm("Nta murongo ugaragaza. Umurongo wose uzahishwa ku rubuga. Komeza?")) return;
+    const b = $("tickerSaveBtn"); if (b) b.disabled = true; tkMsg("⏳ Birabikwa...");
+    try { await setDoc(doc(db, "settings", "ticker"), { items, updatedAt: Date.now() }); tkDirty = false; tkMsg("✅ Byabitswe. Abasura urubuga bahita babibona."); }
+    catch (err) { tkMsg("❌ Kubika byanze: " + (err.code || err.message)); }
+    if (b) b.disabled = false;
+  };
+  window.tkReset = async () => {
+    if (!perms.has("sections") || !confirm("Subiza amagambo yo mbere?")) return;
+    try { await deleteDoc(doc(db, "settings", "ticker")); tkDirty = false; tkLoadDraft(); tkMsg("✅ Amagambo yo mbere yagarutse."); }
+    catch (err) { tkMsg("❌ Byanze: " + (err.code || err.message)); }
+  };
   onSnapshot(collection(db, "services"), snap => {
     services = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
     window.gdServicesCount = services.length; if (window.updateAdminBadges) window.updateAdminBadges();
@@ -3526,6 +3600,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const shopsN = shops.filter(x => shopStatus(x) === "approved").length;
     const rows = [
       ["🎞️", "Banner (Slides)", slidesN + " slides ziragaragara", "sections", [["Gucunga ›", "gdOpenPage('adminBannerSection')"]], "#f59e0b,#ef4444"],
+      ["📢", "Umurongo uzenguruka (Ticker)", ((tickerItems || TK_DEFAULT).filter(x => !x.off).length) + " amagambo agaragara", "sections", [["Hindura ›", "gdOpenPage('adminTickerSection')"]], "#0ea5e9,#6366f1"],
       ["🛠️", "Our services (slider)", (serviceList().length + svcShopItemIds.length) + " ibintu (serivisi + ibicuruzwa)", "services", [["Gucunga ›", "gdOpenPage('adminServicesSection')"]], "#f97316,#ef4444"],
       ["📦", "Ibicuruzwa (Recommended)", products.length + " ibicuruzwa", "products", [["Gucunga ›", "gdOpenPage('adminAddProductSection')"]], "#2563eb,#06b6d4"],
       ["🏪", "Amaduka y'abakiriya", shopsN + " amaduka", "shops", [["Gucunga ›", "gdOpenPage('adminShopsSection')"]], "#10b981,#14b8a6"],
@@ -4228,6 +4303,7 @@ function gdSavePdf(btn) {
     adminServicesSection: { icon: "🛠️", title: "Serivisi dukora", sub: "Ongeramo, hindura cyangwa ukureho serivisi", c: ["#f97316", "#ef4444"] },
     adminStatsSection: { icon: "📊", title: "Abasuye website", sub: "Reba abantu basuye urubuga", c: ["#0ea5e9", "#2563eb"] },
     adminSectionsSection: { icon: "🧩", title: "Ibice bya website", sub: "Gucunga ibice by'urubuga rwawe", c: ["#8b5cf6", "#ec4899"] },
+    adminTickerSection: { icon: "📢", title: "Umurongo uzenguruka", sub: "Hindura amagambo agaragara munsi ya search", c: ["#0ea5e9", "#6366f1"] },
     adminBannerSection: { icon: "🎞️", title: "Banner (Slides)", sub: "Gucunga slides zigaragara hejuru", c: ["#f59e0b", "#ef4444"] },
     adminSlideFormSection: { icon: "➕", title: "Slide / Igice gishya", sub: "Uzuza ifishi hanyuma ubike", c: ["#2563eb", "#8b5cf6"] },
     adminBannerPickSection: { icon: "📦", title: "Ongeraho ibicuruzwa kuri banner", sub: "Hitamo ibicuruzwa bijya ku banner", c: ["#f59e0b", "#ef4444"] },
