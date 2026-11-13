@@ -1730,6 +1730,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 
       <div class="admin-shortcuts" aria-label="Admin menu">
         <button class="admin-shortcut" type="button" onclick="openCeoPage('adminCeoSection')"><span>👑 CEO · Abakiriya ba mbere</span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="gdOpenInvoices()" id="invShortcut" hidden><span>🧾 Invoices zabitswe</span><span class="shortcut-arrow">›</span></button>
       </div>
 
       <div class="info-card admin-section" id="adminServicesSection" hidden>
@@ -1820,6 +1821,12 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
         <div class="bn-actions"><button class="secondary" type="button" onclick="tkAdd()">➕ Ongeraho umurongo</button></div>
         <div class="bn-actions"><button class="primary" type="button" id="tickerSaveBtn" onclick="tkSave()">💾 Bika impinduka</button><button class="secondary" type="button" onclick="tkReset()">↩️ Subiza ibisanzwe</button></div>
         <p id="tickerMsg" class="muted" aria-live="polite"></p>
+      </div>
+
+      <div class="info-card admin-section" id="adminInvoicesSection" hidden>
+        <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminInvoicesSection')"><h2>🧾 Invoices zabitswe</h2><span class="shortcut-arrow">⌃</span></button>
+        <input id="invSearch" type="search" placeholder="Shakisha izina, telefoni cyangwa nomero..." oninput="gdRenderInvoices()" style="width:100%;margin:8px 0">
+        <div id="invList"></div>
       </div>
 
       <div class="info-card admin-section" id="adminStatsSection" hidden>
@@ -2617,7 +2624,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   const ROLE_PERMS = { manager: ["products","services","orders","requests","sections","chats","stats"], staff: ["orders","requests","chats"], sales: ["orders","products","chats"], technician: ["requests","chats"] };
   let perms = new Set(), listenerKey = "", listenerUnsubs = [], unsubProfile = null;
   window.gdCan = p => perms.has(p);
-  const computePerms = (user, prof) => isAdminUser(user) ? new Set(["products","services","orders","requests","users","sections","shops","stats","chats","ceo"]) : new Set(ROLE_PERMS[(prof && prof.role) || ""] || []);
+  const computePerms = (user, prof) => isAdminUser(user) ? new Set(["products","services","orders","requests","users","sections","shops","stats","chats","ceo","invoices"]) : new Set(ROLE_PERMS[(prof && prof.role) || ""] || []);
 
   function stopListeners() { listenerUnsubs.forEach(f => { try { f(); } catch (e) {} }); listenerUnsubs = []; listenerKey = ""; }
 
@@ -2628,7 +2635,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     $("adminPanel").hidden = !staff;
     { const ah = document.querySelector("#view-admin .admin-title-row .page-title"); if (ah) ah.textContent = isAdminUser(currentUser) ? "👑 Super Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi"); }
     { const sp = $("cartStaffPanel"); if (sp) sp.hidden = !["chats", "orders", "requests", "services", "stats", "sections", "shops", "products"].some(k => perms.has(k)); }
-    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection", "adminBannerSection", "adminTickerSection"], shops: ["adminShopsSection"], stats: ["adminStatsSection"], chats: ["adminChatSection"], ceo: ["adminCeoSection"] };
+    const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection", "adminBannerSection", "adminTickerSection"], shops: ["adminShopsSection"], invoices: ["adminInvoicesSection"], stats: ["adminStatsSection"], chats: ["adminChatSection"], ceo: ["adminCeoSection"] };
     Object.keys(map).forEach(perm => {
       const ok = perms.has(perm);
       map[perm].forEach(id => {
@@ -2640,6 +2647,34 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     { const okAll = ["sections", "services", "shops", "products"].some(k => perms.has(k)); document.querySelectorAll('.admin-shortcut[onclick*="adminSectionsSection"]').forEach(btn => { btn.hidden = !okAll; }); }
   }
 
+  // ----- saved invoices (Super Admin only) -----
+  let invDocs = [];
+  window.gdFlushInvoices = async () => {
+    try {
+      if (!currentUser) return;
+      let q = []; try { q = JSON.parse(localStorage.getItem("gdInvQueue") || "[]"); } catch (e) { q = []; }
+      if (!q.length) return;
+      const left = [];
+      for (const inv of q) {
+        try { await setDoc(doc(db, "invoices", String(inv.id)), { ...inv, savedBy: currentUser.uid, savedByEmail: currentUser.email || "", savedAt: Date.now() }, { merge: true }); }
+        catch (e) { console.warn("Invoice save:", e); left.push(inv); }
+      }
+      localStorage.setItem("gdInvQueue", JSON.stringify(left));
+    } catch (e) {}
+  };
+  window.addEventListener("storage", e => { if (e.key === "gdInvQueue") window.gdFlushInvoices(); });
+  window.addEventListener("focus", () => window.gdFlushInvoices());
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) window.gdFlushInvoices(); });
+  window.gdRenderInvoices = () => {
+    const box = $("invList"); if (!box) return;
+    const f = (($("invSearch") || {}).value || "").toLowerCase().trim();
+    const list = invDocs.filter(i => !f || [i.id, i.name, i.phone].join(" ").toLowerCase().includes(f)).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0));
+    box.innerHTML = list.length ? list.map(i => `<div class="admin-row" style="align-items:flex-start"><div class="cart-details"><strong>${i.paid ? "✅" : "🧾"} ${esc(i.id)}</strong><small>${esc(i.name || "-")}${i.phone ? " · " + esc(i.phone) : ""}</small><small>${money(i.total || 0)} · ${i.paid ? t("Paid", "Yishyuwe") : t("Unpaid", "Ntiyishyurwa")} · ${esc(new Date(i.savedAt || Date.now()).toLocaleString())}</small><small>${esc(i.savedByEmail || "")}${i.savedAs ? " · " + esc(i.savedAs) : ""}</small></div><div class="admin-actions"><button type="button" class="secondary" onclick="gdOpenSavedInvoice('${esc(i.id)}')">👁️ ${t("Open", "Fungura")}</button><button type="button" class="danger" onclick="gdDeleteInvoice('${esc(i.id)}')">🗑️</button></div></div>`).join("") : `<p class="muted">${t("No saved invoices yet.", "Nta invoice irabikwa.")}</p>`;
+  };
+  window.gdOpenInvoices = () => { const sec = $("adminInvoicesSection"); if (!sec) return; sec.hidden = false; sec.classList.add("open"); sec.scrollIntoView({ behavior: "smooth", block: "start" }); };
+  window.gdOpenSavedInvoice = id => { const i = invDocs.find(x => String(x.id) === String(id)); if (!i) return; rcOpen({ id: i.id, name: i.name, phone: i.phone, rows: i.rows, note: i.note }); const p = $("rcPaid"); if (p) p.checked = !!i.paid; };
+  window.gdDeleteInvoice = async id => { if (!confirm(t("Delete this saved invoice?", "Uremeza gusiba iyi invoice?"))) return; try { await deleteDoc(doc(db, "invoices", String(id))); } catch (e) { alert(e.message || e); } };
+
   function startListeners() {
     const user = currentUser; if (!user) return;
     perms = computePerms(user, profile);
@@ -2649,6 +2684,9 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     stopListeners(); listenerKey = key;
     myOrders = []; allOrders = []; myServiceRequests = []; allServiceRequests = []; window.gdMyOrders = [];
     const owner = isAdminUser(user);
+    { const sc = $("invShortcut"); if (sc) sc.hidden = !perms.has("invoices"); }
+    if (perms.has("invoices")) listenerUnsubs.push(onSnapshot(collection(db, "invoices"), snap => { invDocs = snap.docs.map(d => ({ id: d.id, ...d.data() })); gdRenderInvoices(); }, err => console.error("Invoices:", err)));
+    window.gdFlushInvoices();
     if (perms.has("stats")) listenerUnsubs.push(onSnapshot(collection(db, "stats"), snap => { statsDocs = {}; snap.docs.forEach(d => { statsDocs[d.id] = d.data(); }); renderAdminStats(); }, err => console.error("Stats:", err)));
     if (perms.has("chats")) listenerUnsubs.push(onSnapshot(collection(db, "chats"), snap => {
       chatThreads = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
@@ -4088,6 +4126,15 @@ var FN = ${JSON.stringify(String(rid))};
 var BUSY_TXT = ${JSON.stringify(t("Please wait...", "Tegereza..."))};
 var NEED_NET = ${JSON.stringify(t("Internet is needed to save. Check your connection and try again.", "Bikenera internet. Reba ko ufite internet wongere ugerageze."))};
 var SITE_URL = "https://gdelectricmotors.pages.dev/";
+var INV = ${JSON.stringify({ id: String(rid), name, phone: phoneRaw, rows, note, paid, total, createdAt: Date.now() }).replace(/</g, "\\u003c")};
+function gdArchive(kind) {
+  try {
+    INV.savedAs = kind;
+    var q = JSON.parse(localStorage.getItem("gdInvQueue") || "[]").filter(function (x) { return x.id !== INV.id; });
+    q.push(INV); localStorage.setItem("gdInvQueue", JSON.stringify(q));
+    if (window.opener && window.opener.gdFlushInvoices) window.opener.gdFlushInvoices();
+  } catch (e) {}
+}
 function gdRun(btn, job) {
   if (!window.html2canvas) { alert(NEED_NET); return; }
   var old = btn.innerHTML; btn.disabled = true; btn.innerHTML = BUSY_TXT;
@@ -4121,7 +4168,7 @@ function gdDownload(blob, name) {
 function gdSaveImage(btn) {
   gdRun(btn, function () {
     return gdCapture().then(function (c) {
-      return new Promise(function (res) { c.toBlob(function (b) { gdDownload(b, FN + ".png"); res(); }, "image/png"); });
+      return new Promise(function (res) { c.toBlob(function (b) { gdDownload(b, FN + ".png"); gdArchive("image"); res(); }, "image/png"); });
     });
   });
 }
@@ -4133,7 +4180,7 @@ function gdSavePdf(btn) {
       var pdf = new window.jspdf.jsPDF({ unit: "mm", format: [W, pageH] });
       pdf.addImage(c.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, W, H);
       (window.__lk || []).forEach(function (l) { var k = W / l.sw; pdf.link(l.x * k, l.y * k, l.w * k, l.h * k, { url: SITE_URL }); });
-      pdf.save(FN + ".pdf");
+      pdf.save(FN + ".pdf"); gdArchive("pdf");
     });
   });
 }
