@@ -1555,6 +1555,51 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 @keyframes ccPulse{0%,100%{box-shadow:0 4px 10px rgba(37,99,235,.35)}50%{box-shadow:0 0 0 6px rgba(37,99,235,.15),0 4px 10px rgba(37,99,235,.35)}}
 @media(prefers-reduced-motion:reduce){.card-cart{animation:none}}
 </style>
+<style>
+/* hidden buttons must really be hidden (fixes Customers/CEO/Invoices buttons showing to non-Super Admins) */
+.admin-shortcut[hidden],.users-open-btn[hidden],.admin-shortcuts[hidden]{display:none !important}
+/* Invoices design */
+#adminInvoicesSection{border:1px solid rgba(99,102,241,.35);background:linear-gradient(160deg,rgba(30,41,99,.55),rgba(8,12,38,.85))}
+.inv-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.inv-stat{border-radius:18px;padding:14px;color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.28)}
+.inv-stat::after{content:"";position:absolute;right:-18px;top:-18px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.14)}
+.inv-stat small{display:block;opacity:.85;font-weight:700;font-size:.74rem;letter-spacing:.3px}
+.inv-stat b{display:block;font-size:1.15rem;margin-top:4px;word-break:break-word}
+.inv-stat.s1{background:linear-gradient(135deg,#2563eb,#7c3aed)}
+.inv-stat.s2{background:linear-gradient(135deg,#059669,#10b981)}
+.inv-stat.s3{background:linear-gradient(135deg,#d97706,#f59e0b)}
+.inv-stat.s4{background:linear-gradient(135deg,#0891b2,#06b6d4)}
+.inv-chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.inv-chip{border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.06);color:inherit;border-radius:999px;padding:8px 14px;font-weight:800;font-size:.82rem;cursor:pointer}
+.inv-chip.on{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border-color:transparent;box-shadow:0 6px 14px rgba(37,99,235,.4)}
+#invSearch{border-radius:14px!important;padding:12px 14px!important}
+.inv-card{border-radius:20px;margin:12px 0;overflow:hidden;background:rgba(255,255,255,.06);border:1px solid rgba(148,163,184,.25);box-shadow:0 10px 24px rgba(0,0,0,.25);animation:invIn .35s ease both}
+@keyframes invIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.inv-card::before{content:"";display:block;height:5px;background:linear-gradient(90deg,#f59e0b,#ef4444)}
+.inv-card.paid::before{background:linear-gradient(90deg,#10b981,#06b6d4)}
+.inv-top{display:flex;align-items:center;gap:12px;padding:14px 14px 8px}
+.inv-av{flex:0 0 auto;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.2rem;color:#fff;background:linear-gradient(135deg,#6366f1,#ec4899);box-shadow:0 4px 10px rgba(99,102,241,.45)}
+.inv-who{min-width:0;flex:1}
+.inv-who b{display:block;font-size:1rem;overflow-wrap:anywhere}
+.inv-who small{opacity:.75;font-size:.8rem}
+.inv-badge{flex:0 0 auto;font-size:.72rem;font-weight:900;padding:6px 10px;border-radius:999px;color:#fff;background:linear-gradient(135deg,#d97706,#f59e0b)}
+.inv-card.paid .inv-badge{background:linear-gradient(135deg,#059669,#10b981)}
+.inv-items{margin:0 14px;padding:10px 12px;border-radius:14px;background:rgba(0,0,0,.18);font-size:.84rem;line-height:1.6}
+.inv-items div{display:flex;justify-content:space-between;gap:8px}
+.inv-items span:first-child{opacity:.9;overflow-wrap:anywhere}
+.inv-items em{opacity:.6;font-style:normal}
+.inv-mid{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding:12px 14px 4px}
+.inv-total{font-size:1.45rem;font-weight:900;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
+.inv-meta{text-align:right;font-size:.74rem;opacity:.7;line-height:1.5}
+.inv-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:10px 14px 14px}
+.inv-foot small{opacity:.65;font-size:.74rem;min-width:0;overflow-wrap:anywhere}
+.inv-btns{display:flex;gap:8px}
+.inv-btns button{border:0;border-radius:12px;padding:9px 14px;font-weight:800;font-size:.84rem;cursor:pointer;color:#fff;background:linear-gradient(135deg,#2563eb,#7c3aed)}
+.inv-btns button.del{background:linear-gradient(135deg,#dc2626,#f43f5e)}
+.inv-empty{text-align:center;padding:30px 10px;opacity:.8}
+.inv-empty span{display:block;font-size:2.6rem;margin-bottom:6px}
+@media(min-width:600px){.inv-stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
 <header class="topbar">
@@ -1825,7 +1870,9 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 
       <div class="info-card admin-section" id="adminInvoicesSection" hidden>
         <button class="admin-section-toggle" type="button" onclick="toggleAdminSection('adminInvoicesSection')"><h2>🧾 Invoices zabitswe</h2><span class="shortcut-arrow">⌃</span></button>
-        <input id="invSearch" type="search" placeholder="Shakisha izina, telefoni cyangwa nomero..." oninput="gdRenderInvoices()" style="width:100%;margin:8px 0">
+        <div class="inv-stats" id="invStats"></div>
+        <div class="inv-chips" id="invChips"></div>
+        <input id="invSearch" type="search" placeholder="🔎 Shakisha izina, telefoni cyangwa nomero..." oninput="gdRenderInvoices()" style="width:100%;margin:4px 0 8px">
         <div id="invList"></div>
       </div>
 
@@ -2654,6 +2701,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       if (!currentUser) return;
       let q = []; try { q = JSON.parse(localStorage.getItem("gdInvQueue") || "[]"); } catch (e) { q = []; }
       if (!q.length) return;
+      if (!perms.size) { localStorage.setItem("gdInvQueue", "[]"); return; }
       const left = [];
       for (const inv of q) {
         try { await setDoc(doc(db, "invoices", String(inv.id)), { ...inv, savedBy: currentUser.uid, savedByEmail: currentUser.email || "", savedAt: Date.now() }, { merge: true }); }
@@ -2665,11 +2713,25 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   window.addEventListener("storage", e => { if (e.key === "gdInvQueue") window.gdFlushInvoices(); });
   window.addEventListener("focus", () => window.gdFlushInvoices());
   document.addEventListener("visibilitychange", () => { if (!document.hidden) window.gdFlushInvoices(); });
+  let invFilter = "all";
+  window.gdInvFilter = f => { invFilter = f; gdRenderInvoices(); };
   window.gdRenderInvoices = () => {
     const box = $("invList"); if (!box) return;
     const f = (($("invSearch") || {}).value || "").toLowerCase().trim();
-    const list = invDocs.filter(i => !f || [i.id, i.name, i.phone].join(" ").toLowerCase().includes(f)).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0));
-    box.innerHTML = list.length ? list.map(i => `<div class="admin-row" style="align-items:flex-start"><div class="cart-details"><strong>${i.paid ? "✅" : "🧾"} ${esc(i.id)}</strong><small>${esc(i.name || "-")}${i.phone ? " · " + esc(i.phone) : ""}</small><small>${money(i.total || 0)} · ${i.paid ? t("Paid", "Yishyuwe") : t("Unpaid", "Ntiyishyurwa")} · ${esc(new Date(i.savedAt || Date.now()).toLocaleString())}</small><small>${esc(i.savedByEmail || "")}${i.savedAs ? " · " + esc(i.savedAs) : ""}</small></div><div class="admin-actions"><button type="button" class="secondary" onclick="gdOpenSavedInvoice('${esc(i.id)}')">👁️ ${t("Open", "Fungura")}</button><button type="button" class="danger" onclick="gdDeleteInvoice('${esc(i.id)}')">🗑️</button></div></div>`).join("") : `<p class="muted">${t("No saved invoices yet.", "Nta invoice irabikwa.")}</p>`;
+    const all = invDocs.slice();
+    const paidN = all.filter(i => i.paid).length;
+    const sum = a => a.reduce((n, i) => n + Number(i.total || 0), 0);
+    const st = $("invStats");
+    if (st) st.innerHTML = `<div class="inv-stat s1"><small>${t("INVOICES", "INVOICES ZOSE")}</small><b>${all.length}</b></div><div class="inv-stat s4"><small>${t("TOTAL", "IGITERANYO CYOSE")}</small><b>${money(sum(all))}</b></div><div class="inv-stat s2"><small>${t("PAID", "ZISHYUWE")}</small><b>${paidN} · ${money(sum(all.filter(i => i.paid)))}</b></div><div class="inv-stat s3"><small>${t("UNPAID", "ZITISHYUWE")}</small><b>${all.length - paidN} · ${money(sum(all.filter(i => !i.paid)))}</b></div>`;
+    const ch = $("invChips");
+    if (ch) ch.innerHTML = [["all", t("All", "Zose")], ["paid", "✅ " + t("Paid", "Zishyuwe")], ["unpaid", "⏳ " + t("Unpaid", "Zitishyuwe")]].map(([k, l]) => `<button type="button" class="inv-chip${invFilter === k ? " on" : ""}" onclick="gdInvFilter('${k}')">${l}</button>`).join("");
+    const list = all.filter(i => (invFilter === "all" || (invFilter === "paid") === !!i.paid) && (!f || [i.id, i.name, i.phone].join(" ").toLowerCase().includes(f))).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0));
+    box.innerHTML = list.length ? list.map(i => {
+      const rows = Array.isArray(i.rows) ? i.rows : [];
+      const prev = rows.slice(0, 3).map(r => `<div><span>${esc(r.d || "")}</span><em>${Number(r.q || 0)} × ${money(r.p || 0)}</em></div>`).join("") + (rows.length > 3 ? `<div><em>+ ${rows.length - 3} ${t("more", "izindi")}</em></div>` : "");
+      const ini = esc(String(i.name || "?").trim().charAt(0).toUpperCase() || "?");
+      return `<div class="inv-card ${i.paid ? "paid" : "unpaid"}"><div class="inv-top"><div class="inv-av">${ini}</div><div class="inv-who"><b>${esc(i.name || "-")}</b><small>${i.phone ? "📞 " + esc(i.phone) : "—"}</small></div><span class="inv-badge">${i.paid ? "✅ " + t("Paid", "Yishyuwe") : "⏳ " + t("Unpaid", "Ntiyishyurwa")}</span></div>${prev ? `<div class="inv-items">${prev}</div>` : ""}<div class="inv-mid"><div class="inv-total">${money(i.total || 0)}</div><div class="inv-meta">🧾 ${esc(i.id)}<br>${esc(new Date(i.savedAt || Date.now()).toLocaleString())}</div></div><div class="inv-foot"><small>👤 ${esc(i.savedByEmail || "-")}${i.savedAs ? " · " + (i.savedAs === "pdf" ? "📄 PDF" : "🖼️ " + t("Image", "Ifoto")) : ""}</small><div class="inv-btns"><button type="button" onclick="gdOpenSavedInvoice('${esc(i.id)}')">👁️ ${t("Open", "Fungura")}</button><button type="button" class="del" onclick="gdDeleteInvoice('${esc(i.id)}')">🗑️</button></div></div></div>`;
+    }).join("") : `<div class="inv-empty"><span>🧾</span>${t("No saved invoices yet.", "Nta invoice irabikwa.")}</div>`;
   };
   window.gdOpenInvoices = () => { const sec = $("adminInvoicesSection"); if (!sec) return; sec.hidden = false; sec.classList.add("open"); sec.scrollIntoView({ behavior: "smooth", block: "start" }); };
   window.gdOpenSavedInvoice = id => { const i = invDocs.find(x => String(x.id) === String(id)); if (!i) return; rcOpen({ id: i.id, name: i.name, phone: i.phone, rows: i.rows, note: i.note }); const p = $("rcPaid"); if (p) p.checked = !!i.paid; };
