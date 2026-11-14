@@ -1600,6 +1600,119 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 .inv-empty span{display:block;font-size:2.6rem;margin-bottom:6px}
 @media(min-width:600px){.inv-stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
+<style>
+/* Receipt / Invoice design chooser */
+#rcModal .rc-themes{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 12px;margin:0 -2px;align-items:center;-webkit-overflow-scrolling:touch}
+#rcModal .rc-themes>span{flex:0 0 auto;font-weight:900;font-size:.82rem;opacity:.85}
+#rcModal .rc-th{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:999px;border:1.5px solid rgba(148,163,184,.4);background:rgba(255,255,255,.07);color:inherit;font-weight:800;font-size:.8rem;cursor:pointer}
+#rcModal .rc-th i{width:16px;height:16px;border-radius:50%;background:var(--c);border:1px solid rgba(0,0,0,.25)}
+#rcModal .rc-th.on{border-color:#5b8cff;box-shadow:0 0 0 3px rgba(91,140,255,.3)}
+#rcModal .rc-sheet[data-th="paper"]{background:#f1f5f9;color:#0f172a;border-color:#dbe3ee}
+#rcModal .rc-sheet[data-th="paper"] .rc-head{background:rgba(255,255,255,.96);border-bottom-color:#dbe3ee}
+#rcModal .rc-sheet[data-th="paper"] .rc-head h2,#rcModal .rc-sheet[data-th="paper"] .rc-cap{color:#0f172a}
+#rcModal .rc-sheet[data-th="paper"] .rc-head small{color:#475569}
+#rcModal .rc-sheet[data-th="paper"] .rc-head button{background:rgba(127,127,127,.15);color:#0f172a;border-color:#dbe3ee}
+#rcModal .rc-sheet[data-th="paper"] .rc-ico{background:linear-gradient(135deg,#2563eb,#0ea5e9)}
+#rcModal .rc-sheet[data-th="paper"] .rc-card{background:#ffffff;border-color:#dbe3ee;box-shadow:0 10px 24px -16px rgba(0,0,0,.5)}
+#rcModal .rc-sheet[data-th="paper"] .rc-cap::after{background:linear-gradient(90deg,#2563eb,transparent)}
+#rcModal .rc-sheet[data-th="paper"] label,#rcModal .rc-sheet[data-th="paper"] .rc-f span{color:#475569}
+#rcModal .rc-sheet[data-th="paper"] input:not([type=checkbox]),#rcModal .rc-sheet[data-th="paper"] textarea{background:#ffffff;border-color:#cbd5e1;color:#0f172a}
+#rcModal .rc-sheet[data-th="paper"] input::placeholder,#rcModal .rc-sheet[data-th="paper"] textarea::placeholder{color:#475569;opacity:.65}
+#rcModal .rc-sheet[data-th="paper"] .rc-row{background:#f8fafc;border-color:#cbd5e1}
+#rcModal .rc-sheet[data-th="paper"] .rc-add{border-color:#2563eb;background:transparent;color:#2563eb}
+#rcModal .rc-sheet[data-th="paper"] .rc-total{background:linear-gradient(135deg,#2563eb33,#0ea5e92a);border-color:#2563eb;color:#0f172a}
+#rcModal .rc-sheet[data-th="paper"] .rc-total b{color:#047857}
+#rcModal .rc-sheet[data-th="paper"] .rc-check{background:#f8fafc;border-color:#cbd5e1;color:#0f172a!important}
+#rcModal .rc-sheet[data-th="paper"] .rc-sw{background:#cbd5e1}
+#rcModal .rc-sheet[data-th="paper"] .rc-check input:checked + .rc-sw{background:linear-gradient(135deg,#2563eb,#0ea5e9)}
+#rcModal .rc-sheet[data-th="paper"] .rc-foot{background:linear-gradient(to top,#f1f5f9 70%,transparent)}
+#rcModal .rc-sheet[data-th="paper"] .rc-foot .primary{background:linear-gradient(135deg,#2563eb,#0ea5e9);color:#fff;box-shadow:0 14px 26px -10px #2563eb99}
+#rcModal .rc-sheet[data-th="paper"] .rc-th{color:#0f172a}
+#rcModal .rc-sheet[data-th="gold"]{background:#14100a;color:#fff7e0;border-color:rgba(251,191,36,.3)}
+#rcModal .rc-sheet[data-th="gold"] .rc-head{background:rgba(24,18,8,.94);border-bottom-color:rgba(251,191,36,.3)}
+#rcModal .rc-sheet[data-th="gold"] .rc-head h2,#rcModal .rc-sheet[data-th="gold"] .rc-cap{color:#fff7e0}
+#rcModal .rc-sheet[data-th="gold"] .rc-head small{color:#e8c987}
+#rcModal .rc-sheet[data-th="gold"] .rc-head button{background:rgba(127,127,127,.15);color:#fff7e0;border-color:rgba(251,191,36,.3)}
+#rcModal .rc-sheet[data-th="gold"] .rc-ico{background:linear-gradient(135deg,#f59e0b,#b45309)}
+#rcModal .rc-sheet[data-th="gold"] .rc-card{background:rgba(251,191,36,.07);border-color:rgba(251,191,36,.3);box-shadow:0 10px 24px -16px rgba(0,0,0,.5)}
+#rcModal .rc-sheet[data-th="gold"] .rc-cap::after{background:linear-gradient(90deg,#f59e0b,transparent)}
+#rcModal .rc-sheet[data-th="gold"] label,#rcModal .rc-sheet[data-th="gold"] .rc-f span{color:#e8c987}
+#rcModal .rc-sheet[data-th="gold"] input:not([type=checkbox]),#rcModal .rc-sheet[data-th="gold"] textarea{background:#0b0905;border-color:#7a5a1a;color:#fff7e0}
+#rcModal .rc-sheet[data-th="gold"] input::placeholder,#rcModal .rc-sheet[data-th="gold"] textarea::placeholder{color:#e8c987;opacity:.65}
+#rcModal .rc-sheet[data-th="gold"] .rc-row{background:rgba(11,9,5,.6);border-color:#7a5a1a}
+#rcModal .rc-sheet[data-th="gold"] .rc-add{border-color:#f59e0b;background:transparent;color:#f59e0b}
+#rcModal .rc-sheet[data-th="gold"] .rc-total{background:linear-gradient(135deg,#f59e0b33,#b453092a);border-color:#f59e0b;color:#fff7e0}
+#rcModal .rc-sheet[data-th="gold"] .rc-total b{color:#fbbf24}
+#rcModal .rc-sheet[data-th="gold"] .rc-check{background:rgba(11,9,5,.6);border-color:#7a5a1a;color:#fff7e0!important}
+#rcModal .rc-sheet[data-th="gold"] .rc-sw{background:#4a3a16}
+#rcModal .rc-sheet[data-th="gold"] .rc-check input:checked + .rc-sw{background:linear-gradient(135deg,#f59e0b,#b45309)}
+#rcModal .rc-sheet[data-th="gold"] .rc-foot{background:linear-gradient(to top,#14100a 70%,transparent)}
+#rcModal .rc-sheet[data-th="gold"] .rc-foot .primary{background:linear-gradient(135deg,#f59e0b,#b45309);color:#fff;box-shadow:0 14px 26px -10px #f59e0b99}
+#rcModal .rc-sheet[data-th="gold"] .rc-th{color:#fff7e0}
+#rcModal .rc-sheet[data-th="emerald"]{background:#06180f;color:#eafff5;border-color:rgba(16,185,129,.32)}
+#rcModal .rc-sheet[data-th="emerald"] .rc-head{background:rgba(6,24,15,.94);border-bottom-color:rgba(16,185,129,.32)}
+#rcModal .rc-sheet[data-th="emerald"] .rc-head h2,#rcModal .rc-sheet[data-th="emerald"] .rc-cap{color:#eafff5}
+#rcModal .rc-sheet[data-th="emerald"] .rc-head small{color:#8fe3bd}
+#rcModal .rc-sheet[data-th="emerald"] .rc-head button{background:rgba(127,127,127,.15);color:#eafff5;border-color:rgba(16,185,129,.32)}
+#rcModal .rc-sheet[data-th="emerald"] .rc-ico{background:linear-gradient(135deg,#10b981,#047857)}
+#rcModal .rc-sheet[data-th="emerald"] .rc-card{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.32);box-shadow:0 10px 24px -16px rgba(0,0,0,.5)}
+#rcModal .rc-sheet[data-th="emerald"] .rc-cap::after{background:linear-gradient(90deg,#10b981,transparent)}
+#rcModal .rc-sheet[data-th="emerald"] label,#rcModal .rc-sheet[data-th="emerald"] .rc-f span{color:#8fe3bd}
+#rcModal .rc-sheet[data-th="emerald"] input:not([type=checkbox]),#rcModal .rc-sheet[data-th="emerald"] textarea{background:#04100a;border-color:#157a55;color:#eafff5}
+#rcModal .rc-sheet[data-th="emerald"] input::placeholder,#rcModal .rc-sheet[data-th="emerald"] textarea::placeholder{color:#8fe3bd;opacity:.65}
+#rcModal .rc-sheet[data-th="emerald"] .rc-row{background:rgba(4,16,10,.6);border-color:#157a55}
+#rcModal .rc-sheet[data-th="emerald"] .rc-add{border-color:#10b981;background:transparent;color:#10b981}
+#rcModal .rc-sheet[data-th="emerald"] .rc-total{background:linear-gradient(135deg,#10b98133,#0478572a);border-color:#10b981;color:#eafff5}
+#rcModal .rc-sheet[data-th="emerald"] .rc-total b{color:#6ee7b7}
+#rcModal .rc-sheet[data-th="emerald"] .rc-check{background:rgba(4,16,10,.6);border-color:#157a55;color:#eafff5!important}
+#rcModal .rc-sheet[data-th="emerald"] .rc-sw{background:#14513b}
+#rcModal .rc-sheet[data-th="emerald"] .rc-check input:checked + .rc-sw{background:linear-gradient(135deg,#10b981,#047857)}
+#rcModal .rc-sheet[data-th="emerald"] .rc-foot{background:linear-gradient(to top,#06180f 70%,transparent)}
+#rcModal .rc-sheet[data-th="emerald"] .rc-foot .primary{background:linear-gradient(135deg,#10b981,#047857);color:#fff;box-shadow:0 14px 26px -10px #10b98199}
+#rcModal .rc-sheet[data-th="emerald"] .rc-th{color:#eafff5}
+#rcModal .rc-sheet[data-th="sunset"]{background:#1d0b1c;color:#fff1f5;border-color:rgba(244,114,182,.32)}
+#rcModal .rc-sheet[data-th="sunset"] .rc-head{background:rgba(33,10,31,.94);border-bottom-color:rgba(244,114,182,.32)}
+#rcModal .rc-sheet[data-th="sunset"] .rc-head h2,#rcModal .rc-sheet[data-th="sunset"] .rc-cap{color:#fff1f5}
+#rcModal .rc-sheet[data-th="sunset"] .rc-head small{color:#fbb6ce}
+#rcModal .rc-sheet[data-th="sunset"] .rc-head button{background:rgba(127,127,127,.15);color:#fff1f5;border-color:rgba(244,114,182,.32)}
+#rcModal .rc-sheet[data-th="sunset"] .rc-ico{background:linear-gradient(135deg,#f97316,#db2777)}
+#rcModal .rc-sheet[data-th="sunset"] .rc-card{background:rgba(249,115,22,.08);border-color:rgba(244,114,182,.32);box-shadow:0 10px 24px -16px rgba(0,0,0,.5)}
+#rcModal .rc-sheet[data-th="sunset"] .rc-cap::after{background:linear-gradient(90deg,#f97316,transparent)}
+#rcModal .rc-sheet[data-th="sunset"] label,#rcModal .rc-sheet[data-th="sunset"] .rc-f span{color:#fbb6ce}
+#rcModal .rc-sheet[data-th="sunset"] input:not([type=checkbox]),#rcModal .rc-sheet[data-th="sunset"] textarea{background:#12060f;border-color:#9d2b6b;color:#fff1f5}
+#rcModal .rc-sheet[data-th="sunset"] input::placeholder,#rcModal .rc-sheet[data-th="sunset"] textarea::placeholder{color:#fbb6ce;opacity:.65}
+#rcModal .rc-sheet[data-th="sunset"] .rc-row{background:rgba(18,6,15,.6);border-color:#9d2b6b}
+#rcModal .rc-sheet[data-th="sunset"] .rc-add{border-color:#f97316;background:transparent;color:#f97316}
+#rcModal .rc-sheet[data-th="sunset"] .rc-total{background:linear-gradient(135deg,#f9731633,#db27772a);border-color:#f97316;color:#fff1f5}
+#rcModal .rc-sheet[data-th="sunset"] .rc-total b{color:#fdba74}
+#rcModal .rc-sheet[data-th="sunset"] .rc-check{background:rgba(18,6,15,.6);border-color:#9d2b6b;color:#fff1f5!important}
+#rcModal .rc-sheet[data-th="sunset"] .rc-sw{background:#5b1a45}
+#rcModal .rc-sheet[data-th="sunset"] .rc-check input:checked + .rc-sw{background:linear-gradient(135deg,#f97316,#db2777)}
+#rcModal .rc-sheet[data-th="sunset"] .rc-foot{background:linear-gradient(to top,#1d0b1c 70%,transparent)}
+#rcModal .rc-sheet[data-th="sunset"] .rc-foot .primary{background:linear-gradient(135deg,#f97316,#db2777);color:#fff;box-shadow:0 14px 26px -10px #f9731699}
+#rcModal .rc-sheet[data-th="sunset"] .rc-th{color:#fff1f5}
+#rcModal .rc-sheet[data-th="ocean"]{background:#061a2b;color:#ecfbff;border-color:rgba(6,182,212,.32)}
+#rcModal .rc-sheet[data-th="ocean"] .rc-head{background:rgba(6,26,43,.94);border-bottom-color:rgba(6,182,212,.32)}
+#rcModal .rc-sheet[data-th="ocean"] .rc-head h2,#rcModal .rc-sheet[data-th="ocean"] .rc-cap{color:#ecfbff}
+#rcModal .rc-sheet[data-th="ocean"] .rc-head small{color:#8fd8ea}
+#rcModal .rc-sheet[data-th="ocean"] .rc-head button{background:rgba(127,127,127,.15);color:#ecfbff;border-color:rgba(6,182,212,.32)}
+#rcModal .rc-sheet[data-th="ocean"] .rc-ico{background:linear-gradient(135deg,#06b6d4,#1d4ed8)}
+#rcModal .rc-sheet[data-th="ocean"] .rc-card{background:rgba(6,182,212,.08);border-color:rgba(6,182,212,.32);box-shadow:0 10px 24px -16px rgba(0,0,0,.5)}
+#rcModal .rc-sheet[data-th="ocean"] .rc-cap::after{background:linear-gradient(90deg,#06b6d4,transparent)}
+#rcModal .rc-sheet[data-th="ocean"] label,#rcModal .rc-sheet[data-th="ocean"] .rc-f span{color:#8fd8ea}
+#rcModal .rc-sheet[data-th="ocean"] input:not([type=checkbox]),#rcModal .rc-sheet[data-th="ocean"] textarea{background:#041420;border-color:#17708a;color:#ecfbff}
+#rcModal .rc-sheet[data-th="ocean"] input::placeholder,#rcModal .rc-sheet[data-th="ocean"] textarea::placeholder{color:#8fd8ea;opacity:.65}
+#rcModal .rc-sheet[data-th="ocean"] .rc-row{background:rgba(4,20,32,.6);border-color:#17708a}
+#rcModal .rc-sheet[data-th="ocean"] .rc-add{border-color:#06b6d4;background:transparent;color:#06b6d4}
+#rcModal .rc-sheet[data-th="ocean"] .rc-total{background:linear-gradient(135deg,#06b6d433,#1d4ed82a);border-color:#06b6d4;color:#ecfbff}
+#rcModal .rc-sheet[data-th="ocean"] .rc-total b{color:#67e8f9}
+#rcModal .rc-sheet[data-th="ocean"] .rc-check{background:rgba(4,20,32,.6);border-color:#17708a;color:#ecfbff!important}
+#rcModal .rc-sheet[data-th="ocean"] .rc-sw{background:#134b66}
+#rcModal .rc-sheet[data-th="ocean"] .rc-check input:checked + .rc-sw{background:linear-gradient(135deg,#06b6d4,#1d4ed8)}
+#rcModal .rc-sheet[data-th="ocean"] .rc-foot{background:linear-gradient(to top,#061a2b 70%,transparent)}
+#rcModal .rc-sheet[data-th="ocean"] .rc-foot .primary{background:linear-gradient(135deg,#06b6d4,#1d4ed8);color:#fff;box-shadow:0 14px 26px -10px #06b6d499}
+#rcModal .rc-sheet[data-th="ocean"] .rc-th{color:#ecfbff}
+</style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
 <header class="topbar">
@@ -4019,7 +4132,14 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   const RC_CONTACT_DEFAULT = "+250 796 022 617";
   let payCfg = { payPhone: "", payName: "", momoCode: "", contactPhone: "" };
   onSnapshot(doc(db, "settings", "payment"), snap => { payCfg = snap.exists() ? snap.data() : { payPhone: "", payName: "", momoCode: "" }; }, () => {});
-  const rcRowHtml = (r = {}) => `<div class="rc-row"><input class="rc-d" placeholder="Icyakozwe cyangwa igicuruzwa" value="${esc(r.d || "")}"><label class="rc-f"><span>Qty</span><input class="rc-q" type="number" min="0" step="any" inputmode="decimal" value="${r.q ?? 1}" oninput="rcCalc()"></label><label class="rc-f"><span>Igiciro (RWF)</span><input class="rc-p" type="number" min="0" step="any" inputmode="numeric" placeholder="0" value="${r.p ?? ""}" oninput="rcCalc()"></label><button type="button" class="rc-x" aria-label="Siba" onclick="this.parentNode.remove();rcCalc()">✕</button></div>`;
+  const rcRowHtml = (r = {}) => `<div class="rc-row"><input class="rc-d" placeholder="${t("Work done or product","Icyakozwe cyangwa igicuruzwa")}" value="${esc(r.d || "")}"><label class="rc-f"><span>Qty</span><input class="rc-q" type="number" min="0" step="any" inputmode="decimal" value="${r.q ?? 1}" oninput="rcCalc()"></label><label class="rc-f"><span>${t("Price (RWF)","Igiciro (RWF)")}</span><input class="rc-p" type="number" min="0" step="any" inputmode="numeric" placeholder="0" value="${r.p ?? ""}" oninput="rcCalc()"></label><button type="button" class="rc-x" aria-label="${t("Delete","Siba")}" onclick="this.parentNode.remove();rcCalc()">✕</button></div>`;
+  const RC_THEMES = [["neon", ["Neon", "Neon"], "linear-gradient(135deg,#2563eb,#25d6a0)"], ["paper", ["Paper", "Umweru"], "linear-gradient(135deg,#ffffff,#cbd5e1)"], ["gold", ["Royal", "Zahabu"], "linear-gradient(135deg,#f59e0b,#78350f)"], ["emerald", ["Emerald", "Icyatsi"], "linear-gradient(135deg,#10b981,#064e3b)"], ["sunset", ["Sunset", "Izuba"], "linear-gradient(135deg,#f97316,#db2777)"], ["ocean", ["Ocean", "Inyanja"], "linear-gradient(135deg,#06b6d4,#1e3a8a)"]];
+  window.rcTheme = k => {
+    const sh = document.querySelector("#rcModal .rc-sheet"); if (!sh) return;
+    if (!RC_THEMES.some(x => x[0] === k)) k = "neon";
+    sh.dataset.th = k; try { localStorage.setItem("gdRcTheme", k); } catch (e) {}
+    sh.querySelectorAll(".rc-th").forEach(b => b.classList.toggle("on", b.dataset.k === k));
+  };
   window.rcCalc = () => {
     let t = 0; document.querySelectorAll("#rcRows .rc-row").forEach(r => { t += (Number(r.querySelector(".rc-q").value) || 0) * (Number(r.querySelector(".rc-p").value) || 0); });
     $("rcTotal").textContent = money(t);
@@ -4031,41 +4151,42 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     if (!m) { m = document.createElement("div"); m.id = "rcModal"; m.className = "rc-modal"; document.body.appendChild(m); }
     m.innerHTML = `<div class="rc-sheet">
       <div class="rc-head"><div class="rc-title"><span class="rc-ico">🧾</span><div><h2>Receipt / Invoice</h2><small>GD Electric Motors</small></div></div><button type="button" aria-label="Close" onclick="rcClose()">✕</button></div>
+      <div class="rc-themes" aria-label="${t("Design","Igishushanyo")}"><span>🎨 ${t("Design","Igishushanyo")}</span>${RC_THEMES.map(([k, l, c]) => `<button type="button" class="rc-th" data-k="${k}" style="--c:${c}" onclick="rcTheme('${k}')"><i></i>${t(l[0], l[1])}</button>`).join("")}</div>
       <div class="rc-card">
         <div class="rc-cap">👤 ${t("Customer", "Umukiriya")}</div>
-        <label>Izina ry'umukiriya</label><input id="rcName" value="${esc(init.name || "")}">
-        <label>Telefoni (WhatsApp)</label><input id="rcPhone" type="tel" value="${esc(init.phone || "")}">
+        <label>${t("Customer name","Izina ry'umukiriya")}</label><input id="rcName" value="${esc(init.name || "")}">
+        <label>${t("Phone (WhatsApp)","Telefoni (WhatsApp)")}</label><input id="rcPhone" type="tel" value="${esc(init.phone || "")}">
       </div>
       <div class="rc-card">
-        <div class="rc-cap">🛠️ <span>Ibyakozwe / ibyaguzwe</span></div>
+        <div class="rc-cap">🛠️ <span>${t("Work done / items sold","Ibyakozwe / ibyaguzwe")}</span></div>
         <div id="rcRows">${(init.rows && init.rows.length ? init.rows : [{}]).map(rcRowHtml).join("")}</div>
-        <button type="button" class="rc-add" onclick="rcAddRow()">+ Ongeramo umurongo</button>
-        <div class="rc-total"><span>Igiteranyo:</span><b id="rcTotal">0 RWF</b></div>
+        <button type="button" class="rc-add" onclick="rcAddRow()">${t("+ Add a line","+ Ongeramo umurongo")}</button>
+        <div class="rc-total"><span>${t("Total:","Igiteranyo:")}</span><b id="rcTotal">0 RWF</b></div>
       </div>
       <div class="rc-card">
         <div class="rc-cap">📝 ${t("Notes", "Ibisobanuro")}</div>
-        <label>Ibisobanuro by'akazi kakozwe (si ngombwa)</label>
-        <textarea id="rcNote" placeholder="Urugero: Twasubije amashanyarazi muri moteri, dusimbuza bearing...">${esc(init.note || "")}</textarea>
+        <label>${t("Description of the work done (optional)","Ibisobanuro by'akazi kakozwe (si ngombwa)")}</label>
+        <textarea id="rcNote" placeholder="${t("Example: We rewound the motor and replaced the bearing...","Urugero: Twasubije amashanyarazi muri moteri, dusimbuza bearing...")}">${esc(init.note || "")}</textarea>
       </div>
       <div class="rc-card">
         <div class="rc-cap">💳 ${t("Payment", "Kwishyura")}</div>
-        <label class="rc-check"><input type="checkbox" id="rcPaid"><span class="rc-sw"></span><span>Yamaze kwishyura (PAID)</span></label>
-        <label>Uburyo bwo kwishyura 1: MoMo kuri nimero ya telefoni</label>
-        <input id="rcPayPhone" type="tel" placeholder="Nimero ya MoMo (urugero 0788 xxx xxx)" value="${esc(payCfg.payPhone || "")}">
-        <input id="rcPayName" style="margin-top:8px" placeholder="Izina rigaragara kuri iyo nimero (si ngombwa)" value="${esc(payCfg.payName || "")}">
-        <label>Uburyo bwo kwishyura 2: MoMo Pay code</label>
-        <input id="rcMomo" inputmode="numeric" placeholder="Code yo kwishyura (urugero 123456)" value="${esc(payCfg.momoCode || "")}">
-        <label>📞 Nimero igaragara muri CONTACT ku mutwe wa fagitire</label>
-        <input id="rcContact" type="tel" placeholder="Urugero +250 796 022 617" value="${esc(payCfg.contactPhone || RC_CONTACT_DEFAULT)}">
-        <label class="rc-check"><input type="checkbox" id="rcSave" checked><span class="rc-sw"></span><span>Bika ubu buryo bwo kwishyura na nimero ya CONTACT nk'ubusanzwe</span></label>
+        <label class="rc-check"><input type="checkbox" id="rcPaid"><span class="rc-sw"></span><span>${t("Already paid (PAID)","Yamaze kwishyura (PAID)")}</span></label>
+        <label>${t("Payment method 1: MoMo to a phone number","Uburyo bwo kwishyura 1: MoMo kuri nimero ya telefoni")}</label>
+        <input id="rcPayPhone" type="tel" placeholder="${t("MoMo number (e.g. 0788 xxx xxx)","Nimero ya MoMo (urugero 0788 xxx xxx)")}" value="${esc(payCfg.payPhone || "")}">
+        <input id="rcPayName" style="margin-top:8px" placeholder="${t("Name shown on that number (optional)","Izina rigaragara kuri iyo nimero (si ngombwa)")}" value="${esc(payCfg.payName || "")}">
+        <label>${t("Payment method 2: MoMo Pay code","Uburyo bwo kwishyura 2: MoMo Pay code")}</label>
+        <input id="rcMomo" inputmode="numeric" placeholder="${t("Payment code (e.g. 123456)","Code yo kwishyura (urugero 123456)")}" value="${esc(payCfg.momoCode || "")}">
+        <label>📞 ${t("Number shown as CONTACT at the top of the invoice","Nimero igaragara muri CONTACT ku mutwe wa fagitire")}</label>
+        <input id="rcContact" type="tel" placeholder="${t("Example +250 796 022 617","Urugero +250 796 022 617")}" value="${esc(payCfg.contactPhone || RC_CONTACT_DEFAULT)}">
+        <label class="rc-check"><input type="checkbox" id="rcSave" checked><span class="rc-sw"></span><span>${t("Save these payment methods and CONTACT number as default","Bika ubu buryo bwo kwishyura na nimero ya CONTACT nk'ubusanzwe")}</span></label>
       </div>
-      <div class="rc-foot"><button type="button" class="primary" onclick="rcGenerate()">Kora receipt</button></div>
+      <div class="rc-foot"><button type="button" class="primary" onclick="rcGenerate()">${t("Create receipt","Kora receipt")}</button></div>
     </div>`;
-    m.hidden = false; m.dataset.id = init.id || ""; rcCalc();
+    m.hidden = false; m.dataset.id = init.id || ""; rcCalc(); rcTheme(localStorage.getItem("gdRcTheme") || "neon");
   }
   window.rcGenerate = (opts = {}) => {
     const rows = [...document.querySelectorAll("#rcRows .rc-row")].map(r => ({ d: r.querySelector(".rc-d").value.trim(), q: Number(r.querySelector(".rc-q").value) || 0, p: Number(r.querySelector(".rc-p").value) || 0 })).filter(r => r.d);
-    if (!rows.length) return alert("Andika nibura umurongo umwe (icyakozwe cyangwa igicuruzwa).");
+    if (!rows.length) return alert(t("Enter at least one line (work done or product).","Andika nibura umurongo umwe (icyakozwe cyangwa igicuruzwa)."));
     const name = $("rcName").value.trim(), phoneRaw = $("rcPhone").value.trim(), note = $("rcNote").value.trim();
     const contact = ($("rcContact") ? $("rcContact").value.trim() : "") || RC_CONTACT_DEFAULT;
     const paid = $("rcPaid").checked, momo = $("rcMomo").value.replace(/[^0-9]/g, ""), payPhone = $("rcPayPhone").value.trim(), payName = $("rcPayName").value.trim();
