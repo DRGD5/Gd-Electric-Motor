@@ -1752,6 +1752,16 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 .gd-dock .gd-wa .lb,.gd-wa .lb{display:none!important}
 .gd-dock .gd-wa{width:54px!important}
 </style>
+<style>
+/* Shorter product page image + related products */
+.pd-card{gap:10px!important}
+.pd-img{min-height:120px!important;font-size:4rem!important;max-height:230px}
+.pd-img img{max-height:200px!important;height:200px;object-fit:contain!important}
+.pd-thumbs{margin-top:-2px}
+.pd-related{margin:18px 0 8px}
+.pd-related h2{font-size:1.1rem;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.pd-related h2::before{content:"";width:5px;height:20px;border-radius:4px;background:linear-gradient(180deg,#2563eb,#25d6a0)}
+</style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
 <header class="topbar">
@@ -2433,6 +2443,26 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
     el.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive: true });
     el.addEventListener("touchend", e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 40) pdStep(dx < 0 ? 1 : -1); }, { passive: true });
   }
+  function pdRelated(p) {
+    const words = s => String(s || "").toLowerCase().split(/[^a-z0-9\u00C0-\u024F]+/).filter(w => w.length > 2);
+    const mine = new Set([...words(p.en), ...words(p.rw)]);
+    const score = q => {
+      let n = 0;
+      if (q.category && q.category === p.category) n += 10;
+      if (q.shopId && q.shopId === p.shopId) n += 4;
+      [...words(q.en), ...words(q.rw)].forEach(w => { if (mine.has(w)) n += 2; });
+      const hi = Math.max(p.price, q.price), lo = Math.min(p.price, q.price);
+      if (hi && lo / hi > .5) n += 1;
+      return n;
+    };
+    const others = products.filter(q => q.id !== p.id).map(q => ({ q, n: score(q) })).sort((a, b) => b.n - a.n);
+    const rel = others.filter(x => x.n >= 2);
+    return (rel.length >= 4 ? rel : others).slice(0, 8).map(x => x.q);
+  }
+  function pdRelatedHtml(p) {
+    const list = pdRelated(p); if (!list.length) return "";
+    return `<section class="pd-related"><h2>${t("Related products","Ibindi bicuruzwa bifitanye isano")}</h2><div class="products pd-rel-grid">${list.map(q => productCard(q, true)).join("")}</div></section>`;
+  }
   function renderProductPage(p) {
     pdImgs = pdGallery(p); pdIdx = 0;
     const out = p.status === "out";
@@ -2454,7 +2484,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
           <button class="pd-wa" type="button" onclick="shareProduct(${p.id})">${t("Share on WhatsApp","Sangiza kuri WhatsApp")}</button>
           <button class="secondary" type="button" onclick="copyProductLink(${p.id})">${t("Copy link","Kopiya link")}</button>
         </div>
-      </div>`;
+      </div>${pdRelatedHtml(p)}`;
     pdSwipe();
   }
   function openProduct(id, fromUrl) {
@@ -2462,6 +2492,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
     const cur = (document.querySelector(".view.active") || {}).id;
     if (cur && cur !== "view-product") prevView = cur.replace("view-", "");
     renderProductPage(p);
+    try { window.scrollTo(0, 0); } catch (e) {}
     gdTrack("view_item", { item_id: String(id), item_name: productName(p) });
     showView("product");
     document.title = productName(p) + " | GD Electric Motors";
