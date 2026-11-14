@@ -2440,7 +2440,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
   let prevView = "home";
   function productUrl(id) { return location.origin + location.pathname + "?p=" + id; }
   // Shyira hano URL ya Cloudflare Worker (urugero "https://gd-share.izina.workers.dev") kugira ngo link isangijwe yerekane ifoto y'igicuruzwa kuri WhatsApp. Iyo ari ubusa, link isanzwe ikoreshwa.
-  const SHARE_BASE = "https://gd-share.izabayoblessing99.workers.dev";
+  const SHARE_BASE = "https://gd-share.gdelectricmotors.workers.dev";
   function shareUrl(id) { return SHARE_BASE ? SHARE_BASE.replace(/\/$/, "") + "/?p=" + id : productUrl(id); }
   let pdImgs = [], pdIdx = 0;
   function pdGallery(p) {
