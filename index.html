@@ -1784,6 +1784,13 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 .pd-thumb{flex:0 0 46px!important;width:46px!important;height:46px!important}
 .pd-related{margin-top:12px!important}
 </style>
+<style>
+/* headings: only one real <h1> per page for SEO; keep the same look on the others (h2) */
+h2.page-title{line-height:1.08;letter-spacing:-1px;font-size:clamp(1.5rem,5vw,1.8rem)!important;margin:5px 0 20px}
+.shop-head h2{margin:6px 0}
+.sh-card h2{margin:4px 0 8px;font-size:1.6rem;line-height:1.15;color:#fff;overflow-wrap:anywhere}
+h2.pd-title{line-height:1.2}
+</style>
 </head>
 <body><noscript><div style="padding:16px;font-family:Arial,sans-serif"><h1>GD Electric Motors - Rwanda</h1><p>Motor rewinding, electric motor repair, electric motors, fan motors, water pumps and spare parts. Call 0784661800 or WhatsApp us.</p><p>Dukora moteri (Rewinding), dukanasana moteri, tugurisha moteri, pompe z'amazi n'ibindi bikoresho. Duhamagare kuri 0784661800.</p></div></noscript>
 <header class="topbar">
@@ -1834,7 +1841,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
   <section id="view-product" class="view"><div id="productDetail"></div></section>
 
   <section id="view-categories" class="view">
-    <h1 class="page-title" data-en="Categories" data-rw="Ibyiciro">Categories</h1>
+    <h2 class="page-title" data-en="Categories" data-rw="Ibyiciro">Categories</h2>
     <div class="cat-layout">
       <nav class="cat-side" id="allCategories" aria-label="Categories"></nav>
       <section class="section cat-main">
@@ -1845,13 +1852,13 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
   </section>
 
   <section id="view-saved" class="view">
-    <h1 class="page-title" data-en="Saved products ♡" data-rw="Ibicuruzwa wabikije ♡">Saved products ♡</h1>
+    <h2 class="page-title" data-en="Saved products ♡" data-rw="Ibicuruzwa wabikije ♡">Saved products ♡</h2>
     <div class="products" id="savedProducts"></div>
   </section>
 
   <div class="gd-toast" id="gdToast" role="status" aria-live="polite"></div>
   <section id="view-cart" class="view">
-    <h1 class="page-title" data-en="Your cart 🛒" data-rw="Agaseke kawe 🛒">Your cart 🛒</h1>
+    <h2 class="page-title" data-en="Your cart 🛒" data-rw="Agaseke kawe 🛒">Your cart 🛒</h2>
     <div id="cartStaffPanel" hidden>
       <div class="sc-head"><span class="sc-head-ic">⚙️</span><div><b>Ibikorwa by'akazi</b><small>Hitamo icyo ushaka gukora</small></div></div>
       <div class="sc-styles" id="scStyles" aria-label="Design"><span>🎨</span><button type="button" data-sd="grad">Gradient</button><button type="button" data-sd="glass">Glass</button><button type="button" data-sd="flat">Flat</button><button type="button" data-sd="neon">Neon</button><button type="button" data-sd="light">Light</button><button type="button" data-sd="aurora">Aurora</button><button type="button" data-sd="candy">Candy</button><button type="button" data-sd="dark">Dark</button><button type="button" data-sd="soft">Soft</button></div>
@@ -1897,7 +1904,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
   </section>
 
   <section id="view-account" class="view">
-    <h1 class="page-title" data-en="Account" data-rw="Konti">Account</h1>
+    <h2 class="page-title" data-en="Account" data-rw="Konti">Account</h2>
     <div id="accountContent"></div>
     <div id="accountShopPromo"></div>
     <div class="info-card"><h3 data-en="Need help?" data-rw="Ukeneye ubufasha?">Need help?</h3><p data-en="Use the WhatsApp button to ask about prices, delivery and product availability." data-rw="Kanda kuri WhatsApp ubaze ibiciro, kugeza ibicuruzwa n'ibihari.">Use the WhatsApp button to ask about prices, delivery and product availability.</p><button class="primary" onclick="contactWhatsApp()" data-en="Contact us on WhatsApp" data-rw="Twandikire kuri WhatsApp">Contact us on WhatsApp</button></div>
@@ -1910,7 +1917,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
 
   <section id="view-shopform" class="view">
     <button class="text-link" onclick="showView('home')" data-en="← Back to home" data-rw="← Subira ahabanza">← Back to home</button>
-    <h1 class="page-title" id="shopFormTitle">Open your shop</h1>
+    <h2 class="page-title" id="shopFormTitle">Open your shop</h2>
     <div class="sf-hero"><div class="sf-hero-ic">🏪</div><div class="sf-hero-tx"><b data-en="Your own shop on GD Electric Motor" data-rw="Shop yawe kuri GD Electric Motor">Your own shop on GD Electric Motor</b><small data-en="Customers will see it, call you and order on WhatsApp." data-rw="Abakiriya bazayibona, bakuhamagare kandi bagutumeho kuri WhatsApp.">Customers will see it, call you and order on WhatsApp.</small></div></div>
     <div class="sf-steps"><span>1️⃣ <i data-en="Details" data-rw="Amakuru">Details</i></span><span>2️⃣ <i data-en="Logo" data-rw="Logo">Logo</i></span><span>3️⃣ <i data-en="Save" data-rw="Bika">Save</i></span></div>
     <div class="shop-form-box sf-box">
@@ -1927,7 +1934,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
   </section>
 
   <section id="view-admin" class="view">
-    <div class="admin-title-row"><h1 class="page-title">Admin</h1><label class="acc-avatar sm" id="adminAvatar" for="adminPhotoInput" hidden></label><input id="adminPhotoInput" type="file" accept="image/*" hidden onchange="accUploadPhoto(this)"></div>
+    <div class="admin-title-row"><h2 class="page-title">Admin</h2><label class="acc-avatar sm" id="adminAvatar" for="adminPhotoInput" hidden></label><input id="adminPhotoInput" type="file" accept="image/*" hidden onchange="accUploadPhoto(this)"></div>
     <div class="info-card" id="adminLogin">
       <h2>Injira nka admin</h2>
       <form onsubmit="adminLogin(event)">
@@ -2494,7 +2501,7 @@ html[lang="en"] #gdPage .form-row:has(#secBtnLabel)::before{content:"🔗  Butto
       <div class="info-card pd-card">
         <div class="pd-img" id="pdMain">${pdImgs.length ? `<img id="pdMainImg" src="${esc(pdImgs[0].url)}" alt="${esc(productName(p))}">` : `<span class="emoji">${iconOf(p)}</span>`}${pdImgs.length > 1 ? `<button type="button" class="pd-nav prev" aria-label="Previous" onclick="pdStep(-1)">‹</button><button type="button" class="pd-nav next" aria-label="Next" onclick="pdStep(1)">›</button>` : ""}${discount ? `<span class="discount">-${discount}%</span>` : ""}</div>
         ${pdImgs.length > 1 ? `<div class="pd-thumbs">${pdImgs.map((g, i) => `<button type="button" class="pd-thumb${i === 0 ? " on" : ""}" onclick="pdShow(${i})"><img src="${esc(thumb(g.url,140))}" alt="" loading="lazy" decoding="async">${g.label ? `<span>${esc(g.label)}</span>` : ""}</button>`).join("")}</div>` : ""}
-        <h1 class="pd-title">${esc(productName(p))}</h1>
+        <h2 class="pd-title">${esc(productName(p))}</h2>
         <div class="price-row"><span class="price">${money(p.price)}</span>${discount ? `<span class="old-price">${money(p.oldPrice)}</span>` : ""}</div>
         <span class="pd-status ${out ? "out" : "in"}">${out ? t("Out of stock", "Byashize") : t("Available", "Birahari")}</span>
         <p class="pd-desc">${esc(t(p.descEn, p.descRw))}</p>
@@ -4110,7 +4117,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const wa = "https://wa.me/" + waNumber(x.phone);
     const ph = String(x.phone || "");
     el.innerHTML = `${banner}<div class="shc">
-        <h1><span>🏪 ${esc(x.name)}</span>${st === "approved" ? `<i class="shc-ok" title="${t("Verified shop", "Duka ryemejwe")}">✔</i>` : ""}</h1>
+        <h2><span>🏪 ${esc(x.name)}</span>${st === "approved" ? `<i class="shc-ok" title="${t("Verified shop", "Duka ryemejwe")}">✔</i>` : ""}</h2>
         <p class="shc-meta">📦 ${list.length} ${list.length === 1 ? t("product", "igicuruzwa") : t("products", "ibicuruzwa")}${ph ? ` · 📞 <a href="tel:${esc(ph.replace(/\s+/g, ""))}">${esc(ph)}</a>` : ""}</p>
         ${x.desc ? `<p class="shc-desc" onclick="this.classList.toggle('open')">${esc(x.desc)}</p>` : ""}
         <div class="shc-acts"><a class="shc-wa" href="${wa}" target="_blank" rel="noopener">💬 WhatsApp</a><button type="button" class="shc-share" onclick="shareShop('${esc(x.name).replace(/'/g, "&#39;")}','${esc(ph)}')">📤 ${t("Share", "Sangiza")}</button></div>
@@ -4314,7 +4321,7 @@ body{margin:0;background:#e3e8f4;font:14px/1.5 system-ui,-apple-system,Segoe UI,
 .hrow{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
 .brand{display:flex;align-items:center;gap:11px;color:inherit;text-decoration:none}
 .brand img{height:38px;width:auto;border-radius:12px;background:#fff;padding:4px;box-shadow:0 8px 18px -8px rgba(0,0,0,.6)}
-.brand h1{margin:0;font-size:15px;line-height:1.1;letter-spacing:.6px;font-weight:900}
+.brand h1,.brand h2{margin:0;font-size:15px;line-height:1.1;letter-spacing:.6px;font-weight:900}
 .brand small{display:block;margin-top:2px;font-size:8.5px;letter-spacing:.8px;opacity:.8}
 .contact{text-align:left;font-size:10px;line-height:1.4;flex-shrink:0;border-left:3px solid #4ff0be;padding-left:10px}
 .contact a{color:#fff;text-decoration:underline;font-weight:700}
@@ -4362,7 +4369,7 @@ body{margin:0;background:#e3e8f4;font:14px/1.5 system-ui,-apple-system,Segoe UI,
 .cap .foot{margin-top:0}
 .cap .actions{display:none}
 .cap .top{padding:16px 18px 46px}
-.cap .brand h1{font-size:17px}.cap .brand small{font-size:9px}.cap .brand img{height:42px}
+.cap .brand h1,.cap .brand h2{font-size:17px}.cap .brand small{font-size:9px}.cap .brand img{height:42px}
 .cap .contact,.cap .contact b{font-size:11.5px}
 .cap .dtitle{font-size:12.5px}
 .cap .info small{font-size:10.5px}.cap .info b{font-size:15px}.cap .info span{font-size:13px}
@@ -4383,7 +4390,7 @@ body{margin:0;background:#e3e8f4;font:14px/1.5 system-ui,-apple-system,Segoe UI,
 @media print{.sheet{display:flex;flex-direction:column;min-height:297mm}.bottom{margin-top:auto;margin-bottom:34px}.foot{margin-top:0}body{background:#fff}.wrap{max-width:none;padding:0}.sheet{box-shadow:none;border-radius:0}.actions,.pb,.payhint{display:none}}
 </style></head><body><div class="wrap"><div class="sheet" id="sheet">
 <div class="top">
-<div class="hrow"><a class="brand" href="https://gdelectricmotors.pages.dev/" target="_blank" rel="noopener">${logoSrc ? `<span class="logo"><img src="${logoSrc}" alt=""><i class="lk lk-logo">↗</i></span>` : ""}<div><h1>GD ELECTRIC MOTORS</h1><small>${t("MOTORS, PUMPS & SPARE PARTS", "MOTERI, POMPE N'IBIKORESHO")}</small></div></a>
+<div class="hrow"><a class="brand" href="https://gdelectricmotors.pages.dev/" target="_blank" rel="noopener">${logoSrc ? `<span class="logo"><img src="${logoSrc}" alt=""><i class="lk lk-logo">↗</i></span>` : ""}<div><h2>GD ELECTRIC MOTORS</h2><small>${t("MOTORS, PUMPS & SPARE PARTS", "MOTERI, POMPE N'IBIKORESHO")}</small></div></a>
 <div class="contact"><b>${t("CONTACT", "TUHAMAGARE")}</b><span>Rwanda</span><span>${esc(contact)}</span><span><a id="siteLink" href="https://gdelectricmotors.pages.dev/" target="_blank" rel="noopener">gdelectricmotors.pages.dev<i class="lk">↗</i></a></span></div></div>
 <div class="dtitle">${docWord}</div>
 <div class="hrow info"><div><small>${paid ? t("Receipt to", "Inyemezabwishyu ya") : t("Invoice to", "Fagitire ya")}</small><b>${esc(name || "-")}</b>${phoneRaw ? `<span>${esc(phoneRaw)}</span>` : ""}</div>
