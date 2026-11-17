@@ -1970,6 +1970,7 @@ h2.pd-title{line-height:1.2}
       <div class="admin-shortcuts" aria-label="Admin menu">
         <button class="admin-shortcut" type="button" onclick="openCeoPage('adminCeoSection')"><span>👑 CEO · Abakiriya ba mbere</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="gdOpenInvoices()" id="invShortcut" hidden><span>🧾 Invoices zabitswe</span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="openStockPage()" id="stockShortcut" hidden><span>📦 Stock y'ibicuruzwa</span><span class="shortcut-arrow">›</span></button>
       </div>
 
       <div class="info-card admin-section" id="adminServicesSection" hidden>
@@ -2041,6 +2042,10 @@ h2.pd-title{line-height:1.2}
         <div id="adminShops"></div>
       </div>
 
+      <div class="ceo-page" id="adminStockSection" hidden>
+        <div class="ceo-top"><button type="button" class="ceo-back" onclick="closeStockPage()" aria-label="Back">←</button><div><h2>📦 Stock</h2><small>Amazina n'ibisigaye</small></div></div>
+        <div class="ceo-wrap"><div id="stockPending"></div><input type="search" id="stockSearch" placeholder="🔎 Shakisha igicuruzwa..." oninput="renderStockPage()" style="width:100%;padding:12px;border-radius:14px;margin-bottom:10px"><div id="stockList"></div></div>
+      </div>
       <div class="ceo-page" id="adminCeoSection" hidden>
         <div class="ceo-top"><button type="button" class="ceo-back" onclick="closeCeoPage()" aria-label="Back">←</button><div><h2>👑 CEO</h2><small>Abakiriya ba mbere</small></div></div>
         <div class="ceo-wrap" id="adminCeo"></div>
@@ -2794,7 +2799,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     dbProducts = snap.docs.map(d => ({ ...d.data(), id: Number(d.id) })).sort((a,b) => b.id - a.id);
     setProducts(dbProducts);
     window.gdProductsCount = dbProducts.length; if (window.updateAdminBadges) window.updateAdminBadges();
-    renderAdminList();
+    renderAdminList(); if (window.stockBadgeRefresh) window.stockBadgeRefresh();
   }, err => console.error("Firestore:", err));
 
   // ----- admin auth -----
@@ -2851,6 +2856,66 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     if (fromPop !== true) { try { if (history.state && history.state.gdCeo) history.back(); } catch (e) {} }
   };
   window.addEventListener("popstate", () => { const el = $("adminCeoSection"); if (el && !el.hidden) window.closeCeoPage(true); });
+  window.openStockPage = () => {
+    const el = $("adminStockSection"); if (!el) return;
+    if (el.parentElement !== document.body) document.body.appendChild(el);
+    el.hidden = false; el.scrollTop = 0; document.body.style.overflow = "hidden";
+    try { history.pushState({ gdStock: 1 }, ""); } catch (e) {}
+    renderStockPage();
+  };
+  window.closeStockPage = fromPop => {
+    const el = $("adminStockSection"); if (!el || el.hidden) return;
+    el.hidden = true; document.body.style.overflow = "";
+    if (fromPop !== true) { try { if (history.state && history.state.gdStock) history.back(); } catch (e) {} }
+  };
+  window.addEventListener("popstate", () => { const el = $("adminStockSection"); if (el && !el.hidden) window.closeStockPage(true); });
+  const allStockProducts = () => dbProducts.concat(sampleProducts);
+  const saveStockFields = async (p, upd) => {
+    if (dbProducts.some(x => x.id === p.id)) await updateDoc(doc(db, "products", String(p.id)), upd);
+    else { await setDoc(doc(db, "settings", "sampleProductOverrides"), { [String(p.id)]: upd }, { merge: true }); Object.assign(p, upd); applySampleOverrides(); setProducts(dbProducts); }
+  };
+  const pendingOuts = () => { const r = []; allStockProducts().forEach(p => (Array.isArray(p.stockOutLog) ? p.stockOutLog : []).forEach(l => { if (l.status === "pending") r.push({ p, l }); })); return r.sort((a, b) => b.l.at - a.l.at); };
+  window.stockBadgeRefresh = () => {
+    const n = isAdminUser(currentUser) ? pendingOuts().length : 0;
+    const b = $("stockShortcut"); if (b) { const sp = b.querySelector("span"); if (sp) sp.textContent = "📦 Stock y'ibicuruzwa" + (n ? " 🔴 " + n : ""); }
+    if (!$("adminStockSection").hidden) renderStockPage();
+  };
+  window.stockOut = async id => {
+    const p = allStockProducts().find(x => x.id === Number(id)); if (!p) return;
+    if (p.stock == null) return alert("Banza ushyireho stock kuri iki gicuruzwa (Hindura → Stock isigaye).");
+    const qty = Math.floor(Number(prompt("Ni ingahe zigiye gusohoka? (isigaye: " + p.stock + ")", "1")));
+    if (!(qty >= 1) || qty > p.stock) return alert("Umubare si wo (1 kugeza " + p.stock + ").");
+    const owner = isAdminUser(currentUser);
+    const reason = (prompt("Impamvu yo gusohora stock" + (owner ? " (si ngombwa)" : " (ni ngombwa)") + ":", "") || "").trim();
+    if (!owner && !reason) return alert("Ugomba kwandika impamvu.");
+    const log = (Array.isArray(p.stockOutLog) ? p.stockOutLog : []).slice(-49);
+    log.push({ id: String(Date.now()), qty, reason, by: (profile && profile.name) || (currentUser && currentUser.email) || "?", at: Date.now(), status: owner ? "approved" : "pending" });
+    const stock = p.stock - qty;
+    try { await saveStockFields(p, { stock, status: stock > 0 ? "available" : "out", stockOutLog: log }); } catch (e) { alert("Byanze: " + (e.code || e.message)); }
+    window.stockBadgeRefresh();
+  };
+  window.stockOutDecide = async (pid, lid, ok) => {
+    if (!isAdminUser(currentUser)) return;
+    const p = allStockProducts().find(x => x.id === Number(pid)); if (!p) return;
+    const log = (Array.isArray(p.stockOutLog) ? p.stockOutLog : []).map(l => ({ ...l }));
+    const l = log.find(x => x.id === lid); if (!l || l.status !== "pending") return;
+    const upd = { stockOutLog: log };
+    if (ok) l.status = "approved";
+    else { l.status = "rejected"; upd.stock = (Number(p.stock) || 0) + l.qty; upd.status = "available"; }
+    try { await saveStockFields(p, upd); } catch (e) { alert("Byanze: " + (e.code || e.message)); }
+    window.stockBadgeRefresh();
+  };
+  window.renderStockPage = () => {
+    const box = $("stockList"); if (!box) return;
+    const pb = $("stockPending"); if (pb) { const pend = isAdminUser(currentUser) ? pendingOuts() : [];
+      pb.innerHTML = pend.length ? `<div class="ceo-day"><h3>🔴 Stock out zitegereje kwemezwa</h3>${pend.map(({ p, l }) => `<div class="ceo-day-row" style="flex-wrap:wrap"><span><b>${esc(productName(p))}</b> −${l.qty}<br><small>👤 ${esc(l.by)} · ${new Date(l.at).toLocaleString("en-GB", { dateStyle: "short", timeStyle: "short" })}<br>📝 ${esc(l.reason)}</small></span><span style="display:flex;gap:6px"><button type="button" class="pl-edit" onclick="stockOutDecide(${p.id},'${l.id}',true)">✅ Emeza</button><button type="button" class="pl-del" onclick="stockOutDecide(${p.id},'${l.id}',false)">↩️ Subiza stock</button></span></div>`).join("")}</div>` : ""; }
+    const q = ($("stockSearch").value || "").trim().toLowerCase();
+    const all = dbProducts.concat(sampleProducts.filter(p => !hiddenSampleIds.includes(p.id)))
+      .filter(p => !q || (productName(p) || "").toLowerCase().includes(q))
+      .sort((a, b) => (a.stock == null) - (b.stock == null) || (Number(a.stock) || 0) - (Number(b.stock) || 0));
+    box.innerHTML = all.length ? all.map(p => { const n = p.stock; const c = n == null ? "#64748b" : n <= 0 ? "#b42318" : n <= 3 ? "#f59e0b" : "#16a34a";
+      return `<div class="ceo-day-row"><span><b>${esc(productName(p))}</b></span><span style="display:flex;gap:8px;align-items:center"><b style="color:${c};white-space:nowrap">${n == null ? "—" : n}</b>${n > 0 ? `<button type="button" class="pl-edit" onclick="stockOut(${p.id})">➖ Stock out</button>` : ""}</span></div>`; }).join("") : `<p style="opacity:.7">${t("No products.", "Nta bicuruzwa.")}</p>`;
+  };
   let ceoDay = "";
   window.ceoSetDay = v => { ceoDay = v || ""; renderCeo(); };
   function ceoDayHtml() {
@@ -2918,6 +2983,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     $("adminDenied").hidden = !(currentUser && !staff);
     $("adminPanel").hidden = !staff;
     { const ah = document.querySelector("#view-admin .admin-title-row .page-title"); if (ah) ah.textContent = isAdminUser(currentUser) ? "👑 Super Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi"); }
+    { const sb = $("stockShortcut"); if (sb) sb.hidden = !perms.has("products"); if (window.stockBadgeRefresh) window.stockBadgeRefresh(); }
     { const sp = $("cartStaffPanel"); if (sp) sp.hidden = !["chats", "orders", "requests", "services", "stats", "sections", "shops", "products"].some(k => perms.has(k)); }
     const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection", "adminBannerSection", "adminTickerSection"], shops: ["adminShopsSection"], invoices: ["adminInvoicesSection"], stats: ["adminStatsSection"], chats: ["adminChatSection"], ceo: ["adminCeoSection"] };
     Object.keys(map).forEach(perm => {
@@ -4693,6 +4759,8 @@ function gdSavePdf(btn) {
       const productData = { category: $("fCategory").value, en: nameEn, rw: nameRw, descEn, descRw, price, oldPrice: old, imageUrl: imageUrl || "", gallery: editingGallery.filter(g => g && g.url).map(g => ({ url: g.url, label: String(g.label || "").trim() })), status: $("fStatus").value === "out" ? "out" : "available", featured: $("fFeatured").checked };
       { const sRaw = $("fStock").value, add = Math.max(0, Number($("fAddStock").value) || 0), sold = Math.max(0, Number($("fSold").value) || 0);
         const stock = sRaw === "" ? (add > 0 ? add : null) : Math.max(0, Number(sRaw) + add);
+        { const prev = editingId !== null ? dbProducts.find(x => x.id === editingId) : (editingSampleId !== null ? sampleProducts.find(x => x.id === editingSampleId) : null);
+          if (!isAdminUser(currentUser) && prev && prev.stock != null && stock !== null && stock < prev.stock) throw new Error("Kugabanya stock koresha 'Stock out' muri Stock y'ibicuruzwa."); }
         productData.stock = stock; productData.sold = sold;
         if (stock !== null) productData.status = stock > 0 ? "available" : "out"; }
       if (editingSampleId !== null) {
@@ -5359,6 +5427,130 @@ html[data-sd="soft"] #gdPage .gd-body .bn-b,html[data-sd="soft"] #gdPage .gd-bod
   set(cur,false);
 })();
 </script>
+<style>
+#gdBot{position:fixed;right:12px;bottom:84px;width:min(380px,calc(100vw - 24px));height:min(560px,calc(100dvh - 110px));z-index:10060;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:#0d1226;color:#fff;box-shadow:0 24px 60px -12px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.12)}
+#gdBot[hidden]{display:none}
+#gdBot .bh{display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(135deg,#0ea5e9,#7c3aed)}
+#gdBot .bh b{flex:1;font-size:1rem}#gdBot .bh button{background:rgba(255,255,255,.2);border:0;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1rem}
+#gdBotMsgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+#gdBotMsgs .m{max-width:86%;padding:9px 12px;border-radius:16px;font-size:.9rem;line-height:1.4;white-space:pre-wrap;word-break:break-word}
+#gdBotMsgs .m.b{background:#1b2347;align-self:flex-start;border-bottom-left-radius:4px}
+#gdBotMsgs .m.u{background:#2563eb;align-self:flex-end;border-bottom-right-radius:4px}
+#gdBotMsgs .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+#gdBotMsgs .acts button,#gdBotMsgs .acts a,#gdBotQuick button{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;border-radius:99px;padding:6px 11px;font-size:.78rem;font-weight:700;text-decoration:none;cursor:pointer}
+#gdBotQuick{display:flex;gap:6px;overflow-x:auto;padding:6px 10px}#gdBotQuick button{white-space:nowrap;flex:0 0 auto}
+#gdBotForm{display:flex;gap:8px;padding:10px;border-top:1px solid rgba(255,255,255,.1)}
+#gdBotIn{flex:1;border-radius:99px;border:1px solid rgba(255,255,255,.2);background:#151c3a;color:#fff;padding:10px 14px;font-size:.9rem;min-width:0}
+#gdBotForm button{border:0;border-radius:50%;width:42px;height:42px;background:linear-gradient(135deg,#0ea5e9,#7c3aed);color:#fff;font-size:1.1rem}
+.gd-bot .ic{background:linear-gradient(135deg,#f59e0b,#ef4444)}
+</style>
+<section id="gdBot" hidden aria-label="GD Assistant">
+  <div class="bh"><span style="font-size:1.4rem">🤖</span><b>GD Assistant</b><button type="button" onclick="gdBotClose()" aria-label="Funga">✕</button></div>
+  <div id="gdBotMsgs"></div>
+  <div id="gdBotQuick"></div>
+  <form id="gdBotForm" onsubmit="gdBotSend(event)"><input id="gdBotIn" autocomplete="off" maxlength="200" placeholder="Andika ikibazo cyawe..."><button type="submit" aria-label="Ohereza">➤</button></form>
+</section>
+<script>
+(function(){
+  /* ===== Hindura hano amakuru y'ukuri ya GD Electric Motors (siga ubusa niba utayafite) ===== */
+  var INFO = {
+    phone: "0784661800",
+    address: "",   /* urugero: "Kigali, Nyabugogo, hafi ya ..." */
+    hours: "",     /* urugero: "Kuwa mbere kugeza kuwa gatandatu, 8:00-18:00" */
+    payment: "",   /* urugero: "MoMo, amafaranga mu ntoki" */
+    delivery: "",  /* urugero: "Tugeza ibicuruzwa i Kigali no mu ntara" */
+    warranty: ""   /* urugero: "Moteri zisudiye zifite garanti y'amezi 3" */
+  };
+  var L = function(){ return (typeof language !== "undefined" && language === "en") ? "en" : "rw"; };
+  var tr = function(rw, en){ return L() === "en" ? en : rw; };
+  var norm = function(s){ return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9\s]/g," ").replace(/\s+/g," ").trim(); };
+  var esc = function(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); };
+  var or = function(v, rw, en){ return v ? v : tr(rw, en); };
+  var KB = [
+    {id:"hi", k:["muraho","mwiriwe","mwaramutse","bonjour","hello","hi","hey","salut","amakuru"], a:function(){return tr("Muraho! Nitwa GD Assistant. Nshobora kugufasha ku biciro, ibicuruzwa, serivisi n'uko wategeka. Ni iki ushaka kumenya?","Hello! I'm GD Assistant. I can help with prices, products, services and how to order. What would you like to know?");}},
+    {id:"rewind", k:["gusudira","sudira","kuzingurura","rewind","rewinding","winding","kuzinga","bobine"], a:function(){return tr("Dusudira (rewinding) kandi tugasana moteri z'amashanyarazi, iza fan n'iza pompe. Kugira ngo tukubwire igiciro n'igihe bimara, twohereze ifoto ya moteri na plaque yayo kuri WhatsApp.","We rewind and repair electric, fan and pump motors. For the price and turnaround time, send us a photo of the motor and its nameplate on WhatsApp.");}},
+    {id:"repair", k:["gusana","kusana","repair","serivisi","service","services","yapfuye","ntikora","bearing","guhindura"], a:function(){return tr("Dusana moteri z'amashanyarazi, moteri za fan na pompe z'amazi. Kanda 'Serivisi' ku rubuga ubone urutonde, cyangwa utwandikire ikibazo cyawe kuri WhatsApp.","We repair electric motors, fan motors and water pumps. Open 'Services' on the site, or message us your problem on WhatsApp.");}},
+    {id:"parts", k:["spare","parts","ibikoresho","capacitor","kondansateri","piece","pieces","imbere"], a:function(){return tr("Dufite ibikoresho bya moteri na pompe (spare parts). Shakisha izina ryabyo ku rubuga, cyangwa ubitubaze kuri WhatsApp.","We stock motor and pump spare parts. Search for the part on the site, or ask us on WhatsApp.");}},
+    {id:"order", k:["gutumiza","gutegeka","order","komande","nigura","kugura","gura","buy","purchase","cart","nategeka","ntumiza"], a:function(){return tr("Gutumiza biroroshye:\n1) Hitamo igicuruzwa ukande 'Ongeraho' mu gatebo (Cart).\n2) Fungura Cart, wandike izina na telefoni.\n3) Ohereza komande, tuzaguhamagara cyangwa twandikire kuri WhatsApp kugira ngo yemezwe.","Ordering is easy:\n1) Add a product to your Cart.\n2) Open Cart and enter your name and phone.\n3) Send the order and we will call or WhatsApp you to confirm.");}},
+    {id:"pay", k:["kwishyura","kwishyurwa","payment","pay","momo","mobile money","amafaranga","cash"], a:function(){return or(INFO.payment ? tr("Uburyo bwo kwishyura: ","Payment methods: ")+INFO.payment : "", "Ibyo kwishyura tubyemeranya nawe mu gihe cyo kwemeza komande. Twandikire kuri WhatsApp.", "We agree on payment when confirming your order. Message us on WhatsApp.");}},
+    {id:"delivery", k:["gutwara","kugeza","delivery","deliver","transport","kohereza","iwanjye","mu ntara","shipping"], a:function(){return or(INFO.delivery, "Ku byerekeye kugezwa ibicuruzwa, twandikire kuri WhatsApp ubwire aho uri tukubwire uko bishoboka.", "For delivery, message us on WhatsApp with your location and we will tell you what is possible.");}},
+    {id:"warranty", k:["garanti","warranty","guarantee","garantie"], a:function(){return or(INFO.warranty, "Ibya garanti tubibwirana mu gihe cyo kwemeza komande cyangwa serivisi. Twandikire kuri WhatsApp.", "We confirm warranty terms when confirming an order or service. Message us on WhatsApp.");}},
+    {id:"loc", k:["aho muherereye","muherereye","aho muri","address","location","where","ahantu","mukorera he","muri he","adresse","ou etes"], a:function(){return or(INFO.address, "Kugira ngo tukubwire aho turi neza, duhamagare kuri "+INFO.phone+" cyangwa utwandikire kuri WhatsApp.", "To give you our exact location, call "+INFO.phone+" or message us on WhatsApp.");}},
+    {id:"hours", k:["amasaha","saa","hours","open","opening","mukora","mukinguye","mufunguye","closing","horaires"], a:function(){return or(INFO.hours, "Amasaha dukorera, tubaze kuri telefoni "+INFO.phone+" cyangwa kuri WhatsApp.", "For our opening hours, call "+INFO.phone+" or ask on WhatsApp.");}},
+    {id:"contact", k:["telefoni","telephone","phone","call","nimero","number","contact","guhamagara","whatsapp","email"], a:function(){return tr("Duhamagare kuri "+INFO.phone+" cyangwa utwandikire kuri WhatsApp.","Call us on "+INFO.phone+" or message us on WhatsApp.");}},
+    {id:"price", k:["igiciro","ibiciro","price","prices","angahe","zingahe","bingahe","cost","how much","prix","combien"], a:null},
+    {id:"stock", k:["stock","irahari","birahari","ihari","mufite","available","in stock","disponible","ntibyashize","yashize"], a:null},
+    {id:"thanks", k:["murakoze","urakoze","thanks","thank you","merci","yego murakoze"], a:function(){return tr("Murakoze namwe! Niba hari ikindi, ndi hano.","You're welcome! I'm here if you need anything else.");}},
+    {id:"human", k:["umukozi","umuntu","human","agent","staff","vugana","kuvugana","person"], a:function(){return tr("Ndagushyira ku mukozi wacu. Hitamo hano hasi:","I'll connect you with our team. Choose below:");}}
+  ];
+  var STOP = {"ya":1,"za":1,"mu":1,"ku":1,"na":1,"the":1,"for":1,"and":1,"you":1,"are":1,"ni":1,"se":1,"ese":1,"mufite":1,"have":1,"igiciro":1,"price":1,"angahe":1,"zingahe":1,"stock":1,"irahari":1,"birahari":1,"ibyo":1,"iki":1,"uyu":1,"cost":1,"how":1,"much":1,"does":1,"what":1,"is":1,"a":1,"of":1,"no":1,"cyangwa":1,"bingahe":1};
+  var msgs, quick, input, started = false;
+  function add(who, html, actions){
+    var d = document.createElement("div"); d.className = "m " + who; d.innerHTML = html;
+    if (actions && actions.length) { var a = document.createElement("div"); a.className = "acts";
+      actions.forEach(function(x){ var e = x.href ? document.createElement("a") : document.createElement("button"); e.textContent = x.t; if (x.href) e.href = x.href; else { e.type = "button"; e.onclick = x.f; } a.appendChild(e); });
+      d.appendChild(a); }
+    msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
+  }
+  function humanActs(){ return [
+    {t:"💬 "+tr("Vugana n'umukozi","Chat with staff"), f:function(){ gdBotClose(); if (window.gdOpenChat) window.gdOpenChat(); }},
+    {t:"🟢 WhatsApp", f:function(){ if (window.contactWhatsApp) window.contactWhatsApp(); }},
+    {t:"📞 "+tr("Duhamagare","Call us"), href:"tel:+250"+INFO.phone.replace(/^0/,"")}
+  ]; }
+  function allProducts(){ return (typeof products !== "undefined" && Array.isArray(products)) ? products : []; }
+  function pname(p){ return L() === "en" ? (p.en || p.rw) : (p.rw || p.en); }
+  function fmtMoney(n){ return typeof money === "function" ? money(n) : n + " RWF"; }
+  function findProducts(q){
+    var toks = q.split(" ").filter(function(w){ return w.length >= 3 && !STOP[w]; }); if (!toks.length) return [];
+    var scored = allProducts().map(function(p){ var hay = norm((p.rw||"")+" "+(p.en||"")); var sc = 0; toks.forEach(function(w){ if (hay.indexOf(w) > -1) sc++; }); return {p:p, sc:sc}; }).filter(function(x){ return x.sc > 0; });
+    scored.sort(function(a,b){ return b.sc - a.sc; }); return scored.map(function(x){ return x.p; });
+  }
+  function productReply(list){
+    var shown = list.slice(0,5), out = shown.map(function(p){ var out = p.status === "out";
+      return "• "+pname(p)+" — "+fmtMoney(p.price)+" — "+(out ? "⛔ "+tr("Byashize","Out of stock") : "✅ "+tr("Birahari","Available")); }).join("\n");
+    var extra = list.length > shown.length ? "\n\n"+tr("Hari n'ibindi, reba urutonde ruzuye ku rubuga.","There are more, see the full list on the site.") : "";
+    return tr("Dore ibyo nabonye:\n","Here is what I found:\n")+out+extra+"\n\n"+tr("Ibiciro n'ibihari bishobora guhinduka, tubaze kuri WhatsApp mbere yo kwishyura.","Prices and stock can change, confirm with us on WhatsApp before paying.");
+  }
+  function categoriesReply(){
+    var cats = (typeof categories !== "undefined") ? categories : [], list = allProducts();
+    var lines = cats.map(function(c){ var n = list.filter(function(p){ return p.category === c.id; }).length; return c.icon+" "+(L()==="en"?c.en:c.rw)+" ("+n+")"; }).join("\n");
+    return tr("Dufite ibyiciro bikurikira:\n","We have these categories:\n")+lines+"\n\n"+tr("Andika izina ry'igicuruzwa ndakubwira igiciro cyacyo.","Type a product name and I'll tell you its price.");
+  }
+  function answer(raw){
+    var q = norm(raw); if (!q) return;
+    var best = null, bs = 0;
+    KB.forEach(function(e){ var sc = 0; e.k.forEach(function(w){ if ((" "+q+" ").indexOf(" "+norm(w)+" ") > -1 || (w.length > 4 && q.indexOf(norm(w)) > -1)) sc += w.length > 4 ? 2 : 1; }); if (sc > bs) { bs = sc; best = e; } });
+    var prods = findProducts(q);
+    if (prods.length && (!best || best.id === "price" || best.id === "stock" || bs < 2)) { add("b", esc(productReply(prods)), [{t:"🛒 "+tr("Tumiza kuri WhatsApp","Order on WhatsApp"), f:function(){ if (window.contactWhatsApp) window.contactWhatsApp(); }}]); return; }
+    if (best && (best.id === "price" || best.id === "stock")) { add("b", esc(categoriesReply())); return; }
+    if (best) { add("b", esc(best.a()), (best.id === "human" || best.id === "contact" || best.id === "loc" || best.id === "hours") ? humanActs() : null); return; }
+    if (/(ibicuruzwa|products|catalog|byose|list)/.test(q)) { add("b", esc(categoriesReply())); return; }
+    add("b", esc(tr("Mbabarira, sinabyumvise neza. Ushobora kubaza ku biciro, ibicuruzwa, serivisi cyangwa uko wategeka, cyangwa ukavugana n'umukozi wacu.","Sorry, I didn't quite get that. You can ask about prices, products, services or how to order, or talk to our team.")), humanActs());
+  }
+  function setQuick(){
+    var items = [["💰 "+tr("Ibiciro","Prices"),tr("ibiciro","prices")],["🛒 "+tr("Gutumiza","How to order"),tr("gutumiza","order")],["🛠️ "+tr("Serivisi","Services"),tr("serivisi","services")],["📍 "+tr("Aho muri","Location"),tr("aho muherereye","location")],["👤 "+tr("Umukozi","Staff"),tr("umukozi","staff")]];
+    quick.innerHTML = ""; items.forEach(function(x){ var b = document.createElement("button"); b.type = "button"; b.textContent = x[0]; b.onclick = function(){ add("u", esc(x[0].replace(/^\S+\s/,""))); answer(x[1]); }; quick.appendChild(b); });
+    input.placeholder = tr("Andika ikibazo cyawe...","Type your question...");
+  }
+  window.gdBotOpen = function(){
+    msgs = document.getElementById("gdBotMsgs"); quick = document.getElementById("gdBotQuick"); input = document.getElementById("gdBotIn");
+    if (window.gdCloseChat) try { window.gdCloseChat(); } catch(e){}
+    document.getElementById("gdBot").hidden = false; setQuick();
+    if (!started) { started = true; answer("muraho"); }
+    setTimeout(function(){ input.focus(); }, 50);
+  };
+  window.gdBotClose = function(){ document.getElementById("gdBot").hidden = true; };
+  window.gdBotSend = function(e){ e.preventDefault(); var v = input.value.trim(); if (!v) return; input.value = ""; add("u", esc(v)); setTimeout(function(){ answer(v); }, 250); };
+  document.addEventListener("DOMContentLoaded", function(){
+    var dock = document.getElementById("gdDock"), chat = document.getElementById("gdChatOpenBtn");
+    if (dock && chat && !document.getElementById("gdBotBtn")) {
+      var b = document.createElement("button"); b.type = "button"; b.id = "gdBotBtn"; b.className = "gd-fab gd-bot"; b.setAttribute("aria-label","GD Assistant"); b.onclick = window.gdBotOpen;
+      b.innerHTML = '<span class="ic">🤖</span><span class="lb">'+"Baza"+'</span>'; dock.insertBefore(b, chat);
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
 
