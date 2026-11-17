@@ -5428,6 +5428,7 @@ html[data-sd="soft"] #gdPage .gd-body .bn-b,html[data-sd="soft"] #gdPage .gd-bod
 })();
 </script>
 <style>
+#gdChatOpenBtn,#gdChatPanel,#gdHint,.gd-hint,#gdChatDot,#adminChatSection,.admin-shortcut.sc-chat,#chatTotalBadge{display:none!important}
 #gdBot{position:fixed;right:12px;bottom:84px;width:min(380px,calc(100vw - 24px));height:min(560px,calc(100dvh - 110px));z-index:10060;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:#0d1226;color:#fff;box-shadow:0 24px 60px -12px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.12)}
 #gdBot[hidden]{display:none}
 #gdBot .bh{display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(135deg,#0ea5e9,#7c3aed)}
@@ -5451,6 +5452,7 @@ html[data-sd="soft"] #gdPage .gd-body .bn-b,html[data-sd="soft"] #gdPage .gd-bod
   <form id="gdBotForm" onsubmit="gdBotSend(event)"><input id="gdBotIn" autocomplete="off" maxlength="200" placeholder="Andika ikibazo cyawe..."><button type="submit" aria-label="Ohereza">➤</button></form>
 </section>
 <script>
+window.gdOpenChat = function(){}; window.gdHintGo = function(){};
 (function(){
   /* ===== Hindura hano amakuru y'ukuri ya GD Electric Motors (siga ubusa niba utayafite) ===== */
   var INFO = {
@@ -5493,7 +5495,6 @@ html[data-sd="soft"] #gdPage .gd-body .bn-b,html[data-sd="soft"] #gdPage .gd-bod
     msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
   }
   function humanActs(){ return [
-    {t:"💬 "+tr("Vugana n'umukozi","Chat with staff"), f:function(){ gdBotClose(); if (window.gdOpenChat) window.gdOpenChat(); }},
     {t:"🟢 WhatsApp", f:function(){ if (window.contactWhatsApp) window.contactWhatsApp(); }},
     {t:"📞 "+tr("Duhamagare","Call us"), href:"tel:+250"+INFO.phone.replace(/^0/,"")}
   ]; }
