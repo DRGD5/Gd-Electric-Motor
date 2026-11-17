@@ -871,6 +871,8 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
 .pl-price{margin-top:7px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px}
 .pl-price b{font-size:1rem;color:var(--purple-light)}
 .pl-price s{font-size:.74rem;color:var(--muted)}
+.ceo-day{margin:16px 0}.ceo-day h3{margin:14px 0 8px;font-size:1rem}.ceo-day input[type=date]{margin-bottom:8px;padding:8px;border-radius:10px;max-width:100%}
+.ceo-day-row{display:flex;justify-content:space-between;gap:10px;padding:9px 12px;margin-bottom:6px;border-radius:12px;background:rgba(127,127,127,.12);font-size:.88rem}.ceo-day-row small{opacity:.75}
 .pl-stock{margin-top:6px;font-size:.78rem;color:var(--muted)}.pl-stock b{color:var(--purple-light)}
 .pl-acts{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px 10px 11px}
 .pl-acts button{width:auto;margin:0;padding:9px 6px;border-radius:12px;font-weight:800;font-size:.78rem;border:0;color:#fff}
@@ -2849,7 +2851,26 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     if (fromPop !== true) { try { if (history.state && history.state.gdCeo) history.back(); } catch (e) {} }
   };
   window.addEventListener("popstate", () => { const el = $("adminCeoSection"); if (el && !el.hidden) window.closeCeoPage(true); });
-  function renderCeo() {
+  let ceoDay = "";
+  window.ceoSetDay = v => { ceoDay = v || ""; renderCeo(); };
+  function ceoDayHtml() {
+    const day = ceoDay || new Date().toLocaleDateString("en-CA");
+    const rows = [];
+    allOrders.forEach(o => {
+      if (o.status === "cancelled" || new Date(o.createdAt || 0).toLocaleDateString("en-CA") !== day) return;
+      (Array.isArray(o.items) ? o.items : []).forEach(it => rows.push({ name: it.name, qty: Number(it.qty) || 1, price: Number(it.price) || 0, who: o.name || o.email || o.phone || "—", phone: o.phone || "", time: new Date(o.createdAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) }));
+    });
+    rows.sort((a, b) => b.price - a.price);
+    const all = dbProducts.concat(sampleProducts.filter(p => !hiddenSampleIds.includes(p.id)));
+    const top = [...all].sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0)).slice(0, 5);
+    return `<div class="ceo-day"><h3>💎 ${t("Most expensive products", "Ibicuruzwa bihenda cyane")}</h3>
+      ${top.map((p, i) => `<div class="ceo-day-row"><span>${i + 1}. ${esc(productName(p))}</span><b>${money(p.price)}</b></div>`).join("")}
+      <h3>🛒 ${t("Taken on this day, and by whom", "Ibyajyanywe uwo munsi n'uwabijyanye")}</h3>
+      <input type="date" value="${day}" onchange="ceoSetDay(this.value)">
+      ${rows.length ? rows.map(r => `<div class="ceo-day-row"><span><b>${esc(r.name)}</b> ×${r.qty}<br><small>👤 ${esc(r.who)}${r.phone ? " · " + esc(r.phone) : ""} · ${r.time}</small></span><b>${money(r.price * r.qty)}</b></div>`).join("") : `<p style="opacity:.7">${t("Nothing taken on this day.", "Nta cyajyanywe uwo munsi.")}</p>`}</div>`;
+  }
+  function renderCeo() { renderCeoBase(); const b = $("adminCeo"); if (b) b.insertAdjacentHTML("beforeend", ceoDayHtml()); }
+  function renderCeoBase() {
     const box = $("adminCeo"); if (!box) return;
     const byKey = new Map();
     const get = x => {
@@ -4197,8 +4218,25 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     try { await updateDoc(doc(db, "orders", id), { hiddenForCustomer: true }); }
     catch (err) { alert(t("Could not hide this order. Please check Firestore permissions.", "Ntibyashobotse kuyikura mu mateka. Reba uburenganzira bwa Firestore.")); console.error(err); }
   };
+  async function applyOrderStock(items, sign) {
+    for (const it of (Array.isArray(items) ? items : [])) {
+      const pid = Number(it.id), qty = Number(it.qty) || 0; if (!(pid > 0) || !qty) continue;
+      const dbp = dbProducts.find(x => x.id === pid), smp = dbp ? null : sampleProducts.find(x => x.id === pid), p = dbp || smp; if (!p) continue;
+      const upd = { sold: Math.max(0, (Number(p.sold) || 0) - sign * qty) };
+      if (p.stock != null) { upd.stock = Math.max(0, Number(p.stock) + sign * qty); upd.status = upd.stock > 0 ? "available" : "out"; }
+      try {
+        if (dbp) await updateDoc(doc(db, "products", String(pid)), upd);
+        else { await setDoc(doc(db, "settings", "sampleProductOverrides"), { [String(pid)]: upd }, { merge: true }); Object.assign(smp, upd); applySampleOverrides(); setProducts(dbProducts); }
+      } catch (e) { console.error("Stock update:", e); }
+    }
+  }
   window.adminOrderStatus = async (id, status) => {
     let data = { status, updatedAt: Date.now() };
+    const ord = allOrders.find(o => o.id === id);
+    if (ord) {
+      if (status !== "cancelled" && ord.status === "new" && !ord.stockDeducted) { await applyOrderStock(ord.items, -1); data.stockDeducted = true; }
+      else if (status === "cancelled" && ord.stockDeducted) { await applyOrderStock(ord.items, 1); data.stockDeducted = false; }
+    }
     if (status === "cancelled") {
       const reason = prompt("Impamvu yo guhagarika commande (si ngombwa):", "");
       if (reason === null) return;
