@@ -5435,7 +5435,8 @@ html[data-sd="soft"] #gdPage .gd-body .bn-b,html[data-sd="soft"] #gdPage .gd-bod
 </script>
 <style>
 #gdChatOpenBtn,#gdChatPanel,#gdChatDot,#adminChatSection,.admin-shortcut.sc-chat,#chatTotalBadge{display:none!important}
-.gd-dock .gd-wa .ic{width:42px;height:42px}.gd-dock .gd-wa .ic svg{width:21px;height:21px}.gd-dock .gd-wa .lb{font-size:.6rem;padding:2px 8px}
+.gd-dock .gd-fab .ic{width:50px!important;height:50px!important;font-size:1.5rem!important}.gd-dock .gd-fab .ic svg{width:24px!important;height:24px!important}.gd-dock .gd-fab .lb{font-size:.64rem!important;padding:3px 9px!important}
+main{padding-bottom:104px!important}
 #gdBot{position:fixed;right:12px;bottom:84px;width:min(380px,calc(100vw - 24px));height:min(560px,calc(100dvh - 110px));z-index:10060;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:#0d1226;color:#fff;box-shadow:0 24px 60px -12px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.12)}
 #gdBot[hidden]{display:none}
 #gdBot .bh{display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(135deg,#0ea5e9,#7c3aed)}
@@ -5593,7 +5594,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
 </script>
 
 <style>
-#gdFoot{margin:28px -2px 0;padding:26px 20px 22px;background:#0d0d12;color:#fff;border-radius:22px;text-align:center}
+#gdFoot{margin:28px calc(50% - 50vw) 0;padding:28px 22px 24px;background:#0d0d12;color:#fff;border-radius:0;text-align:center;box-sizing:border-box}
 #gdFoot .gdf-brand{font-size:1.45rem;font-weight:900;letter-spacing:-.5px}#gdFoot .gdf-brand span{color:#b9a6ff}
 #gdFoot .gdf-tag{margin-top:8px;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#b9a6ff;font-weight:700}
 #gdFoot .gdf-hours{margin-top:12px;font-size:.88rem;color:#9a9aa8}
@@ -5628,9 +5629,33 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
           '<button type="button" onclick="showView(\'account\')">'+T("Track order","Kurikirana order")+'</button>' +
           '<button type="button" onclick="contactWhatsApp()">'+T("Contact us","Twandikire")+'</button>' +
           '<button type="button" onclick="gdBotOpen()">FAQ</button>' +
+          '<button type="button" onclick="gdAboutOpen()">'+T("About GD","Ibyerekeye GD")+'</button>' +
         '</div>' +
       '</div>';
   }
+  window.gdAboutOpen = function(){
+    var lang = (typeof language !== "undefined") ? language : "rw";
+    var en = lang === "en";
+    var d = document.getElementById("gdAbout");
+    if (!d) { d = document.createElement("dialog"); d.id = "gdAbout"; d.style.cssText = "max-width:560px;width:92%;background:#111526;color:#f7f5ff;border:1px solid #303a4b;border-radius:20px;padding:22px;line-height:1.65;max-height:85vh;overflow:auto"; document.body.appendChild(d); d.addEventListener("click", function(e){ if (e.target === d) d.close(); }); }
+    var title = en ? "About GD Electric Motors" : "Ibyerekeye GD Electric Motors";
+    var paras = en ? [
+      "GD Electric Motors specialises in rewinding and repairing electric motors, fan motors and water pumps, and in selling their spare parts.",
+      "We do our work with care, use dependable materials, and tell you the truth about the price and how long the job will take.",
+      "Every customer matters to us. If you have a problem with a motor or a pump, reach us on WhatsApp or by phone and we will help you quickly.",
+      "Our goal is simple: to get your motor running well again, and to sell you only what you can trust."
+    ] : [
+      "GD Electric Motors yihariye mu gusudira (rewinding) no gusana moteri z'amashanyarazi, moteri za fan na pompe z'amazi, ndetse no gucuruza ibikoresho byazo.",
+      "Dukora akazi kacu twitonze, dukoresha ibikoresho byizewe, kandi tukakubwiza ukuri ku giciro no ku gihe akazi kazamara.",
+      "Umukiriya wese turamwubaha. Iyo ufite ikibazo cya moteri cyangwa pompe, ushobora kutugeraho kuri WhatsApp cyangwa kuri telefoni, tukagufasha vuba.",
+      "Intego yacu ni yoroshye: gutuma moteri yawe isubira gukora neza, no kukugurisha gusa ibyo wizeye."
+    ];
+    var why = en ? ["Careful, well-done work","Clear and honest prices","Quick help by WhatsApp and phone","Dependable materials and parts"] : ["Akazi gakozwe neza kandi n'ubwitonzi","Ibiciro bisobanutse kandi by'ukuri","Ubufasha bwihuse kuri WhatsApp na telefoni","Ibikoresho n'ibindi byizewe"];
+    d.innerHTML = '<h2 style="margin:0 0 12px;font-size:1.25rem">'+title+'</h2>' + paras.map(function(x){ return '<p style="margin:0 0 10px;color:#d6d6e4">'+x+'</p>'; }).join("") +
+      '<h3 style="margin:16px 0 8px;font-size:1rem;color:#c9b8ff">'+(en ? "Why choose us" : "Impamvu waduhitamo")+'</h3>' + why.map(function(x){ return '<div style="padding:5px 0">✅ '+x+'</div>'; }).join("") +
+      '<div style="display:flex;gap:8px;margin-top:18px"><button type="button" onclick="contactWhatsApp()" style="flex:1;padding:12px;border:0;border-radius:12px;background:#25d366;color:#04210f;font-weight:800">WhatsApp</button><button type="button" onclick="document.getElementById(\'gdAbout\').close()" style="flex:1;padding:12px;border:1px solid #3b4468;border-radius:12px;background:transparent;color:#fff;font-weight:800">'+(en ? "Close" : "Funga")+'</button></div>';
+    d.showModal();
+  };
   render(); setInterval(render, 2000);
 })();
 </script>
