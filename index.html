@@ -1971,6 +1971,7 @@ h2.pd-title{line-height:1.2}
       <div class="admin-shortcuts" aria-label="Admin menu">
         <button class="admin-shortcut" type="button" onclick="openCeoPage('adminCeoSection')"><span>👑 CEO · Abakiriya ba mbere</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="gdOpenInvoices()" id="invShortcut" hidden><span>🧾 Invoices zabitswe</span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="gdFooterEdit()" id="footShortcut" hidden><span>🖊️ Hindura agasanduku ko hasi (Footer)</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="openStockPage()" id="stockShortcut" hidden><span>📦 Stock y'ibicuruzwa</span><span class="shortcut-arrow">›</span></button>
       </div>
 
@@ -2803,6 +2804,8 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     renderAdminList(); if (window.stockBadgeRefresh) window.stockBadgeRefresh();
   }, err => console.error("Firestore:", err));
 
+  onSnapshot(doc(db, "settings", "footerInfo"), snap => { window.gdFooterInfo = snap.exists() ? snap.data() : {}; if (window.gdFootRefresh) window.gdFootRefresh(); }, () => {});
+  window.gdSaveFooter = async data => { await setDoc(doc(db, "settings", "footerInfo"), data); };
   window.gdBotCallback = async (name, phone, note) => {
     const d = { name: String(name).slice(0, 80), phone, serviceName: "📞 Asabye guhamagarwa (Baza)", details: String(note || "").slice(0, 500), status: "new", createdAt: Date.now() };
     if (currentUser) { d.userId = currentUser.uid; d.email = currentUser.email || ""; }
@@ -2989,6 +2992,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     $("adminDenied").hidden = !(currentUser && !staff);
     $("adminPanel").hidden = !staff;
     { const ah = document.querySelector("#view-admin .admin-title-row .page-title"); if (ah) ah.textContent = isAdminUser(currentUser) ? "👑 Super Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi"); }
+    { const fb = $("footShortcut"); if (fb) fb.hidden = !isAdminUser(currentUser); }
     { const sb = $("stockShortcut"); if (sb) sb.hidden = !perms.has("products"); if (window.stockBadgeRefresh) window.stockBadgeRefresh(); }
     { const sp = $("cartStaffPanel"); if (sp) sp.hidden = !["chats", "orders", "requests", "services", "stats", "sections", "shops", "products"].some(k => perms.has(k)); }
     const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection", "adminBannerSection", "adminTickerSection"], shops: ["adminShopsSection"], invoices: ["adminInvoicesSection"], stats: ["adminStatsSection"], chats: ["adminChatSection"], ceo: ["adminCeoSection"] };
@@ -5436,7 +5440,7 @@ html[data-sd="soft"] #gdPage .gd-body .bn-b,html[data-sd="soft"] #gdPage .gd-bod
 <style>
 #gdChatOpenBtn,#gdChatPanel,#gdChatDot,#adminChatSection,.admin-shortcut.sc-chat,#chatTotalBadge{display:none!important}
 .gd-dock .gd-fab .ic{width:50px!important;height:50px!important;font-size:1.5rem!important}.gd-dock .gd-fab .ic svg{width:24px!important;height:24px!important}.gd-dock .gd-fab .lb{font-size:.64rem!important;padding:3px 9px!important}
-main{padding-bottom:104px!important}
+main{padding-bottom:calc(62px + env(safe-area-inset-bottom,0px))!important}
 #gdBot{position:fixed;right:12px;bottom:84px;width:min(380px,calc(100vw - 24px));height:min(560px,calc(100dvh - 110px));z-index:10060;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:#0d1226;color:#fff;box-shadow:0 24px 60px -12px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.12)}
 #gdBot[hidden]{display:none}
 #gdBot .bh{display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(135deg,#0ea5e9,#7c3aed)}
@@ -5613,14 +5617,17 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
     var box = document.getElementById("gdFoot"); if (!box) return;
     var cats = (typeof categories !== "undefined" && Array.isArray(categories)) ? categories : [];
     var lang = (typeof language !== "undefined") ? language : "rw";
-    var sig = lang + "|" + cats.map(function(c){ return c.id + c.rw + c.en; }).join(",");
+    var info = window.gdFooterInfo || {};
+    var sig = lang + "|" + JSON.stringify(info) + "|" + cats.map(function(c){ return c.id + c.rw + c.en; }).join(",");
     if (sig === last) return; last = sig;
     var T = function(en, rw){ return lang === "en" ? en : rw; };
     var shop = cats.map(function(c){ return '<button type="button" onclick="selectCategory(\''+esc(c.id)+'\')">'+esc(lang === "en" ? (c.en || c.rw) : (c.rw || c.en))+'</button>'; }).join("");
     box.innerHTML =
       '<div class="gdf-brand">GD <span>Electric Motors</span></div>' +
-      '<div class="gdf-tag">— '+esc(T("Electric motors, pumps & spare parts","Moteri, pompe n'ibikoresho byazo"))+' —</div>' +
-      (GD_HOURS ? '<div class="gdf-hours">🕒 '+esc(GD_HOURS)+'</div>' : '') +
+      '<div class="gdf-tag">— '+esc(info.tagline || T("Electric motors, pumps & spare parts","Moteri, pompe n'ibikoresho byazo"))+' —</div>' +
+      ((info.hours || GD_HOURS) ? '<div class="gdf-hours">🕒 '+esc(info.hours || GD_HOURS)+'</div>' : '') +
+      (info.address ? '<div class="gdf-hours">📍 '+esc(info.address)+'</div>' : '') +
+      (info.phone ? '<div class="gdf-hours">📞 <a href="tel:'+esc(String(info.phone).replace(/[^\d+]/g,""))+'" style="color:inherit">'+esc(info.phone)+'</a></div>' : '') +
       '<div class="gdf-cols">' +
         '<div><h4>'+T("Shop","Ibicuruzwa")+'</h4>'+shop+'</div>' +
         '<div><h4>'+T("Help","Ubufasha")+'</h4>' +
@@ -5639,7 +5646,8 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
     var d = document.getElementById("gdAbout");
     if (!d) { d = document.createElement("dialog"); d.id = "gdAbout"; d.style.cssText = "max-width:560px;width:92%;background:#111526;color:#f7f5ff;border:1px solid #303a4b;border-radius:20px;padding:22px;line-height:1.65;max-height:85vh;overflow:auto"; document.body.appendChild(d); d.addEventListener("click", function(e){ if (e.target === d) d.close(); }); }
     var title = en ? "About GD Electric Motors" : "Ibyerekeye GD Electric Motors";
-    var paras = en ? [
+    var ia = (window.gdFooterInfo && window.gdFooterInfo.about || "").split(/\n+/).map(function(x){ return x.trim(); }).filter(Boolean);
+    var paras = ia.length ? ia : en ? [
       "GD Electric Motors specialises in rewinding and repairing electric motors, fan motors and water pumps, and in selling their spare parts.",
       "We do our work with care, use dependable materials, and tell you the truth about the price and how long the job will take.",
       "Every customer matters to us. If you have a problem with a motor or a pump, reach us on WhatsApp or by phone and we will help you quickly.",
@@ -5654,6 +5662,28 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
     d.innerHTML = '<h2 style="margin:0 0 12px;font-size:1.25rem">'+title+'</h2>' + paras.map(function(x){ return '<p style="margin:0 0 10px;color:#d6d6e4">'+x+'</p>'; }).join("") +
       '<h3 style="margin:16px 0 8px;font-size:1rem;color:#c9b8ff">'+(en ? "Why choose us" : "Impamvu waduhitamo")+'</h3>' + why.map(function(x){ return '<div style="padding:5px 0">✅ '+x+'</div>'; }).join("") +
       '<div style="display:flex;gap:8px;margin-top:18px"><button type="button" onclick="contactWhatsApp()" style="flex:1;padding:12px;border:0;border-radius:12px;background:#25d366;color:#04210f;font-weight:800">WhatsApp</button><button type="button" onclick="document.getElementById(\'gdAbout\').close()" style="flex:1;padding:12px;border:1px solid #3b4468;border-radius:12px;background:transparent;color:#fff;font-weight:800">'+(en ? "Close" : "Funga")+'</button></div>';
+    d.showModal();
+  };
+  window.gdFootRefresh = function(){ last = ""; render(); };
+  window.gdFooterEdit = function(){
+    var info = window.gdFooterInfo || {};
+    var d = document.getElementById("gdFootEdit");
+    if (!d) { d = document.createElement("dialog"); d.id = "gdFootEdit"; d.style.cssText = "max-width:520px;width:94%;background:#111526;color:#f7f5ff;border:1px solid #303a4b;border-radius:20px;padding:20px;max-height:88vh;overflow:auto"; document.body.appendChild(d); }
+    var f = function(id, label, val, ph, area){ var st = 'width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #3b4468;background:#0b0f26;color:#fff;font:inherit;margin:4px 0 12px'; return '<label style="font-size:.82rem;color:#c9b8ff;font-weight:800">'+label+'</label>' + (area ? '<textarea id="'+id+'" rows="6" placeholder="'+ph+'" style="'+st+'">'+esc(val||"")+'</textarea>' : '<input id="'+id+'" value="'+esc(val||"")+'" placeholder="'+ph+'" style="'+st+'">'); };
+    d.innerHTML = '<h2 style="margin:0 0 14px;font-size:1.15rem">🖊️ Hindura agasanduku ko hasi</h2>' +
+      f("gfTag","Amagambo munsi y'izina","" + (info.tagline||""),"Moteri, pompe n'ibikoresho byazo") +
+      f("gfHours","🕒 Igihe mukorera",info.hours,"Kuwa mbere - Kuwa gatandatu | 8:00 - 18:00") +
+      f("gfAddr","📍 Aho mukorera",info.address,"Kigali, Nyabugogo, hafi ya ...") +
+      f("gfPhone","📞 Telefoni",info.phone,"0784661800") +
+      f("gfAbout","Ibyerekeye GD (buri paragarafu ukayitandukanya n'umurongo)",info.about,"Andika amagambo asobanura GD Electric Motors. Siga ubusa niba ushaka ayasanzwe.",true) +
+      '<div style="display:flex;gap:8px"><button type="button" id="gfSave" style="flex:1;padding:12px;border:0;border-radius:12px;background:#2563eb;color:#fff;font-weight:800">💾 Bika</button><button type="button" id="gfClose" style="flex:1;padding:12px;border:1px solid #3b4468;border-radius:12px;background:transparent;color:#fff;font-weight:800">Funga</button></div><div id="gfMsg" style="margin-top:10px;font-size:.85rem"></div>';
+    d.querySelector("#gfClose").onclick = function(){ d.close(); };
+    d.querySelector("#gfSave").onclick = async function(){
+      var g = function(i){ return d.querySelector("#"+i).value.trim(); };
+      var data = { tagline: g("gfTag").slice(0,120), hours: g("gfHours").slice(0,120), address: g("gfAddr").slice(0,160), phone: g("gfPhone").slice(0,30), about: g("gfAbout").slice(0,1500), updatedAt: Date.now() };
+      var m = d.querySelector("#gfMsg"); m.textContent = "Birabikwa...";
+      try { await window.gdSaveFooter(data); window.gdFooterInfo = data; window.gdFootRefresh(); m.textContent = "✅ Byabitswe!"; } catch (e) { m.textContent = "❌ Ntibyakunze: " + (e.code || e.message); }
+    };
     d.showModal();
   };
   render(); setInterval(render, 2000);
