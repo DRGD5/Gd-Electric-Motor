@@ -871,6 +871,7 @@ html[data-theme="dark"] .product.compact .product-info h3{color:#f7f5ff!importan
 .pl-price{margin-top:7px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px}
 .pl-price b{font-size:1rem;color:var(--purple-light)}
 .pl-price s{font-size:.74rem;color:var(--muted)}
+.pl-stock{margin-top:6px;font-size:.78rem;color:var(--muted)}.pl-stock b{color:var(--purple-light)}
 .pl-acts{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px 10px 11px}
 .pl-acts button{width:auto;margin:0;padding:9px 6px;border-radius:12px;font-weight:800;font-size:.78rem;border:0;color:#fff}
 .pl-edit{background:linear-gradient(135deg,#2563eb,#3b82f6)}
@@ -2090,6 +2091,9 @@ h2.pd-title{line-height:1.2}
           <div class="form-row"><label>Igiciro (RWF)</label><input id="fPrice" type="number" min="0" inputmode="numeric" required></div>
           <div class="form-row"><label>Igiciro cya kera (RWF), si ngombwa</label><input id="fOldPrice" type="number" min="0" inputmode="numeric"></div>
           <div class="form-row"><label>Uko bimeze</label><select id="fStatus"><option value="available">Birahari</option><option value="out">Byashize</option></select></div>
+          <div class="form-row"><label>📦 Stock isigaye (umubare)</label><input id="fStock" type="number" min="0" inputmode="numeric" placeholder="Urugero: 10 (siga ubusa niba utabara)"></div>
+          <div class="form-row"><label>➕ Ongeramo stock (+)</label><input id="fAddStock" type="number" min="0" inputmode="numeric" placeholder="Urugero: 5"></div>
+          <div class="form-row"><label>🛒 Byagurishijwe (umubare)</label><input id="fSold" type="number" min="0" inputmode="numeric" placeholder="Urugero: 3"></div>
           <div class="form-row"><label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fFeatured" style="width:auto"> Shyira iki gicuruzwa imbere (bikunzwe / promo)</label></div>
           <div class="form-row"><label>Ifoto</label><input id="fPhoto" type="file" accept="image/*" onchange="adminPreview(this)"><img id="fPreview" class="photo-preview" alt="Product photo preview"></div>
           <div class="form-row"><label>Amafoto y'ubwoko (ongeramo menshi) — andika izina ry'ubwoko munsi ya buri foto (urugero: Umutuku, #1/350)</label><input id="fGalleryFiles" type="file" accept="image/*" multiple onchange="adminGalleryAdd(this)"><div id="fGalleryList" class="gal-list"></div></div>
@@ -4649,6 +4653,10 @@ function gdSavePdf(btn) {
       if (file) { msg("adminMsg", "Ifoto iri koherezwa..."); imageUrl = await uploadToCloudinary(file); }
 
       const productData = { category: $("fCategory").value, en: nameEn, rw: nameRw, descEn, descRw, price, oldPrice: old, imageUrl: imageUrl || "", gallery: editingGallery.filter(g => g && g.url).map(g => ({ url: g.url, label: String(g.label || "").trim() })), status: $("fStatus").value === "out" ? "out" : "available", featured: $("fFeatured").checked };
+      { const sRaw = $("fStock").value, add = Math.max(0, Number($("fAddStock").value) || 0), sold = Math.max(0, Number($("fSold").value) || 0);
+        const stock = sRaw === "" ? (add > 0 ? add : null) : Math.max(0, Number(sRaw) + add);
+        productData.stock = stock; productData.sold = sold;
+        if (stock !== null) productData.status = stock > 0 ? "available" : "out"; }
       if (editingSampleId !== null) {
         await setDoc(doc(db, "settings", "sampleProductOverrides"), { [String(editingSampleId)]: productData }, { merge: true });
         Object.assign(sampleProducts.find(x => x.id === editingSampleId) || {}, productData);
@@ -4767,7 +4775,7 @@ function gdSavePdf(btn) {
     $("fDescRw").value = p.descRw || ""; $("fDescEn").value = p.descEn || "";
     $("fCategory").value = p.category; $("fPrice").value = p.price;
     $("fOldPrice").value = p.oldPrice ?? ""; $("fPhoto").value = "";
-    $("fStatus").value = p.status === "out" ? "out" : "available"; $("fFeatured").checked = !!p.featured;
+    $("fStatus").value = p.status === "out" ? "out" : "available"; $("fFeatured").checked = !!p.featured; $("fStock").value = p.stock ?? ""; $("fSold").value = p.sold ?? ""; $("fAddStock").value = "";
     adminPreview($("fPhoto"));
     $("adminFormTitle").textContent = "Hindura igicuruzwa";
     $("adminSaveBtn").textContent = "Bika impinduka";
@@ -4800,7 +4808,7 @@ function gdSavePdf(btn) {
     return `<article class="pl-card${out ? " is-out" : ""}${h ? " is-hid" : ""}">
       <div class="pl-img">${img}<div class="pl-badges">${badges}</div></div>
       <div class="pl-info"><h4>${esc(p.rw || p.en)}</h4><div class="pl-cat">${cat ? cat.icon + " " + esc(cat[language] || cat.en) : ""}</div>
-      <div class="pl-price"><b>${money(p.price)}</b>${old}</div></div>
+      <div class="pl-price"><b>${money(p.price)}</b>${old}</div>${(p.stock != null || p.sold) ? `<div class="pl-stock">📦 ${t("Left", "Isigaye")}: <b>${p.stock != null ? p.stock : "-"}</b> · 🛒 ${t("Sold", "Byagurishijwe")}: <b>${p.sold || 0}</b></div>` : ""}</div>
       <div class="pl-acts">${acts}</div></article>`;
   }
   function renderAdminList() {
@@ -4833,7 +4841,7 @@ function gdSavePdf(btn) {
     $("fDescRw").value = p.descRw || ""; $("fDescEn").value = p.descEn || "";
     $("fCategory").value = p.category; $("fPrice").value = p.price;
     $("fOldPrice").value = p.oldPrice ?? ""; $("fPhoto").value = "";
-    $("fStatus").value = p.status === "out" ? "out" : "available"; $("fFeatured").checked = !!p.featured;
+    $("fStatus").value = p.status === "out" ? "out" : "available"; $("fFeatured").checked = !!p.featured; $("fStock").value = p.stock ?? ""; $("fSold").value = p.sold ?? ""; $("fAddStock").value = "";
     adminPreview($("fPhoto"));
     $("adminFormTitle").textContent = "Hindura igicuruzwa cy'ibanze";
     $("adminSaveBtn").textContent = "Bika impinduka";
