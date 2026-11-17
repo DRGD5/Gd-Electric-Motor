@@ -2802,6 +2802,11 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     renderAdminList(); if (window.stockBadgeRefresh) window.stockBadgeRefresh();
   }, err => console.error("Firestore:", err));
 
+  window.gdBotCallback = async (name, phone, note) => {
+    const d = { name: String(name).slice(0, 80), phone, serviceName: "📞 Asabye guhamagarwa (Baza)", details: String(note || "").slice(0, 500), status: "new", createdAt: Date.now() };
+    if (currentUser) { d.userId = currentUser.uid; d.email = currentUser.email || ""; }
+    await addDoc(collection(db, "serviceRequests"), d);
+  };
   // ----- admin auth -----
   // ----- visitor statistics -----
   const todayKey = () => new Date().toLocaleDateString("en-CA");
@@ -5482,11 +5487,42 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){};
     {id:"contact", k:["telefoni","telephone","phone","call","nimero","number","contact","guhamagara","whatsapp","email"], a:function(){return tr("Duhamagare kuri "+INFO.phone+" cyangwa utwandikire kuri WhatsApp.","Call us on "+INFO.phone+" or message us on WhatsApp.");}},
     {id:"price", k:["igiciro","ibiciro","price","prices","angahe","zingahe","bingahe","cost","how much","prix","combien"], a:null},
     {id:"stock", k:["stock","irahari","birahari","ihari","mufite","available","in stock","disponible","ntibyashize","yashize"], a:null},
-    {id:"thanks", k:["murakoze","urakoze","thanks","thank you","merci","yego murakoze"], a:function(){return tr("Murakoze namwe! Niba hari ikindi, ndi hano.","You're welcome! I'm here if you need anything else.");}},
+    {id:"thanks", k:["murakoze","urakoze","thanks","thank you","merci","ni byo byose","nta kindi","bye","murabeho","muramuke","ndabashimiye","nta kibazo"], a:function(){return tr("Murakoze cyane! Niba wifuza ubundi bufasha, siga nimero yawe, nyiri website azaguhamagara akuvugishe. Cyangwa wahitamo kuduhamagara, cyangwa kutwandikira kuri WhatsApp.","Thank you! If you would like more help, leave your number and the owner will call and talk to you. Or you can call us, or message us on WhatsApp.");}},
+    {id:"unhappy", k:["ntibyamfashije","ntiwumva","ntunyumva","ntabwo unyumva","ntumfasha","ntumfashije","ntacyo umfashije","sinabonye icyo","sibyo","si byo","ntabwo ari byo","ntimumfasha","ntabwo mumfasha","ntimunyumva","ntabwo munyumva","sinyumva","nta gisubizo","bot ntishoboye","not helpful","not helping","didnt help","didn t help","useless","wrong answer","you dont understand","you don t understand"], a:function(){return tr("Mbabarira ko ntagufashije nk'uko ubishaka 🙏. Niba ushaka ubundi bufasha, siga nimero yawe, nyiri website azaguhamagara akuvugishe. Cyangwa wahitamo kuduhamagara, cyangwa kutwandikira kuri WhatsApp.","Sorry I couldn't help the way you wanted 🙏. If you'd like more help, leave your number and the owner will call and talk to you. Or you can call us, or message us on WhatsApp.");}},
     {id:"human", k:["umukozi","umuntu","human","agent","staff","vugana","kuvugana","person"], a:function(){return tr("Ndagushyira ku mukozi wacu. Hitamo hano hasi:","I'll connect you with our team. Choose below:");}}
   ];
   var STOP = {"ya":1,"za":1,"mu":1,"ku":1,"na":1,"the":1,"for":1,"and":1,"you":1,"are":1,"ni":1,"se":1,"ese":1,"mufite":1,"have":1,"igiciro":1,"price":1,"angahe":1,"zingahe":1,"stock":1,"irahari":1,"birahari":1,"ibyo":1,"iki":1,"uyu":1,"cost":1,"how":1,"much":1,"does":1,"what":1,"is":1,"a":1,"of":1,"no":1,"cyangwa":1,"bingahe":1};
-  var msgs, quick, input, started = false;
+  var msgs, quick, input, started = false, cb = null;
+  var CBK = ["nduhamagare","muhamagare","mpamagare","guhamagarwa","kumpamagara","ndahamagarwa","call me","callback","call back","rappelez"];
+  function cleanPhone(raw){ var d = String(raw||"").replace(/\D/g,""); if (d.length === 12 && d.indexOf("250") === 0) d = "0" + d.slice(3); return d; }
+  function startCallback(raw){
+    cb = {name:"", phone:"", note:String(raw||"").slice(0,300), step:""};
+    var m = String(raw||"").match(/\+?\d[\d\s\-]{7,}\d/);
+    if (m) { var d = cleanPhone(m[0]); if (d.length === 10) cb.phone = d; else add("b", esc(tr("Nimero wanditse ifite imibare "+d.length+", igomba kuba 10 neza.","The number you typed has "+d.length+" digits, it must be exactly 10."))); }
+    nextCb();
+  }
+  function nextCb(){
+    if (!cb.name) { cb.step = "name"; add("b", esc(tr("Sawa, tuzaguhamagara. Nyandikira izina ryawe. (andika 'reka' ubihagarike)","Sure, we'll call you back. Please type your name. (type 'cancel' to stop)"))); return; }
+    if (!cb.phone) { cb.step = "phone"; add("b", esc(tr("Nyandikira nimero ya telefoni yawe (imibare 10, urugero 0788123456).","Please type your phone number (10 digits, e.g. 0788123456)."))); return; }
+    var c = cb; cb = null; add("b", esc(tr("Birohereza...","Sending...")));
+    (window.gdBotCallback ? window.gdBotCallback(c.name, c.phone, c.note) : Promise.reject()).then(function(){
+      add("b", esc(tr("Murakoze "+c.name+"! Twakiriye ubusabe bwawe, tuzaguhamagara kuri "+c.phone+" vuba bishoboka.","Thank you "+c.name+"! We received your request and will call "+c.phone+" as soon as possible.")));
+    }).catch(function(){
+      add("b", esc(tr("Mbabarira, ntibyashobotse kohereza. Ongera ugerageze, cyangwa duhamagare kuri "+INFO.phone+".","Sorry, it could not be sent. Please try again or call us on "+INFO.phone+".")), humanActs());
+    });
+  }
+  function handleCb(v){
+    if (/^(reka|oya|cancel|stop|non)$/i.test(v.trim())) { cb = null; add("b", esc(tr("Sawa, nahagaritse.","Okay, cancelled."))); return; }
+    if (cb.step === "name") { if (v.trim().length < 2) { add("b", esc(tr("Andika izina ryawe.","Please type your name."))); return; } cb.name = v.trim().slice(0,60); nextCb(); return; }
+    var d = cleanPhone(v);
+    if (d.length !== 10) { add("b", esc(tr("Nimero ifite imibare "+d.length+", igomba kuba 10 neza. Ongera wandike.","That number has "+d.length+" digits, it must be exactly 10. Please type it again."))); return; }
+    cb.phone = d; nextCb();
+  }
+  function isCallbackAsk(raw, q){
+    if (/\+?\d[\d\s\-]{7,}\d/.test(raw)) return true;
+    for (var i = 0; i < CBK.length; i++) if ((" "+q+" ").indexOf(" "+CBK[i]+" ") > -1 || q.indexOf(CBK[i]) > -1) return true;
+    return false;
+  }
   function add(who, html, actions){
     var d = document.createElement("div"); d.className = "m " + who; d.innerHTML = html;
     if (actions && actions.length) { var a = document.createElement("div"); a.className = "acts";
@@ -5495,8 +5531,9 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){};
     msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
   }
   function humanActs(){ return [
+    {t:"📞 "+tr("Mpamagare","Call me back"), f:function(){ startCallback(""); }},
     {t:"🟢 WhatsApp", f:function(){ if (window.contactWhatsApp) window.contactWhatsApp(); }},
-    {t:"📞 "+tr("Duhamagare","Call us"), href:"tel:+250"+INFO.phone.replace(/^0/,"")}
+    {t:"☎️ "+tr("Duhamagare","Call us"), href:"tel:+250"+INFO.phone.replace(/^0/,"")}
   ]; }
   function allProducts(){ return (typeof products !== "undefined" && Array.isArray(products)) ? products : []; }
   function pname(p){ return L() === "en" ? (p.en || p.rw) : (p.rw || p.en); }
@@ -5519,17 +5556,18 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){};
   }
   function answer(raw){
     var q = norm(raw); if (!q) return;
+    if (isCallbackAsk(raw, q)) { startCallback(raw); return; }
     var best = null, bs = 0;
     KB.forEach(function(e){ var sc = 0; e.k.forEach(function(w){ if ((" "+q+" ").indexOf(" "+norm(w)+" ") > -1 || (w.length > 4 && q.indexOf(norm(w)) > -1)) sc += w.length > 4 ? 2 : 1; }); if (sc > bs) { bs = sc; best = e; } });
     var prods = findProducts(q);
     if (prods.length && (!best || best.id === "price" || best.id === "stock" || bs < 2)) { add("b", esc(productReply(prods)), [{t:"🛒 "+tr("Tumiza kuri WhatsApp","Order on WhatsApp"), f:function(){ if (window.contactWhatsApp) window.contactWhatsApp(); }}]); return; }
     if (best && (best.id === "price" || best.id === "stock")) { add("b", esc(categoriesReply())); return; }
-    if (best) { add("b", esc(best.a()), (best.id === "human" || best.id === "contact" || best.id === "loc" || best.id === "hours") ? humanActs() : null); return; }
+    if (best) { add("b", esc(best.a()), (best.id === "human" || best.id === "contact" || best.id === "loc" || best.id === "hours" || best.id === "thanks" || best.id === "unhappy") ? humanActs() : null); return; }
     if (/(ibicuruzwa|products|catalog|byose|list)/.test(q)) { add("b", esc(categoriesReply())); return; }
-    add("b", esc(tr("Mbabarira, sinabyumvise neza. Ushobora kubaza ku biciro, ibicuruzwa, serivisi cyangwa uko wategeka, cyangwa ukavugana n'umukozi wacu.","Sorry, I didn't quite get that. You can ask about prices, products, services or how to order, or talk to our team.")), humanActs());
+    add("b", esc(tr("Mbabarira, sinabyumvise neza. Ushobora kubaza ku biciro, ibicuruzwa, serivisi cyangwa uko wategeka. Niba ushaka ubundi bufasha, siga nimero yawe nyiri website azaguhamagara, cyangwa uduhamagare, cyangwa utwandikire kuri WhatsApp.","Sorry, I didn't quite get that. You can ask about prices, products, services or how to order. If you'd like more help, leave your number and the owner will call you, or call us, or message us on WhatsApp.")), humanActs());
   }
   function setQuick(){
-    var items = [["💰 "+tr("Ibiciro","Prices"),tr("ibiciro","prices")],["🛒 "+tr("Gutumiza","How to order"),tr("gutumiza","order")],["🛠️ "+tr("Serivisi","Services"),tr("serivisi","services")],["📍 "+tr("Aho muri","Location"),tr("aho muherereye","location")],["👤 "+tr("Umukozi","Staff"),tr("umukozi","staff")]];
+    var items = [["💰 "+tr("Ibiciro","Prices"),tr("ibiciro","prices")],["🛒 "+tr("Gutumiza","How to order"),tr("gutumiza","order")],["🛠️ "+tr("Serivisi","Services"),tr("serivisi","services")],["📍 "+tr("Aho muri","Location"),tr("aho muherereye","location")],["📞 "+tr("Mpamagare","Call me back"),tr("mpamagare","call me back")],["👤 "+tr("Umukozi","Staff"),tr("umukozi","staff")]];
     quick.innerHTML = ""; items.forEach(function(x){ var b = document.createElement("button"); b.type = "button"; b.textContent = x[0]; b.onclick = function(){ add("u", esc(x[0].replace(/^\S+\s/,""))); answer(x[1]); }; quick.appendChild(b); });
     input.placeholder = tr("Andika ikibazo cyawe...","Type your question...");
   }
@@ -5541,7 +5579,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){};
     setTimeout(function(){ input.focus(); }, 50);
   };
   window.gdBotClose = function(){ document.getElementById("gdBot").hidden = true; };
-  window.gdBotSend = function(e){ e.preventDefault(); var v = input.value.trim(); if (!v) return; input.value = ""; add("u", esc(v)); setTimeout(function(){ answer(v); }, 250); };
+  window.gdBotSend = function(e){ e.preventDefault(); var v = input.value.trim(); if (!v) return; input.value = ""; add("u", esc(v)); setTimeout(function(){ if (cb) handleCb(v); else answer(v); }, 250); };
   document.addEventListener("DOMContentLoaded", function(){
     var dock = document.getElementById("gdDock"), chat = document.getElementById("gdChatOpenBtn");
     if (dock && chat && !document.getElementById("gdBotBtn")) {
