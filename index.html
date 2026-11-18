@@ -5541,7 +5541,15 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
     delivery: "",  /* urugero: "Tugeza ibicuruzwa i Kigali no mu ntara" */
     warranty: ""   /* urugero: "Moteri zisudiye zifite garanti y'amezi 3" */
   };
-  var L = function(){ return (typeof language !== "undefined" && language === "en") ? "en" : "rw"; };
+  var msgLang = null;
+  var EN_W = {"the":1,"is":1,"are":1,"you":1,"your":1,"what":1,"how":1,"where":1,"when":1,"do":1,"does":1,"can":1,"could":1,"please":1,"thanks":1,"thank":1,"okay":1,"ok":1,"yes":1,"hello":1,"hi":1,"hey":1,"price":1,"prices":1,"much":1,"have":1,"want":1,"need":1,"help":1,"order":1,"call":1,"me":1,"my":1,"i":1,"we":1,"it":1,"to":1,"of":1,"and":1,"for":1,"with":1,"this":1,"that":1,"open":1,"time":1,"location":1,"services":1,"repair":1,"motor":1,"pump":1,"good":1,"fine":1,"nice":1,"great":1,"sure":1,"cool":1,"bye":1,"morning":1,"afternoon":1,"evening":1,"in":1,"on":1,"at":1,"a":1,"an":1,"sorry":1,"no":1,"not":1};
+  var RW_W = {"muraho":1,"mwiriwe":1,"mwaramutse":1,"amakuru":1,"murakoze":1,"urakoze":1,"ndashaka":1,"nshaka":1,"igiciro":1,"ibiciro":1,"angahe":1,"zingahe":1,"mufite":1,"mukora":1,"gusana":1,"moteri":1,"pompe":1,"ni":1,"ku":1,"mu":1,"ya":1,"za":1,"na":1,"kandi":1,"cyangwa":1,"oya":1,"yego":1,"sawa":1,"ntabwo":1,"ntibyamfashije":1,"gutumiza":1,"serivisi":1,"umukozi":1,"mpamagare":1,"duhamagare":1,"aho":1,"muherereye":1,"saa":1,"ngahe":1,"nimero":1,"telefoni":1,"mbabarira":1,"komera":1,"mwakoze":1,"ese":1,"iki":1,"nde":1,"bite":1,"neza":1,"cyane":1};
+  var detectLang = function(raw){
+    var t = String(raw||"").toLowerCase().replace(/[^a-z\s]/g," ").split(/\s+/).filter(Boolean), en = 0, rw = 0;
+    t.forEach(function(w){ if (EN_W[w]) en++; if (RW_W[w]) rw++; });
+    if (en > rw) return "en"; if (rw > en) return "rw"; return null;
+  };
+  var L = function(){ if (msgLang) return msgLang; return (typeof language !== "undefined" && language === "en") ? "en" : "rw"; };
   var tr = function(rw, en){ return L() === "en" ? en : rw; };
   var norm = function(s){ return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9\s]/g," ").replace(/\s+/g," ").trim(); };
   var esc = function(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); };
@@ -5671,10 +5679,11 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
   }
   function answer(raw){
     var q = norm(raw); if (!q) return;
+    msgLang = detectLang(raw);
     if (!isJunkText(raw)) junk = 0;
     if (/(ntago|ntabwo|sinshaka|nta nshaka|oya).*(hamagar)|(don t|dont|do not) want.*(call)|(upfashiriza|mfashiriza|pfasha|umfashirize|help me|help here|nshaka ko ufasha|nshaka ko upfasha)/.test(q) && !/(nduhamagare|muhamagare|mpamagare)/.test(q)) { misses = 0; helpHere(); return; }
     if (isCallbackAsk(raw, q)) { misses = 0; startCallback(raw); return; }
-    var cf = customFaq(q); if (cf && cf.a) { misses = 0; add("b", esc(cf.a)); return; }
+    var cf = customFaq(q); if (cf && (cf.a || cf.e)) { misses = 0; add("b", esc(L() === "en" ? (cf.e || cf.a) : (cf.a || cf.e))); return; }
     var best = null, bs = 0;
     KB.forEach(function(e){ var sc = 0; e.k.forEach(function(w){ if ((" "+q+" ").indexOf(" "+norm(w)+" ") > -1 || (w.length > 4 && q.indexOf(norm(w)) > -1)) sc += w.length > 4 ? 2 : 1; }); if (sc > bs) { bs = sc; best = e; } });
     var prods = findProducts(q);
@@ -5706,7 +5715,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
     setTimeout(function(){ input.focus(); }, 50);
   };
   window.gdBotClose = function(){ document.getElementById("gdBot").hidden = true; };
-  window.gdBotSend = function(e){ e.preventDefault(); var v = input.value.trim(); if (!v) return; input.value = ""; add("u", esc(v)); setTimeout(function(){ if (cb) handleCb(v); else answer(v); }, 250); };
+  window.gdBotSend = function(e){ e.preventDefault(); var v = input.value.trim(); if (!v) return; input.value = ""; add("u", esc(v)); setTimeout(function(){ if (cb) { msgLang = detectLang(v) || msgLang; handleCb(v); } else answer(v); }, 250); };
   document.addEventListener("DOMContentLoaded", function(){
     var dock = document.getElementById("gdDock"), chat = document.getElementById("gdChatOpenBtn");
     if (dock && chat && !document.getElementById("gdBotBtn")) {
@@ -5798,7 +5807,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
     var items = JSON.parse(JSON.stringify((window.gdBotFaq && window.gdBotFaq.items) || []));
     var groups = missGroups();
     var tab = (groups.length && !items.length) ? "miss" : "saved";
-    var q = "", edit = null, draftK = "", draftA = "", pending = null, toast = "", toastErr = false, toastT = null, busy = false;
+    var q = "", edit = null, draftK = "", draftA = "", draftE = "", pending = null, toast = "", toastErr = false, toastT = null, busy = false;
     var d = document.getElementById("gdFaqEdit");
     if (!d) { d = document.createElement("dialog"); d.id = "gdFaqEdit"; document.body.appendChild(d); }
     d.style.cssText = "max-width:560px;width:94%;background:#0f1322;color:#f7f5ff;border:1px solid #303a4b;border-radius:22px;padding:0;max-height:90vh;overflow:auto";
@@ -5852,7 +5861,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
       if (!items.length) return '<div class="fq-empty"><b>📭</b>Nta gisubizo urabika.<br>Kanda "➕ Ongeraho igisubizo" hasi.</div>';
       if (!out.length) return '<div class="fq-empty"><b>🔎</b>Nta kibonetse kuri "'+esc(q)+'".</div>';
       return out.map(function(o){
-        return '<div class="fq-card"><div class="fq-chips">'+chips(o.it.k)+'</div><div class="fq-ans">'+esc(o.it.a)+'</div>' +
+        return '<div class="fq-card"><div class="fq-chips">'+chips(o.it.k)+'</div><div class="fq-ans">'+esc(o.it.a)+'</div>'+(o.it.e ? '<div class="fq-ans" style="margin-top:6px;border-left-color:#8cb6ff">🇬🇧 '+esc(o.it.e)+'</div>' : '')+' ' +
           '<div class="fq-row"><button type="button" class="fq-btn" data-act="edit" data-i="'+o.i+'">✏️ Hindura</button><button type="button" class="fq-btn fq-del" data-act="del" data-i="'+o.i+'">🗑️</button></div></div>';
       }).join("");
     }
@@ -5873,6 +5882,8 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
           '<div class="fq-hint">Tandukanya amagambo n\'akitso ( , ). Urugero: <b>gufungura, mufungura, saa ngahe</b></div>' +
           '<label class="fq-lbl">2️⃣ Igisubizo cya Baza</label><textarea id="fqA" class="fq-in" rows="5" maxlength="800" placeholder="Dufungura saa mbiri za mu gitondo...">'+esc(draftA)+'</textarea>' +
           '<div class="fq-count"><span id="fqN">'+draftA.length+'</span>/800</div>' +
+          '<label class="fq-lbl" style="margin-top:12px">3️⃣ English answer (iyo umukiriya yanditse mu Cyongereza)</label><textarea id="fqE" class="fq-in" rows="4" maxlength="800" placeholder="We open at 8 AM...">'+esc(draftE)+'</textarea>' +
+          '<div class="fq-hint">Niba utayanditse, Baza izakoresha igisubizo cy\'Ikinyarwanda gusa.</div>' +
           '<label class="fq-lbl" style="margin-top:12px">👀 Uko umukiriya azabibona</label><div class="fq-prev" id="fqPrev">'+(draftA ? esc(draftA) : "…")+'</div>';
         foot = '<div class="fq-foot"><div class="fq-row" style="margin:0"><button type="button" class="fq-btn" data-act="back">Garuka</button><button type="button" id="fqSave" class="fq-btn fq-pri" data-act="save" style="flex:2">💾 Bika</button></div></div>';
       } else {
@@ -5885,7 +5896,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
       d.innerHTML = head + '<div class="fq-body">' + body + '</div>' + foot;
     }
     async function persist(list){
-      var clean = list.map(function(x){ return { k: String(x.k||"").trim().slice(0,200), a: String(x.a||"").trim().slice(0,800) }; }).filter(function(x){ return x.k && x.a; });
+      var clean = list.map(function(x){ return { k: String(x.k||"").trim().slice(0,200), a: String(x.a||"").trim().slice(0,800), e: String(x.e||"").trim().slice(0,800) }; }).filter(function(x){ return x.k && (x.a || x.e); });
       await window.gdSaveBotFaq({ items: clean, updatedAt: Date.now() });
       window.gdBotFaq = { items: clean };
       items = JSON.parse(JSON.stringify(clean));
@@ -5894,6 +5905,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
       var t = e.target;
       if (t.id === "fqK") draftK = t.value;
       else if (t.id === "fqA") { draftA = t.value; var n = d.querySelector("#fqN"), pv = d.querySelector("#fqPrev"); if (n) n.textContent = draftA.length; if (pv) pv.textContent = draftA || "…"; }
+      else if (t.id === "fqE") draftE = t.value;
       else if (t.id === "fqQ") { q = t.value; var l = d.querySelector("#fqList"); if (l) l.innerHTML = savedList(); }
     };
     d.onclick = async function(e){
@@ -5901,10 +5913,10 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
       var act = b.getAttribute("data-act"), i = +b.getAttribute("data-i"), j = +b.getAttribute("data-j");
       if (act === "close") { d.close(); return; }
       if (act === "tab") { tab = b.getAttribute("data-t"); toast = ""; draw(); return; }
-      if (act === "add") { if (items.length >= 60) { showToast("❌ Ntushobora kurenza ibisubizo 60.", true); return; } edit = -1; draftK = ""; draftA = ""; pending = null; toast = ""; draw(); d.scrollTop = 0; return; }
-      if (act === "edit") { edit = i; draftK = items[i].k || ""; draftA = items[i].a || ""; pending = null; toast = ""; draw(); d.scrollTop = 0; return; }
+      if (act === "add") { if (items.length >= 60) { showToast("❌ Ntushobora kurenza ibisubizo 60.", true); return; } edit = -1; draftK = ""; draftA = ""; draftE = ""; pending = null; toast = ""; draw(); d.scrollTop = 0; return; }
+      if (act === "edit") { edit = i; draftK = items[i].k || ""; draftA = items[i].a || ""; draftE = items[i].e || ""; pending = null; toast = ""; draw(); d.scrollTop = 0; return; }
       if (act === "back") { edit = null; pending = null; toast = ""; draw(); return; }
-      if (act === "use") { var g = groups[j]; edit = -1; draftK = g.text.toLowerCase().slice(0,200); draftA = ""; pending = g; toast = ""; draw(); d.scrollTop = 0; var ta = d.querySelector("#fqA"); if (ta) ta.focus(); return; }
+      if (act === "use") { var g = groups[j]; edit = -1; draftK = g.text.toLowerCase().slice(0,200); draftA = ""; draftE = ""; pending = g; toast = ""; draw(); d.scrollTop = 0; var ta = d.querySelector("#fqA"); if (ta) ta.focus(); return; }
       if (act === "ign") { var gi = groups.splice(j, 1)[0]; gi.ids.forEach(function(id){ try { window.gdDeleteMiss(id); } catch(err){} }); draw(); return; }
       if (act === "del") {
         if (!confirm("Wiyemeje gusiba iki gisubizo?")) return;
@@ -5914,11 +5926,11 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
         busy = false; draw(); return;
       }
       if (act === "save") {
-        var k = draftK.trim(), a = draftA.trim();
-        if (!k || !a) { showToast("⚠️ Uzuza amagambo y'umukiriya n'igisubizo.", true); return; }
+        var k = draftK.trim(), a = draftA.trim(), en = draftE.trim();
+        if (!k || !(a || en)) { showToast("⚠️ Uzuza amagambo y'umukiriya n'igisubizo.", true); return; }
         busy = true; b.disabled = true; b.textContent = "Birabikwa...";
         try {
-          var next = items.slice(); var rec = { k: k.slice(0,200), a: a.slice(0,800) };
+          var next = items.slice(); var rec = { k: k.slice(0,200), a: a.slice(0,800), e: en.slice(0,800) };
           if (edit === -1) next.push(rec); else next[edit] = rec;
           await persist(next);
           if (pending) { pending.ids.forEach(function(id){ try { window.gdDeleteMiss(id); } catch(err){} }); var gx = groups.indexOf(pending); if (gx > -1) groups.splice(gx, 1); }
