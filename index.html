@@ -2876,7 +2876,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     el.hidden = true; document.body.style.overflow = "";
     if (fromPop !== true) { try { if (history.state && history.state.gdStock) history.back(); } catch (e) {} }
   };
-  window.addEventListener("popstate", () => { const el = $("adminStockSection"); if (el && !el.hidden) window.closeStockPage(true); });
+  window.addEventListener("popstate", () => { const se = $("adminStockEdit"); if (se && !se.hidden) { window.closeStockEdit(true); return; } const el = $("adminStockSection"); if (el && !el.hidden) window.closeStockPage(true); });
   const allStockProducts = () => dbProducts.concat(sampleProducts);
   const saveStockFields = async (p, upd) => {
     if (dbProducts.some(x => x.id === p.id)) await updateDoc(doc(db, "products", String(p.id)), upd);
@@ -2887,6 +2887,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const n = isAdminUser(currentUser) ? pendingOuts().length : 0;
     const b = $("stockShortcut"); if (b) { const sp = b.querySelector("span"); if (sp) sp.textContent = "📦 Stock y'ibicuruzwa" + (n ? " 🔴 " + n : ""); }
     if (!$("adminStockSection").hidden) renderStockPage();
+    const se = $("adminStockEdit"); if (se && !se.hidden) renderStockEdit();
   };
   window.stockOut = async id => {
     const p = allStockProducts().find(x => x.id === Number(id)); if (!p) return;
@@ -2913,6 +2914,66 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     try { await saveStockFields(p, upd); } catch (e) { alert("Byanze: " + (e.code || e.message)); }
     window.stockBadgeRefresh();
   };
+  let seId = null;
+  const seWho = () => (profile && profile.name) || (currentUser && currentUser.email) || "?";
+  const seDo = async (p, upd) => { try { await saveStockFields(p, upd); return true; } catch (e) { alert("Byanze: " + (e.code || e.message)); return false; } };
+  window.stockEdit = id => {
+    seId = Number(id);
+    let el = $("adminStockEdit");
+    if (!el) {
+      el = document.createElement("div"); el.className = "ceo-page"; el.id = "adminStockEdit"; el.hidden = true;
+      const inp = 'width:100%;box-sizing:border-box;padding:12px;border-radius:12px;border:1px solid rgba(127,127,127,.4);background:rgba(127,127,127,.12);color:inherit;font:inherit;margin:6px 0';
+      el.innerHTML = `<div class="ceo-top"><button type="button" class="ceo-back" onclick="closeStockEdit()" aria-label="Back">←</button><div><h2 id="seTitle"></h2><small>Stock In / Stock Out</small></div></div>
+      <div class="ceo-wrap"><div id="seInfo"></div>
+        <div class="ceo-day-row" style="display:block"><b>➕ Stock In (ongeramo)</b>
+          <input id="seInQty" type="number" min="1" inputmode="numeric" placeholder="Umubare winjiye" style="${inp}">
+          <input id="seInNote" placeholder="Icyo ari cyo (si ngombwa), urugero: twaguze ku..." style="${inp}">
+          <button type="button" onclick="stockInDo()" style="width:100%;padding:12px;border:0;border-radius:12px;background:#16a34a;color:#fff;font-weight:800">➕ Ongeramo stock</button></div>
+        <div class="ceo-day-row" style="display:block"><b>➖ Stock Out (gukuramo)</b>
+          <input id="seOutQty" type="number" min="1" inputmode="numeric" placeholder="Umubare usohotse" style="${inp}">
+          <input id="seOutWhy" placeholder="Impamvu" style="${inp}">
+          <button type="button" onclick="stockOutDo()" style="width:100%;padding:12px;border:0;border-radius:12px;background:#dc2626;color:#fff;font-weight:800">➖ Kuramo stock</button></div>
+        <h3 style="margin:16px 0 8px">🕘 Ibyakozwe vuba</h3><div id="seHist"></div></div>`;
+      document.body.appendChild(el);
+    }
+    $("seInQty").value = ""; $("seInNote").value = ""; $("seOutQty").value = ""; $("seOutWhy").value = "";
+    el.hidden = false; el.scrollTop = 0; document.body.style.overflow = "hidden";
+    try { history.pushState({ gdStockEdit: 1 }, ""); } catch (e) {}
+    renderStockEdit();
+  };
+  window.closeStockEdit = fromPop => {
+    const el = $("adminStockEdit"); if (!el || el.hidden) return;
+    el.hidden = true;
+    if (fromPop !== true) { try { if (history.state && history.state.gdStockEdit) history.back(); } catch (e) {} }
+  };
+  window.renderStockEdit = () => {
+    const p = allStockProducts().find(x => x.id === seId); if (!p || !$("seInfo")) return;
+    $("seTitle").textContent = productName(p);
+    $("seInfo").innerHTML = `<div class="ceo-day-row"><span>📦 Stock isigaye</span><b style="font-size:1.4rem">${p.stock == null ? "—" : p.stock}</b></div>`;
+    const lg = (Array.isArray(p.stockInLog) ? p.stockInLog : []).map(l => ({ ...l, t: "in" })).concat((Array.isArray(p.stockOutLog) ? p.stockOutLog : []).map(l => ({ ...l, t: "out" }))).sort((a, b) => b.at - a.at).slice(0, 8);
+    const st = { pending: "⏳ itegereje", approved: "✅ yemewe", rejected: "↩️ yasubijwe" };
+    $("seHist").innerHTML = lg.length ? lg.map(l => `<div class="ceo-day-row"><span>${l.t === "in" ? "➕ +" : "➖ −"}${l.qty}${l.t === "out" ? " · " + (st[l.status] || "") : ""}<br><small>👤 ${esc(l.by)} · ${new Date(l.at).toLocaleString("en-GB", { dateStyle: "short", timeStyle: "short" })}${(l.reason || l.note) ? "<br>📝 " + esc(l.reason || l.note) : ""}</small></span></div>`).join("") : `<p style="opacity:.7">Nta cyakozwe.</p>`;
+  };
+  window.stockInDo = async () => {
+    const p = allStockProducts().find(x => x.id === seId); if (!p) return;
+    const qty = Math.floor(Number($("seInQty").value));
+    if (!(qty >= 1)) return alert("Andika umubare (1 cyangwa urenga).");
+    const log = (Array.isArray(p.stockInLog) ? p.stockInLog : []).slice(-49);
+    log.push({ id: String(Date.now()), qty, note: $("seInNote").value.trim().slice(0, 120), by: seWho(), at: Date.now() });
+    if (await seDo(p, { stock: (Number(p.stock) || 0) + qty, status: "available", stockInLog: log })) { $("seInQty").value = ""; $("seInNote").value = ""; renderStockEdit(); renderStockPage(); }
+  };
+  window.stockOutDo = async () => {
+    const p = allStockProducts().find(x => x.id === seId); if (!p) return;
+    if (p.stock == null || p.stock < 1) return alert("Nta stock ihari yo gukuramo.");
+    const qty = Math.floor(Number($("seOutQty").value));
+    if (!(qty >= 1) || qty > p.stock) return alert("Umubare si wo (1 kugeza " + p.stock + ").");
+    const owner = isAdminUser(currentUser), reason = $("seOutWhy").value.trim().slice(0, 200);
+    if (!owner && !reason) return alert("Ugomba kwandika impamvu.");
+    const log = (Array.isArray(p.stockOutLog) ? p.stockOutLog : []).slice(-49);
+    log.push({ id: String(Date.now()), qty, reason, by: seWho(), at: Date.now(), status: owner ? "approved" : "pending" });
+    const stock = p.stock - qty;
+    if (await seDo(p, { stock, status: stock > 0 ? "available" : "out", stockOutLog: log })) { $("seOutQty").value = ""; $("seOutWhy").value = ""; renderStockEdit(); renderStockPage(); window.stockBadgeRefresh(); }
+  };
   window.renderStockPage = () => {
     const box = $("stockList"); if (!box) return;
     const pb = $("stockPending"); if (pb) { const pend = isAdminUser(currentUser) ? pendingOuts() : [];
@@ -2922,7 +2983,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
       .filter(p => !q || (productName(p) || "").toLowerCase().includes(q))
       .sort((a, b) => (a.stock == null) - (b.stock == null) || (Number(a.stock) || 0) - (Number(b.stock) || 0));
     box.innerHTML = all.length ? all.map(p => { const n = p.stock; const c = n == null ? "#64748b" : n <= 0 ? "#b42318" : n <= 3 ? "#f59e0b" : "#16a34a";
-      return `<div class="ceo-day-row"><span><b>${esc(productName(p))}</b></span><span style="display:flex;gap:8px;align-items:center"><b style="color:${c};white-space:nowrap">${n == null ? "—" : n}</b>${n > 0 ? `<button type="button" class="pl-edit" onclick="stockOut(${p.id})">➖ Stock out</button>` : ""}</span></div>`; }).join("") : `<p style="opacity:.7">${t("No products.", "Nta bicuruzwa.")}</p>`;
+      return `<div class="ceo-day-row"><span><b>${esc(productName(p))}</b></span><span style="display:flex;gap:8px;align-items:center"><b style="color:${c};white-space:nowrap">${n == null ? "—" : n}</b><button type="button" class="pl-edit" onclick="stockEdit(${p.id})">✏️ Edit</button></span></div>`; }).join("") : `<p style="opacity:.7">${t("No products.", "Nta bicuruzwa.")}</p>`;
   };
   let ceoDay = "";
   window.ceoSetDay = v => { ceoDay = v || ""; renderCeo(); };
@@ -5500,7 +5561,8 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
   var STOP = {"ya":1,"za":1,"mu":1,"ku":1,"na":1,"the":1,"for":1,"and":1,"you":1,"are":1,"ni":1,"se":1,"ese":1,"mufite":1,"have":1,"igiciro":1,"price":1,"angahe":1,"zingahe":1,"stock":1,"irahari":1,"birahari":1,"ibyo":1,"iki":1,"uyu":1,"cost":1,"how":1,"much":1,"does":1,"what":1,"is":1,"a":1,"of":1,"no":1,"cyangwa":1,"bingahe":1};
   var msgs, quick, input, started = false, cb = null;
   var CBK = ["nduhamagare","muhamagare","mpamagare","guhamagarwa","kumpamagara","ndahamagarwa","call me","callback","call back","rappelez"];
-  function cleanPhone(raw){ var d = String(raw||"").replace(/\D/g,""); if (d.length === 12 && d.indexOf("250") === 0) d = "0" + d.slice(3); return d; }
+  function cleanPhone(raw){ var d = String(raw||"").replace(/\D/g,""); if (d.length === 12 && d.indexOf("250") === 0) d = "0" + d.slice(3); else if (d.length === 9 && d.charAt(0) === "7") d = "0" + d; return d; }
+  var PHRE = /\+?\d[\d\s\-]{7,}\d/;
   function startCallback(raw){
     cb = {name:"", phone:"", note:String(raw||"").slice(0,300), step:""};
     var m = String(raw||"").match(/\+?\d[\d\s\-]{7,}\d/);
@@ -5519,10 +5581,16 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
   }
   function handleCb(v){
     if (/^(reka|oya|cancel|stop|non)$/i.test(v.trim())) { cb = null; add("b", esc(tr("Sawa, nahagaritse.","Okay, cancelled."))); return; }
+    var m = v.match(PHRE);
+    if (m) {
+      var d = cleanPhone(m[0]), rest = v.replace(m[0], "").replace(/^[\s,.:;\-]+|[\s,.:;\-]+$/g, "");
+      if (d.length === 10) { cb.phone = d; if (!cb.name && rest.length >= 2) cb.name = rest.slice(0,60); nextCb(); return; }
+      add("b", esc(tr("Nimero wanditse ifite imibare "+d.length+", igomba kuba 10 neza. Ongera wandike.","That number has "+d.length+" digits, it must be exactly 10. Please type it again.")));
+      if (cb.step === "name") nextCb();
+      return;
+    }
     if (cb.step === "name") { if (v.trim().length < 2) { add("b", esc(tr("Andika izina ryawe.","Please type your name."))); return; } cb.name = v.trim().slice(0,60); nextCb(); return; }
-    var d = cleanPhone(v);
-    if (d.length !== 10) { add("b", esc(tr("Nimero ifite imibare "+d.length+", igomba kuba 10 neza. Ongera wandike.","That number has "+d.length+" digits, it must be exactly 10. Please type it again."))); return; }
-    cb.phone = d; nextCb();
+    add("b", esc(tr("Andika nimero ya telefoni y'imibare 10, urugero 0788123456.","Please type a 10-digit phone number, e.g. 0788123456.")));
   }
   function isCallbackAsk(raw, q){
     if (/\+?\d[\d\s\-]{7,}\d/.test(raw)) return true;
