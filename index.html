@@ -1971,6 +1971,7 @@ h2.pd-title{line-height:1.2}
       <div class="admin-shortcuts" aria-label="Admin menu">
         <button class="admin-shortcut" type="button" onclick="openCeoPage('adminCeoSection')"><span>👑 CEO · Abakiriya ba mbere</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="gdOpenInvoices()" id="invShortcut" hidden><span>🧾 Invoices zabitswe</span><span class="shortcut-arrow">›</span></button>
+        <button class="admin-shortcut" type="button" onclick="gdFaqEdit()" id="faqShortcut" hidden><span>🤖 Ibibazo n'ibisubizo bya Baza</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="gdFooterEdit()" id="footShortcut" hidden><span>🖊️ Hindura agasanduku ko hasi (Footer)</span><span class="shortcut-arrow">›</span></button>
         <button class="admin-shortcut" type="button" onclick="openStockPage()" id="stockShortcut" hidden><span>📦 Stock y'ibicuruzwa</span><span class="shortcut-arrow">›</span></button>
       </div>
@@ -2804,6 +2805,10 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
   }, err => console.error("Firestore:", err));
 
   onSnapshot(doc(db, "settings", "footerInfo"), snap => { window.gdFooterInfo = snap.exists() ? snap.data() : {}; if (window.gdFootRefresh) window.gdFootRefresh(); }, () => {});
+  onSnapshot(doc(db, "settings", "botFaq"), snap => { window.gdBotFaq = snap.exists() ? snap.data() : {}; }, () => {});
+  window.gdBotMiss = async text => { await addDoc(collection(db, "serviceRequests"), { name: "Baza", phone: "0000000000", serviceName: "❓ Ikibazo Baza itasubije", details: String(text).slice(0, 200), status: "botmiss", createdAt: Date.now() }); };
+  window.gdDeleteMiss = async id => { await deleteDoc(doc(db, "serviceRequests", String(id))); };
+  window.gdSaveBotFaq = async data => { await setDoc(doc(db, "settings", "botFaq"), data); };
   window.gdSaveFooter = async data => { await setDoc(doc(db, "settings", "footerInfo"), data); };
   window.gdBotCallback = async (name, phone, note) => {
     const d = { name: String(name).slice(0, 80), phone, serviceName: "📞 Asabye guhamagarwa (Baza)", details: String(note || "").slice(0, 500), status: "new", createdAt: Date.now() };
@@ -3052,7 +3057,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     $("adminDenied").hidden = !(currentUser && !staff);
     $("adminPanel").hidden = !staff;
     { const ah = document.querySelector("#view-admin .admin-title-row .page-title"); if (ah) ah.textContent = isAdminUser(currentUser) ? "👑 Super Admin" : "⚙ " + t("Work panel", "Ibikorwa by'akazi"); }
-    { const fb = $("footShortcut"); if (fb) fb.hidden = !isAdminUser(currentUser); }
+    { const fb = $("footShortcut"); if (fb) fb.hidden = !isAdminUser(currentUser); const qb = $("faqShortcut"); if (qb) qb.hidden = !isAdminUser(currentUser); }
     { const sb = $("stockShortcut"); if (sb) sb.hidden = !perms.has("products"); if (window.stockBadgeRefresh) window.stockBadgeRefresh(); }
     { const sp = $("cartStaffPanel"); if (sp) sp.hidden = !["chats", "orders", "requests", "services", "stats", "sections", "shops", "products"].some(k => perms.has(k)); }
     const map = { users: ["adminUsersSection"], services: ["adminServicesSection"], orders: ["adminOrdersSection"], requests: ["adminRequestsSection"], products: ["adminAddProductSection", "adminProductListSection"], sections: ["adminSectionsSection", "adminBannerSection", "adminTickerSection"], shops: ["adminShopsSection"], invoices: ["adminInvoicesSection"], stats: ["adminStatsSection"], chats: ["adminChatSection"], ceo: ["adminCeoSection"] };
@@ -3131,7 +3136,7 @@ window.gdSaveSvcCache=function(){try{var el=document.getElementById("servicesLis
     const mine = name => query(collection(db, name), where("userId", "==", user.uid));
     if (perms.has("orders")) listenerUnsubs.push(onSnapshot(collection(db, "orders"), snap => { allOrders = sortNew(snap); renderAdminOrders(); renderCeo(); }, err => console.error("Orders:", err)));
     if (!owner) listenerUnsubs.push(onSnapshot(mine("orders"), snap => { myOrders = sortNew(snap); window.gdMyOrders = myOrders; renderAccount(); renderCart(); }, err => console.error("My orders:", err)));
-    if (perms.has("requests")) listenerUnsubs.push(onSnapshot(collection(db, "serviceRequests"), snap => { allServiceRequests = sortNew(snap); renderAdminServiceRequests(); renderCeo(); }, err => console.error("Service requests:", err)));
+    if (perms.has("requests")) listenerUnsubs.push(onSnapshot(collection(db, "serviceRequests"), snap => { const all = sortNew(snap); allServiceRequests = all.filter(r => r.status !== "botmiss"); window.gdBotMisses = all.filter(r => r.status === "botmiss"); renderAdminServiceRequests(); renderCeo(); if (window.gdMissRefresh) window.gdMissRefresh(); }, err => console.error("Service requests:", err)));
     if (!owner) listenerUnsubs.push(onSnapshot(mine("serviceRequests"), snap => { myServiceRequests = sortNew(snap); renderAccount(); }, err => console.error("My service requests:", err)));
     if (perms.has("users")) listenerUnsubs.push(onSnapshot(collection(db, "users"), snap => {
       allUsers = snap.docs.map(d => ({ uid: d.id, ...d.data() })).filter(u => !isAdminUser(u)).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
@@ -5521,6 +5526,7 @@ main{padding-bottom:calc(62px + env(safe-area-inset-bottom,0px))!important}
   <div class="bh"><span style="font-size:1.4rem">🤖</span><b>GD Assistant</b><button type="button" onclick="gdBotClose()" aria-label="Funga">✕</button></div>
   <div id="gdBotMsgs"></div>
   <div id="gdBotQuick"></div>
+  <div id="gdBotNote" style="font-size:.64rem;opacity:.55;text-align:center;padding:0 12px 6px"></div>
   <form id="gdBotForm" onsubmit="gdBotSend(event)"><input id="gdBotIn" autocomplete="off" maxlength="200" placeholder="Andika ikibazo cyawe..."><button type="submit" aria-label="Ohereza">➤</button></form>
 </section>
 <script>
@@ -5628,7 +5634,17 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
     var lines = cats.map(function(c){ var n = list.filter(function(p){ return p.category === c.id; }).length; return c.icon+" "+(L()==="en"?c.en:c.rw)+" ("+n+")"; }).join("\n");
     return tr("Dufite ibyiciro bikurikira:\n","We have these categories:\n")+lines+"\n\n"+tr("Andika izina ry'igicuruzwa ndakubwira igiciro cyacyo.","Type a product name and I'll tell you its price.");
   }
-  var misses = 0;
+  var misses = 0, sentMiss = {}, nMiss = 0;
+  function logMiss(raw){
+    var t = String(raw||"").replace(/\+?\d[\d\s\-]{6,}\d/g, "[nimero]").trim().slice(0,200), k = norm(t);
+    if (t.length < 3 || sentMiss[k] || nMiss >= 5) return; sentMiss[k] = 1; nMiss++;
+    if (window.gdBotMiss) { try { window.gdBotMiss(t).catch(function(){}); } catch(e){} }
+  }
+  function customFaq(q){
+    var items = (window.gdBotFaq && window.gdBotFaq.items) || [], best = null, bs = 0;
+    items.forEach(function(it){ String(it.k||"").split(",").forEach(function(w){ w = norm(w); if (!w) return; var hit = w.length >= 5 ? q.indexOf(w) > -1 : (" "+q+" ").indexOf(" "+w+" ") > -1; if (hit && w.length > bs) { bs = w.length; best = it; } }); });
+    return best;
+  }
   function say(label, query){ return {t:label, f:function(){ add("u", esc(label.replace(/^\S+\s/,""))); answer(query); }}; }
   function topicActs(){ return [say("💰 "+tr("Ibiciro","Prices"), tr("ibiciro","prices")), say("🛒 "+tr("Gutumiza","How to order"), tr("gutumiza","order")), say("🛠️ "+tr("Serivisi","Services"), tr("serivisi","services")), say("📍 "+tr("Aho muri","Location"), tr("aho muherereye","location"))]; }
   function helpHere(){
@@ -5638,6 +5654,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
     var q = norm(raw); if (!q) return;
     if (/(ntago|ntabwo|sinshaka|nta nshaka|oya).*(hamagar)|(don t|dont|do not) want.*(call)|(upfashiriza|mfashiriza|pfasha|umfashirize|help me|help here|nshaka ko ufasha|nshaka ko upfasha)/.test(q) && !/(nduhamagare|muhamagare|mpamagare)/.test(q)) { misses = 0; helpHere(); return; }
     if (isCallbackAsk(raw, q)) { misses = 0; startCallback(raw); return; }
+    var cf = customFaq(q); if (cf && cf.a) { misses = 0; add("b", esc(cf.a)); return; }
     var best = null, bs = 0;
     KB.forEach(function(e){ var sc = 0; e.k.forEach(function(w){ if ((" "+q+" ").indexOf(" "+norm(w)+" ") > -1 || (w.length > 4 && q.indexOf(norm(w)) > -1)) sc += w.length > 4 ? 2 : 1; }); if (sc > bs) { bs = sc; best = e; } });
     var prods = findProducts(q);
@@ -5645,7 +5662,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
     if (best && (best.id === "price" || best.id === "stock")) { misses = 0; add("b", esc(categoriesReply())); return; }
     if (best) { misses = 0; add("b", esc(best.a()), (best.id === "human" || best.id === "contact" || best.id === "loc" || best.id === "hours" || best.id === "thanks" || best.id === "unhappy") ? humanActs() : null); return; }
     if (/(ibicuruzwa|products|catalog|byose|list)/.test(q)) { misses = 0; add("b", esc(categoriesReply())); return; }
-    misses++;
+    misses++; logMiss(raw);
     if (misses === 1) add("b", esc(tr("Mbabarira, sinabyumvise neza. Ushobora kubaza ku biciro, ibicuruzwa, serivisi cyangwa uko wategeka. Hitamo hano hasi cyangwa wandike mu yandi magambo.","Sorry, I didn't quite get that. You can ask about prices, products, services or how to order. Pick below or rephrase.")), topicActs());
     else add("b", esc(tr("Ntabwo ndabasha gusubiza icyo kibazo, kuko nsubiza gusa ku bintu bike nzi. Niba ushaka ubundi bufasha, siga nimero yawe nyiri website azaguhamagara, cyangwa uduhamagare, cyangwa utwandikire kuri WhatsApp.","I can't answer that one, I only know a limited set of topics. If you'd like more help, leave your number and the owner will call you, or call us, or message us on WhatsApp.")), humanActs());
   }
@@ -5653,6 +5670,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
     var items = [["💰 "+tr("Ibiciro","Prices"),tr("ibiciro","prices")],["🛒 "+tr("Gutumiza","How to order"),tr("gutumiza","order")],["🛠️ "+tr("Serivisi","Services"),tr("serivisi","services")],["📍 "+tr("Aho muri","Location"),tr("aho muherereye","location")],["📞 "+tr("Mpamagare","Call me back"),tr("mpamagare","call me back")],["👤 "+tr("Umukozi","Staff"),tr("umukozi","staff")]];
     quick.innerHTML = ""; items.forEach(function(x){ var b = document.createElement("button"); b.type = "button"; b.textContent = x[0]; b.onclick = function(){ add("u", esc(x[0].replace(/^\S+\s/,""))); answer(x[1]); }; quick.appendChild(b); });
     input.placeholder = tr("Andika ikibazo cyawe...","Type your question...");
+    var nt = document.getElementById("gdBotNote"); if (nt) nt.textContent = tr("Ibibazo Baza itashoboye gusubiza bibikwa kugira ngo tubinoze.","Questions the assistant could not answer are saved so we can improve it.");
   }
   window.gdBotOpen = function(){
     msgs = document.getElementById("gdBotMsgs"); quick = document.getElementById("gdBotQuick"); input = document.getElementById("gdBotIn");
@@ -5741,6 +5759,43 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
     d.showModal();
   };
   window.gdFootRefresh = function(){ last = ""; render(); };
+  function missGroups(){
+    var g = {}, out = [];
+    (window.gdBotMisses || []).forEach(function(m){ var t = String(m.details||"").trim(); if (!t) return; var k = t.toLowerCase().replace(/\s+/g," "); if (!g[k]) { g[k] = { text: t, n: 0, ids: [] }; out.push(g[k]); } g[k].n++; g[k].ids.push(m.id); });
+    return out;
+  }
+  window.gdMissRefresh = function(){
+    var b = document.getElementById("faqShortcut"); if (!b) return; var sp = b.querySelector("span"), n = missGroups().length;
+    if (sp) sp.textContent = "🤖 Ibibazo n'ibisubizo bya Baza" + (n ? " 🔴 " + n : "");
+  };
+  window.gdFaqEdit = function(){
+    var items = JSON.parse(JSON.stringify((window.gdBotFaq && window.gdBotFaq.items) || []));
+    var groups = missGroups(), consumed = [];
+    var d = document.getElementById("gdFaqEdit");
+    if (!d) { d = document.createElement("dialog"); d.id = "gdFaqEdit"; d.style.cssText = "max-width:560px;width:94%;background:#111526;color:#f7f5ff;border:1px solid #303a4b;border-radius:20px;padding:18px;max-height:90vh;overflow:auto"; document.body.appendChild(d); }
+    var st = 'width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #3b4468;background:#0b0f26;color:#fff;font:inherit;margin:4px 0 10px';
+    function draw(msg){
+      d.innerHTML = '<h2 style="margin:0 0 6px;font-size:1.15rem">🤖 Ibibazo n\'ibisubizo bya Baza</h2>' +
+        '<p style="margin:0 0 14px;font-size:.82rem;color:#b8b8cc">Andika amagambo umukiriya ashobora kwandika (ayatandukanye n\'akitso ,), n\'igisubizo Baza izamusubiza. Ibyo wandika hano biza imbere y\'ibisanzwe.</p>' +
+        (groups.length ? '<div style="border:1px solid #8a6a1f;background:rgba(245,158,11,.08);border-radius:14px;padding:12px;margin-bottom:14px"><b style="font-size:.9rem">❓ Ibibazo Baza itashoboye gusubiza ('+groups.length+')</b>' + groups.map(function(g, j){ return '<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.1)"><div style="font-size:.92rem">“'+esc(g.text)+'”'+(g.n > 1 ? ' <b style="color:#fbbf24">×'+g.n+'</b>' : '')+'</div><div style="display:flex;gap:8px;margin-top:8px"><button type="button" data-use="'+j+'" style="flex:1;padding:9px;border:0;border-radius:10px;background:#2563eb;color:#fff;font-weight:800">✍️ Shyiraho igisubizo</button><button type="button" data-ign="'+j+'" style="padding:9px 12px;border:1px solid #7f1d1d;background:transparent;color:#fca5a5;border-radius:10px">🗑️</button></div></div>'; }).join("") + '</div>' : '') +
+        items.map(function(it, i){ return '<div style="border:1px solid #303a4b;border-radius:14px;padding:12px;margin-bottom:12px"><label style="font-size:.8rem;color:#c9b8ff;font-weight:800">Amagambo y\'umukiriya</label><input data-i="'+i+'" data-f="k" value="'+esc(it.k||"")+'" placeholder="gufungura, mufungura, mukinga saa ngahe" style="'+st+'"><label style="font-size:.8rem;color:#c9b8ff;font-weight:800">Igisubizo cya Baza</label><textarea data-i="'+i+'" data-f="a" rows="4" placeholder="Dufungura saa mbiri za mu gitondo..." style="'+st+'">'+esc(it.a||"")+'</textarea><button type="button" data-del="'+i+'" style="border:1px solid #7f1d1d;background:transparent;color:#fca5a5;border-radius:10px;padding:8px 12px;font-weight:700">🗑️ Siba</button></div>'; }).join("") +
+        (items.length ? "" : '<p style="opacity:.7">Nta kibazo kirongerwamo. Kanda "Ongeraho".</p>') +
+        '<button type="button" id="faqAdd" style="width:100%;padding:12px;border:1px dashed #5b6aa6;border-radius:12px;background:transparent;color:#fff;font-weight:800;margin-bottom:10px">➕ Ongeraho ikibazo</button>' +
+        '<div style="display:flex;gap:8px"><button type="button" id="faqSave" style="flex:1;padding:12px;border:0;border-radius:12px;background:#2563eb;color:#fff;font-weight:800">💾 Bika</button><button type="button" id="faqClose" style="flex:1;padding:12px;border:1px solid #3b4468;border-radius:12px;background:transparent;color:#fff;font-weight:800">Funga</button></div><div id="faqMsg" style="margin-top:10px;font-size:.85rem">'+(msg||"")+'</div>';
+      Array.prototype.forEach.call(d.querySelectorAll("[data-f]"), function(el){ el.oninput = function(){ items[+el.getAttribute("data-i")][el.getAttribute("data-f")] = el.value; }; });
+      Array.prototype.forEach.call(d.querySelectorAll("[data-del]"), function(b){ b.onclick = function(){ items.splice(+b.getAttribute("data-del"), 1); draw(); }; });
+      Array.prototype.forEach.call(d.querySelectorAll("[data-use]"), function(b){ b.onclick = function(){ var g = groups.splice(+b.getAttribute("data-use"), 1)[0]; items.push({ k: g.text.toLowerCase().slice(0,200), a: "" }); consumed = consumed.concat(g.ids); draw(); var ta = d.querySelectorAll('textarea[data-f="a"]'); if (ta.length) { var t = ta[ta.length-1]; t.scrollIntoView({block:"center"}); t.focus(); } }; });
+      Array.prototype.forEach.call(d.querySelectorAll("[data-ign]"), function(b){ b.onclick = function(){ var g = groups.splice(+b.getAttribute("data-ign"), 1)[0]; g.ids.forEach(function(id){ try { window.gdDeleteMiss(id); } catch(e){} }); draw(); }; });
+      d.querySelector("#faqAdd").onclick = function(){ if (items.length >= 60) return; items.push({k:"", a:""}); draw(); };
+      d.querySelector("#faqClose").onclick = function(){ d.close(); };
+      d.querySelector("#faqSave").onclick = async function(){
+        var clean = items.map(function(x){ return { k: String(x.k||"").trim().slice(0,200), a: String(x.a||"").trim().slice(0,800) }; }).filter(function(x){ return x.k && x.a; });
+        var m = d.querySelector("#faqMsg"); m.textContent = "Birabikwa...";
+        try { await window.gdSaveBotFaq({ items: clean, updatedAt: Date.now() }); window.gdBotFaq = { items: clean }; items = JSON.parse(JSON.stringify(clean)); consumed.forEach(function(id){ try { window.gdDeleteMiss(id); } catch(e){} }); consumed = []; m.textContent = "✅ Byabitswe! Baza ihita ibikoresha."; } catch (e) { m.textContent = "❌ Ntibyakunze: " + (e.code || e.message); }
+      };
+    }
+    draw(); d.showModal();
+  };
   window.gdFooterEdit = function(){
     var info = window.gdFooterInfo || {};
     var d = document.getElementById("gdFootEdit");
