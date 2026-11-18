@@ -2545,8 +2545,7 @@ h2.pd-title{line-height:1.2}
   function pdQty(id, d) { productQty[id] = Math.max(1, (Number(productQty[id]) || 1) + d); const el = document.getElementById("pdQty"); if (el) el.textContent = productQty[id]; }
   function shareProduct(id) {
     const p = products.find(x => x.id === id); if (!p) return;
-    const text = productName(p) + " - " + money(p.price) + "\nGD Electric Motor\n" + shareUrl(id);
-    window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank", "noopener");
+    window.open("https://wa.me/?text=" + encodeURIComponent(shareUrl(id)), "_blank", "noopener");
   }
   function copyProductLink(id) {
     const url = shareUrl(id), btn = event && event.currentTarget;
