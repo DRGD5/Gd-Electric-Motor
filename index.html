@@ -5628,17 +5628,26 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
     var lines = cats.map(function(c){ var n = list.filter(function(p){ return p.category === c.id; }).length; return c.icon+" "+(L()==="en"?c.en:c.rw)+" ("+n+")"; }).join("\n");
     return tr("Dufite ibyiciro bikurikira:\n","We have these categories:\n")+lines+"\n\n"+tr("Andika izina ry'igicuruzwa ndakubwira igiciro cyacyo.","Type a product name and I'll tell you its price.");
   }
+  var misses = 0;
+  function say(label, query){ return {t:label, f:function(){ add("u", esc(label.replace(/^\S+\s/,""))); answer(query); }}; }
+  function topicActs(){ return [say("💰 "+tr("Ibiciro","Prices"), tr("ibiciro","prices")), say("🛒 "+tr("Gutumiza","How to order"), tr("gutumiza","order")), say("🛠️ "+tr("Serivisi","Services"), tr("serivisi","services")), say("📍 "+tr("Aho muri","Location"), tr("aho muherereye","location"))]; }
+  function helpHere(){
+    add("b", esc(tr("Sawa, turakomeza hano 😊. Mbwira icyo ushaka kumenya, cyangwa uhitemo hano hasi. Ndashobora gusubiza ku biciro, ibicuruzwa, serivisi no gutumiza. Ibyo ntabasha gusubiza, umukozi wacu azabigufashamo.","Okay, let's continue here 😊. Tell me what you'd like to know, or pick below. I can answer about prices, products, services and ordering. For anything else, our team can help you.")), topicActs());
+  }
   function answer(raw){
     var q = norm(raw); if (!q) return;
-    if (isCallbackAsk(raw, q)) { startCallback(raw); return; }
+    if (/(ntago|ntabwo|sinshaka|nta nshaka|oya).*(hamagar)|(don t|dont|do not) want.*(call)|(upfashiriza|mfashiriza|pfasha|umfashirize|help me|help here|nshaka ko ufasha|nshaka ko upfasha)/.test(q) && !/(nduhamagare|muhamagare|mpamagare)/.test(q)) { misses = 0; helpHere(); return; }
+    if (isCallbackAsk(raw, q)) { misses = 0; startCallback(raw); return; }
     var best = null, bs = 0;
     KB.forEach(function(e){ var sc = 0; e.k.forEach(function(w){ if ((" "+q+" ").indexOf(" "+norm(w)+" ") > -1 || (w.length > 4 && q.indexOf(norm(w)) > -1)) sc += w.length > 4 ? 2 : 1; }); if (sc > bs) { bs = sc; best = e; } });
     var prods = findProducts(q);
-    if (prods.length && (!best || best.id === "price" || best.id === "stock" || bs < 2)) { add("b", esc(productReply(prods)), [{t:"🛒 "+tr("Tumiza kuri WhatsApp","Order on WhatsApp"), f:function(){ if (window.contactWhatsApp) window.contactWhatsApp(); }}]); return; }
-    if (best && (best.id === "price" || best.id === "stock")) { add("b", esc(categoriesReply())); return; }
-    if (best) { add("b", esc(best.a()), (best.id === "human" || best.id === "contact" || best.id === "loc" || best.id === "hours" || best.id === "thanks" || best.id === "unhappy") ? humanActs() : null); return; }
-    if (/(ibicuruzwa|products|catalog|byose|list)/.test(q)) { add("b", esc(categoriesReply())); return; }
-    add("b", esc(tr("Mbabarira, sinabyumvise neza. Ushobora kubaza ku biciro, ibicuruzwa, serivisi cyangwa uko wategeka. Niba ushaka ubundi bufasha, siga nimero yawe nyiri website azaguhamagara, cyangwa uduhamagare, cyangwa utwandikire kuri WhatsApp.","Sorry, I didn't quite get that. You can ask about prices, products, services or how to order. If you'd like more help, leave your number and the owner will call you, or call us, or message us on WhatsApp.")), humanActs());
+    if (prods.length && (!best || best.id === "price" || best.id === "stock" || bs < 2)) { misses = 0; add("b", esc(productReply(prods)), [{t:"🛒 "+tr("Tumiza kuri WhatsApp","Order on WhatsApp"), f:function(){ if (window.contactWhatsApp) window.contactWhatsApp(); }}]); return; }
+    if (best && (best.id === "price" || best.id === "stock")) { misses = 0; add("b", esc(categoriesReply())); return; }
+    if (best) { misses = 0; add("b", esc(best.a()), (best.id === "human" || best.id === "contact" || best.id === "loc" || best.id === "hours" || best.id === "thanks" || best.id === "unhappy") ? humanActs() : null); return; }
+    if (/(ibicuruzwa|products|catalog|byose|list)/.test(q)) { misses = 0; add("b", esc(categoriesReply())); return; }
+    misses++;
+    if (misses === 1) add("b", esc(tr("Mbabarira, sinabyumvise neza. Ushobora kubaza ku biciro, ibicuruzwa, serivisi cyangwa uko wategeka. Hitamo hano hasi cyangwa wandike mu yandi magambo.","Sorry, I didn't quite get that. You can ask about prices, products, services or how to order. Pick below or rephrase.")), topicActs());
+    else add("b", esc(tr("Ntabwo ndabasha gusubiza icyo kibazo, kuko nsubiza gusa ku bintu bike nzi. Niba ushaka ubundi bufasha, siga nimero yawe nyiri website azaguhamagara, cyangwa uduhamagare, cyangwa utwandikire kuri WhatsApp.","I can't answer that one, I only know a limited set of topics. If you'd like more help, leave your number and the owner will call you, or call us, or message us on WhatsApp.")), humanActs());
   }
   function setQuick(){
     var items = [["💰 "+tr("Ibiciro","Prices"),tr("ibiciro","prices")],["🛒 "+tr("Gutumiza","How to order"),tr("gutumiza","order")],["🛠️ "+tr("Serivisi","Services"),tr("serivisi","services")],["📍 "+tr("Aho muri","Location"),tr("aho muherereye","location")],["📞 "+tr("Mpamagare","Call me back"),tr("mpamagare","call me back")],["👤 "+tr("Umukozi","Staff"),tr("umukozi","staff")]];
