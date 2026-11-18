@@ -5546,7 +5546,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
   var RW_W = {"muraho":1,"mwiriwe":1,"mwaramutse":1,"amakuru":1,"murakoze":1,"urakoze":1,"ndashaka":1,"nshaka":1,"igiciro":1,"ibiciro":1,"angahe":1,"zingahe":1,"mufite":1,"mukora":1,"gusana":1,"moteri":1,"pompe":1,"ni":1,"ku":1,"mu":1,"ya":1,"za":1,"na":1,"kandi":1,"cyangwa":1,"oya":1,"yego":1,"sawa":1,"ntabwo":1,"ntibyamfashije":1,"gutumiza":1,"serivisi":1,"umukozi":1,"mpamagare":1,"duhamagare":1,"aho":1,"muherereye":1,"saa":1,"ngahe":1,"nimero":1,"telefoni":1,"mbabarira":1,"komera":1,"mwakoze":1,"ese":1,"iki":1,"nde":1,"bite":1,"neza":1,"cyane":1};
   var detectLang = function(raw){
     var t = String(raw||"").toLowerCase().replace(/[^a-z\s]/g," ").split(/\s+/).filter(Boolean), en = 0, rw = 0;
-    t.forEach(function(w){ if (EN_W[w]) en++; if (RW_W[w]) rw++; });
+    t.forEach(function(w){ if (EN_W[w]) en++; else if (RW_W[w]) rw++; else if (w.length > 3 && /^(ku|kw|gu|gw|mu|mw|ba|bi|ibi|ama|umu|aba|ndi|tu|nta|nti|ngo|iki|ubu|uru|ig|ik|iz|ab|im|in)/.test(w) && /(a|e|i|o|u)$/.test(w) && !/(ing|tion|ness|ment|ed|ly|er|ers|ist|ice|ive|ble|que|ect|ent)$/.test(w)) rw += 0.6; });
     if (en > rw) return "en"; if (rw > en) return "rw"; return null;
   };
   var L = function(){ if (msgLang) return msgLang; return (typeof language !== "undefined" && language === "en") ? "en" : "rw"; };
@@ -5673,7 +5673,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
   /* ikibazo cyahinduwe mu rundi rurimi -> shakisha muri FAQ */
   function txMatch(raw, from, to){
     return tx(String(raw).slice(0,300), from, to).then(function(t){
-      var q2 = norm(t), cf = customFaq(q2);
+      var q2 = norm(t), cf = customFaq(q2) || customFaqFuzzy(q2);
       if (!cf) { var p2 = findProducts(q2); if (p2.length) return {prods:p2}; throw 0; }
       return {cf:cf};
     });
@@ -5696,6 +5696,24 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
     var items = (window.gdBotFaq && window.gdBotFaq.items) || [], best = null, bs = 0;
     items.forEach(function(it){ String(it.k||"").split(",").forEach(function(w){ w = norm(w); if (!w) return; var hit = w.length >= 5 ? q.indexOf(w) > -1 : (" "+q+" ").indexOf(" "+w+" ") > -1; if (hit && w.length > bs) { bs = w.length; best = it; } }); });
     return best;
+  }
+  /* Gushakisha mu bisubizo wabitse: ijambo cyangwa interuro ihuriye n'amagambo y'ingenzi cyangwa n'igisubizo */
+  var FZ_STOP = {"iyo":1,"ariko":1,"kuko":1,"nanjye":1,"ndashaka":1,"nshaka":1,"mwatubwira":1,"mwakoze":1,"murakoze":1,"please":1,"about":1,"there":1,"their":1,"which":1,"would":1,"could":1,"should":1,"where":1,"when":1,"with":1,"from":1,"this":1,"that":1,"have":1,"your":1,"tell":1};
+  var fzStem = function(w){ w = w.replace(/^(kw|ku|gu|gw|mu|mw|ki|bi|ba|ig|ik|ib|um|ub|ama|aba|ama)/,""); return (w.length >= 3 ? w : w).slice(0,5); };
+  var fzToks = function(t){ var seen = {}, out = []; norm(t).split(" ").forEach(function(w){ if (w.length < 4 || STOP[w] || EN_W[w] || RW_W[w] || FZ_STOP[w] || seen[w]) return; seen[w] = 1; out.push(w); }); return out; };
+  function customFaqFuzzy(q){
+    var items = (window.gdBotFaq && window.gdBotFaq.items) || [], u = fzToks(q), best = null, bs = 0;
+    if (!u.length) return null;
+    items.forEach(function(it){
+      var kt = fzToks(String(it.k||"").replace(/,/g," ")), at = fzToks((it.a||"")+" "+(it.e||"")), score = 0;
+      u.forEach(function(w){
+        var st = fzStem(w), hitK = kt.some(function(x){ return x === w || (st.length >= 4 && fzStem(x) === st); }), hitA = !hitK && at.some(function(x){ return x === w || (st.length >= 4 && fzStem(x) === st); });
+        if (hitK) score += 2; else if (hitA) score += 1;
+      });
+      if (score > bs) { bs = score; best = it; }
+    });
+    var need = u.length === 1 ? 1 : 2;
+    return bs >= need && best ? best : null;
   }
   function say(label, query){ return {t:label, f:function(){ add("u", esc(label.replace(/^\S+\s/,""))); answer(query); }}; }
   function topicActs(){ return [say("💰 "+tr("Ibiciro","Prices"), tr("ibiciro","prices")), say("🛒 "+tr("Gutumiza","How to order"), tr("gutumiza","order")), say("🛠️ "+tr("Serivisi","Services"), tr("serivisi","services")), say("📍 "+tr("Aho muri","Location"), tr("aho muherereye","location"))]; }
@@ -5741,6 +5759,8 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
       else add("b", esc(tr("Biracyagoranye kumva ibyo wanditse. Niba ushaka ubufasha bwihuse, uduhamagare cyangwa utwandikire kuri WhatsApp, umukozi wacu azagufasha.","I'm still having trouble reading that. For quick help, call us or message us on WhatsApp and our team will assist you.")), humanActs());
       return;
     }
+    var fz = customFaqFuzzy(q);
+    if (fz && (fz.a || fz.e)) { misses = 0; add("b", esc(L() === "en" ? (fz.e || fz.a) : (fz.a || fz.e))); return; }
     txOrMiss(raw);
   }
   function missReply(raw){
