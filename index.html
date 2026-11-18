@@ -5648,6 +5648,50 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
     if (t.length < 3 || sentMiss[k] || nMiss >= 5) return; sentMiss[k] = 1; nMiss++;
     if (window.gdBotMiss) { try { window.gdBotMiss(t).catch(function(){}); } catch(e){} }
   }
+  /* ---- Translation (MyMemory free API): matches questions written in the other language ---- */
+  var txCache = {};
+  function tx(text, from, to){
+    var key = from+">"+to+":"+text;
+    if (txCache[key]) return Promise.resolve(txCache[key]);
+    if (!window.fetch) return Promise.reject();
+    var ctl = window.AbortController ? new AbortController() : null, to_ = setTimeout(function(){ if (ctl) ctl.abort(); }, 5000);
+    return fetch("https://api.mymemory.translated.net/get?q="+encodeURIComponent(text)+"&langpair="+from+"|"+to, ctl ? {signal:ctl.signal} : undefined)
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        clearTimeout(to_);
+        var t = j && j.responseData && j.responseData.translatedText;
+        if (!t || +j.responseStatus !== 200 || /MYMEMORY WARNING|INVALID|QUERY LENGTH/i.test(t)) throw 0;
+        txCache[key] = t; return t;
+      }, function(e){ clearTimeout(to_); throw e; });
+  }
+  function txLong(text, from, to){
+    var parts = String(text).match(/[^.!?\n]+[.!?]*\s*/g) || [String(text)], chunks = [], cur = "";
+    parts.forEach(function(p){ if ((cur+p).length > 450) { if (cur) chunks.push(cur); cur = p.slice(0,450); } else cur += p; });
+    if (cur) chunks.push(cur);
+    return Promise.all(chunks.map(function(c){ return tx(c.trim(), from, to); })).then(function(a){ return a.join(" "); });
+  }
+  /* ikibazo cyahinduwe mu rundi rurimi -> shakisha muri FAQ */
+  function txMatch(raw, from, to){
+    return tx(String(raw).slice(0,300), from, to).then(function(t){
+      var q2 = norm(t), cf = customFaq(q2);
+      if (!cf) { var p2 = findProducts(q2); if (p2.length) return {prods:p2}; throw 0; }
+      return {cf:cf};
+    });
+  }
+  function txOrMiss(raw){
+    var from = L(), to = from === "en" ? "rw" : "en", lang = from;
+    var hasFaq = ((window.gdBotFaq && window.gdBotFaq.items) || []).length || allProducts().length;
+    if (!window.fetch || !hasFaq || String(raw).trim().length < 4) { missReply(raw); return; }
+    add("b", "…"); var ph = msgs.lastChild;
+    var done = function(){ if (ph && ph.parentNode) ph.parentNode.removeChild(ph); };
+    txMatch(raw, from, to).then(function(r){
+      msgLang = lang;
+      if (r.prods) { done(); misses = 0; add("b", esc(productReply(r.prods)), [{t:"🛒 "+tr("Tumiza kuri WhatsApp","Order on WhatsApp"), f:function(){ if (window.contactWhatsApp) window.contactWhatsApp(); }}]); return; }
+      var cf = r.cf, have = lang === "en" ? cf.e : cf.a, other = lang === "en" ? cf.a : cf.e;
+      if (have) { done(); misses = 0; add("b", esc(have)); return; }
+      return txLong(other, to, lang).then(function(out){ done(); misses = 0; add("b", esc(out)); }, function(){ done(); misses = 0; add("b", esc(other)); });
+    }).catch(function(){ done(); msgLang = lang; missReply(raw); });
+  }
   function customFaq(q){
     var items = (window.gdBotFaq && window.gdBotFaq.items) || [], best = null, bs = 0;
     items.forEach(function(it){ String(it.k||"").split(",").forEach(function(w){ w = norm(w); if (!w) return; var hit = w.length >= 5 ? q.indexOf(w) > -1 : (" "+q+" ").indexOf(" "+w+" ") > -1; if (hit && w.length > bs) { bs = w.length; best = it; } }); });
@@ -5697,6 +5741,9 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
       else add("b", esc(tr("Biracyagoranye kumva ibyo wanditse. Niba ushaka ubufasha bwihuse, uduhamagare cyangwa utwandikire kuri WhatsApp, umukozi wacu azagufasha.","I'm still having trouble reading that. For quick help, call us or message us on WhatsApp and our team will assist you.")), humanActs());
       return;
     }
+    txOrMiss(raw);
+  }
+  function missReply(raw){
     misses++; logMiss(raw);
     if (misses === 1) add("b", esc(tr("Mbabarira, sinabyumvise neza. Ushobora kubaza ku biciro, ibicuruzwa, serivisi cyangwa uko wategeka. Hitamo hano hasi cyangwa wandike mu yandi magambo.","Sorry, I didn't quite get that. You can ask about prices, products, services or how to order. Pick below or rephrase.")), topicActs());
     else add("b", esc(tr("Ntabwo ndabasha gusubiza icyo kibazo, kuko nsubiza gusa ku bintu bike nzi. Niba ushaka ubundi bufasha, siga nimero yawe nyiri website azaguhamagara, cyangwa uduhamagare, cyangwa utwandikire kuri WhatsApp.","I can't answer that one, I only know a limited set of topics. If you'd like more help, leave your number and the owner will call you, or call us, or message us on WhatsApp.")), humanActs());
