@@ -5673,9 +5673,10 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
   /* ikibazo cyahinduwe mu rundi rurimi -> shakisha muri FAQ */
   function txMatch(raw, from, to){
     return tx(String(raw).slice(0,300), from, to).then(function(t){
-      var q2 = norm(t), cf = customFaq(q2) || customFaqFuzzy(q2);
+      var q2 = norm(t), cf = customFaq(q2), fuzzy = false;
+      if (!cf) { cf = customFaqFuzzy(q2); fuzzy = !!cf && fzScore < 4; }
       if (!cf) { var p2 = findProducts(q2); if (p2.length) return {prods:p2}; throw 0; }
-      return {cf:cf};
+      return {cf:cf, ask:fuzzy};
     });
   }
   function txOrMiss(raw){
@@ -5688,6 +5689,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
       msgLang = lang;
       if (r.prods) { done(); misses = 0; add("b", esc(productReply(r.prods)), [{t:"🛒 "+tr("Tumiza kuri WhatsApp","Order on WhatsApp"), f:function(){ if (window.contactWhatsApp) window.contactWhatsApp(); }}]); return; }
       var cf = r.cf, have = lang === "en" ? cf.e : cf.a, other = lang === "en" ? cf.a : cf.e;
+      if (r.ask) { done(); askConfirm(cf, raw, lang); return; }
       if (have) { done(); misses = 0; add("b", esc(have)); return; }
       return txLong(other, to, lang).then(function(out){ done(); misses = 0; add("b", esc(out)); }, function(){ done(); misses = 0; add("b", esc(other)); });
     }).catch(function(){ done(); msgLang = lang; missReply(raw); });
@@ -5701,6 +5703,17 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
   var FZ_STOP = {"iyo":1,"ariko":1,"kuko":1,"nanjye":1,"ndashaka":1,"nshaka":1,"mwatubwira":1,"mwakoze":1,"murakoze":1,"please":1,"about":1,"there":1,"their":1,"which":1,"would":1,"could":1,"should":1,"where":1,"when":1,"with":1,"from":1,"this":1,"that":1,"have":1,"your":1,"tell":1};
   var fzStem = function(w){ w = w.replace(/^(kw|ku|gu|gw|mu|mw|ki|bi|ba|ig|ik|ib|um|ub|ama|aba|ama)/,""); return (w.length >= 3 ? w : w).slice(0,5); };
   var fzToks = function(t){ var seen = {}, out = []; norm(t).split(" ").forEach(function(w){ if (w.length < 4 || STOP[w] || EN_W[w] || RW_W[w] || FZ_STOP[w] || seen[w]) return; seen[w] = 1; out.push(w); }); return out; };
+  var fzScore = 0;
+  function faqLabel(it){ var k = String(it.k||"").split(",")[0].trim(); return k.length > 60 ? k.slice(0,57)+"…" : k; }
+  function faqText(it, lang){ return lang === "en" ? (it.e || it.a) : (it.a || it.e); }
+  /* iyo ihuza mu buryo butizewe cyane, ibanza kubaza umukiriya */
+  function askConfirm(it, raw, lang){
+    msgLang = lang || msgLang;
+    add("b", esc(tr("Ese ushaka kuvuga kuri «"+faqLabel(it)+"»?", "Do you mean «"+faqLabel(it)+"»?")), [
+      {t:"✅ "+tr("Yego","Yes"), f:function(){ msgLang = lang || msgLang; add("u", esc(tr("Yego","Yes"))); misses = 0; setTimeout(function(){ add("b", esc(faqText(it, L()))); }, 200); }},
+      {t:"❌ "+tr("Oya","No"), f:function(){ msgLang = lang || msgLang; add("u", esc(tr("Oya","No"))); setTimeout(function(){ missReply(raw); }, 200); }}
+    ]);
+  }
   function customFaqFuzzy(q){
     var items = (window.gdBotFaq && window.gdBotFaq.items) || [], u = fzToks(q), best = null, bs = 0;
     if (!u.length) return null;
@@ -5713,6 +5726,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
       if (score > bs) { bs = score; best = it; }
     });
     var need = u.length === 1 ? 1 : 2;
+    fzScore = bs;
     return bs >= need && best ? best : null;
   }
   function say(label, query){ return {t:label, f:function(){ add("u", esc(label.replace(/^\S+\s/,""))); answer(query); }}; }
@@ -5760,7 +5774,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
       return;
     }
     var fz = customFaqFuzzy(q);
-    if (fz && (fz.a || fz.e)) { misses = 0; add("b", esc(L() === "en" ? (fz.e || fz.a) : (fz.a || fz.e))); return; }
+    if (fz && (fz.a || fz.e)) { if (fzScore >= 4) { misses = 0; add("b", esc(faqText(fz, L()))); } else askConfirm(fz, raw, L()); return; }
     txOrMiss(raw);
   }
   function missReply(raw){
