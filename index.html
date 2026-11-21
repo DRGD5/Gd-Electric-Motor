@@ -5690,9 +5690,63 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
       if (r.prods) { done(); misses = 0; add("b", esc(productReply(r.prods)), [{t:"🛒 "+tr("Tumiza kuri WhatsApp","Order on WhatsApp"), f:function(){ if (window.contactWhatsApp) window.contactWhatsApp(); }}]); return; }
       var cf = r.cf, have = lang === "en" ? cf.e : cf.a, other = lang === "en" ? cf.a : cf.e;
       if (r.ask) { done(); askConfirm(cf, raw, lang); return; }
-      if (have) { done(); misses = 0; add("b", esc(have)); return; }
-      return txLong(other, to, lang).then(function(out){ done(); misses = 0; add("b", esc(out)); }, function(){ done(); misses = 0; add("b", esc(other)); });
+      if (have) { done(); misses = 0; add("b", esc(have)); rate(raw); return; }
+      return txLong(other, to, lang).then(function(out){ done(); misses = 0; add("b", esc(out)); rate(raw); }, function(){ done(); misses = 0; add("b", esc(other)); rate(raw); });
     }).catch(function(){ done(); msgLang = lang; missReply(raw); });
+  }
+  /* ---- Kwihanganira amakosa y'inyandiko ---- */
+  function lev(a, b){
+    if (a === b) return 0; if (Math.abs(a.length - b.length) > 2) return 9;
+    var p = [], i, j; for (j = 0; j <= b.length; j++) p[j] = j;
+    for (i = 1; i <= a.length; i++) { var c = [i]; for (j = 1; j <= b.length; j++) c[j] = Math.min(p[j]+1, c[j-1]+1, p[j-1] + (a[i-1] === b[j-1] ? 0 : 1)); p = c; }
+    return p[b.length];
+  }
+  function vocab(){
+    var v = {}, add_ = function(t){ norm(t).split(" ").forEach(function(w){ if (w.length >= 5) v[w] = 1; }); };
+    ((window.gdBotFaq && window.gdBotFaq.items) || []).forEach(function(it){ add_(String(it.k||"").replace(/,/g," ")); });
+    try { KB.forEach(function(e){ e.k.forEach(add_); }); } catch(e){}
+    try { allProducts().forEach(function(p){ add_(p.en||""); add_(p.rw||""); }); } catch(e){}
+    return Object.keys(v);
+  }
+  function correct(q){
+    var V = null;
+    return q.split(" ").map(function(w){
+      if (w.length < 5 || STOP[w] || EN_W[w] || RW_W[w]) return w;
+      if (!V) V = vocab();
+      if (V.indexOf(w) > -1) return w;
+      var lim = w.length >= 8 ? 2 : 1, best = null, bd = 9;
+      V.forEach(function(x){ var d = lev(w, x); if (d < bd) { bd = d; best = x; } });
+      return best && bd <= lim ? best : w;
+    }).join(" ");
+  }
+  /* ---- Amagambo yoroheje: Okay, Thanks, Bye... ---- */
+  var SMALL = (function(){
+    var m = {};
+    ["ok","okay","oky","k","sawa","sawa sawa","yego","yes","alright","all right","fine","i see","ndabyumvise","nibyo","cool","great","nice","good","byiza","neza","nta kibazo"].forEach(function(w){ m[w] = "ack"; });
+    ["thanks","thank you","thank u","thx","murakoze","murakoze cyane","urakoze","urakoze cyane","merci","mwakoze","mwakoze cyane"].forEach(function(w){ m[w] = "thx"; });
+    ["bye","goodbye","good bye","see you","murabeho","tuzongera guhura","turaza guhura","ciao"].forEach(function(w){ m[w] = "bye"; });
+    return m;
+  })();
+  function smallTalk(q){
+    var k = SMALL[q]; if (!k) return false;
+    if (k === "ack") add("b", esc(tr("Sawa 😊 Hari ikindi nakumarira? Wabaza ku biciro, ibicuruzwa, serivisi cyangwa gutumiza.","Alright 😊 Is there anything else I can help with? You can ask about prices, products, services or ordering.")), topicActs());
+    else if (k === "thx") add("b", esc(tr("Murakoze namwe! 🙏 Nimugira ikindi mushaka kumenya, mutubaze igihe cyose.","You're welcome! 🙏 If you need anything else, just ask anytime.")));
+    else add("b", esc(tr("Murabeho! 👋 Mugire amahoro, kandi muzatugarukire igihe cyose mubishaka.","Goodbye! 👋 Take care, and come back anytime.")));
+    return true;
+  }
+  /* ---- Byagufashije? 👍 👎 ---- */
+  function rate(raw){
+    var last = msgs && msgs.lastChild; if (!last || !last.className || last.className.indexOf("b") < 0 || last.querySelector(".acts")) return;
+    var d = document.createElement("div"); d.className = "acts rate";
+    var mk = function(label, fn){ var b = document.createElement("button"); b.type = "button"; b.textContent = label; b.onclick = function(){ fn(); }; return b; };
+    var done = function(txt){ d.innerHTML = ""; var sp = document.createElement("span"); sp.style.cssText = "font-size:12px;opacity:.7"; sp.textContent = txt; d.appendChild(sp); };
+    d.appendChild(mk("👍 "+tr("Byamfashije","Helpful"), function(){ done(tr("Murakoze! 🙏","Thank you! 🙏")); }));
+    d.appendChild(mk("👎 "+tr("Ntibyamfashije","Not helpful"), function(){
+      done(tr("Murakoze, tuzabinoza.","Thanks, we'll improve it."));
+      logMiss(raw);
+      setTimeout(function(){ add("b", esc(tr("Mbabarira ko igisubizo kitaguhaye icyo wifuzaga. Twanditse ikibazo cyawe kugira ngo tukinoze. Niba ushaka ubufasha bwihuse, umukozi wacu yagufasha.","Sorry that answer didn't help. We've saved your question so we can improve. If you need quick help, our team can assist you.")), humanActs()); }, 250);
+    }));
+    last.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
   }
   function customFaq(q){
     var items = (window.gdBotFaq && window.gdBotFaq.items) || [], best = null, bs = 0;
@@ -5710,7 +5764,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
   function askConfirm(it, raw, lang){
     msgLang = lang || msgLang;
     add("b", esc(tr("Ese ushaka kuvuga kuri «"+faqLabel(it)+"»?", "Do you mean «"+faqLabel(it)+"»?")), [
-      {t:"✅ "+tr("Yego","Yes"), f:function(){ msgLang = lang || msgLang; add("u", esc(tr("Yego","Yes"))); misses = 0; setTimeout(function(){ add("b", esc(faqText(it, L()))); }, 200); }},
+      {t:"✅ "+tr("Yego","Yes"), f:function(){ msgLang = lang || msgLang; add("u", esc(tr("Yego","Yes"))); misses = 0; setTimeout(function(){ add("b", esc(faqText(it, L()))); rate(raw); }, 200); }},
       {t:"❌ "+tr("Oya","No"), f:function(){ msgLang = lang || msgLang; add("u", esc(tr("Oya","No"))); setTimeout(function(){ missReply(raw); }, 200); }}
     ]);
   }
@@ -5755,17 +5809,18 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
   }
   function answer(raw){
     var q = norm(raw); if (!q) return;
-    msgLang = detectLang(raw);
+    msgLang = detectLang(raw); q = correct(q);
     if (!isJunkText(raw)) junk = 0;
     if (/(ntago|ntabwo|sinshaka|nta nshaka|oya).*(hamagar)|(don t|dont|do not) want.*(call)|(upfashiriza|mfashiriza|pfasha|umfashirize|help me|help here|nshaka ko ufasha|nshaka ko upfasha)/.test(q) && !/(nduhamagare|muhamagare|mpamagare)/.test(q)) { misses = 0; helpHere(); return; }
     if (isCallbackAsk(raw, q)) { misses = 0; startCallback(raw); return; }
-    var cf = customFaq(q); if (cf && (cf.a || cf.e)) { misses = 0; add("b", esc(L() === "en" ? (cf.e || cf.a) : (cf.a || cf.e))); return; }
+    var cf = customFaq(q); if (cf && (cf.a || cf.e)) { misses = 0; add("b", esc(L() === "en" ? (cf.e || cf.a) : (cf.a || cf.e))); rate(raw); return; }
+    if (smallTalk(q)) { misses = 0; return; }
     var best = null, bs = 0;
     KB.forEach(function(e){ var sc = 0; e.k.forEach(function(w){ if ((" "+q+" ").indexOf(" "+norm(w)+" ") > -1 || (w.length > 4 && q.indexOf(norm(w)) > -1)) sc += w.length > 4 ? 2 : 1; }); if (sc > bs) { bs = sc; best = e; } });
     var prods = findProducts(q);
     if (prods.length && (!best || best.id === "price" || best.id === "stock" || bs < 2)) { misses = 0; add("b", esc(productReply(prods)), [{t:"🛒 "+tr("Tumiza kuri WhatsApp","Order on WhatsApp"), f:function(){ if (window.contactWhatsApp) window.contactWhatsApp(); }}]); return; }
     if (best && (best.id === "price" || best.id === "stock")) { misses = 0; add("b", esc(categoriesReply())); return; }
-    if (best) { misses = 0; add("b", esc(best.a()), (best.id === "human" || best.id === "contact" || best.id === "loc" || best.id === "hours" || best.id === "thanks" || best.id === "unhappy") ? humanActs() : null); return; }
+    if (best) { misses = 0; var ha = (best.id === "human" || best.id === "contact" || best.id === "loc" || best.id === "hours" || best.id === "thanks" || best.id === "unhappy"); add("b", esc(best.a()), ha ? humanActs() : null); if (!ha) rate(raw); return; }
     if (/(ibicuruzwa|products|catalog|byose|list)/.test(q)) { misses = 0; add("b", esc(categoriesReply())); return; }
     if (isJunkText(raw)) {
       junk++;
@@ -5774,7 +5829,7 @@ window.gdOpenChat = function(){}; window.gdHintGo = function(){ if (window.gdHin
       return;
     }
     var fz = customFaqFuzzy(q);
-    if (fz && (fz.a || fz.e)) { if (fzScore >= 4) { misses = 0; add("b", esc(faqText(fz, L()))); } else askConfirm(fz, raw, L()); return; }
+    if (fz && (fz.a || fz.e)) { if (fzScore >= 4) { misses = 0; add("b", esc(faqText(fz, L()))); rate(raw); } else askConfirm(fz, raw, L()); return; }
     txOrMiss(raw);
   }
   function missReply(raw){
